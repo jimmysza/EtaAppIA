@@ -1,0 +1,82 @@
+// === NAVBAR ===
+document.addEventListener("DOMContentLoaded", () => {
+    const sections = document.querySelectorAll("section");
+    const navLinks = document.querySelectorAll(".nav-link");
+    const sticky = document.querySelector(".sticky-container");
+    const navbar = document.querySelector("#navbar");
+
+    // --- Efecto de sombra y mostrar/ocultar enlaces ---
+    window.addEventListener("scroll", () => {
+        if (window.scrollY > 205) {
+            sticky?.classList.add("shadow");
+            navbar.classList.add("border-none");
+
+            // Mostrar enlaces cuando se hace scroll
+            navLinks.forEach(nav => {
+                nav.classList.remove("nav-hidden");
+            });
+        } else {
+            sticky?.classList.remove("shadow");
+            navbar.classList.remove("border-none");
+
+            // Ocultar enlaces cuando vuelve al tope
+            navLinks.forEach(nav => {
+                nav.classList.add("nav-hidden");
+            });
+        }
+    });
+
+    // --- Resaltar enlace activo según la sección visible ---
+    window.addEventListener("scroll", () => {
+        let current = "";
+
+        sections.forEach((section) => {
+            const sectionTop = section.offsetTop - 120;
+            const sectionHeight = section.offsetHeight;
+
+            if (window.scrollY >= sectionTop && window.scrollY < sectionTop + sectionHeight) {
+                current = section.getAttribute("id");
+            }
+        });
+
+        navLinks.forEach((link) => {
+            link.classList.remove("active");
+            if (link.getAttribute("href") === `#${current}`) {
+                link.classList.add("active");
+            }
+        });
+
+    });
+});
+
+
+// === MODAL DE COMENTARIOS ===
+document.addEventListener("DOMContentLoaded", () => {
+    const modal = document.querySelector(".comment-modal");
+    const openModalBtn = document.querySelector(".btn-modal-comment .text-modal-comment");
+    const closeModalBtn = document.querySelector(".close-modal-comment");
+
+    if (!modal || !openModalBtn || !closeModalBtn) {
+        console.warn("⚠️ No se encontraron los elementos del modal de comentarios");
+        return;
+    }
+
+    openModalBtn.addEventListener("click", (e) => {
+        e.preventDefault();
+        modal.classList.add("show");
+        document.body.style.overflow = "hidden"; // evita scroll del fondo
+    });
+
+    closeModalBtn.addEventListener("click", () => {
+        modal.classList.remove("show");
+        document.body.style.overflow = "auto";
+    });
+
+    // Cerrar modal al hacer clic fuera
+    window.addEventListener("click", (e) => {
+        if (e.target === modal) {
+            modal.classList.remove("show");
+            document.body.style.overflow = "auto";
+        }
+    });
+});

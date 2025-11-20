@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Reservaciones Actividad</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" th:href="@{/css/colaborador/detallesColab.css}">
+    <link rel="stylesheet" th:href="@{/css/global.css}">
+    <link rel="stylesheet" th:href="@{/css/componentes/tabla.css}">
+    <link rel="stylesheet" th:href="@{/css/componentes/modales.css}">
+    <link rel="stylesheet" th:href="@{/css/colaborador/navColab.css}">
+
+    <style>
+
+
+    </style>
+</head>
+
+<body>
+
+    <div th:replace="~{componentes/nav_colab :: nav_colab}"></div>
+
+    <main>
+
+        <div class="executions-table-wrapper">
+            <table class="executions-table">
+                <thead>
+                    <tr>
+                        <th>Cantidad</th>
+                        <th>Estado</th>
+                        <th>fecha de Reserva</th>
+                        <th>Cliente</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:if="${reservas == null or #lists.isEmpty(reservas)}">
+                        <td colspan="5" class="text-center">Aún no hay reservaciones</td>
+                    </tr>
+
+                    <tr th:if="${reservas != null && !reservas.empty}" th:each="r : ${reservas}">
+                        <td th:text="${r.cantidad}"></td>
+                        <td th:text="${r.estado}"></td>
+                        <td th:text="${r.fechaReserva}"></td>
+                        <td th:text="${r.cliente.usuario.nombre}"></td>
+                        <td>
+                            <button class="edit-btn open-edit-modal" th:data-id="${r.idReserva}"
+                                th:data-estado="${r.estado}">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                                    <path fill="#fff"
+                                        d="m7 17.013l4.413-.015l9.632-9.54c.378-.378.586-.88.586-1.414s-.208-1.036-.586-1.414l-1.586-1.586c-.756-.756-2.075-.752-2.825-.003L7 12.583zM18.045 4.458l1.589 1.583l-1.597 1.582l-1.586-1.585zM9 13.417l6.03-5.973l1.586 1.586l-6.029 5.97r1L9 15.006z" />
+                                    <path fill="#fff"
+                                        d="M5 21h14c1.103 0 2-.897 2-2v-8.668l-2 2V19H8.158c-.026 0-.053.01-.079.01c-.033 0-.066-.009-.1-.01H5V5h6.847l2-2H5c-1.103 0-2 .897-2 2v14c0 1.103.897 2 2 2" />
+                                </svg>
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="modal modal-edit">
+            <form method="post" id="edit-reserva-form">
+                <input type="hidden" name="idActividad" th:value="${actividad.idActividad}" />
+                <input type="hidden" name="idReserva" id="modal-id-reserva" />
+
+                <div class="form-heading">
+                    <h2>Cambiar el Estado</h2>
+                    <p>Selecciona el nuevo estado de la reserva</p>
+                    <span class="close-modal close-edit">&times;</span>
+                </div>
+
+                <div class="inputs-form">
+                    <label for="estado">Estado <span class="red">*</span></label>
+                    <select name="estado" id="modal-estado-select" required>
+                        <option value="Pendiente" th:selected="${reserva.estado == 'Pendiente'}">Pendiente</option>
+                        <option value="Hecho" th:selected="${reserva.estado == 'Hecho'}">Hecho</option>
+                        <option value="Cancelada" th:selected="${reserva.estado == 'Cancelada'}">Cancelada</option>
+                    </select>
+
+                    <div class="btnSubmit">
+                        <button type="submit" class="button-default">Guardar</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </main>
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        document.querySelectorAll('.open-edit-modal').forEach(button => {
+            button.addEventListener('click', function () {
+                const id = this.getAttribute('data-id');
+                const estado = this.getAttribute('data-estado');
+                const idActividad = /*[[${actividad.idActividad}]]*/ 0;
+
+                document.getElementById('modal-id-reserva').value = id;
+                document.getElementById('modal-estado-select').value = estado;
+
+                const form = document.getElementById('edit-reserva-form');
+                form.action = `/colaborador/reserva/actualizar/${id}`;
+                // También podrías pasar idActividad como campo oculto (recomendado)
+                document.querySelector('input[name="idActividad"]').value = idActividad;
+            });
+        });
+        /*]]>*/
+    </script>
+    <script th:src="@{/js/modales.js}"></script>
+</body>
+
+</html>

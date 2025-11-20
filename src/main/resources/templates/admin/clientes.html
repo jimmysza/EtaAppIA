@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Lista de Clientes</title>
+  <link rel="icon" th:href="@{/images/logos/logo.webp}" type="image/x-icon" />
+</head>
+<body>
+<h2>Clientes Registrados</h2>
+
+<table border="1">
+    <thead>
+    <tr>
+        <th>Nombre</th>
+        <th>Email</th>
+        <th>Cédula</th>
+        <th>Dirección</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="cliente : ${clientes}">
+        <td th:text="${cliente.usuario.nombre}"></td>
+        <td th:text="${cliente.usuario.email}"></td>
+        <td th:text="${cliente.cedula}"></td>
+        <td th:text="${cliente.direccion}"></td>
+    </tr>
+    </tbody>
+</table>
+
+<a th:href="@{/clientes/nuevo}">Registrar nuevo cliente</a>
+</body>
+</html>

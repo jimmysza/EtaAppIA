@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Mis Actividades</title>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+
+  <link rel="icon" th:href="@{/images/logos/logo.webp}" type="image/x-icon" />
+    <style>
+        :root {
+            --primary-color: #667eea;
+            --secondary-color: #764ba2;
+            --accent-color: #f093fb;
+            --success-color: #4facfe;
+            --danger-color: #ff6b6b;
+            --warning-color: #feca57;
+            --info-color: #48dbfb;
+            --dark-color: #2f3640;
+            --light-color: #f1f2f6;
+            --shadow-light: 0 2px 10px rgba(0,0,0,0.1);
+            --shadow-medium: 0 8px 30px rgba(0,0,0,0.12);
+            --shadow-heavy: 0 15px 50px rgba(0,0,0,0.15);
+            --gradient-primary: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            --gradient-accent: linear-gradient(135deg, var(--accent-color), var(--success-color));
+            --gradient-card: linear-gradient(145deg, #ffffff, #f8f9fa);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+            min-height: 100vh;
+            color: var(--dark-color);
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            box-shadow: var(--shadow-heavy);
+            padding: 2.5rem;
+            margin: 2rem auto;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--gradient-primary);
+        }
+
+        h1 {
+            background: var(--gradient-primary);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            font-weight: 700;
+            font-size: 2.5rem;
+            text-align: center;
+            margin-bottom: 2rem;
+            position: relative;
+        }
+
+        h1::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 3px;
+            background: var(--gradient-accent);
+            border-radius: 10px;
+        }
+
+        h2 {
+            color: var(--secondary-color);
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            position: relative;
+            padding-left: 20px;
+        }
+
+        h2::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 4px;
+            height: 100%;
+            background: var(--gradient-primary);
+            border-radius: 2px;
+        }
+
+        /* Estilos del formulario de búsqueda */
+        .search-form {
+            background: var(--gradient-card);
+            padding: 1.5rem;
+            border-radius: 15px;
+            box-shadow: var(--shadow-light);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .search-form::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--gradient-accent);
+        }
+
+        .form-control {
+            border: 2px solid transparent;
+            border-radius: 12px;
+            padding: 12px 16px;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.9);
+            box-shadow: var(--shadow-light);
+        }
+
+        .form-control:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+            transform: translateY(-2px);
+        }
+
+        /* Botones mejorados */
+        .btn {
+            border-radius: 12px;
+            padding: 12px 24px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            transition: all 0.3s ease;
+            border: none;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.2);
+            transition: left 0.3s ease;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn-primary {
+            background: var(--gradient-primary);
+            color: white;
+            box-shadow: var(--shadow-medium);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-heavy);
+        }
+
+        .btn-success {
+            background: var(--gradient-accent);
+            color: white;
+            box-shadow: var(--shadow-medium);
+        }
+
+        .btn-success:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-heavy);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, var(--danger-color), #ff5252);
+            color: white;
+            box-shadow: var(--shadow-light);
+        }
+
+        .btn-danger:hover {
+            transform: scale(1.05);
+            box-shadow: var(--shadow-medium);
+        }
+
+        /* Tabla mejorada */
+        .table-container {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: var(--shadow-medium);
+            margin-bottom: 2rem;
+        }
+
+        .table {
+            margin: 0;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+
+        .table thead {
+            background: var(--gradient-primary);
+        }
+
+        .table thead th {
+            color: white;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 1rem;
+            border: none;
+            position: relative;
+        }
+
+        .table tbody tr {
+            transition: all 0.3s ease;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .table tbody tr:hover {
+            background: rgba(102, 126, 234, 0.05);
+            transform: scale(1.01);
+        }
+
+        .table tbody td {
+            padding: 1rem;
+            vertical-align: middle;
+            border: none;
+            position: relative;
+        }
+
+        .table tbody tr:nth-child(even) {
+            background: rgba(0,0,0,0.02);
+        }
+
+        /* Imagen mejorada */
+        .table img {
+            border-radius: 12px;
+            box-shadow: var(--shadow-light);
+            transition: all 0.3s ease;
+            max-width: 120px;
+            height: auto;
+        }
+
+        .table img:hover {
+            transform: scale(1.1);
+            box-shadow: var(--shadow-medium);
+        }
+
+        /* Paginación mejorada */
+        .pagination {
+            justify-content: center;
+            margin: 2rem 0;
+        }
+
+        .pagination .page-item {
+            margin: 0 5px;
+        }
+
+        .pagination .page-link {
+            border: none;
+            border-radius: 10px;
+            padding: 12px 18px;
+            color: var(--primary-color);
+            font-weight: 600;
+            transition: all 0.3s ease;
+            background: white;
+            box-shadow: var(--shadow-light);
+        }
+
+        .pagination .page-item.active .page-link {
+            background: var(--gradient-primary);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-medium);
+        }
+
+        .pagination .page-link:hover {
+            background: var(--primary-color);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-medium);
+        }
+
+        .pagination .page-item.disabled .page-link {
+            background: #f8f9fa;
+            color: #6c757d;
+        }
+
+        /* Formulario de nueva actividad */
+        .form-section {
+            background: var(--gradient-card);
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: var(--shadow-medium);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .form-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--gradient-accent);
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: var(--dark-color);
+            margin-bottom: 0.5rem;
+            display: block;
+            position: relative;
+            padding-left: 20px;
+        }
+
+        .form-label::before {
+            content: '\f02b';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            position: absolute;
+            left: 0;
+            color: var(--primary-color);
+        }
+
+        /* Iconos específicos para cada campo */
+        .form-label[for="titulo"]::before { content: '\f02d'; }
+        .form-label[for="descripcion"]::before { content: '\f036'; }
+        .form-label[for="precio"]::before { content: '\f155'; }
+        .form-label[for="ubicacion"]::before { content: '\f3c5'; }
+        .form-label[for="capacidad"]::before { content: '\f0c0'; }
+        .form-label[for="imagenFile"]::before { content: '\f03e'; }
+
+        textarea.form-control {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        input[type="file"] {
+            cursor: pointer;
+        }
+
+        input[type="file"]::-webkit-file-upload-button {
+            background: var(--gradient-primary);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            margin-right: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        input[type="file"]::-webkit-file-upload-button:hover {
+            transform: translateY(-2px);
+        }
+
+        /* Separador estilizado */
+        hr {
+            border: none;
+            height: 2px;
+            background: var(--gradient-accent);
+            margin: 3rem 0;
+            border-radius: 1px;
+        }
+
+        /* Animaciones */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .table-container,
+        .search-form,
+        .form-section {
+            animation: fadeInUp 0.6s ease forwards;
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .container {
+                margin: 1rem;
+                padding: 1.5rem;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            .table-responsive {
+                border-radius: 15px;
+                overflow: hidden;
+            }
+
+            .btn {
+                width: 100%;
+                margin-bottom: 0.5rem;
+            }
+        }
+
+        /* Efectos de hover mejorados */
+        .table tbody tr {
+            cursor: pointer;
+        }
+
+        .form-control:hover {
+            box-shadow: var(--shadow-medium);
+        }
+
+        /* Loading animation para el botón de submit */
+        .btn-success:active {
+            transform: scale(0.98);
+        }
+
+        /* Efecto de partículas (decorativo) */
+        .container::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(102, 126, 234, 0.1) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: float 20s linear infinite;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        @keyframes float {
+            0% { transform: translateX(-50px) translateY(-50px); }
+            100% { transform: translateX(50px) translateY(50px); }
+        }
+    </style>
+</head>
+
+<body>
+<div class="container mt-4">
+
+    <h1 class="mb-4">
+        <i class="fas fa-calendar-alt"></i> Mis Actividades
+    </h1>
+
+    <!-- 🔍 Filtro -->
+    <form th:action="@{/colaborador/actividades}" method="get" class="search-form row g-2 mb-4">
+        <div class="col-md-6">
+            <input type="text" class="form-control" name="filtroNombre" placeholder="🔍 Buscar por título..."
+                   th:value="${filtroNombre}">
+        </div>
+        <div class="col-md-2">
+            <button type="submit" class="btn btn-primary w-100">
+                <i class="fas fa-search"></i> Buscar
+            </button>
+        </div>
+    </form>
+
+    <!-- 📋 Tabla de actividades -->
+    <div class="table-container">
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                <tr>
+                    <th><i class="fas fa-heading"></i> Título</th>
+                    <th><i class="fas fa-dollar-sign"></i> Precio</th>
+                    <th><i class="fas fa-map-marker-alt"></i> Ubicación</th>
+                    <th><i class="fas fa-image"></i> Imagen</th>
+                    <th><i class="fas fa-cogs"></i> Acciones</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="actividad : ${actividades}">
+                    <td th:text="${actividad.titulo}">Título</td>
+                    <td>
+                        <span class="badge bg-success" th:text="'$' + ${actividad.precio}">$0</span>
+                    </td>
+                    <td th:text="${actividad.ubicacion}">Ubicación</td>
+                    <td>
+                        <img th:if="${actividad.imagen != null}" th:src="@{'/uploads/' + ${actividad.imagen}}"
+                             alt="Imagen de la actividad" style="width: 120px; height: auto;">
+                        <span th:if="${actividad.imagen == null}" class="text-muted">
+                                    <i class="fas fa-image"></i> Sin imagen
+                                </span>
+                    </td>
+                    <td>
+                        <a th:href="@{'/colaborador/eliminar/' + ${actividad.idActividad}}"
+                           class="btn btn-danger btn-sm"
+                           onclick="return confirm('¿Seguro que deseas eliminar esta actividad?')">
+                            <i class="fas fa-trash"></i> Eliminar
+                        </a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- 📄 Paginación -->
+    <nav th:if="${totalPages > 1}">
+        <ul class="pagination">
+            <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+                <a class="page-link" th:href="@{|/colaborador/actividades?page=${currentPage - 1}|}">
+                    <i class="fas fa-chevron-left"></i> Anterior
+                </a>
+            </li>
+
+            <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages-1)}" th:classappend="${i == currentPage} ? 'active'">
+                <a class="page-link" th:href="@{|/colaborador/actividades?page=${i}|}" th:text="${i+1}">1</a>
+            </li>
+
+            <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
+                <a class="page-link" th:href="@{|/colaborador/actividades?page=${currentPage + 1}|}">
+                    Siguiente <i class="fas fa-chevron-right"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+
+    <hr>
+
+    <!-- ➕ Formulario para agregar nueva actividad -->
+    <div class="form-section">
+        <h2 class="mb-3">
+            <i class="fas fa-plus-circle"></i> Agregar nueva actividad
+        </h2>
+
+        <form th:action="@{/colaborador/actividades/addAct}" th:object="${actividad}" method="post"
+              enctype="multipart/form-data">
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="titulo" class="form-label">Título</label>
+                    <input type="text" class="form-control" id="titulo" th:field="*{titulo}" required>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label for="precio" class="form-label">Precio</label>
+                    <input type="number" step="0.01" class="form-control" id="precio" th:field="*{precio}" required>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label for="descripcion" class="form-label">Descripción</label>
+                <textarea class="form-control" id="descripcion" th:field="*{descripcion}" rows="3"></textarea>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="ubicacion" class="form-label">Ubicación</label>
+                    <input type="text" class="form-control" id="ubicacion" th:field="*{ubicacion}">
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label for="capacidad" class="form-label">Capacidad</label>
+                    <input type="number" class="form-control" id="capacidad" th:field="*{capacidad}">
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label for="imagenFile" class="form-label">Imagen</label>
+                <input type="file" class="form-control" id="imagenFile" name="imagenFile" accept="image/*">
+            </div>
+
+            <div class="text-center">
+                <button type="submit" class="btn btn-success btn-lg">
+                    <i class="fas fa-save"></i> Guardar Actividad
+                </button>
+            </div>
+        </form>
+    </div>
+
+</div>
+
+<script>
+    // Agregar efecto de ripple a los botones
+    document.querySelectorAll('.btn').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            const ripple = document.createElement('span');
+            const rect = this.getBoundingClientRect();
+            const size = Math.max(rect.width, rect.height);
+            const x = e.clientX - rect.left - size / 2;
+            const y = e.clientY - rect.top - size / 2;
+
+            ripple.style.width = ripple.style.height = size + 'px';
+            ripple.style.left = x + 'px';
+            ripple.style.top = y + 'px';
+            ripple.classList.add('ripple');
+
+            this.appendChild(ripple);
+
+            setTimeout(() => {
+                ripple.remove();
+            }, 600);
+        });
+    });
+
+    // Animación suave al hacer scroll
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            document.querySelector(this.getAttribute('href')).scrollIntoView({
+                behavior: 'smooth'
+            });
+        });
+    });
+</script>
+
+<style>
+    .ripple {
+        position: absolute;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.6);
+        transform: scale(0);
+        animation: ripple-animation 0.6s linear;
+        pointer-events: none;
+    }
+
+    @keyframes ripple-animation {
+        to {
+            transform: scale(4);
+            opacity: 0;
+        }
+    }
+</style>
+</body>
+
+</html>

@@ -1,0 +1,59 @@
+.brand img {
+    width: 80px;
+}
+
+.header {
+    position: relative;
+    z-index: 100;
+    width: 100%;
+    height: auto;
+    background-color: var(--color-medium-blue);
+}
+
+.container-100 {
+    width: 100%;
+    position: relative;
+    max-width: 1560px;
+    margin: 0 auto;
+}
+
+nav.navbar {
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    align-content: center;
+    justify-content: space-between;
+    width: 100%;
+    height: 4rem;
+    margin: 0 auto;
+    padding: 0 40px;
+    color: white;
+    background-color: var(--color-medium-blue);
+}
+
+nav .nav-logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+}
+
+nav .nav-enlances {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    font-weight: bold;
+    gap: 20px;
+}
+
+nav .nav-salir a {
+    padding: 8px 16px;
+    border-radius: 18px;
+    border: 1px solid white;
+}
+
+nav .nav-salir a:hover {
+    background-color: var(--color-light-blue);
+}

@@ -1,0 +1,198 @@
+/*Actividades Tendencias*/
+.Trending {
+    position: relative;
+    width: 100%;
+    max-width: 1500px;
+    margin: 20px auto 30px auto;
+    height: fit-content;
+    padding: 3.5rem 3rem 1rem 3rem;
+}
+
+
+.top-trending {
+    text-align: center;
+    color: var(--color-subtitulo);
+}
+
+h2 {
+    padding: 0px 0.5rem;
+    font-size: 2.2rem;
+    font-weight: 700;
+    font-family: var(--font-poppins);
+    color: var(--color-black);
+    margin-bottom: 1rem;
+}
+
+.h2_trendi {
+    text-align: center;
+    font-size: 2.5rem;
+    margin-top: 0;
+    margin-bottom: 40px;
+    padding: 0;
+}
+
+.city {
+    color: var(--color-medium-blue);
+}
+
+/* Actividades Cards */
+.Actividades-Container {
+    display: grid;
+    position: relative;
+    grid-template-columns: repeat(auto-fit, minmax(368px, 1fr));
+    gap: 14px;
+    padding: 20px;
+}
+
+.Actividad-card {
+    position: relative;
+    border-radius: 12px;
+    max-width: 400px;
+    min-width: 368px;
+    overflow: hidden;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+    background: white;
+    transition: transform 0.2s ease;
+    padding: 6px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 30px;
+}
+
+.container-bookmark {
+    z-index: 2;
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 40px;
+    height: 40px;
+    top: 10px;
+    left: 10px;
+    border-radius: 100%;
+    backdrop-filter: blur(10px);
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.bookmark {
+    z-index: 2;
+    color: var(--color-white);
+}
+
+
+
+.Actividad-card:hover {
+    transform: translateY(-4px);
+}
+
+.Actividad-card img {
+    width: 100%;
+    min-height: 200px;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 28.5px 28.5px 15px 15px;
+}
+
+.price {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: #6bd0ff;
+    color: white;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-weight: bold;
+    font-size: 0.9rem;
+}
+
+.content-actividad {
+    padding: 16px;
+}
+
+.content-actividad h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+}
+
+.content-actividad p {
+    margin: 0;
+    color: #666;
+
+}
+
+.Actividad-card-link {
+    display: flex;
+    justify-content: center;
+
+    text-decoration: none;
+    color: inherit;
+}
+
+.content-actividad {
+    padding: 15px 15px 35px 15px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    gap: 10px;
+}
+
+
+
+.vermas {
+    margin: 0px auto;
+    margin-top: 80px;
+    padding: 5px 20px;
+    font-size: 1.2rem;
+}
+
+/*Paginacion*/
+.anterior-paginacion {
+    position: absolute;
+    top: 40%;
+    transform: translateY(-50%);
+    left: -10;
+}
+
+.despues-paginacion {
+    position: absolute;
+    top: 47%;
+    transform: translateY(-50%);
+    right: 10px;
+}
+
+.despues-paginacion svg {
+    rotate: 180deg;
+
+}
+
+@media (max-width: 800px) {
+    .Trending{
+        padding: 3.5rem 0rem 1rem 0rem;
+    }
+
+    .pagina-contador{
+        margin: 0px auto;
+        padding-left: 20px ;
+    }
+}
+
+.badges {
+    margin-bottom: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.badge {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+    background-color: rgba(186, 184, 184, 0.294);
+
+    color: var(--color-white-500);
+    padding: 7px 14px;
+    border-radius: 12px;
+    font-size: 12.5px;
+    font-weight: 800;
+}

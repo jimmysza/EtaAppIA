@@ -1,0 +1,198 @@
+/* ================== Google Fonts ================== */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Playfair+Display:wght@400..900&family=Sora:wght@100..800&display=swap');
+
+/* ================== Reset Básico ================== */
+*,
+*::before,
+*::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    word-wrap: break-word;
+}
+
+/* ================== Variables ========= ========= */
+:root {
+    /* Colores */
+    --color-black: #1C1C1C;
+    --color-dark-blue: #021024;
+    
+    
+    
+    
+    --color-black-100: hsl(240, 5%, 35%);
+    --color-black-200: hsl(240, 5%, 25%);
+    --color-black-300: hsl(240, 5%, 15%);
+    --color-black-400: hsl(240, 5%, 10%);
+
+    --color-blue-100: hsl(215, 97%, 87%);
+    --color-blue-400: #6e98c2;
+    --color-sky-blue: #c1e8ff;
+    --color-medium-blue: #5483b3;
+    --color-light-blue: #7da0ca;
+    --color-blue-600: hsl(215, 82%, 61%);
+    --color-deep-navy: #052659;
+
+    --color-white: hsl(206, 0%, 100%);
+    --color-blanco: #fafafa;
+
+    --color-subtitulo: hsl(225, 8%, 42%);
+    --color-white-500: hsl(206, 0%, 50%);
+    
+
+
+    --color-blur: #9abadc96;
+    --color-border: #E5E5E5;
+
+    /* Tipografías */
+    --font-inter: "Inter", sans-serif;
+    --font-work-sans: "Work Sans", sans-serif;
+    --font-Sora: "Sora", sans-serif;
+
+
+    /* Tamaños */
+    --max-width: 1560px;
+    --border-radius: 8px;
+
+
+
+
+    --shadow-small: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+    --shadow-medium: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --shadow-large: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+/* ================== Estilos Globales ================== */
+html {
+    font-size: 16px;
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: var(--font-Sora);
+    background-color: var(--color-white);
+    color: var(--color-black);
+    line-height: 1.5;
+}
+
+/* ================== Links ================== */
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+
+
+
+/* ================== Listas ================== */
+ul,
+ol {
+    list-style: none;
+}
+
+/* ================== Formularios ================== */
+input,
+button,
+textarea,
+select {
+    font: inherit;
+    border: none;
+    outline: none;
+    background: none;
+}
+
+button {
+    cursor: pointer;
+}
+
+/* ================== Utilidades ================== */
+section,
+main {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: 0 1rem;
+}
+
+.text-center {
+    text-align: center;
+}
+
+
+button[type="submit"]:focus {
+    outline: 1px solid var(--color-medium-blue);
+    outline-offset: 2px;
+}
+
+
+/*Alertas*/
+.alert {
+    position: fixed;
+    top: -5%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 15px 30px;
+    border-radius: 8px;
+    font-size: 16px;
+    z-index: 1000;
+    display: none;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.alert-success {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.alert-danger {
+    background-color: #FFF0F0;
+    color: #EB3636;
+    border: 1px solid #FFF0F0;
+}
+
+.alert-info {
+    background-color: #d1ecf1;
+    color: #0c5460;
+    border: 1px solid #bee5eb;
+}
+
+.showAnimationAppearFromTop {
+    display: block;
+    animation: AppearFromTop 0.6s ease-out forwards;
+}
+
+@keyframes AppearFromTop {
+    0% {
+        opacity: 0;
+        top: -10%;
+    }
+
+    100% {
+        opacity: 1;
+        top: 6%;
+    }
+}
+
+.ColorBlue{
+    color: var(--color-medium-blue);
+}
+
+.red{
+    color: #ff2200
+}
+
+
+.button-default{
+    gap: 6px;
+    justify-content: center;
+    display: flex;
+    align-items: center;
+    width: fit-content;
+    border: 1px solid #e5e2e2;
+    border-radius: 8px;
+    font-weight: 700;
+    color: #fff;
+    cursor: pointer;
+    padding: 6px 8px;
+    background-color: #2b5f9696;
+}

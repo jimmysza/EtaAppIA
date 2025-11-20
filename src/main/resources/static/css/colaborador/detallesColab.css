@@ -1,0 +1,132 @@
+.nav_secciones {
+    padding: 20px 0px;
+    display: flex;
+}
+
+.nav_secciones ul {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+    width: 100%;
+    padding: 20px 100px;
+    margin: 0px auto;
+}
+
+.nav_secciones ul li {
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.25);
+    border-radius: 14px;
+    padding: 7px 10px;
+}
+
+.nav_secciones ul li a:hover {
+    text-decoration: underline;
+    background-color: #eeeeee;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+}
+
+input {
+    margin-top: 20px;
+    padding: 10px 20px;
+    display: flex;
+    justify-content: flex-start;
+    color: #77787a;
+    background-color: #e3e7eb;
+    border-radius: 12px;
+    width: 100%;
+    gap: 15px;
+    align-items: center;
+}
+.form-edit {
+        max-width: 500px;
+    }
+/*type submit*/
+
+button.button-default[type="submit"] {
+    margin: 20px auto 0px auto;
+}
+
+
+@media screen and (max-width: 1000px) {
+
+    .nav_secciones ul {
+        flex-direction: column;
+    }
+
+
+    .form-edit {
+        max-width: 500px;
+        margin: auto;
+    }
+}
+
+
+
+
+input select:focus,
+input textarea:focus,
+input input:focus {
+    border: none;
+    outline: none;
+
+    flex: 1;
+    /* Hace que el input use todo el espacio disponible */
+    color: #474748;
+    text-align: left;
+    width: 10%;
+    min-width: 50%;
+}
+
+input select::placeholder,
+input textarea::placeholder,
+input input::placeholder {
+    color: #8d8f91;
+}
+
+input select:hover,
+input textarea:hover,
+input input:hover {
+    text-align: left;
+}
+
+input textarea {
+    resize: none;
+    max-height: 24px;
+    /* Bloquea el redimensionamiento en todas las direcciones */
+}
+
+
+
+.btns {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    font-weight: bold;
+    padding: 40px;
+}
+
+
+.btn_delete {
+    display: flex;
+    background-color: #f00;
+    color: white;
+    border-radius: 14px;
+    padding: 8px 16px;
+}
+
+.btn-secondary {
+    background-color: var(--color-medium-blue);
+    color: var(--color-white);
+    padding: 8px 14px;
+    border-radius: 14px;
+}

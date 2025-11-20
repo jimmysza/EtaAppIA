@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" lang="es">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link rel="icon" type="image/svg+xml" href="/assets/images/logo.webp" />
+
+    <link rel="icon" th:href="@{/images/logos/logo.webp}" type="image/x-icon" />
+
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+
+
+    <link rel="stylesheet" th:href="@{/css/global.css}">
+    <link rel="stylesheet" th:href="@{/css/auth/register.css}">
+    <link rel="stylesheet" th:href="@{/fonts/fonts.css}">
+
+    <title>Eta - Registro - Admin - Eventos Toures Actividades</title>
+
+</head>
+
+
+<body>
+    <main class="registro">
+
+
+        <div class="value-info">
+            <div class="content">
+                <a th:href="@{/}" class="return">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                        <path fill="currentColor"
+                            d="m4 10l-.707.707L2.586 10l.707-.707zm17 8a1 1 0 1 1-2 0zM8.293 15.707l-5-5l1.414-1.414l5 5zm-5-6.414l5-5l1.414 1.414l-5 5zM4 9h10v2H4zm17 7v2h-2v-2zm-7-7a7 7 0 0 1 7 7h-2a5 5 0 0 0-5-5z" />
+                    </svg>
+                    <span>Anterior pagina</span>
+                </a>
+                <div class="img-pet"></div>
+            </div>
+
+        </div>
+
+        <div class="login-root">
+
+            <a th:href="@{/}" class="return rt-2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                    <path fill="currentColor"
+                        d="m4 10l-.707.707L2.586 10l.707-.707zm17 8a1 1 0 1 1-2 0zM8.293 15.707l-5-5l1.414-1.414l5 5zm-5-6.414l5-5l1.414 1.414l-5 5zM4 9h10v2H4zm17 7v2h-2v-2zm-7-7a7 7 0 0 1 7 7h-2a5 5 0 0 0-5-5z" />
+                </svg>
+                <span>Anterior pagina</span>
+            </a>
+
+            <h1 class="p-bold">Registrate con tu email</h1>
+            <p class="text-sma">Bienvenido, ingresa tu Admin</p>
+
+
+            <div th:if="${param.exito}" class="alert alert-success" id="mensajeExito">
+                <span th:text="${exito}"></span>
+            </div>
+
+            <form th:action="@{/registro/admin}" th:object="${admin}" method="post">
+
+                <!--nombre1-->
+                <div class="input div1">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 26 26">
+                        <path fill="#BFC2CF"
+                            d="M16.563 15.9c-.159-.052-1.164-.505-.536-2.414h-.009c1.637-1.686 2.888-4.399 2.888-7.07c0-4.107-2.731-6.26-5.905-6.26c-3.176 0-5.892 2.152-5.892 6.26c0 2.682 1.244 5.406 2.891 7.088c.642 1.684-.506 2.309-.746 2.397c-3.324 1.202-7.224 3.393-7.224 5.556v.811c0 2.947 5.714 3.617 11.002 3.617c5.296 0 10.938-.67 10.938-3.617v-.811c0-2.228-3.919-4.402-7.407-5.557"
+                            stroke-width="0.5" stroke="#BFC2CF" />
+                    </svg>
+                    <input type="text" placeholder="nombre" id="nombre" th:field="*{usuario.nombre}" required>
+                </div>
+                <!--Cedula-->
+                <div class="input div2">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 26 26">
+                        <path fill="#BFC2CF"
+                            d="M16.563 15.9c-.159-.052-1.164-.505-.536-2.414h-.009c1.637-1.686 2.888-4.399 2.888-7.07c0-4.107-2.731-6.26-5.905-6.26c-3.176 0-5.892 2.152-5.892 6.26c0 2.682 1.244 5.406 2.891 7.088c.642 1.684-.506 2.309-.746 2.397c-3.324 1.202-7.224 3.393-7.224 5.556v.811c0 2.947 5.714 3.617 11.002 3.617c5.296 0 10.938-.67 10.938-3.617v-.811c0-2.228-3.919-4.402-7.407-5.557"
+                            stroke-width="0.5" stroke="#BFC2CF" />
+                    </svg>
+                    <input type="number" id="cedula" name="cedula" th:value="${admin.porcentajeComision}"
+                        placeholder="cedula" required min="0">
+                </div>
+
+                <!--email1-->
+                <div class="div3 input  ">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                        <path fill="#BFC2CF"
+                            d="M22 6c0-1.1-.9-2-2-2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2zm-2 0l-8 5l-8-5zm0 12H4V8l8 5l8-5z" />
+                    </svg>
+                    <input type="email" id="email" th:field="*{usuario.email}" placeholder="email" required>
+                </div>
+
+                <!--telefono1-->
+                <div class="input div4">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                        <path fill="#BFC2CF"
+                            d="m19.23 15.26l-2.54-.29a1.99 1.99 0 0 0-1.64.57l-1.84 1.84a15.05 15.05 0 0 1-6.59-6.59l1.85-1.85c.43-.43.64-1.03.57-1.64l-.29-2.52a2 2 0 0 0-1.99-1.77H5.03c-1.13 0-2.07.94-2 2.07c.53 8.54 7.36 15.36 15.89 15.89c1.13.07 2.07-.87 2.07-2v-1.73c.01-1.01-.75-1.86-1.76-1.98"
+                            stroke-width="0.5" stroke="#BFC2CF" />
+                    </svg>
+                    <input placeholder="Telefono" type="number" th:field="*{usuario.telefono}" required  min="7"
+            max="100000000000">
+                </div>
+
+
+                <!--password-->
+                <div class="input div7">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                        <path fill="#BFC2Cf"
+                            d="M20 12c0-1.103-.897-2-2-2h-1V7c0-2.757-2.243-5-5-5S7 4.243 7 7v3H6c-1.103 0-2 .897-2 2v8c0 1.103.897 2 2 2h12c1.103 0 2-.897 2-2zM9 7c0-1.654 1.346-3 3-3s3 1.346 3 3v3H9z" />
+                    </svg>
+
+                    <input type="password" th:field="*{usuario.password}" placeholder="Contraseña" required
+                        id="password" autofocus="autofocus" />
+                    <!-- Botón para mostrar/ocultar contraseña -->
+                    <button type="button" id="togglePassLogin"
+                        class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 password-toggle ">
+
+
+                        <!-- Ojo cerrado -->
+                        <svg id="eyeClosedLogin" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 " fill="none"
+                            viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.542-7a10.05 10.05 0 011.658-3.248M9.88 9.88A3 3 0 0114.12 14.12M20.12 20.12L3.88 3.88" />
+                        </svg>
+                    </button>
+                </div>
+
+                <!--forgot-->
+                <div class="forgot-password div8">
+                    <a href="#">Olvidaste la Contraseña?</a>
+                </div>
+
+                <!--9 submit-->
+                <button type="submit" class="login-button div9">Unete</button>
+                <!--10 -->
+                <p class="register div10">¿ya tienes una cuenta? <a th:href="@{/login}">inicia sesion</a></p>
+
+            </form>
+        </div>
+    </main>
+    <script th:src="@{/js/contraseñaMostrar.js}"></script>
+</body>
+
+</html>

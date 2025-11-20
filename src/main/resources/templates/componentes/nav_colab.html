@@ -1,0 +1,28 @@
+<header class="" id="header" th:fragment="nav_colab">
+    <div class="container-100">
+        <nav class="navbar">
+            <div class="nav-logo">
+                <a th:href="@{/colaborador/actividades}" class="brand">
+                    <img th:src="@{/images/logos/etawhitervg.webp}" alt="logo" class="logo" />
+                </a>
+            </div>
+
+            <div class="nav-enlances">
+
+                <a th:href="@{/colaborador/detalle/{id}(id=${actividad.idActividad})}" >Informacion </a>
+                <a th:if="${actividad != null}" th:href="@{/colaborador/disponibilidades/{idActividad}(idActividad=${actividad.idActividad})}">Disponibilidad </a>
+
+
+                <a th:if="${actividad != null}" th:href="@{/colaborador/reservas/{idActividad}(idActividad=${actividad.idActividad})}">
+                    Ver Reservas
+                </a>
+            </div>
+
+            <div class="nav-salir">
+                <a th:href="@{/colaborador/actividades}">Salir</a>
+            </div>
+
+
+        </nav>
+    </div>
+</header>

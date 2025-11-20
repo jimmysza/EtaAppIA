@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<body>
+
+    <section class="Trending" id="actividades" th:fragment="masActividades">
+        <div class="top-trending">
+            <h2 class="h2_trendi">Quizas te interesa</h2>
+        </div>
+
+        <!-- Opcional: mensaje si no hay actividades -->
+        <div th:if="${actividades == null}">
+            <p>No hay actividades disponibles.</p>
+        </div>
+        <div class="Actividades-Container">
+            <a th:each="actividad : ${actividades.content}"
+                th:href="@{/cliente/detalle/{id}(id=${actividad.idActividad})}" class="Actividad-card-link">
+                <div class="Actividad-card">
+                    <div class="price">$ <span th:text="${#numbers.formatDecimal(actividad.precio, 0, 0)}">10</span>
+                    </div>
+
+                    <img th:if="${actividad.imagen != null}" th:src="@{'/uploads/' + ${actividad.imagen}}"
+                        alt="Imagen de la actividad" />
+
+                    <span th:if="${actividad.imagen == null}" class="fallback-img">Sin imagen</span>
+
+                    <div class="content-actividad">
+                        <h3 th:text="${actividad.titulo}">Apartamento ideal en cartagena</h3>
+                        <p th:text="${actividad.ubicacion}">Cartagena de Indias</p>
+                    </div>
+                </div>
+            </a>
+
+
+            <a class="anterior-paginacion flex items-center gap-2 px-3 py-2 rounded bg-gray-200 hover:bg-gray-300"
+                th:if="${currentPage > 0}" th:href="@{/(page=${currentPage - 1})}">
+                <svg xmlns="http://www.w3.org/2000/svg" width="44" height="44" viewBox="0 0 24 24">
+                    <path fill="#3073b7"
+                        d="m7.825 13l4.9 4.9q.3.3.288.7t-.313.7q-.3.275-.7.288t-.7-.288l-6.6-6.6q-.15-.15-.213-.325T4.426 12t.063-.375t.212-.325l6.6-6.6q.275-.275.688-.275t.712.275q.3.3.3.713t-.3.712L7.825 11H19q.425 0 .713.288T20 12t-.288.713T19 13z" />
+                </svg>
+
+            </a>
+
+
+
+            <a class="anterior-paginacion despues-paginacion flex items-center gap-2 px-3 py-2 rounded bg-gray-200 hover:bg-gray-300"
+                th:if="${currentPage < totalPages - 1}" th:href="@{/(page=${currentPage + 1})}">
+
+                <svg xmlns="http://www.w3.org/2000/svg" width="44" height="44" viewBox="0 0 24 24">
+                    <path fill="#3073b7"
+                        d="m7.825 13l4.9 4.9q.3.3.288.7t-.313.7q-.3.275-.7.288t-.7-.288l-6.6-6.6q-.15-.15-.213-.325T4.426 12t.063-.375t.212-.325l6.6-6.6q.275-.275.688-.275t.712.275q.3.3.3.713t-.3.712L7.825 11H19q.425 0 .713.288T20 12t-.288.713T19 13z" />
+                </svg>
+            </a>
+
+
+        </div>
+        <span class="px-4 py-2 text-gray-700">
+            Página <strong th:text="${currentPage + 1}">1</strong> de <strong th:text="${totalPages}">1</strong>
+        </span>
+
+
+
+
+    </section>
+</body>

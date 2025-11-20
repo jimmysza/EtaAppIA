@@ -1,0 +1,19 @@
+    <!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<body>
+    <div class="search" th:fragment="buscador">
+
+            <div class="search-container">
+                <svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256" {...props}>
+                    <path fill="currentColor"
+                        d="M232.49 215.51L185 168a92.12 92.12 0 1 0-17 17l47.53 47.54a12 12 0 0 0 17-17ZM44 112a68 68 0 1 1 68 68a68.07 68.07 0 0 1-68-68">
+                    </path>
+                </svg>
+                <form th:action="@{/actividades/buscar}" th:object="${busqueda}" method="post">
+                    <input type="text" th:field="*{titulo}" placeholder="Buscar por título..." />
+                    <button type="submit" class="button-default">Buscar</button>
+                </form>
+            </div>
+        </div>
+        </body>

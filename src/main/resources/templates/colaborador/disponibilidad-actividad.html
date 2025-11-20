@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Reservaciones Actividad</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" th:href="@{/css/global.css}">
+    <link rel="stylesheet" th:href="@{/css/componentes/tabla.css}">
+    <link rel="stylesheet" th:href="@{/css/colaborador/navColab.css}">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" th:href="@{/css/componentes/modales.css}">
+
+    <link rel="icon" th:href="@{/images/logos/logo.webp}" type="image/x-icon" />
+</head>
+
+<body>
+    <div th:if="${mensaje}" class="alert alert-success" th:text="${mensaje}"></div>
+    <div th:replace="~{componentes/nav_colab :: nav_colab}"></div>
+
+    <main>
+
+        <div class="flex gap-1 filtros-btns">
+
+
+
+            <div class="flex center gap-2">
+
+
+
+                <a class="button-default text-open-add mb-5" id="open-add-modal">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24">
+                        <path fill="#fff"
+                            d="M12 4c4.411 0 8 3.589 8 8s-3.589 8-8 8s-8-3.589-8-8s3.589-8 8-8m0-2C6.477 2 2 6.477 2 12s4.477 10 10 10s10-4.477 10-10S17.523 2 12 2m5 9h-4V7h-2v4H7v2h4v4h2v-4h4z"
+                            stroke-width="0.5" stroke="#fff" />
+                    </svg>
+                    Agregar Disponibilidad</a>
+
+            </div>
+        </div>
+
+        <div class="executions-table-wrapper">
+            <table class="executions-table">
+                <thead>
+                    <tr>
+                        <th>fecha</th>
+                        <th>Hora de Inicio</th>
+                        <th>Hora de Fin</th>
+                        <th>Cupos Totales</th>
+                        <th>Cupos Disponibles</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr th:each="r : ${disponibilidades}">
+                        <td th:text="${r.fecha}"></td>
+                        <td th:text="${r.horaInicio}"></td>
+                        <td th:text="${r.horaFin}"></td>
+                        <td th:text="${r.cuposTotales}"></td>
+                        <td th:text="${r.cuposDisponibles}"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="modal modal-add">
+
+            <form th:action="@{/colaborador/disponibilidades/agregar}" th:object="${disponibilidad}" method="post">
+
+                <div class="form-heading">
+                    <h2>Agregar Disponibilidad</h2>
+                    <p>Define fecha y horario disponible para esta actividad</p>
+                    <span class=" close-modal close-btn-modal">&times;</span>
+                </div>
+
+                <div class="inputs-form">
+
+
+
+                    <input type="hidden" name="idActividad" th:value="${actividad.idActividad}" />
+                    <label>Fecha:</label>
+                    <input type="date" th:field="*{fecha}" required />
+
+
+                    <label>Hora Inicio:</label>
+                    <input type="time" th:field="*{horaInicio}" required />
+
+                    <label>Hora Fin:</label>
+                    <input type="time" th:field="*{horaFin}" required />
+
+
+
+                    <label for="cuposTotales">Cupos Totales: </label>
+                    <input id="cuposTotales" type="number" th:field="*{cuposTotales}" min="1" max="1000"
+                        data-required="true" />
+
+
+                    <div class="btnSubmit">
+                        <button type="submit" class="button-default">Agregar</button>
+                    </div>
+                </div>
+            </form>
+
+        </div>
+    </main>
+    <script th:src="@{/js/dashboard.js}"></script>
+    <script th:src="@{/js/modales.js}"></script>
+    <script th:src="@{/js/alert.js}"></script>
+
+</body>
+
+</html>

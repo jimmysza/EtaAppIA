@@ -1,0 +1,103 @@
+
+body{
+    max-height: 100vh;
+    overflow: hidden;
+}
+
+.menu-cliente{
+    height: 95%;    
+}
+
+.dashboard-container {
+    flex-grow: 1; 
+    padding: 40px;
+    box-sizing: border-box;
+}
+
+.dashboard-container h1 {
+    color: #7da0ca;
+    font-size: 2.2rem;
+    font-weight: 700;
+    margin-bottom: 30px;
+    border-bottom: 2px solid var(--color-border);
+    padding-bottom: 10px;
+}
+
+table {
+    width: 100%;
+    border-collapse: separate; 
+    border-spacing: 0;
+    margin-top: 20px;
+    background-color: var(--color-white);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); 
+    border-radius: 12px; 
+    overflow: hidden; 
+}
+
+td img {
+    border-radius: 8px;
+    object-fit: cover;
+    display: block;
+    max-width: 100px;
+    max-height: 100px;
+    height: auto;
+    border: 1px solid var(--color-border);
+}
+
+tr td{
+    text-align: center;
+}
+/* 
+thead {
+    background-color: #7da0ca;
+    color: var(--color-white);
+}
+
+th {
+    padding: 15px;
+    text-align: left;
+    font-weight: 700;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Celdas del Cuerpo de la Tabla */
+
+
+
+.actualizar-root {
+    min-width: 400px;
+    max-width: 800px;
+    margin: 0px auto;
+    flex: 1;
+    height: fit-content;
+    justify-content: center;
+    padding: 45px 40px 60px 40px;
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    justify-content: space-around;
+}
+.actualizar-root form {
+    width: 80%;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(9, minmax(min-content, max-content));
+    gap: 8px;
+}
+
+@media screen and (max-width: 800px) {
+
+    .actualizar-root {
+        max-width: 100%;
+        z-index: 1;
+        padding-top: 80px;
+        border-radius: 0px;
+        height: 100vh;
+    }
+
+
+}

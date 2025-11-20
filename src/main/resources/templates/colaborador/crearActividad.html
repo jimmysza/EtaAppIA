@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" th:href="@{/css/global.css}">
+    <link rel="stylesheet" th:href="@{/css/actividad/crearActividad.css}">
+
+
+    <link rel="icon" th:href="@{/images/logos/etabluerrvg.webp}" type="image/x-icon" />
+    <link rel="icon" th:href="@{/images/logos/logo.webp}" type="image/x-icon" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>ETA | Crear Actividades</title>
+</head>
+
+<body>
+
+
+    <header class="header" id="header">
+        <div class="container-100">
+            <nav>
+
+                <div class="nav-logo">
+                    <a th:href="@{/colaborador/actividades}" class="brand">
+                        <img th:src="@{/images/logos/etawhitervg.webp}" alt="logo" class="logo" />
+                    </a>
+                </div>
+
+
+                <div class="nav-salir">
+                    <a th:href="@{/colaborador/actividades}">Salir</a>
+                </div>
+
+
+            </nav>
+        </div>
+    </header>
+
+    <form th:action="@{/colaborador/actividades/addAct}" method="post" th:object="${actividad}"
+        enctype="multipart/form-data">
+        <!-- Paso 1 -->
+
+        <div class="form-group">
+            <label for="titulo">Ponle Título a Tu Actividad <span class="red">*</span></label>
+            <p>los titulos cortos dan mas reservas </p>
+
+            <input id="titulo" type="text" th:field="*{titulo}" data-required="true" minlength="3" maxlength="200" />
+
+
+
+            <label for="descripcion">Descripción <span class="red">*</span></label>
+            <p>Describe tu Actividad de la manera mas sencilla</p>
+            <textarea id="descripcion" th:field="*{descripcion}" class="form-control" data-required="true"
+                minlength="10"></textarea>
+        </div>
+
+
+
+
+        <div class="form-group form-group-precio">
+
+            <label for="precio">Configura tu <span class="ColorBlue">Precio</span> para cada cupo<span class="red">*</span></label>
+
+            <div class="flex items-center gap-2 justify-center precio-container">
+                
+                <p class="COP">COP</p>
+                <input id="precio" type="number" th:field="*{precio}" class="form-control" data-required="true"
+                    step="2000" min="1000" max="99999999" placeholder="120000" />
+
+            </div>
+        </div>
+
+
+        <div class="form-group">
+            <label for="categoria">Categoría<span class="red">*</span></label>
+            <select id="categoria" th:field="*{categoria}" required>
+                <option value="" disabled selected>Selecciona una categoría</option>
+
+                <option th:each="cat : ${categorias}" th:value="${cat.idCategoria}" th:text="${cat.nombre}">
+                </option>
+            </select>
+        </div>
+
+
+
+        <div class="form-group">
+            <label for="ubicacion">¿Dónde se encuentra tu alojamiento?</label>
+            <p>Solo compartiremos la dirección con los viajeros después de que hayan hecho la reserva.</p>
+            <div class="img"></div>
+            <input id="ubicacion" type="text" th:field="*{ubicacion}" maxlength="255" required data-required="true" />
+        </div>
+
+
+
+
+
+        <div class="form-group">
+            <label for="incluye">Incluye</label>
+            <textarea id="incluye" th:field="*{incluye}" class="form-control" data-required="true"></textarea>
+
+            <label for="normas">Normas</label>
+            <textarea id="normas" th:field="*{normas}" class="form-control" data-required="true"></textarea>
+
+            <label for="idioma">Idioma<span class="red">*</span></label>
+            <select id="idioma" th:field="*{idioma}" required>
+                <option value="" disabled selected>Selecciona una Idioma</option>
+
+                <option th:each="idio : ${idiomas}" th:value="${idio.idIdioma}" th:text="${idio.nombre}">
+                </option>
+            </select>
+
+            <label for="condiciones">Condiciones</label>
+            <textarea id="condiciones" th:field="*{condiciones}" class="form-control" data-required="true"></textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="imagenFile">Imagen</label>
+            <input type="file" id="imagenFile" name="imagenFile" accept="image/*" data-required="true">
+            <button type="submit" class="btn btn-act">Enviar</button>
+        </div>
+
+    </form>
+
+    <!-- Mensaje de error -->
+    <div id="errorMsg" class="alert alert-danger">...</div>
+
+    <script th:src="@{/js/alert.js}"></script>
+</body>
+
+</html>

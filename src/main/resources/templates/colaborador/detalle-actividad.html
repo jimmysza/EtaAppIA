@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Detalle Actividad</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" th:href="@{/css/global.css}">
+    <link rel="stylesheet" th:href="@{/css/colaborador/navColab.css}">
+    <link rel="stylesheet" th:href="@{/css/componentes/modales.css}">
+    <link rel="stylesheet" th:href="@{/css/colaborador/detallesColab.css}">
+</head>
+
+<body>
+
+    <div th:replace="~{componentes/nav_colab :: nav_colab}"></div>
+
+    <main>
+
+        <form class="nav_secciones" th:action="@{/colaborador/actividades/actualizar/{id}(id=${actividad.idActividad})}"
+            th:object="${actividad}" method="post">
+            <ul>
+                <li class="form-edit">
+                    <label for="titulo"><strong>Título:</strong>
+                    </label>
+                    <input type="text" id="titulo" th:field="*{titulo}"
+                        style="width: 100%; padding: 8px; margin-bottom: 16px;" />
+
+                </li>
+                <li class="form-edit">
+                    <label for="descripcion"><strong>Descripción:</strong></label>
+                    <input type="text" id="descripcion" th:field="*{descripcion}"
+                        style="width: 100%; padding: 8px; margin-bottom: 16px; box-sizing: border-box;" />
+                </li>
+                <li class="form-edit">
+                    <label for="imagen"><strong>Imagen Actual:</strong>
+                    </label>
+                    <img th:src="@{|/uploads/${actividad.imagen}|}" alt="Imagen de la actividad"
+                        style="max-width: 200px; height: auto; display: block; margin-bottom: 16px;" />
+                    <input type="file" id="imagen" name="file" />
+                </li>
+                <li class="form-edit">
+                    <label for="precio"><strong> Precio:</strong></label>
+                    <input type="number" id="precio" th:field="*{precio}" step="0.01"
+                        style="width: 100%; padding: 8px; margin-bottom: 16px; box-sizing: border-box;" />
+                </li>
+                <li class="form-edit">
+
+                    <label for=""><strong>Idioma</strong></label>
+                    <p th:text="${actividad.idioma.nombre}"></p> <!-- mostrará 'español' -->
+                    <p th:text="${actividad.idioma.codigo}"></p>
+                </li>
+                <li class="form-edit">
+                    <label for=""><strong>Calificacion</strong></label>
+                    <p th:text="${actividad.calificacion}"></p>
+
+                </li>
+                <li class="form-edit">
+                    <h2>PLataGanada</h2>
+                    <p th:text="${plataGanada}"></p>
+
+                </li>
+                <li class="form-edit">
+                    <label for="ubicacion"><strong>Lugar:</strong></label><br>
+                    <input type="text" id="ubicacion" th:field="*{ubicacion}"
+                        style="width: 100%; padding: 8px; margin-bottom: 16px; box-sizing: border-box;" />
+                </li>
+            </ul>
+            <button type="submit" class="button-default">Guardar cambios</button>
+        </form>
+
+        <div class="btns">
+
+
+
+            <a th:href="@{/colaborador/actividades}" class="btn btn-secondary">Volver</a>
+
+
+            <!--type="submit"-->
+            <button class="button-default btn_delete text-open-delete" id="open-delete-modal"
+                th:attr="data-id=${actividad.idActividad}">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24">
+                    <g fill="none">
+                        <path fill="#fff" d="M8 21h8a2 2 0 0 0 2-2V7H6v12a2 2 0 0 0 2 2" opacity="0.16" />
+                        <path stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                            d="M14 11v6m-4-6v6M6 7v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V7M4 7h16M7 7l2-4h6l2 4" />
+                    </g>
+                </svg>
+
+                Eliminar
+            </button>
+        </div>
+    </main>
+    <!-- Modal para Eliminar , borre close btn-->
+    <div class="modal modal-delete">
+        <form class="card" method="post">
+            <div class="header-modal">
+                <div class="image">
+                    <svg aria-hidden="true" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" fill="none">
+                        <path
+                            d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"
+                            stroke-linejoin="round" stroke-linecap="round"></path>
+                    </svg>
+                </div>
+                <div class="content">
+                    <span class="title">Eliminando Actividad</span>
+                    <p class="message">
+                        Estas Seguro que tu quieres eliminar la Actividad? todos sus datos sera
+                        permanentemente eliminado.
+                    </p>
+                </div>
+                <div class="actions">
+
+                    <a id="delete-confirm-btn" class="delete-btn desactivate">Eliminar</a>
+                    <button type="button" class="cancel close-btn-modal">Cancelar</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <script th:src="@{/js/eliminar/actividad.js}"></script>
+    <script th:src="@{/js/dashboard.js}"></script>
+</body>
+
+</html>

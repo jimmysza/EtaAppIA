@@ -1,0 +1,34 @@
+ .inputs-form {
+            padding: 0.2rem 2rem 2rem 2rem;
+        }
+
+        .modal form label,
+        .modal-edits form label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #333;
+            font-size: 0.75rem;
+        }
+
+
+        .modal form input,
+        .modal-edits form input,
+        .modal-edits form textarea,
+        .modal-edits form select,
+        .modal form textarea,
+        .modal form select {
+            width: 100%;
+            padding: 0.5rem 0.75rem;
+            margin-bottom: 1.25rem;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            box-sizing: border-box;
+            transition: border-color 0.3s ease;
+        }
+
+        .modal form input:focus,
+        .modal-edits form input:focus {
+            outline: none;
+        }

@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title th:text="|Detalle: ${actividad.titulo}|">Detalle Actividad</title>
+    <link rel="stylesheet" th:href="@{/css/global.css}">
+    <link rel="stylesheet" th:href="@{/fonts/fonts.css}">
+    <link rel="stylesheet" th:href="@{/css/cliente/detalles.css}">
+    <link rel="stylesheet" th:href="@{/css/componentes/cartas_actividades.css}">
+    <link rel="stylesheet" th:href="@{/css/componentes/navbar.css}">
+    <link rel="stylesheet" th:href="@{/css/componentes/footer.css}">
+    <link rel="stylesheet" th:href="@{/css/componentes/preguntasFrecuentes.css}">
+    <link rel="stylesheet" th:href="@{/css/componentes/comentarios.css}">
+    <link rel="stylesheet" th:href="@{/css/componentes/modales.css}">
+    <link rel="icon" th:href="@{/images/logos/Logo.webp}" type="image/x-icon" />
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+
+
+    <style>
+        .anterior-paginacion {
+            position: absolute;
+            top: 40%;
+            transform: translateY(-50%);
+            left: -10;
+        }
+
+
+        .despues-paginacion {
+            position: absolute;
+            top: 47%;
+            transform: translateY(-50%);
+            right: 10px;
+        }
+
+
+        .despues-paginacion svg {
+            rotate: 180deg;
+        }
+    </style>
+</head>
+
+<body class="detalle">
+
+    <div th:if="${error}" class="alert alert-danger">
+        <span th:text="${error}"></span>
+    </div>
+    <div th:if="${exito}" class="alert alert-success">
+        <span th:text="${exito}"></span>
+    </div>
+
+
+    <div th:replace="~{componentes/navbar :: navbar}"></div>
+    <!--contenedor principal-->
+
+    <section class="sticky-container">
+        <nav id="navbar">
+            <ul>
+                <li><a th:href="@{/}" class=" nav-inicio flex items-center gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24">
+                            <g fill="none">
+                                <path
+                                    d="M24 0v24H0V0zM12.593 23.258l-.011.002l-.071.035l-.02.004l-.014-.004l-.071-.035q-.016-.005-.024.005l-.004.01l-.017.428l.005.02l.01.013l.104.074l.015.004l.012-.004l.104-.074l.012-.016l.004-.017l-.017-.427q-.004-.016-.017-.018m.265-.113l-.013.002l-.185.093l-.01.01l-.003.011l.018.43l.005.012l.008.007l.201.093q.019.005.029-.008l.004-.014l-.034-.614q-.005-.019-.02-.022m-.715.002a.02.02 0 0 0-.027.006l-.006.014l-.034.614q.001.018.017.024l.015-.002l.201-.093l.01-.008l.004-.011l.017-.43l-.003-.012l-.01-.01z" />
+                                <path fill="#000"
+                                    d="M3.283 10.94a1.5 1.5 0 0 0 0 2.12l5.656 5.658a1.5 1.5 0 1 0 2.122-2.122L7.965 13.5H19.5a1.5 1.5 0 0 0 0-3H7.965l3.096-3.096a1.5 1.5 0 1 0-2.122-2.121z"
+                                    stroke-width="0.2" stroke="#000" />
+                            </g>
+                        </svg>
+                        Inicio
+                    </a></li>
+                <li><a href="#galeria" class="nav-link nav-hidden">Galeria</a></li>
+                <li><a href="#info" class="nav-link nav-hidden">Informacion</a></li>
+                <!-- <li><a href="#map" class="nav-link">Mapa</a></li> -->
+                <li><a href="#reseñas" class="nav-link nav-hidden">Reseñas</a></li>
+                <li><a href="#footer" class="nav-link nav-hidden">Contactos</a></li>
+            </ul>
+            <div class="social-nav flex center gap-2">
+                <a href=""><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24">
+                        <path fill="#fff"
+                            d="M5 21V5q0-.825.588-1.412T7 3h10q.825 0 1.413.588T19 5v16l-7-3zm2-3.05l5-2.15l5 2.15V5H7zM7 5h10z" />
+                    </svg></a>
+                <a href=""><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24">
+                        <path fill="#fff" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="m20 12l-6.4-7v3.5C10.4 8.5 4 10.6 4 19c0-1.167 1.92-3.5 9.6-3.5V19z" />
+                    </svg></a>
+                <a href=""><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24">
+                        <path fill="#fff"
+                            d="M18.9 6c-.2-.6-.8-1-1.4-1h-11c-.7 0-1.2.4-1.4 1L3 12v8c0 .5.5 1 1 1h1c.6 0 1-.5 1-1v-1h12v1c0 .5.5 1 1 1h1c.5 0 1-.5 1-1v-8zM6.8 7h10.3l1.1 3H5.8zM19 17H5v-5h14zM7.5 13c.8 0 1.5.7 1.5 1.5S8.3 16 7.5 16S6 15.3 6 14.5S6.7 13 7.5 13m9 0c.8 0 1.5.7 1.5 1.5s-.7 1.5-1.5 1.5s-1.5-.7-1.5-1.5s.7-1.5 1.5-1.5" />
+                    </svg></a>
+            </div>
+        </nav>
+    </section>
+
+    <section class="galeria-container" id="galeria">
+        <div class="galeria">
+            <img th:src="@{|/uploads/${actividad.imagen}|}" th:alt="${actividad.titulo}" />
+        </div>
+    </section>
+
+
+
+    <section id="info" class="contenido flex">
+        <div class="propuesta-valor flex flex-col">
+            <section class="encabezado">
+                <h1 th:text="${actividad.titulo}">Título de la Actividad</h1>
+                <div class="badges">
+                    <span class="badge badge-star">
+                        <span th:text="${actividad.calificacion}"></span>
+
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                            fill="currentColor">
+                            <path fill="currentColor"
+                                d="M12 2l2.5 6.1l6.5.5l-5 4.3l1.5 6.5L12 16.4l-5 4.3l1.5-6.5l-5-4.3l6.5-.5L12 2z">
+                            </path>
+                        </svg>
+                    </span>
+
+                    <!-- <span class="badge">2,9 km</span>
+            <span class="badge">Eta. 1hr</span>
+            <span class="badge">easy</span> -->
+
+                    <div class="badge">
+
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 36 36">
+                            <path fill="#808080" d="m11 16.5l-1 3.1h2z" class="clr-i-solid clr-i-solid-path-1"
+                                stroke-width="1" stroke="#808080" />
+                            <path fill="#808080"
+                                d="M30.3 3h-16v5h4v2h-13c-1.7 0-3 1.3-3 3v11c0 1.7 1.3 3 3 3h1v5.1l6.3-5.1h6.7v-7h11c1.7 0 3-1.3 3-3V6c0-1.7-1.3-3-3-3M13.1 22.9l-.5-1.6H9.5l-.6 1.6H6.5L9.8 14h2.4l3.3 8.9zM28.3 15v2c-1.3 0-2.7-.4-3.9-1c-1.2.6-2.6.9-4 1l-.1-2q1.05 0 2.1-.3c-.9-.9-1.5-2-1.8-3.2h2.1c.3.9.9 1.6 1.6 2.2c1.1-.9 1.8-2.2 1.9-3.7h-6V8h3V6h2v2h3.3l.1 1c.1 2.1-.7 4.2-2.2 5.7c.7.2 1.3.3 1.9.3"
+                                class="clr-i-solid clr-i-solid-path-2" stroke-width="1" stroke="#808080" />
+                            <path fill="none" d="M0 0h36v36H0z" />
+                        </svg>
+                        <span th:text="${actividad.idioma.nombre}"></span>
+                        <span>,</span>
+                        <span th:text="${actividad.idioma.codigo}"></span>
+                    </div>
+
+                    <a href="../sign_up/signup.html">
+                        <div class="badge">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24">
+                                <g fill="none">
+                                    <path
+                                        d="m12.593 23.258l-.011.002l-.071.035l-.02.004l-.014-.004l-.071-.035q-.016-.005-.024.005l-.004.01l-.017.428l.005.02l.01.013l.104.074l.015.004l.012-.004l.104-.074l.012-.016l.004-.017l-.017-.427q-.004-.016-.017-.018m.265-.113l-.013.002l-.185.093l-.01.01l-.003.011l.018.43l.005.012l.008.007l.201.093q.019.005.029-.008l.004-.014l-.034-.614q-.005-.018-.02-.022m-.715.002a.02.02 0 0 0-.027.006l-.006.014l-.034.614q.001.018.017.024l.015-.002l.201-.093l.01-.008l.004-.011l.017-.43l-.003-.012l-.01-.01z" />
+                                    <path fill="#808080
+" d="M12 2a9 9 0 0 1 9 9c0 3.074-1.676 5.59-3.442 7.395a20.4 20.4 0 0 1-2.876 2.416l-.426.29l-.2.133l-.377.24l-.336.205l-.416.242a1.87 1.87 0 0 1-1.854 0l-.416-.242l-.52-.32l-.192-.125l-.41-.273a20.6 20.6 0 0 1-3.093-2.566C4.676 16.589 3 14.074 3 11a9 9 0 0 1 9-9m0 6a3 3 0 1 0 0 6a3 3 0 0 0 0-6"
+                                        stroke-width="0.2" stroke="#808080
+" />
+                                </g>
+                            </svg>
+                            <span th:text="${actividad.ubicacion}"></span>
+                        </div>
+                    </a>
+                    <div class="badge">
+                        <p>creado: </p>
+                        <span th:text="${#temporals.format(actividad.createdAt, 'yyyy')}"></span>
+                    </div>
+                </div>
+            </section>
+            <div class="colaborador flex items-center">
+                <!-- <img src="../images/perfil_colaborador.jpg" alt="Foto del colaborador" class="colaborador-foto"> -->
+
+                <div class="colaborador-texto">
+                    <h3 th:text="${actividad.colaborador.usuario.nombre}">Jimmy</h3>
+                    <p>Alfitrion</p>
+                </div>
+            </div>
+            <!-- <div class="tiempo flex justify-start">
+                <div class="card-time flex flex-col justify-end">
+                    <div class="flex hours justify-end">
+                        <p>5<span>hr</span></p>
+                        <p>30<span>m</span></p>
+                    </div>
+                    <p class="title-time">Duraccion</p>
+                </div>
+                <div class="card-time flex flex-col justify-end">
+                    <div class="flex hours justify-end">
+                        <p>7<span>:</span></p>
+                        <p>30<span>AM</span></p>
+                    </div>
+                    <p class="title-time">Salida</p>
+                </div>
+                <div class="card-time flex flex-col justify-end">
+                    <div class="flex hours justify-end">
+                        <p>4<span>:</span></p>
+                        <p>00<span>PM</span></p>
+                    </div>
+                    <p class="title-time">Recogida</p>
+                </div>
+
+                <div class="card-time flex flex-col justify-end">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="35" height="35" viewBox="0 0 24 24">
+                        <path fill="#000"
+                            d="M19.235 13.234H4.765v3.494L0 11.964l4.765-4.765v3.494h14.47V7.199L24 11.964l-4.765 4.765z" />
+                    </svg>
+                    <p class="title-time"></p>ida y vuelta</p>
+                </div>
+            </div> -->
+
+            <div class="contenido-texto">
+                <p th:text="${actividad.descripcion}">La Isla Cholon es un destino turístico popular en Cartagena,
+                    Colombia, conocido por sus hermosas
+                    playas,
+                    aguas cristalinas y ambiente relajado. Es un lugar ideal para disfrutar de actividades acuáticas
+                    como
+                    snorkel, buceo y paseos en bote. La isla también cuenta con restaurantes y bares donde los
+                    visitantes
+                    pueden disfrutar de la gastronomía local y cócteles refrescantes. Además, Cholon es famosa por su
+                    vibrante vida nocturna, con fiestas en la playa que atraen a turistas y lugareños por igual.</p>
+
+
+
+
+            </div>
+            <p class="contenido-title">Incluye</p>
+            <p th:text="${actividad.incluye}"></p>
+            <p class="contenido-title">Normas</p>
+            <p th:text="${actividad.normas}"></p>
+            <p class="contenido-title">Condiciones</p>
+            <p th:text="${actividad.condiciones}"></p>
+
+        </div>
+        <div class="activity-detail-container">
+            <div class="reserva-container">
+                <h3 class="title-time price-tag">$
+                    <span th:text="${#numbers.formatDecimal(precioConsumidor, 0, 0)}"></span>
+
+                    <span
+                        class="title-time reserva">/reserva</span></h3>
+                <form th:action="@{/cliente/checkout}" method="post" th:object="${reservaDTO}" class="card-reservas">
+
+                    <p>Disponibilidades</p>
+                    <select th:field="*{idDisponibilidad}" required>
+                        <option value="">Seleccione una fecha</option>
+                        <option th:each="dispo : ${disponibilidades}" th:value="${dispo.idDisponibilidad}" th:text="|${#temporals.format(dispo.fecha, 'dd/MM/yyyy')} - 
+                 ${#temporals.format(dispo.horaInicio, 'HH:mm')} a 
+                 ${#temporals.format(dispo.horaFin, 'HH:mm')}|">
+                        </option>
+
+                    </select>
+
+                    <button type="submit"  class="btn btn-secondary">Reservar</button>
+
+                </form>
+
+
+            </div>
+        </div>
+
+        </div>
+
+
+    </section>
+
+
+
+
+
+    <div th:replace="~{componentes/comentarios :: reseñas}"></div>
+
+    <div th:replace="~{componentes/preguntasFrecuentes :: preguntasFrecuentes}"></div>
+
+
+
+    <section th:replace="componentes/masActividades :: masActividades"></section>
+
+    <div th:replace="~{componentes/footer :: footer}"></div>
+
+
+
+    <script th:src="@{/js/componentes/navbar.js}"></script>
+
+
+    <script th:src="@{/js/preguntasFrecuentes.js}"></script>
+
+    <script th:src="@{/js/ingreso.js}"></script>
+    <script th:src="@{/js/detalle.js}"></script>
+    <script th:src="@{/js/modales.js}"></script>
+    <script th:src="@{/js/alert.js}"></script>
+
+</body>
+
+</html>
