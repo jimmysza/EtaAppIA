@@ -22,11 +22,7 @@ services:
     environment:
       # Cambia "eta_db" SOLO si cambias el nombre de tu base de datos en el proyecto.
       SPRING_DATASOURCE_URL: jdbc:mysql://etaapp_db:3306/eta_db?createDatabaseIfNotExist=true&serverTimezone=UTC
-
-      # Usuario de BD definido en etaapp_db
       SPRING_DATASOURCE_USERNAME: root
-
-      # Contraseña (asegúrate que sea la misma en MYSQL_ROOT_PASSWORD)
       SPRING_DATASOURCE_PASSWORD: Jaime12.
 
     # Reinicia la app automáticamente si se cae.
