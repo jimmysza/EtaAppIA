@@ -1,0 +1,75 @@
+# Versión del formato de docker-compose.
+# 3.9 es estable y compatible con la mayoría de servicios.
+version: '3.9'
+
+# Lista de servicios que correrán en contenedores.
+services:
+
+  # ================== APLICACIÓN SPRING BOOT ==================
+  eta_app:
+    # Indica el directorio donde está el Dockerfile.
+    # En tu estructura: ETA/eta/Dockerfile → el valor correcto es: eta
+    build: eta
+
+    # Límite de memoria para evitar que el contenedor consuma demasiado.
+    mem_limit: 512m
+
+    # Expone el puerto de la app → localhost:8080
+    ports:
+      - "8080:8080"
+
+    # Variables de entorno que tu aplicación Spring Boot usa para conectarse a MySQL.
+    environment:
+      # Cambia "eta_db" SOLO si cambias el nombre de tu base de datos en el proyecto.
+      SPRING_DATASOURCE_URL: jdbc:mysql://etaapp_db:3306/eta_db?createDatabaseIfNotExist=true&serverTimezone=UTC
+
+      # Usuario de BD definido en etaapp_db
+      SPRING_DATASOURCE_USERNAME: root
+
+      # Contraseña (asegúrate que sea la misma en MYSQL_ROOT_PASSWORD)
+      SPRING_DATASOURCE_PASSWORD: Jaime12.
+
+    # Reinicia la app automáticamente si se cae.
+    restart: always
+
+    # La app NO arranca hasta que MySQL esté completamente listo.
+    depends_on:
+      etaapp_db:
+        condition: service_healthy
+
+
+  # ======================= BASE DE DATOS =======================
+  etaapp_db:
+    # Imagen oficial de MySQL (versión estable)
+    image: mysql:8.0.33
+
+    # Expone MySQL en tu máquina (puerto externo 3307)
+    # Lo puedes cambiar si ya tienes un MySQL local activo.
+    ports:
+      - "3307:3306"
+
+    # Variables internas de MySQL
+    environment:
+
+      # Contraseña del usuario root (usa la misma que en la APP)
+      MYSQL_ROOT_PASSWORD: Jaime12.
+
+      # Contraseña por defecto para el usuario root (algunos proyectos lo usan)
+      MYSQL_PASSWORD: Jaime12.
+
+      # Nombre de la base al iniciar → debe coincidir con DB_URL
+      MYSQL_DATABASE: eta_db
+
+    restart: always
+
+    # Volumen para evitar que la base se borre cada vez que apagas Docker.
+    # Esta carpeta se creará automáticamente en tu proyecto:
+    #   ./mysql_data
+    volumes:
+      - ./mysql_data:/var/lib/mysql
+
+    # Verifica que MySQL está listo para aceptar conexiones antes de arrancar la app.
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 10s
+      retries: 10
