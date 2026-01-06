@@ -96,7 +96,6 @@ public class ColaboradorController {
             throw new RuntimeException("Error al subir la imagen", e);
         }
 
-
         // Paso 5: Guardar la actividad en la base de datos
         actividadService.agregarActividad(actividad);
         return "redirect:/colaborador/actividades";
@@ -145,6 +144,7 @@ public class ColaboradorController {
     // 🔹 Eliminar actividad por ID
     @GetMapping("/eliminar/{id}")
     public String deleteById(@PathVariable("id") Long id) {
+        
         Actividad actividad = actividadService.listarById(id);
 
         // Si existe y tiene imagen asociada, eliminar también la imagen del servidor
@@ -172,29 +172,22 @@ public class ColaboradorController {
         return "colaborador/disponibilidad-actividad";
     }
 
-   
-
-
     @PostMapping("/disponibilidades/agregar")
     public String crearDisponibilidad(
             @ModelAttribute Disponibilidad disponibilidad,
             @RequestParam(required = true) Long idActividad,
-        RedirectAttributes redirectAttrs) {
+            RedirectAttributes redirectAttrs) {
 
         /*if (disponibilidad.getFecha().isBefore(LocalDateTime.now())) {
             redirectAttrs.addFlashAttribute("error", "La fecha debe ser futura");
             return "redirect:/colaborador/disponibilidades/" + idActividad;
         }*/
-
         try {
-
-
 
             Actividad actividad = actividadService.obtenerPorId(idActividad);
             disponibilidad.setActividad(actividad);
             disponibilidad.setCuposDisponibles(disponibilidad.getCuposTotales()); // Primero asignar
             disponibilidadService.guardarDisponibilidad(disponibilidad); // Luego guardar
-
 
             redirectAttrs.addFlashAttribute("mensaje", "Disponibilidad creada correctamente");
             return "redirect:/colaborador/disponibilidades/" + idActividad;
@@ -210,7 +203,7 @@ public class ColaboradorController {
     public String verReservas(@PathVariable Long idActividad, Model model) {
         Actividad actividad = actividadService.obtenerPorId(idActividad);
         List<Reserva> reservas = reservaService.getReservasPorIdActividad(idActividad);
-        
+
         // Protege contra null
         if (reservas == null) {
             reservas = List.of(); // o Collections.emptyList()
@@ -226,21 +219,20 @@ public class ColaboradorController {
     public String actualizarEstado(
             @PathVariable Long id,
             @RequestParam String estado,
-            @RequestParam Long idActividad,  // ← add this
+            @RequestParam Long idActividad, // ← add this
             RedirectAttributes redirectAttrs) {
 
         Reserva original = reservaService.ObtenerReservaPorId(id)
-            .orElseThrow(() -> new IllegalArgumentException("Reserva no encontrada: " + id));
+                .orElseThrow(() -> new IllegalArgumentException("Reserva no encontrada: " + id));
 
         original.setEstado(estado);
         reservaService.guardarReserva(original);
 
         redirectAttrs.addFlashAttribute("mensaje", "Estado actualizado correctamente ✅");
-        
+
         // ✅ Redirect to the correct URL with idActividad
         return "redirect:/colaborador/reservas/" + idActividad;
-}
-
+    }
 
     // 🔹 Ver detalle de una actividad específica
     @GetMapping("/detalle/{id}")
@@ -254,7 +246,9 @@ public class ColaboradorController {
         }
 
         List<Reserva> reservas = reservaService.getReservasPorIdActividad(id);
-        if (reservas == null) reservas = List.of();
+        if (reservas == null) {
+            reservas = List.of();
+        }
 
         BigDecimal plataGanada = BigDecimal.ZERO;
         BigDecimal precioBase = actividad.getPrecio();

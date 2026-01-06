@@ -15,6 +15,7 @@
     position: relative;
     max-width: 1560px;
     margin: 0 auto;
+    z-index: 900;
 }
 
 .navbar {
@@ -41,7 +42,7 @@
 }
 
 .other-logo {
-    z-index: 1001;
+    z-index: 901;
     display: none;
 }
 
@@ -266,7 +267,7 @@
     /* justo debajo del dropdown */
     left: -65px;
     right: -105px;
-    z-index: 1000;
+    z-index: 900;
     /* para que aparezca encima de otros elementos */
 }
 
@@ -342,14 +343,14 @@
 
 /*al menos 768px*/
 
-@media only screen and (min-width: 48rem) {
+@media only screen and (min-width: 910px) {
     .burger {
         display: none;
         visibility: hidden;
     }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 910px) {
     .brand {
         display: none;
     }

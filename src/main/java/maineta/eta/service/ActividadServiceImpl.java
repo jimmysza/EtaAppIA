@@ -3,17 +3,18 @@ package maineta.eta.service;
 import java.util.ArrayList;
 import java.util.List;
 
-import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import maineta.eta.entity.Categoria;
+import jakarta.persistence.EntityNotFoundException;
 import maineta.eta.entity.Actividad;
-import maineta.eta.entity.Disponibilidad;
+import maineta.eta.entity.Categoria;
 import maineta.eta.repository.ActividadRepository;
+import maineta.eta.repository.ComentarioRepository;
 
 /**
  * 🔹 Implementación de la interfaz ActividadService.
@@ -28,13 +29,15 @@ public class ActividadServiceImpl implements ActividadService {
 
     // Inyección de dependencias: repositorio que conecta con la BD
     private final ActividadRepository actividadRepository;
+    private final ComentarioRepository comentarioRepository;
 
     /**
      * Constructor con @Autowired para inyectar el repositorio automáticamente.
      */
     @Autowired
-    public ActividadServiceImpl(ActividadRepository actividadRepository) {
+    public ActividadServiceImpl(ActividadRepository actividadRepository, ComentarioRepository comentarioRepository) {
         this.actividadRepository = actividadRepository;
+        this.comentarioRepository = comentarioRepository;
     }
 
     @Override
@@ -169,7 +172,10 @@ public class ActividadServiceImpl implements ActividadService {
      * 🔹 Eliminar una actividad por su ID.
      */
     @Override
+    @Transactional
     public void deleteActivity(long id) {
+        
+        comentarioRepository.deleteByActividadId(id);
         actividadRepository.deleteById(id);
     }
 
