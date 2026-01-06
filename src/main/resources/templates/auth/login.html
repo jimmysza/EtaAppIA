@@ -39,16 +39,17 @@
 
     <div class="container-100">
         <nav>
-            <a class="flex justify-center items-center cursor-pointer" th:href="@{/}">
-                <img th:src="@{/images/logos/etawhitervg.webp}" class="logo" alt="logo" loading="lazy" />
-
+            <a th:href="@{/}"
+                class=" absolute top-50% left-5 flex items-center gap-2 bg-white/20  border border-white/30 text-white px-3 py-3 rounded-2xl font-bold hover:bg-white/30 z-1000">
+                <svg class="back-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24">
+                    <path fill="currentColor"
+                        d="m4 10l-.707.707L2.586 10l.707-.707zm17 8a1 1 0 1 1-2 0zM8.293 15.707l-5-5l1.414-1.414l5 5zm-5-6.414l5-5l1.414 1.414l-5 5zM4 9h10v2H4zm17 7v2h-2v-2zm-7-7a7 7 0 0 1 7 7h-2a5 5 0 0 0-5-5z" />
+                </svg>
             </a>
-            <ul class="nav-links">
 
-                <li th:if="${role == null}"><a th:href="@{/registro/cliente}">Registrarse</a></li>
-                <li th:if="${role == 'cliente'}"><a th:href="@{/registro/cliente}">Registrarse</a></li>
-                <li th:if="${role == 'colaborador'}"><a th:href="@{/registro/colaborador}">Registrarse</a></li>
-            </ul>
+            <a class="flex justify-center items-center cursor-pointer" th:href="@{/}">
+                <img th:src="@{/images/logos/etabluerrvg.webp}" class="logo" alt="logo" loading="lazy" />
+            </a>
         </nav>
     </div>
 
@@ -104,12 +105,15 @@
                 <a th:if="${role == 'colaborador'}" th:href="@{/registro/colaborador}">registrarse</a>
                 <a th:if="${role == null}" th:href="@{/registro/cliente}">registrarse</a>
             </p>
-            <div class="continua flex items-center mt-8 mb-1">
-                <div class="flex-grow border-t border-gray-300"></div>
-                <span class="divide px-3 text-gray-500 text-sm">O continua con</span>
-                <div class="flex-grow border-t border-gray-300"></div>
+            <div class="relative mt-8">
+                <div class="absolute inset-0 flex items-center">
+                    <div class="w-full border-t border-slate-100"></div>
+                </div>
+                <div
+                    class="relative flex justify-center text-[10px] uppercase tracking-[0.2em] font-black text-slate-300">
+                    <span class="bg-white px-6">O utiliza Google</span>
+                </div>
             </div>
-
             <div class="social-login">
                 <a href="/oauth2/authorization/google" class="log-Auth">
 

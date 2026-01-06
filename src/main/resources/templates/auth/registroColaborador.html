@@ -24,19 +24,38 @@
 <main class="registro">
 
 
-  <div class="value-info">
-    <div class="content">
-      <a th:href="@{/}" class="return">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-          <path fill="currentColor"
-            d="m4 10l-.707.707L2.586 10l.707-.707zm17 8a1 1 0 1 1-2 0zM8.293 15.707l-5-5l1.414-1.414l5 5zm-5-6.414l5-5l1.414 1.414l-5 5zM4 9h10v2H4zm17 7v2h-2v-2zm-7-7a7 7 0 0 1 7 7h-2a5 5 0 0 0-5-5z" />
-        </svg>
-        <span>Anterior pagina</span>
-      </a>
-      <div class="img-pet"></div>
-    </div>
+  
+    <div class=" hidden md:flex md:w-[40%] lg:w-[45%] bg-[#5885AF] relative items-center justify-center p-12 overflow-hidden">
+      <div class="content">
+        <a th:href="@{/}"
+          class=" absolute top-8 left-8 flex items-center gap-2 bg-white/20 backdrop-blur-md border border-white/30 text-white px-6 py-3 rounded-2xl font-bold hover:bg-white/30 transition-all active:scale-95 group">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+            <path fill="currentColor"
+              d="m4 10l-.707.707L2.586 10l.707-.707zm17 8a1 1 0 1 1-2 0zM8.293 15.707l-5-5l1.414-1.414l5 5zm-5-6.414l5-5l1.414 1.414l-5 5zM4 9h10v2H4zm17 7v2h-2v-2zm-7-7a7 7 0 0 1 7 7h-2a5 5 0 0 0-5-5z" />
+          </svg>
+          <span>Anterior pagina</span>
+        </a>
 
-  </div>
+
+        <div class="relative z-10 text-white max-w-sm">
+          <h1 class="text-6xl font-black tracking-tighter mb-6">eta<span class="text-xl align-top">®</span></h1>
+          <p class="text-xl font-medium text-blue-50 leading-relaxed">
+            Descubre la magia de Cartagena con la red de colaboradores más grande del Caribe.
+          </p>
+          <div class="mt-12 space-y-4">
+            <div class="flex items-center gap-4 bg-white/10 p-4 rounded-3xl border border-white/10">
+              <div class="w-12 h-12 bg-white/20 rounded-2xl flex items-center justify-center font-black">01</div>
+              <p class="font-bold">Acceso a precios exclusivos</p>
+            </div>
+            <div class="flex items-center gap-4 bg-white/10 p-4 rounded-3xl border border-white/10">
+              <div class="w-12 h-12 bg-white/20 rounded-2xl flex items-center justify-center font-black">02</div>
+              <p class="font-bold">Soporte 24/7 en tus rutas</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
 
   <div class="login-root">
 
@@ -159,7 +178,7 @@
       <!--9 submit-->
       <button type="submit" class="login-button div9">Unete</button>
       <!--10 -->
-      <p class="register div10">¿ya tienes una cuenta? <a th:href="@{/login?role=colaborador}">inicia sesion</a></p>
+      <p class="text-slate-500 font-medium pt-4 text-center div10">¿ya tienes una cuenta? <a th:href="@{/login?role=colaborador}" class="ColorBlue">inicia sesion</a></p>
 
 
     </form>

@@ -3,6 +3,7 @@ body {
     background: #1ab6d9;
     background: linear-gradient(39deg, rgba(26, 182, 217, 1) 0%, rgba(56, 149, 199, 1) 44%, rgba(79, 158, 207, 1) 59%, rgba(141, 181, 227, 1) 100%);
     min-height: 100vh;
+
     overflow-y: scroll;
 }
 
@@ -11,6 +12,7 @@ main {
     position: relative;
     background: #1ab6d9;
     background: linear-gradient(39deg, rgba(26, 182, 217, 1) 0%, rgba(56, 149, 199, 1) 44%, rgba(79, 158, 207, 1) 59%, rgba(141, 181, 227, 1) 100%);
+    background-color: #ffffff;
     min-height: 100vh;
     overflow: hidden;
 }
@@ -18,17 +20,17 @@ main {
 
 
 .container-100 {
+    position: absolute;
+    display: block;
     margin: 0 auto;
     width: 100%;
-    position: fixed;
-    top: 0;
     z-index: 900;
 }
 
 nav {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: center;
     width: 100%;
     max-width: 1350px;
     margin: 0 auto;
@@ -45,34 +47,10 @@ nav {
 
 
 
-/* .nav-links {
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-    width: 100%;
-    color: var(--color-white);
-    font-weight: 400;
-    gap: 80px;
-    padding: 0 20px;
-    } */
-.nav-links {
-    color: var(--color-white);
-    display: flex;
-    align-items: center;
-    gap: 40px;
-}
-
-.nav-links li {
-    display: flex;
-}
-
-.nav-links li a {
-    z-index: 2;
-    font-weight: 800;
-}
 
 .logo {
     z-index: 2;
+    display: none;
     object-fit: cover;
     width: 100px;
     margin-left: 60px;
@@ -114,7 +92,8 @@ h1 a {
     background-color: #ffffff;
     padding: 45px 40px;
     margin: 0 auto;
-    margin-top: 80px;
+    margin-top: 30px;
+    backdrop-filter: blur(10px);
     border-radius: 20px;
     display: flex;
     flex-direction: column;
@@ -145,24 +124,25 @@ h1 a {
     padding: 0;
     width: 400px;
     font-weight: 600;
-    font-size: 25px;
+    font-size: 22px;
 }
 
 .text-sma {
     margin: 0;
     padding: 0;
     width: 400px;
-    font-size: 13px;
+    font-size: 11px;
     color: #666;
 }
 
 .input {
     margin-top: 20px;
-    padding: 10px;
+    padding: 12px 10px;
     display: flex;
     justify-content: flex-start;
     color: #474748;
-    background-color: #F0F3F8;
+    background-color: #F8FAFC;
+    border: 1px solid #ebebebb0;
     border-radius: 12px;
     width: 400px;
     gap: 15px;
@@ -213,18 +193,6 @@ input {
 
 
 
-.return {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 15px;
-    position: absolute;
-    top: 15px;
-    left: 15px;
-    font-weight: 500;
-    font-size: 14px;
-    padding: 4px 10px;
-}
 
 .return:hover {
     border: 1px solid #9b9b9ba6;
@@ -239,7 +207,7 @@ input {
 
 .forgot-password {
     text-align: right;
-    font-size: 12px;
+    font-size: 10px;
     margin-bottom: 20px;
     margin-top: 10px;
 }
@@ -258,7 +226,7 @@ input {
     width: 100%;
     border: none;
     border-radius: 12px;
-    font-size: 16px;
+    font-size: 14px;
     cursor: pointer;
     margin-bottom: 20px;
 }
@@ -328,6 +296,11 @@ input {
     font-weight: 600;
 }
 
+.back-icon {
+    color: white;
+    fill: white;
+}
+
 @media screen and (max-width: 800px) {
 
     body,
@@ -336,16 +309,25 @@ input {
         background: white;
     }
 
-        .container-100 {
-            background-color: var(--color-medium-blue);
-        }
+    .container-100 {
+        display: flex;
+        position: relative;
+        border-bottom: 1px solid #ebebebb0;
+    }
+
+
+    .back-icon {
+        color: black;
+        fill: black;
+    }
+
 
     nav {
         padding: 10px 15px;
-        justify-content: space-between;
     }
 
     .logo {
+        display: block;
         width: 80px;
         margin-left: 0;
     }
@@ -362,15 +344,14 @@ input {
 
     .login-root {
         min-width: 100px;
-        padding: 0px;
+        padding: 0;
+        padding-bottom: 50px;
+        margin: 40px auto;
     }
 }
 
 
 @media screen and (max-width: 550px) {
-
-
-
 
     .alinear {
         z-index: 1;
@@ -391,6 +372,11 @@ input {
         border-radius: 0px;
         height: 100vh;
         min-width: 320px;
+    }
+
+
+    .social-login {
+        margin-bottom: 50px;
     }
 
 }

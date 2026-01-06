@@ -74,11 +74,12 @@
 @media only screen and (min-width: 48rem) {
 
     .search {
-        margin: -30px auto 100px auto;
+        top: -60px;
+        margin: 30px auto 100px auto;
     }
-
-    main .search {
-        margin: 60px auto 100px auto;
+    .search-container{
+        width: 100%;
+        max-width: 80%;
     }
 }
 
@@ -86,7 +87,14 @@
 /*responsive celular */
 @media (max-width: 768px) {
 
+    .search-container{
+        width: 100%;
+        max-width: 80%;
+    }
     .search {
-        margin: 150px auto;
+        width: 100%;
+        max-width: 100%;
+        top: 0px;
+        margin: 20px auto 0px auto;
     }
 }

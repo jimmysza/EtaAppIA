@@ -27,6 +27,13 @@
         .resultados .register-btn svg {
             color: var(--color-medium-blue);
         }
+
+        .search {
+            width: 100%;
+            max-width: 100%;
+            top: 0px;
+            margin: 20px auto 0px auto;
+        }
     </style>
 </head>
 
@@ -49,14 +56,14 @@
 
                 <h2 class="h2_trendi" th:unless="${filtroNombre != null and !filtroNombre.isEmpty()}">Todas Las
                     Actividades</h2>
-                    
+
             </div>
 
             <div class="Actividades-Container">
 
 
-                <a th:each="actividad : ${actividades.content}" th:href="@{/resultados/{id}(id=${actividad.idActividad})}"
-                    class="Actividad-card-link">
+                <a th:each="actividad : ${actividades.content}"
+                    th:href="@{/resultados/{id}(id=${actividad.idActividad})}" class="Actividad-card-link">
 
                     <div class="Actividad-card">
                         <div class="price">$ <span th:text="${#numbers.formatDecimal(actividad.precio, 0, 0)}">10</span>

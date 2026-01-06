@@ -88,15 +88,6 @@ ol {
 }
 
 /* ================== Formularios ================== */
-input,
-button,
-textarea,
-select {
-    font: inherit;
-    border: none;
-    outline: none;
-    background: none;
-}
 
 button {
     cursor: pointer;
@@ -109,12 +100,6 @@ main {
     margin: 0 auto;
     padding: 0 1rem;
 }
-
-.text-center {
-    text-align: center;
-}
-
-
 button[type="submit"]:focus {
     outline: 1px solid var(--color-medium-blue);
     outline-offset: 2px;
@@ -170,12 +155,11 @@ button[type="submit"]:focus {
     }
 }
 
-.ColorBlue{
-    color: var(--color-medium-blue);
-}
-
 .red{
     color: #ff2200
+}
+.ColorBlue{
+    color: var(--color-medium-blue);
 }
 
 

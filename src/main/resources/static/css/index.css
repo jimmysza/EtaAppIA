@@ -194,9 +194,8 @@ h1 {
     gap: 10px;
 }
 
-.social .flex .w-70 h2 {
+.social .social-div .w-70 h2 {
     margin-bottom: 4px;
-    color: var(--color-medium-blue);
 }
 
 .social-container-info {
@@ -209,7 +208,6 @@ h1 {
     font-size: 1.1rem;
     font-weight: 500;
     font-family: var(--font-poppins);
-    color: var(--color-black);
     margin-bottom: 1rem;
 }
 
@@ -241,6 +239,7 @@ h1 {
 .text-shares {
     position: absolute;
     font-weight: 400;
+    font-size: 14px;
     transition: transform 0.2s ease;
     color: white;
     bottom: 10px;
@@ -251,17 +250,11 @@ h1 {
     width: 80%;
 }
 
-.w-30 {
+.shareRedes {
     display: flex;
-    flex-direction: row;
     justify-content: center;
     align-items: center;
     width: 20%;
-}
-
-.w-30>a>svg {
-    width: 45px;
-    height: 45px;
 }
 
 .badges .badge {
@@ -270,6 +263,10 @@ h1 {
 
 .badges {
     gap: 10px;
+}
+
+.ColorBlue{
+    color: var(--color-medium-blue)
 }
 
 
@@ -296,13 +293,17 @@ h1 {
 @media screen and (min-width: 768px) and (max-width: 1023px) {
 
 
+    .hero-content {
+        max-height: 500px;
+        height: 90vh;
+    }
     .main,
     .content {
         max-width: 100%;
     }
 
-    .w-30 {
-        flex-direction: column;
+    .shareRedes {
+        
         gap: 20px;
     }
 
