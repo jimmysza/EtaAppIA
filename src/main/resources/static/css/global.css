@@ -27,6 +27,7 @@
     --color-blue-400: #6e98c2;
     --color-sky-blue: #c1e8ff;
     --color-medium-blue: #5483b3;
+    --color-medium-blur: #5483b395;
     --color-light-blue: #7da0ca;
     --color-blue-600: hsl(215, 82%, 61%);
     --color-deep-navy: #052659;
@@ -100,6 +101,7 @@ main {
     margin: 0 auto;
     padding: 0 1rem;
 }
+
 button[type="submit"]:focus {
     outline: 1px solid var(--color-medium-blue);
     outline-offset: 2px;

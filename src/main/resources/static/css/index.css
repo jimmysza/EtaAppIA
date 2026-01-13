@@ -21,34 +21,6 @@ body {
     background-color: transparent;
 }
 
-/*duplicadion de nav y main*/
-
-.btn-auth {
-    border-radius: 40px;
-    text-align: center;
-    padding: 6px 0px;
-    font-size: 14px;
-    font-weight: 800;
-    cursor: pointer;
-    color: var(--color-white);
-}
-
-
-
-.register-btn {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 10px;
-    padding: 6px 12px;
-    background-color: var(--color-medium-blue);
-    color: var(--color-white);
-}
-
-.register-btn svg {
-    color: var(--color-white);
-    rotate: 180deg;
-}
 
 main {
     height: 100vh;
@@ -104,23 +76,15 @@ h1 {
     margin: 20px auto;
     height: fit-content;
     padding: 1.5rem 3rem 0rem 3rem;
-    overflow-x: hidden;
-}
-
-.Categorias-container {
-    display: flex;
-    width: 100%;
-    gap: 20px;
-    justify-content: space-around;
-    align-items: center;
 }
 
 .container-Categorias {
     display: flex;
-    min-width: 900px;
-    justify-content: flex-start;
+    width: 100%;
+
+    align-items: center;
+    justify-content: center;
     gap: 28px;
-    overflow-x: hidden;
 }
 
 .circle-cat {
@@ -128,21 +92,25 @@ h1 {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    gap: 8px;
+    gap: 20px;
     text-align: center;
+    padding: 7px 20px;
     cursor: pointer;
+    background-color: #e9e6e6;
+    border-radius: 20px;
 }
 
 .circle-cat img {
     width: 65px;
     height: 65px;
-    border-radius: 50%;
-    object-fit: cover;
+
+    object-fit: contain;
+    aspect-ratio: 1/1;
 }
 
 .circle-cat img:hover {
     transform: scale(1.1);
-    transition: all 0.3s ease-in-out;
+    transition: all 0.3s eabus-in-out;
 }
 
 .circle-cat p {
@@ -255,6 +223,7 @@ h1 {
     justify-content: center;
     align-items: center;
     width: 20%;
+    gap: 30px;
 }
 
 .badges .badge {
@@ -265,7 +234,7 @@ h1 {
     gap: 10px;
 }
 
-.ColorBlue{
+.ColorBlue {
     color: var(--color-medium-blue)
 }
 
@@ -288,23 +257,22 @@ h1 {
 
 
 /* =====================
-   Tablet
-   ===================== */
+Tablet
+===================== */
 @media screen and (min-width: 768px) and (max-width: 1023px) {
-
 
     .hero-content {
         max-height: 500px;
         height: 90vh;
     }
+
     .main,
     .content {
         max-width: 100%;
     }
 
     .shareRedes {
-        
-        gap: 20px;
+        flex-direction: column;
     }
 
     h1 {
@@ -312,6 +280,7 @@ h1 {
         text-wrap: wrap;
         width: 100%;
     }
+
 }
 
 
@@ -320,6 +289,15 @@ h1 {
    ===================== */
 @media screen and (max-width: 767px) {
 
+
+    .container_share {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        grid-template-rows: 1fr 1fr;
+        justify-items: center;
+        align-items: center;
+        gap: 10px;
+    }
 
     .Categorias {
         margin-top: 100px;
@@ -338,6 +316,7 @@ h1 {
         font-size: 36px;
         width: 100%;
     }
+
     main.hero {
         max-height: 600px;
         height: 75vh;
@@ -350,7 +329,17 @@ h1 {
     }
 
     .btns-hero a,
-    .btns-hero form{
+    .btns-hero form {
         width: 80%;
     }
+
+    .shareRedes {
+        flex-direction: column;
+    }
+
+    .social {
+        padding: 3rem 1rem 7rem 1rem;
+    }
+
+
 }

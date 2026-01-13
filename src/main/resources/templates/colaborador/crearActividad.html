@@ -6,124 +6,417 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" th:href="@{/css/global.css}">
     <link rel="stylesheet" th:href="@{/css/actividad/crearActividad.css}">
-
+    <script src="https://cdn.tailwindcss.com"></script>
 
     <link rel="icon" th:href="@{/images/logos/etabluerrvg.webp}" type="image/x-icon" />
     <link rel="icon" th:href="@{/images/logos/logo.webp}" type="image/x-icon" />
-    <script src="https://cdn.tailwindcss.com"></script>
     <title>ETA | Crear Actividades</title>
+
+    <style>
+        /* Estilos personalizados para el input de fecha */
+        input[type="date"]::-webkit-calendar-picker-indicator {
+            opacity: 0;
+            position: absolute;
+            right: 12px;
+            cursor: pointer;
+        }
+    </style>
 </head>
 
 <body>
 
-
     <header class="header" id="header">
         <div class="container-100">
             <nav>
-
                 <div class="nav-logo">
                     <a th:href="@{/colaborador/actividades}" class="brand">
                         <img th:src="@{/images/logos/etawhitervg.webp}" alt="logo" class="logo" />
                     </a>
                 </div>
 
-
                 <div class="nav-salir">
                     <a th:href="@{/colaborador/actividades}">Salir</a>
                 </div>
-
-
             </nav>
         </div>
     </header>
 
-    <form th:action="@{/colaborador/actividades/addAct}" method="post" th:object="${actividad}"
-        enctype="multipart/form-data">
-        <!-- Paso 1 -->
+    <div class="w-full min-h-screen bg-gray-50 flex items-center justify-center p-4">
 
-        <div class="form-group">
-            <label for="titulo">Ponle Título a Tu Actividad <span class="red">*</span></label>
-            <p>los titulos cortos dan mas reservas </p>
-
-            <input id="titulo" type="text" th:field="*{titulo}" data-required="true" minlength="3" maxlength="200" />
-
-
-
-            <label for="descripcion">Descripción <span class="red">*</span></label>
-            <p>Describe tu Actividad de la manera mas sencilla</p>
-            <textarea id="descripcion" th:field="*{descripcion}" class="form-control" data-required="true"
-                minlength="10"></textarea>
-        </div>
-
-
-
-
-        <div class="form-group form-group-precio">
-
-            <label for="precio">Configura tu <span class="ColorBlue">Precio</span> para cada cupo<span class="red">*</span></label>
-
-            <div class="flex items-center gap-2 justify-center precio-container">
-                
-                <p class="COP">COP</p>
-                <input id="precio" type="number" th:field="*{precio}" class="form-control" data-required="true"
-                    step="2000" min="1000" max="99999999" placeholder="120000" />
-
+        <div class="bg-white rounded-2xl shadow-lg w-full max-w-4xl p-8 ">
+            <!-- Header -->
+            <div class="mb-4 pb-4 border-b-[3px] border-gray-200">
+                <div class="flex items-center gap-3 mb-2">
+                    <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2">
+                        </path>
+                    </svg>
+                    <h1 class="text-3xl font-semibold text-gray-900">Crear Nueva Actividad</h1>
+                </div>
+                <p class="text-gray-500 text-base">
+                    Configura una nueva actividad para ofrecer a tus clientes
+                </p>
             </div>
+
+            <form th:action="@{/colaborador/actividades/addAct}" method="post" th:object="${actividad}"
+                enctype="multipart/form-data" id="activityForm">
+                <div class="mb-2">
+                    <label class="block text-gray-900 font-bold mb-2">
+                        Imagen de la Actividad <span class="text-red-500">*</span>
+                    </label>
+                </div>
+
+                <!-- File Upload Area -->
+                <label for="imagenFile" id="dropZone"
+                    class="border-2 border-dashed border-gray-300 bg-gray-50 rounded-xl p-12 mb-6 text-center transition-colors cursor-pointer hover:border-gray-400 block">
+                    <input type="file" id="imagenFile" name="imagenFile" class="hidden" accept="image/*"
+                        data-required="true">
+                    <svg class="w-10 h-10 mx-auto mb-4 text-gray-400" fill="none" stroke="currentColor"
+                        viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12">
+                        </path>
+                    </svg>
+                    <p id="fileName" class="text-gray-700 text-base mb-1">
+                        Selecciona una imagen o arrastra aquí
+                    </p>
+                    <p class="text-gray-400 text-sm">
+                        JPG, PNG o WEBP, tamaño máximo 10MB
+                    </p>
+                </label>
+
+                <!-- Título y Fecha -->
+                <div class="grid grid-cols-1 gap-4 mb-6">
+                    <div>
+                        <label class="block text-gray-900 font-bold mb-2">
+                            Título de la Actividad <span class="text-red-500">*</span>
+                        </label>
+                        <input type="text" id="titulo" th:field="*{titulo}"
+                            placeholder="Ej: Tour por el centro histórico" minlength="3" maxlength="200"
+                            data-required="true"
+                            class="w-full px-4 py-3 bg-gray-50 border-0 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <p class="text-xs text-gray-500 mt-1">Los títulos cortos dan más reservas</p>
+                    </div>
+                </div>
+
+                <!-- Descripción -->
+                <div class="mb-6">
+                    <label class="block text-gray-900 font-bold mb-2">
+                        Descripción <span class="text-red-500">*</span>
+                    </label>
+                    <textarea id="descripcion" th:field="*{descripcion}"
+                        placeholder="Describe tu actividad de la manera más sencilla" rows="4" minlength="10"
+                        maxlength="200" data-required="true"
+                        class="w-full px-4 py-3 bg-gray-50 border-0 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"></textarea>
+                </div>
+
+                <!-- Precio y Ubicación -->
+                <div class="grid grid-cols-2 gap-4 mb-6">
+                    <div>
+                        <label class="block text-gray-900 font-bold mb-2">
+                            Precio por Cupo <span class="text-red-500">*</span>
+                        </label>
+                        <div class="relative">
+                            <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 font-medium">COP</span>
+                            <input type="number" id="precio" th:field="*{precio}" placeholder="120000" min="4000"
+                                max="99999999"
+                                class="w-full pl-16 pr-4 py-3 bg-gray-50 border-0 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-gray-900 font-bold mb-2">
+                            Ubicación <span class="text-red-500">*</span>
+                        </label>
+                        <input type="text" id="ubicacion" th:field="*{ubicacion}"
+                            placeholder="Dirección de la actividad" maxlength="255" data-required="true"
+                            class="w-full px-4 py-3 bg-gray-50 border-0 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <p class="text-xs text-gray-500 mt-1">Solo compartida después de la reserva</p>
+                    </div>
+                </div>
+
+                <!-- Categorías -->
+                <div class="mb-6">
+                    <label class="block text-gray-900 font-bold mb-2">
+                        Categorías <span class="text-red-500">*</span>
+                    </label>
+                    <div class="relative">
+                        <select id="categoriaSelect"
+                            class="w-full px-4 py-3 bg-gray-50 border-0 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 pr-12">
+                            <option value="" disabled selected>Selecciona una categoría</option>
+                            <option th:each="cat : ${categorias}" th:value="${cat.idCategoria}" th:text="${cat.nombre}">
+                            </option>
+                        </select>
+                        <button type="button" id="addCategoriaBtn"
+                            class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-700 hover:text-gray-900">
+                           <!--  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 4v16m8-8H4"></path>
+                            </svg> -->
+                        </button>
+                    </div>
+                    <div id="categoriasContainer" class="flex flex-wrap gap-2 mt-3">
+                        <!-- Las categorías seleccionadas aparecerán aquí -->
+                    </div>
+                    <!-- Input oculto para enviar las categorías al backend -->
+                    <input type="hidden" id="categoria" th:field="*{categoria}">
+                </div>
+
+                <!-- Idiomas -->
+                <div class="mb-6">
+                    <label class="block text-gray-900 font-bold mb-2">
+                        Idiomas <span class="text-red-500">*</span>
+                    </label>
+                    <div class="relative">
+                        <select id="idiomaSelect"
+                            class="w-full px-4 py-3 bg-gray-50 border-0 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 pr-12">
+                            <option value="" disabled selected>Selecciona un idioma</option>
+                            <option th:each="idio : ${idiomas}" th:value="${idio.idIdioma}" th:text="${idio.nombre}">
+                            </option>
+                        </select>
+                        <button type="button" id="addIdiomaBtn"
+                            class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-700 hover:text-gray-900">
+                            <!-- <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 4v16m8-8H4"></path>
+                            </svg> -->
+                        </button>
+                    </div>
+                    <div id="idiomasContainer" class="flex flex-wrap gap-2 mt-3">
+                        <!-- Los idiomas seleccionados aparecerán aquí -->
+                    </div>
+                    <!-- Input oculto para enviar los idiomas al backend -->
+                    <input type="hidden" id="idioma" th:field="*{idioma}">
+                </div>
+
+                <!-- Incluye -->
+                <div class="mb-6">
+                    <label class="block text-gray-900 font-bold mb-2">
+                        ¿Qué incluye?
+                    </label>
+                    <textarea id="incluye" th:field="*{incluye}"
+                        placeholder="Ej: Guía turístico, refrigerio, transporte" rows="3" data-required="true"
+                        class="w-full px-4 py-3 bg-gray-50 border-0 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"></textarea>
+                </div>
+
+                <!-- Normas -->
+                <div class="mb-6">
+                    <label class="block text-gray-900  mb-2 font-bold">
+                        Normas
+                    </label>
+                    <textarea id="normas" th:field="*{normas}"
+                        placeholder="Ej: Puntualidad, no fumar, respetar indicaciones" rows="3" data-required="true"
+                        class="w-full px-4 py-3 bg-gray-50 border-0 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"></textarea>
+                </div>
+
+                <!-- Condiciones -->
+                <div class="mb-6">
+                    <label class="block text-gray-900 font-bold mb-2">
+                        Condiciones
+                    </label>
+                    <textarea id="condiciones" th:field="*{condiciones}"
+                        placeholder="Ej: Cancelación 24h antes, edad mínima, estado físico" rows="3"
+                        data-required="true"
+                        class="w-full px-4 py-3 bg-gray-50 border-0 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"></textarea>
+                </div>
+
+                <!-- Buttons -->
+                <div class="flex justify-end gap-3">
+                    <a th:href="@{/colaborador/actividades}"
+                        class="px-6 py-3 text-gray-700 font-medium rounded-lg hover:bg-gray-100 transition-colors">
+                        Cancelar
+                    </a>
+                    <button type="submit"
+                        class="px-6 py-3 bg-gray-900 text-white font-medium rounded-lg hover:bg-gray-800 transition-colors flex items-center gap-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2">
+                            </path>
+                        </svg>
+                        Crear Actividad
+                    </button>
+                </div>
+            </form>
         </div>
-
-
-        <div class="form-group">
-            <label for="categoria">Categoría<span class="red">*</span></label>
-            <select id="categoria" th:field="*{categoria}" required>
-                <option value="" disabled selected>Selecciona una categoría</option>
-
-                <option th:each="cat : ${categorias}" th:value="${cat.idCategoria}" th:text="${cat.nombre}">
-                </option>
-            </select>
-        </div>
-
-
-
-        <div class="form-group">
-            <label for="ubicacion">¿Dónde se encuentra tu alojamiento?</label>
-            <p>Solo compartiremos la dirección con los viajeros después de que hayan hecho la reserva.</p>
-            <div class="img"></div>
-            <input id="ubicacion" type="text" th:field="*{ubicacion}" maxlength="255" required data-required="true" />
-        </div>
-
-
-
-
-
-        <div class="form-group">
-            <label for="incluye">Incluye</label>
-            <textarea id="incluye" th:field="*{incluye}" class="form-control" data-required="true"></textarea>
-
-            <label for="normas">Normas</label>
-            <textarea id="normas" th:field="*{normas}" class="form-control" data-required="true"></textarea>
-
-            <label for="idioma">Idioma<span class="red">*</span></label>
-            <select id="idioma" th:field="*{idioma}" required>
-                <option value="" disabled selected>Selecciona una Idioma</option>
-
-                <option th:each="idio : ${idiomas}" th:value="${idio.idIdioma}" th:text="${idio.nombre}">
-                </option>
-            </select>
-
-            <label for="condiciones">Condiciones</label>
-            <textarea id="condiciones" th:field="*{condiciones}" class="form-control" data-required="true"></textarea>
-        </div>
-
-        <div class="form-group">
-            <label for="imagenFile">Imagen</label>
-            <input type="file" id="imagenFile" name="imagenFile" accept="image/*" data-required="true">
-            <button type="submit" class="btn btn-act">Enviar</button>
-        </div>
-
-    </form>
+    </div>
 
     <!-- Mensaje de error -->
     <div id="errorMsg" class="alert alert-danger">...</div>
+
+    <script>
+
+        const alertDanger = document.querySelector('.alert-danger');
+        // File upload handling
+        const dropZone = document.getElementById('dropZone');
+        const fileInput = document.getElementById('imagenFile');
+        const fileName = document.getElementById('fileName');
+        let selectedFile = null;
+
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files[0]) {
+                selectedFile = e.target.files[0];
+                fileName.textContent = selectedFile.name;
+            }
+        });
+
+        // Drag and drop
+        dropZone.addEventListener('dragenter', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('border-gray-300', 'bg-gray-50');
+            dropZone.classList.add('border-blue-500', 'bg-blue-50');
+        });
+
+        dropZone.addEventListener('dragleave', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('border-blue-500', 'bg-blue-50');
+            dropZone.classList.add('border-gray-300', 'bg-gray-50');
+        });
+
+        dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+        });
+
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('border-blue-500', 'bg-blue-50');
+            dropZone.classList.add('border-gray-300', 'bg-gray-50');
+
+            if (e.dataTransfer.files[0]) {
+                selectedFile = e.dataTransfer.files[0];
+                const dataTransfer = new DataTransfer();
+                dataTransfer.items.add(e.dataTransfer.files[0]);
+                fileInput.files = dataTransfer.files;
+                fileName.textContent = selectedFile.name;
+            }
+        });
+
+        // Categorías handling
+        const categoriaSelect = document.getElementById('categoriaSelect');
+        const addCategoriaBtn = document.getElementById('addCategoriaBtn');
+        const categoriasContainer = document.getElementById('categoriasContainer');
+        const categoriaInput = document.getElementById('categoria');
+        let selectedCategorias = [];
+
+        function addCategoria() {
+            const selectedOption = categoriaSelect.options[categoriaSelect.selectedIndex];
+            if (categoriaSelect.value && !selectedCategorias.includes(categoriaSelect.value)) {
+                const categoriaId = categoriaSelect.value;
+                const categoriaText = selectedOption.text;
+
+                selectedCategorias.push(categoriaId);
+                categoriaInput.value = selectedCategorias.join(',');
+
+                const tagElement = createTagElement(categoriaText, categoriaId, 'categoria');
+                categoriasContainer.appendChild(tagElement);
+                categoriaSelect.value = '';
+            }
+        }
+
+        addCategoriaBtn.addEventListener('click', addCategoria);
+
+        categoriaSelect.addEventListener('change', () => {
+            addCategoria();
+        });
+
+        // Idiomas handling
+        const idiomaSelect = document.getElementById('idiomaSelect');
+        const addIdiomaBtn = document.getElementById('addIdiomaBtn');
+        const idiomasContainer = document.getElementById('idiomasContainer');
+        const idiomaInput = document.getElementById('idioma');
+        let selectedIdiomas = [];
+
+        function addIdioma() {
+            const selectedOption = idiomaSelect.options[idiomaSelect.selectedIndex];
+            if (idiomaSelect.value && !selectedIdiomas.includes(idiomaSelect.value)) {
+                const idiomaId = idiomaSelect.value;
+                const idiomaText = selectedOption.text;
+
+                selectedIdiomas.push(idiomaId);
+                idiomaInput.value = selectedIdiomas.join(',');
+
+                const tagElement = createTagElement(idiomaText, idiomaId, 'idioma');
+                idiomasContainer.appendChild(tagElement);
+                idiomaSelect.value = '';
+            }
+        }
+
+        addIdiomaBtn.addEventListener('click', addIdioma);
+
+        idiomaSelect.addEventListener('change', () => {
+            addIdioma();
+        });
+
+        // Create tag element
+        function createTagElement(text, id, type) {
+            const span = document.createElement('span');
+            span.className = 'inline-flex items-center gap-2 px-3 py-1.5 bg-gray-100 text-gray-700 rounded-lg text-sm';
+            span.dataset.id = id;
+            span.dataset.type = type;
+            span.innerHTML = `
+                ${text}
+                <button type="button" class="hover:text-gray-900 remove-tag">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            `;
+            return span;
+        }
+
+        // Remove tags
+        categoriasContainer.addEventListener('click', (e) => {
+            if (e.target.closest('.remove-tag')) {
+                const tag = e.target.closest('[data-id]');
+                const id = tag.dataset.id;
+                selectedCategorias = selectedCategorias.filter(catId => catId !== id);
+                categoriaInput.value = selectedCategorias.join(',');
+                tag.remove();
+            }
+        });
+
+        idiomasContainer.addEventListener('click', (e) => {
+            if (e.target.closest('.remove-tag')) {
+                const tag = e.target.closest('[data-id]');
+                const id = tag.dataset.id;
+                selectedIdiomas = selectedIdiomas.filter(idioId => idioId !== id);
+                idiomaInput.value = selectedIdiomas.join(',');
+                tag.remove();
+            }
+        });
+
+
+
+        function showAlert(alertElement, text) {
+            if (!alertElement) return; // Si no existe, no hace nada
+            alertElement.classList.add('showAnimationAppearFromTop');
+            alertElement.textContent = text;
+            setTimeout(() => {
+                alertElement.style.display = 'none';
+            }, 5000); // Ocultar a los 5s
+        }
+
+
+        // Form validation
+        document.getElementById('activityForm').addEventListener('submit', (e) => {
+            const titulo = document.getElementById('titulo').value.trim();
+            const descripcion = document.getElementById('descripcion').value.trim();
+            const precio = document.getElementById('precio').value;
+            const ubicacion = document.getElementById('ubicacion').value.trim();
+
+            if (!titulo || !descripcion || !precio || !ubicacion || selectedCategorias.length === 0 || selectedIdiomas.length === 0) {
+                e.preventDefault();
+                showAlert(alertDanger, 'Por favor completa todos los campos obligatorios (*)');
+                return false;
+            }
+
+            if (!selectedFile) {
+                e.preventDefault();
+                showAlert(alertDanger, 'Por favor selecciona una imagen para la actividad');
+                return false;
+            }
+        });
+    </script>
+    <div id="errorMsg" class="alert z-100 alert-danger">...</div>
 
     <script th:src="@{/js/alert.js}"></script>
 </body>

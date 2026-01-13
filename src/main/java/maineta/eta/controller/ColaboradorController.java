@@ -101,6 +101,8 @@ public class ColaboradorController {
         return "redirect:/colaborador/actividades";
     }
 
+    
+
     @PostMapping("/actividades/actualizar/{id}")
     public String updateActividad(@PathVariable Long id, @ModelAttribute("actividad") Actividad nuevaActividad) {
         actividadService.actualizar(id, nuevaActividad);

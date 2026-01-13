@@ -1,6 +1,5 @@
 package maineta.eta.config;
 
-import java.util.Set;
 
 import maineta.eta.entity.Rol;
 import maineta.eta.entity.Usuario;
@@ -42,7 +41,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             nuevo.setPassword("OAUTH_USER"); // marcador simbólico, no se usa
             Rol rolUser = rolRepository.findByNombre("ROLE_CLIENTE")
                     .orElseThrow(() -> new RuntimeException("No existe el rol ROLE_CLIENTE en la base de datos"));
-            nuevo.setRoles(Set.of(rolUser));
+            nuevo.setRol(rolUser);
             return usuarioRepository.save(nuevo);
         });
 

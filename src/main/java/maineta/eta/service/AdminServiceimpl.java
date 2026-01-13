@@ -44,7 +44,8 @@ public class AdminServiceimpl implements AdminService {
         usuario.setPassword(passwordEncoder.encode(usuario.getPassword()));
 
         // Asignación del rol COLABORADOR (ejemplo: ID = 2 en BD)
-        rolRepository.findById(3L).ifPresent(rol -> usuario.setRoles(Set.of(rol)));
+        rolRepository.findById(3L).ifPresent(rol -> usuario.setRol(rol));
+            
 
         // Guardar primero el usuario
         usuarioRepository.save(usuario);

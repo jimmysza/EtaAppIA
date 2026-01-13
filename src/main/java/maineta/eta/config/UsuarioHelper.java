@@ -5,7 +5,7 @@ import java.util.Collection;
 
 import maineta.eta.entity.Admin;
 import maineta.eta.service.AdminService;
-import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;

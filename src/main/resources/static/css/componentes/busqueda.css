@@ -71,18 +71,18 @@
     font-size: 16px;
 }
 
+
 @media only screen and (min-width: 48rem) {
 
     .search {
         top: -60px;
-        margin: 30px auto 100px auto;
+        margin: 30px auto 30px auto;
     }
     .search-container{
         width: 100%;
         max-width: 80%;
     }
 }
-
 
 /*responsive celular */
 @media (max-width: 768px) {

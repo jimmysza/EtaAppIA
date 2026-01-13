@@ -104,9 +104,19 @@ public class DataInitializer implements CommandLineRunner {
             if (categoriaExistente.isEmpty()) {
                 Categoria nuevoCategoria = new Categoria();
                 nuevoCategoria.setNombre(categoria);
+                // Generar ruta de imagen basada en el nombre (ej. experiencias_acuaticas_y_playa.jpg)
+                String rutaImagen = categoria.toLowerCase()
+                        .replace(" ", "_")
+                        .replace("ó", "o")
+                        .replace("é", "e")
+                        .replace("í", "i")
+                        .replace("ú", "u")
+                        .replace("á", "a")
+                        .replace("ñ", "n") + ".png";
+                nuevoCategoria.setImagen("/uploads/" + rutaImagen);
                 categoriaRepository.save(nuevoCategoria);
 
-                System.out.println("Idioma creado: " + categoria );
+                System.out.println("Categoría creada: " + categoria + " con imagen: " + nuevoCategoria.getImagen());
             }
         }
 
@@ -122,7 +132,7 @@ public class DataInitializer implements CommandLineRunner {
 
             // Asignar rol ADMIN (asegúrate que ROLE_ADMIN tenga ID = 3 o busca por nombre)
             Rol rolAdmin = rolRepository.findByNombre("ROLE_ADMIN").orElseThrow();
-            usuario.setRoles(Set.of(rolAdmin));
+            usuario.setRol(rolAdmin);
 
             usuarioRepository.save(usuario);
 

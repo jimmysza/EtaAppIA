@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import maineta.eta.config.UsuarioHelper;
@@ -47,12 +48,6 @@ public class AllAcessController {
         this.comentarioService = comentarioService;
         this.disponibilidadService = disponibilidadService;
     }
-
-
-
-
-
-
 
     // 🔹 Endpoint para mostrar la página de login
     @GetMapping("/login")

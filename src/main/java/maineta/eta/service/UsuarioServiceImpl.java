@@ -1,7 +1,6 @@
 package maineta.eta.service;
 
 import java.util.HashSet;
-import java.util.Optional;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,9 +50,10 @@ public class UsuarioServiceImpl implements UsuarioService {
         Usuario usuario = usuarioRepository.findByEmail(username)
                 .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado"));
 
-        // Convertir roles de la BD en authorities que entiende Spring Security
+        // Convertir rol de la BD en authority que entiende Spring Security
         Set<GrantedAuthority> authorities = new HashSet<>();
-        for (Rol rol : usuario.getRoles()) {
+        Rol rol = usuario.getRol();
+        if (rol != null) {
             authorities.add(new SimpleGrantedAuthority(rol.getNombre())); 
             // Ejemplo: "ROLE_CLIENTE", "ROLE_ADMIN"
         }

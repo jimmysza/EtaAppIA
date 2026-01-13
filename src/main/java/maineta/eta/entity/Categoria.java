@@ -32,5 +32,6 @@ public class Categoria {
     @OneToMany(mappedBy = "categoria")
     private List<Actividad> actividades = new ArrayList<>();
 
+    private String imagen;
 
 }

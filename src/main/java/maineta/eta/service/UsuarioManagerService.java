@@ -62,7 +62,7 @@ public class UsuarioManagerService {
                 .orElseThrow(() -> new RuntimeException("Rol no encontrado: " + rolNombre));
 
         // Asignar rol
-        usuario.setRoles(Set.of(rol));
+        usuario.setRol(rol);
 
         // Guardar usuario
         return usuarioRepository.save(usuario);
