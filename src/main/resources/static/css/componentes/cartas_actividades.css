@@ -46,13 +46,26 @@ h2 {
 
 /* Actividades Cards */
 .Actividades-Container {
-    display: grid;
     position: relative;
+    /* display: grid;
     grid-template-columns: repeat(auto-fit, minmax(368px, 1fr));
+    grid-template-rows: 1fr; */
+
+    display: flex;
+    overflow-x: scroll;
     justify-items: center;
-    gap: 14px;  
+    gap: 14px;
     padding: 20px;
 }
+
+.Actividad-card-link {
+    display: flex;
+    justify-content: center;
+    max-width: 368px;
+    text-decoration: none;
+    color: inherit;
+}
+
 
 .Actividad-card {
     position: relative;
@@ -77,10 +90,10 @@ h2 {
     width: 40px;
     height: 40px;
     top: 10px;
-    left: 10px;
+    right: 12px;
     border-radius: 100%;
     backdrop-filter: blur(10px);
-    background: rgba(255, 255, 255, 0.2);
+    background: rgba(46, 44, 44, 0.2);
 }
 
 .bookmark {
@@ -95,28 +108,46 @@ h2 {
 }
 
 .Actividad-card img {
-    width: 100%;
     min-height: 200px;
-    max-width: 400px;
+    max-height: 200px;
+    width: 100%;
+    max-width: 440px;
     height: 200px;
     object-fit: cover;
     border-radius: 28.5px 28.5px 0px 0px;
 }
 
-.price {
+
+
+.card-categoria {
     position: absolute;
     top: 12px;
-    right: 12px;
-    background: #6bd0ff;
-    color: white;
+    left: 12px;
+    color: var(--color-white);
+    background-color: var(--color-medium-blue);
+
     padding: 4px 10px;
     border-radius: 20px;
     font-weight: bold;
     font-size: 0.9rem;
+
 }
 
-.content-actividad {
-    padding: 16px;
+.card-calificacion {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    position: absolute;
+    top: 165px;
+    right: 12px;
+    color: var(--color-white);
+    background-color: #fef4cc;
+    color: #F59E0B;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-weight: bold;
+    font-size: 0.9rem;
 }
 
 .content-actividad h3 {
@@ -130,16 +161,9 @@ h2 {
 
 }
 
-.Actividad-card-link {
-    display: flex;
-    justify-content: center;
-
-    text-decoration: none;
-    color: inherit;
-}
 
 .content-actividad {
-    padding: 15px 15px 35px 15px;
+    padding: 15px 15px 17px 15px;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
@@ -147,7 +171,16 @@ h2 {
     gap: 10px;
 }
 
+.verDetalles {
+    background-color: var(--color-medium-blue);
+    padding: 10px 18px;
+    border-radius: 8px;
+    text-decoration: none;
+}
+.verDetalles p {
 
+    color: #fff;
+}
 
 
 
@@ -193,24 +226,57 @@ h2 {
     }
 
     .Actividades-Container {
-        padding: 0;
+        padding: 25px;
     }
 
+    .top-trending {
+        flex-direction: column;
+        gap: 15px;
+        padding: 0px 0px 40px 0px;
+    }
+
+    .Actividad-card-link {
+        display: flex;
+        justify-content: center;
+        max-width: 408px;
+        text-decoration: none;
+        color: inherit;
+    }
+
+
+    .Actividad-card {
+        position: relative;
+        border-radius: 12px;
+        max-width: 408px;
+        min-width: 408px;
+        overflow: hidden;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+        background: white;
+        transition: transform 0.2s ease;
+        padding: 0px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        border-radius: 30px;
+    }
 }
 
 .badges {
     margin-bottom: 10px;
     display: flex;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
+    /* No hace salto entre badges */
     max-width: 368px;
     gap: 8px;
 }
 
 .badge {
     display: flex;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
     gap: 5px;
+
+
+    height: 30px;
+
     background-color: rgba(186, 184, 184, 0.294);
 
     color: var(--color-white-500);
@@ -218,4 +284,43 @@ h2 {
     border-radius: 12px;
     font-size: 12.5px;
     font-weight: 800;
+
+    /* 👉 Para cortar texto con "..." */
+    white-space: nowrap;
+    /* No saltar línea */
+    overflow: hidden;
+    /* Oculta lo que no cabe */
+
+    /* Muestra "..." */
+}
+
+.card-footer {
+    width: 100%;
+    border-top: 1px solid #ccc;
+    padding-top: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.TotalPorPersona {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 5px;
+}
+
+.precio {
+    color: var(--color-medium-blue);
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.TotalPorPersona p {
+    font-size: 10px;
+    color: #666;
+}
+
+.badge span {
+    text-overflow: ellipsis;
 }

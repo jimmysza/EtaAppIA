@@ -1,33 +1,41 @@
 /*Movile first*/
 
+body {
+    overflow-x: hidden;
+}
+
 .header {
-    position: relative;
+    position: fixed;
+    top: 0;
+    left: 0;
     z-index: 100;
     width: 100%;
+    max-width: 100%;
     height: auto;
-    color: var(--color-white);
-    background-color: var(--color-medium-blue);
+    background-color: var(--color-white);
+    box-shadow: 0px 15px 9px 3px rgba(0, 0, 0, 0.1);
 }
 
 .menu {
     position: fixed;
     z-index: 10;
     max-height: 1560px;
+    max-width: 100%;
     height: fit-content;
     transition: all 0.3s ease;
+    width: 100%;
     top: -100%;
     left: 0;
     z-index: 10;
-    width: 100%;
     height: fit-content;
-    color: var(--color-white);
-    background-color: var(--color-medium-blue);
-    box-shadow: var(--shadow-medium);
+    color: var(--color-medium-blue);
+    background-color: var(--color-white);
+    box-shadow: 0px 25px 9px 3px rgba(0, 0, 0, 0.1);
     transition: all 0.3s ease;
 }
 
 .menu.is-active {
-    top: 0;
+    top: 5px;
 }
 
 
@@ -50,7 +58,9 @@
     height: 4rem;
     margin: 0 auto;
     padding: 0px 20px;
-    color: var(--color-white);
+
+    background-color: var(--color-white);
+
 }
 
 .brand {
@@ -84,8 +94,19 @@ ul .menu-inner {
     align-items: start;
     margin: 0;
     padding: 20px 0px 0px 20px;
+    background-color: #fff;
 }
 
+ul .menu-inner li a {
+    color: #000;
+    border: none;
+    font-weight: bold;
+}
+
+
+div.menu-inner {
+    border-top: 1px solid #E5E5E5;
+}
 
 .menu-inner {
     display: flex;
@@ -94,6 +115,7 @@ ul .menu-inner {
     justify-content: center;
     row-gap: 1.25rem;
     padding: 15px 20px;
+
     margin-top: 3rem;
 }
 
@@ -110,7 +132,6 @@ ul .menu-inner {
 
 
 }
-
 
 .burger {
     position: relative;
@@ -141,7 +162,7 @@ ul .menu-inner {
     opacity: 1;
     border-radius: 1rem;
     transform: rotate(0deg);
-    background-color: var(--color-white);
+    background-color: var(--color-medium-blue);
     transition: 0.25s ease-in-out;
 }
 
@@ -182,12 +203,16 @@ ul .menu-inner {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    gap: 20px;
+    gap: 10px;
 }
+
+
+
 
 .btn-auth {
     border-radius: 8px;
-    padding: 6px 12px;
+    padding: 10px 12px;
+
     text-align: center;
     font-size: 14px;
     font-weight: 800;
@@ -200,6 +225,7 @@ ul .menu-inner {
     background-color: var(--color-white);
     color: var(--color-medium-blue);
     width: 100%;
+    border: 1px solid var(--color-medium-blue);
 }
 
 .register-btn {
@@ -315,6 +341,11 @@ ul .menu-inner {
         max-height: 600px;
     }
 
+    .header {
+        position: relative;
+        box-shadow: none;
+    }
+
     .menu {
         position: relative;
         top: 0;
@@ -379,6 +410,7 @@ ul .menu-inner {
 
 
     .register-btn {
+        padding: 6px 12px;
         background-color: var(--color-medium-blue);
         color: var(--color-white);
         width: fit-content;
@@ -386,8 +418,23 @@ ul .menu-inner {
         border: none;
     }
 
+    ul .menu-inner li a {
+        color: var(--color-white);
+
+    }
+
+    .navbar {
+        background-color: transparent;
+    }
+
+    ul .menu-inner {
+        background-color: transparent;
+    }
 
 
+    div.menu-inner {
+        border-top: none;
+    }
 
 
 }

@@ -6,13 +6,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import maineta.eta.dto.ActividadDTO;
-import maineta.eta.dto.ReservaDTO;
-import maineta.eta.entity.*;
-import maineta.eta.service.ActividadService;
-import maineta.eta.service.CategoriaService;
-import maineta.eta.service.ComentarioService;
-import maineta.eta.service.DisponibilidadService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.Authentication;
@@ -23,10 +16,20 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import maineta.eta.config.UsuarioHelper;
+import maineta.eta.dto.ActividadDTO;
+import maineta.eta.dto.ReservaDTO;
+import maineta.eta.entity.Actividad;
+import maineta.eta.entity.BusquedaForm;
+import maineta.eta.entity.Categoria;
+import maineta.eta.entity.Comentario;
+import maineta.eta.entity.Disponibilidad;
+import maineta.eta.service.ActividadService;
+import maineta.eta.service.CategoriaService;
+import maineta.eta.service.ComentarioService;
+import maineta.eta.service.DisponibilidadService;
 
 // 🔹 Controlador principal que maneja las páginas accesibles para todos los usuarios
 @Controller
@@ -39,9 +42,9 @@ public class AllAcessController {
     private final ComentarioService comentarioService;
     private final DisponibilidadService disponibilidadService;
 
-
     // 🔹 Constructor con inyección de dependencias
-    public AllAcessController(DisponibilidadService disponibilidadService, UsuarioHelper usuarioHelper, ComentarioService comentarioService, ActividadService actividadService, CategoriaService categoriaService) {
+    public AllAcessController(DisponibilidadService disponibilidadService, UsuarioHelper usuarioHelper,
+            ComentarioService comentarioService, ActividadService actividadService, CategoriaService categoriaService) {
         this.categoriaService = categoriaService;
         this.actividadService = actividadService;
         this.usuarioHelper = usuarioHelper;
@@ -68,7 +71,7 @@ public class AllAcessController {
             Model model,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(required = false) String nombre,
-            Authentication auth) {  // 👈 solo necesitas pasar Authentication
+            Authentication auth) { // 👈 solo necesitas pasar Authentication
 
         usuarioHelper.agregarInfoUsuarioModel(model, auth);
 
@@ -80,12 +83,11 @@ public class AllAcessController {
         BigDecimal precioConsumidor = usuarioHelper.CalcularPrecioConsumidor(actividad.getPrecio());
         model.addAttribute("precioConsumidor", precioConsumidor);
 
-
         model.addAttribute("actividad", actividad);
 
         int pageSize = 3;
         Page<Actividad> actividadesPage = actividadService.getActividadesWithPaginationMain(page, pageSize, nombre);
-        Page<Comentario> comentarioPage = comentarioService.listarComentarioPorIdYPaginacion(id,page,pageSize);
+        Page<Comentario> comentarioPage = comentarioService.listarComentarioPorIdYPaginacion(id, page, pageSize);
         List<Disponibilidad> disponibilidads = disponibilidadService.obtenerPorActividad(id);
 
         model.addAttribute("reservaDTO", new ReservaDTO());
@@ -105,13 +107,10 @@ public class AllAcessController {
         return "detalle-actividad";
     }
 
-
-
-
     @GetMapping("/")
     public String landingPage(Model model, Authentication auth,
-                              @RequestParam(defaultValue = "0") int page,
-                              @RequestParam(required = false) String nombre) {
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(required = false) String nombre) {
 
         usuarioHelper.agregarInfoUsuarioModel(model, auth);
 
@@ -134,10 +133,16 @@ public class AllAcessController {
                     dto.setNombreIdioma(actividad.getIdioma().getNombre());
                     dto.setCodigoIdioma(actividad.getIdioma().getCodigo());
                     dto.setCreatedAt(actividad.getCreatedAt());
+                    dto.setCalificacion(actividad.getCalificacion());
+                    dto.setIdCategoria(
+                            actividad.getCategoria() != null ? actividad.getCategoria().getIdCategoria() : null);
+                    dto.setIdColaborador(
+                            actividad.getColaborador() != null ? actividad.getColaborador().getIdColaborador() : null);
+                    dto.setNombreCategoria(
+                            actividad.getCategoria() != null ? actividad.getCategoria().getNombre() : "Sin categoría");
 
-
-                    dto.setIdCategoria(actividad.getCategoria().getIdCategoria());
-                    dto.setIdColaborador(actividad.getColaborador().getIdColaborador());
+                    System.out.println("categoria => " + actividad.getCategoria());
+                    System.out.println("colaborador => " + actividad.getColaborador());
 
                     // precios
                     dto.setPrecio(actividad.getPrecio());
@@ -146,7 +151,6 @@ public class AllAcessController {
                     return dto;
                 })
                 .toList();
-
 
         model.addAttribute("actividades", actividadesDTO); // ← YA NO SE SOBREESCRIBE
 
@@ -166,18 +170,12 @@ public class AllAcessController {
         return "main";
     }
 
-
-
-
     // Pagina de terminos y condiciones
     @GetMapping("/terminos-condiciones")
     public String showTerminos(Model model) {
         model.addAttribute("pagina", "terminos");
-    return "componentes/terminos-condiciones";
+        return "componentes/terminos-condiciones";
     }
-
-
-
 
     @PostMapping("/actividades/buscar")
     public String buscarActividades(
@@ -194,7 +192,7 @@ public class AllAcessController {
         if (termino != null && !termino.trim().isEmpty()) {
             actividadesPage = actividadService.ObtenerActividadesPorTitulo(
                     termino.trim(),
-                    PageRequest.of(page, pageSize)   // ← ✔ correcto
+                    PageRequest.of(page, pageSize) // ← ✔ correcto
             );
         } else {
             actividadesPage = actividadService.getActividadesWithPaginationMain(page, pageSize, null);
@@ -214,15 +212,13 @@ public class AllAcessController {
         return "resultados-busqueda";
     }
 
-
     @GetMapping("/actividades/categoria/{nombreCategoria}")
     public String BuscarActividadesPorCategorias(
             @PathVariable("nombreCategoria") String nombreCategoria,
             Model model,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(required = false) String nombre,
-            Authentication auth, RedirectAttributes redirectAttributes)
-    {
+            Authentication auth, RedirectAttributes redirectAttributes) {
 
         usuarioHelper.agregarInfoUsuarioModel(model, auth);
 
@@ -234,7 +230,8 @@ public class AllAcessController {
         }
         int pageSize = 6;
 
-        Page<Actividad> actividadesCategorias = actividadService.buscarActividadesPorNombreDeCategoria(nombreCategoria,page,pageSize);
+        Page<Actividad> actividadesCategorias = actividadService.buscarActividadesPorNombreDeCategoria(nombreCategoria,
+                page, pageSize);
         model.addAttribute("busqueda", new BusquedaForm());
 
         model.addAttribute("actividades", actividadesCategorias);
@@ -247,6 +244,6 @@ public class AllAcessController {
                 .collect(Collectors.toList());
         model.addAttribute("pageNumbers", pageNumbers);
         return "resultados-busqueda";
-        /*actividadService.buscarActividadPorIdCategoria(id,page);*/
+        /* actividadService.buscarActividadPorIdCategoria(id,page); */
     }
 }

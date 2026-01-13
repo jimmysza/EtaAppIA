@@ -19,6 +19,7 @@ public class ActividadDTO {
     private BigDecimal precioConsumidor;  // Precio + 18%
 
     private Long idCategoria;             // ID para usar en URLs
+    private String nombreCategoria; 
     private Long idColaborador;  
     private Long idIdioma;
     private String nombreIdioma;

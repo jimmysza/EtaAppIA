@@ -15,11 +15,12 @@ body {
     border-radius: 0px 0px 3rem 3rem;
 }
 
-
 /* Headers */
 .hero-content .header {
     background-color: transparent;
 }
+
+
 
 
 main {
@@ -81,24 +82,34 @@ h1 {
 .container-Categorias {
     display: flex;
     width: 100%;
-
     align-items: center;
     justify-content: center;
     gap: 28px;
 }
 
 .circle-cat {
+    position: relative;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    gap: 20px;
+    gap: 10px;
     text-align: center;
     padding: 7px 20px;
     cursor: pointer;
     background-color: #e9e6e6;
     border-radius: 20px;
+    max-width: 180px;
+    min-width: 180px;
+    max-height: 180px;
+    min-height: 180px;
 }
+
+.count-cat {
+    font-size: 8px;
+    color: #e9e6e6;
+}
+
 
 .circle-cat img {
     width: 65px;
@@ -108,9 +119,13 @@ h1 {
     aspect-ratio: 1/1;
 }
 
-.circle-cat img:hover {
+.container-Categorias a:hover img {
     transform: scale(1.1);
     transition: all 0.3s eabus-in-out;
+}
+
+.container-Categorias a:hover p {
+    font-size: 15px;
 }
 
 .circle-cat p {
@@ -118,6 +133,7 @@ h1 {
     font-weight: 600;
     color: var(--color--black);
     text-decoration: none;
+    transition: all 0.3s eabus-in-out;
 }
 
 .filtro-ordenar {
@@ -319,7 +335,11 @@ Tablet
 
     main.hero {
         max-height: 600px;
-        height: 75vh;
+        height: 95vh;
+    }
+
+    main .content {
+        margin-top: 180px;
     }
 
     .btns-hero {
