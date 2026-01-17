@@ -25,5 +25,6 @@ public class ActividadDTO {
     private String nombreIdioma;
     private String codigoIdioma;
     private LocalDateTime createdAt;
+    private long cantidadComentario;
          // ID del dueño
 }

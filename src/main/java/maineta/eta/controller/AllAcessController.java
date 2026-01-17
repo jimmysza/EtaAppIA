@@ -6,6 +6,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import maineta.eta.dto.CategoriaDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.Authentication;
@@ -119,6 +120,19 @@ public class AllAcessController {
         Page<Actividad> actividadesPage = actividadService
                 .getActividadesWithPaginationMain(page, pageSize, nombre);
 
+        Page<Categoria> categoriaPage = categoriaService.buscarTodasPorPaginacion(page, pageSizeCategorias);
+
+        List<CategoriaDTO> categoriaDTOS =  categoriaPage.stream().map(
+                categoria -> {
+                    CategoriaDTO dto = new CategoriaDTO();
+                    dto.setNombre(categoria.getNombre());
+                    dto.setCantidad(actividadService.ContadorActividadesPorCategoria(categoria.getIdCategoria()));
+                    dto.setIdCategoria(categoria.getIdCategoria());
+                    dto.setImagen(categoria.getImagen());
+                    return dto;
+                }
+        ).toList();
+
         // Construcción del DTO con el 18%
         List<ActividadDTO> actividadesDTO = actividadesPage.stream()
                 .map(actividad -> {
@@ -134,6 +148,7 @@ public class AllAcessController {
                     dto.setCodigoIdioma(actividad.getIdioma().getCodigo());
                     dto.setCreatedAt(actividad.getCreatedAt());
                     dto.setCalificacion(actividad.getCalificacion());
+                    dto.setCantidadComentario(comentarioService.ContarComentariosPorActividad(actividad.getIdActividad()));
                     dto.setIdCategoria(
                             actividad.getCategoria() != null ? actividad.getCategoria().getIdCategoria() : null);
                     dto.setIdColaborador(
@@ -159,7 +174,7 @@ public class AllAcessController {
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", actividadesPage.getTotalPages());
         model.addAttribute("filtroNombre", nombre);
-        model.addAttribute("categorias", categoriaService.buscarTodasPorPaginacion(page, pageSizeCategorias));
+        model.addAttribute("categorias", categoriaDTOS);
         model.addAttribute("pagina", "indice");
 
         List<Integer> pageNumbers = IntStream.range(0, actividadesPage.getTotalPages())

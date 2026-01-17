@@ -6,28 +6,84 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <link rel="stylesheet" th:href="@{/css/global.css}">
-    <link rel="stylesheet" th:href="@{/css/componentes/cartas_actividades.css}">
     <link rel="stylesheet" th:href="@{/css/adminBd.css}">
-
     <link rel="icon" th:href="@{/images/logos/logo.webp}" type="image/x-icon" />
-
-
 
     <script src="https://cdn.tailwindcss.com"></script>
     <title>ETA | Actividades</title>
 
+    <style>
+        /* Estilos para las vistas */
+        .view-cards {
+            display: block;
+        }
+
+        .view-table {
+            display: none;
+        }
+
+        /* Transiciones suaves */
+        .card-image {
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover .card-image {
+            transform: scale(1.05);
+        }
+
+        /* Estilos para la tabla */
+        .activity-table {
+            width: 100%;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .activity-table thead {
+            background: #f9fafb;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .activity-table th {
+            padding: 12px 16px;
+            text-align: left;
+            font-size: 12px;
+            font-weight: 600;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .activity-table td {
+            padding: 16px;
+            border-bottom: 1px solid #f3f4f6;
+        }
+
+        .activity-table tbody tr:hover {
+            background: #f9fafb;
+        }
+
+        .activity-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Botones de vista activos */
+        .view-btn.active {
+            background: #2563eb;
+            color: white;
+        }
+    </style>
 </head>
 
 <body>
-    <section class="container-manager ">
-
+    <section class="container-manager">
         <!-- Sidebar -->
         <div th:replace="~{componentes/sidebar :: sidebar}"></div>
+
         <!-- Main Content -->
         <main class="main-content">
-
             <div class="header_db">
-
                 <div class="flex gap-3">
                     <svg id="hideBar" class="hidebar-dashboard" xmlns="http://www.w3.org/2000/svg" width="24"
                         height="24" viewBox="0 0 24 24">
@@ -35,6 +91,7 @@
                             stroke-width="1.5"
                             d="M15 3.5v17M3 9.4c0-2.24 0-3.36.436-4.216a4 4 0 0 1 1.748-1.748C6.04 3 7.16 3 9.4 3h5.2c2.24 0 3.36 0 4.216.436a4 4 0 0 1 1.748 1.748C21 6.04 21 7.16 21 9.4v5.2c0 2.24 0 3.36-.436 4.216a4 4 0 0 1-1.748 1.748C17.96 21 16.84 21 14.6 21H9.4c-2.24 0-3.36 0-4.216-.436a4 4 0 0 1-1.748-1.748C3 17.96 3 16.84 3 14.6z" />
                     </svg>
+
                     <nav aria-label="Breadcrumb">
                         <ol class="breadcrumbs" itemscope itemtype="https://schema.org/BreadcrumbList">
                             <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
@@ -43,24 +100,19 @@
                                 </a>
                                 <meta itemprop="position" content="1" />
                             </li>
-
                             <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
                                 <a itemprop="item" href="/actividades">
                                     <span itemprop="name">Actividades</span>
                                 </a>
                                 <meta itemprop="position" content="2" />
                             </li>
-
                         </ol>
                     </nav>
-
                 </div>
             </div>
 
-
             <!-- Filtros y Botones -->
             <div class="filtro_db">
-
                 <div class="Identifier-Dashboard">
                     <div class="svg-contain">
                         <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24">
@@ -75,75 +127,178 @@
                     </div>
                 </div>
 
-                <div class="flex gap-1 filtros-btns">
-
-
-                    <!--   <form th:action="@{/actividades}" method="get" class="search-filter">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24">
-                            <path fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round"
-                                stroke-width="2" d="M3 10a7 7 0 1 0 14 0a7 7 0 1 0-14 0m18 11l-6-6" />
-                        </svg>
-                        <input type="text" name="filtroNombre" placeholder="Buscar por nombre"
-                            th:value="${filtroNombre}">
-                        <button type="submit" class="button-default btn_add">Buscar</button>
-                    </form>
- -->
-                    <div class="flex center gap-2">
-
-
-                        <!--Btn Filtros-->
-                        <!--    <a class="btn-filtra">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="18" viewBox="0 0 24 24">
-                                <path fill="none" stroke="#000" stroke-dasharray="56" stroke-dashoffset="56"
-                                    stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M5 4h14l-5 6.5v9.5l-4 -4v-5.5Z">
-                                    <animate fill="freeze" attributeName="stroke-dashoffset" dur="0.6s" values="56;0" />
-                                </path>
+                <div class="flex gap-2 filtros-btns">
+                    <!-- Botones de cambio de vista -->
+                    <div class="flex gap-1 border border-gray-200 rounded-lg p-1 bg-white">
+                        <button id="btnViewCards"
+                            class="view-btn active px-3 py-2 rounded transition-all flex items-center gap-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24">
+                                <path fill="currentColor" d="M3 3h8v8H3zm10 0h8v8h-8zM3 13h8v8H3zm10 0h8v8h-8z" />
                             </svg>
-                            <p>Filtrar</p>
-                        </a> -->
-                        <!--Btn Agregar-->
-
-
-                        <a th:href="@{/colaborador/actividades/nueva}" class="button-default text-open-add"
-                            id="open-add-modal">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24">
-                                <path fill="#fff"
-                                    d="M12 4c4.411 0 8 3.589 8 8s-3.589 8-8 8s-8-3.589-8-8s3.589-8 8-8m0-2C6.477 2 2 6.477 2 12s4.477 10 10 10s10-4.477 10-10S17.523 2 12 2m5 9h-4V7h-2v4H7v2h4v4h2v-4h4z"
-                                    stroke-width="0.5" stroke="#fff" />
+                            <span class="text-sm font-medium">Cards</span>
+                        </button>
+                        <button id="btnViewTable"
+                            class="view-btn px-3 py-2 rounded transition-all flex items-center gap-2 text-gray-600 hover:bg-gray-100">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24">
+                                <path fill="currentColor" d="M3 3h18v4H3zm0 7h18v4H3zm0 7h18v4H3z" />
                             </svg>
-                            Agregar Actividades</a>
-
+                            <span class="text-sm font-medium">Tabla</span>
+                        </button>
                     </div>
-                </div>
 
+                    <!-- Botón Agregar -->
+                    <a th:href="@{/colaborador/actividades/nueva}" class="button-default text-open-add">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24">
+                            <path fill="#fff"
+                                d="M12 4c4.411 0 8 3.589 8 8s-3.589 8-8 8s-8-3.589-8-8s3.589-8 8-8m0-2C6.477 2 2 6.477 2 12s4.477 10 10 10s10-4.477 10-10S17.523 2 12 2m5 9h-4V7h-2v4H7v2h4v4h2v-4h4z"
+                                stroke-width="0.5" stroke="#fff" />
+                        </svg>
+                        Agregar Actividades
+                    </a>
+                </div>
             </div>
 
-            <div class="Actividades-Container">
-                <a th:each="actividad : ${actividades}"
-                    th:href="@{/colaborador/detalle/{id}(id=${actividad.idActividad})}" class="Actividad-card-link">
+            <!-- Vista de Cards -->
+            <div id="viewCards" class="view-cards py-8">
+                <!-- CORRECCIÓN DEL GRID -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                    <a class="card group cursor-pointer rounded-xl w-full" th:each="actividad : ${actividades}"
+                        th:href="@{/colaborador/detalle/{id}(id=${actividad.idActividad})}">
+                        <div class="relative rounded-xl overflow-hidden mb-3">
+                            <img th:if="${actividad.imagen != null}" th:src="@{'/uploads/' + ${actividad.imagen}}"
+                                alt="Imagen de la actividad" class="card-image w-full h-64 object-cover">
+                            <div th:if="${actividad.imagen == null}"
+                                class="card-image w-full h-64 bg-gray-200 flex items-center justify-center text-gray-400">
+                                Sin imagen
+                            </div>
 
-                    <div class="Actividad-card">
-                        <div class="price">$ <span th:text="${#numbers.formatDecimal(actividad.precio, 0, 0)}">10</span>
+                            <span
+                                class="absolute top-3 right-14 bg-white/95 px-2 py-1 rounded-lg text-xs font-semibold flex items-center gap-1">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24">
+                                    <path fill="#F59E0B"
+                                        d="m12 17.275l-4.15 2.5q-.275.175-.575.15t-.525-.2t-.35-.437t-.05-.588l1.1-4.725L3.775 10.8q-.25-.225-.312-.513t.037-.562t.3-.45t.55-.225l4.85-.425l1.875-4.45q.125-.3.388-.45t.537-.15t.537.15t.388.45l1.875 4.45l4.85.425q.35.05.55.225t.3.45t.038.563t-.313.512l-3.675 3.175l1.1 4.725q.075.325-.05.588t-.35.437t-.525.2t-.575-.15z" />
+                                </svg>
+                                <span
+                                    th:text="${actividad.calificacion != null ? actividad.calificacion : '0.0'}">0.0</span>
+                            </span>
+
+                            <button
+                                class="absolute top-3 right-3 w-8 h-8 bg-white/90 hover:bg-white rounded-full flex items-center justify-center shadow-sm hover:scale-110 transition-transform">
+                                <svg class="w-5 h-5 text-gray-700 hover:text-red-500" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                                </svg>
+                            </button>
+
+                            <div class="absolute top-3 left-3 bg-white px-3 py-1 rounded-lg text-xs font-semibold"
+                                th:text="${actividad.categoria != null ? actividad.categoria.nombre : 'Sin categoría'}">
+                                Categoría
+                            </div>
                         </div>
 
-                        <img th:if="${actividad.imagen != null}" th:src="@{'/uploads/' + ${actividad.imagen}}"
-                            alt="Imagen de la actividad" />
+                        <div class="pb-2 px-2">
+                            <h3 class="font-semibold text-gray-900 mb-1 line-clamp-1" th:text="${actividad.titulo}">
+                                Título
+                            </h3>
 
-                        <span th:if="${actividad.imagen == null}" class="fallback-img">Sin imagen</span>
+                            <div class="flex items-center gap-1 mb-2">
+                                <p class="text-sm text-blue-600 font-bold"
+                                    th:text="${'$ ' + #numbers.formatDecimal(actividad.precio, 0, 0)}">
+                                    $0
+                                </p>
+                            </div>
 
-                        <div class="content-actividad">
-                            <h3 th:text="${actividad.titulo}">Apartamento ideal en cartagena</h3>
-                            <p th:text="${actividad.ubicacion}">Cartagena de Indias</p>
+                            <div class="flex items-center gap-1">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24">
+                                    <path fill="#23AAE3"
+                                        d="M12 2a9 9 0 0 1 9 9c0 3.074-1.676 5.59-3.442 7.395a20.4 20.4 0 0 1-2.876 2.416l-.426.29l-.2.133l-.377.24l-.336.205l-.416.242a1.87 1.87 0 0 1-1.854 0l-.416-.242l-.52-.32l-.192-.125l-.41-.273a20.6 20.6 0 0 1-3.093-2.566C4.676 16.589 3 14.074 3 11a9 9 0 0 1 9-9m0 6a3 3 0 1 0 0 6a3 3 0 0 0 0-6" />
+                                </svg>
+                                <span class="text-sm text-gray-600 line-clamp-1"
+                                    th:text="${actividad.ubicacion}">Ubicación</span>
+                            </div>
                         </div>
-                    </div>
-                </a>
+                    </a>
+                </div>
+
+                <div th:if="${actividades.isEmpty()}"
+                    class="text-center py-12 bg-gray-50 rounded-xl border-2 border-dashed border-gray-300 mt-4">
+                    <p class="text-gray-600 font-medium">No hay actividades disponibles</p>
+                </div>
+            </div>
+
+            <!-- Vista de Tabla -->
+            <div id="viewTable" class="view-table py-8">
+                <table class="activity-table">
+                    <thead>
+                        <tr>
+                            <th>Imagen</th>
+                            <th>Título</th>
+                            <th>Categoría</th>
+                            <th>Ubicación</th>
+                            <th>Precio</th>
+                            <th>Calificación</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="actividad : ${actividades}">
+                            <td>
+                                <img th:if="${actividad.imagen != null}" th:src="@{'/uploads/' + ${actividad.imagen}}"
+                                    alt="Imagen" class="w-16 h-16 object-cover rounded-lg">
+                                <div th:if="${actividad.imagen == null}"
+                                    class="w-16 h-16 bg-gray-200 rounded-lg flex items-center justify-center text-xs text-gray-400">
+                                    Sin imagen
+                                </div>
+                            </td>
+                            <td>
+                                <div class="font-semibold text-gray-900" th:text="${actividad.titulo}">Título</div>
+                            </td>
+                            <td>
+                                <!-- CORRECCIÓN -->
+                                <span
+                                    class="inline-block px-2 py-1 bg-blue-50 text-blue-700 text-xs font-medium rounded"
+                                    th:text="${actividad.categoria != null ? actividad.categoria.nombre : 'Sin categoría'}">Categoría</span>
+                            </td>
+                            <td class="text-gray-600 text-sm" th:text="${actividad.ubicacion}">Ubicación</td>
+                            <td class="font-semibold text-blue-600"
+                                th:text="${'$ ' + #numbers.formatDecimal(actividad.precio, 0, 0)}">$0</td>
+                            <td>
+                                <div class="flex items-center gap-1">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24">
+                                        <path fill="#F59E0B"
+                                            d="m12 17.275l-4.15 2.5q-.275.175-.575.15t-.525-.2t-.35-.437t-.05-.588l1.1-4.725L3.775 10.8q-.25-.225-.312-.513t.037-.562t.3-.45t.55-.225l4.85-.425l1.875-4.45q.125-.3.388-.45t.537-.15t.537.15t.388.45l1.875 4.45l4.85.425q.35.05.55.225t.3.45t.038.563t-.313.512l-3.675 3.175l1.1 4.725q.075.325-.05.588t-.35.437t-.525.2t-.575-.15z" />
+                                    </svg>
+                                    <span class="text-sm font-medium"
+                                        th:text="${actividad.calificacion != null ? actividad.calificacion : '0.0'}">0.0</span>
+                                </div>
+                            </td>
+                            <td>
+                                <a th:href="@{/colaborador/detalle/{id}(id=${actividad.idActividad})}"
+                                    class="inline-flex items-center gap-1 px-3 py-1.5 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24">
+                                        <path fill="currentColor"
+                                            d="M12 9a3 3 0 0 0-3 3a3 3 0 0 0 3 3a3 3 0 0 0 3-3a3 3 0 0 0-3-3m0 8a5 5 0 0 1-5-5a5 5 0 0 1 5-5a5 5 0 0 1 5 5a5 5 0 0 1-5 5m0-12.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5" />
+                                    </svg>
+                                    Ver
+                                </a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div th:if="${actividades.isEmpty()}"
+                    class="text-center py-12 bg-gray-50 rounded-xl border-2 border-dashed border-gray-300 mt-4">
+                    <p class="text-gray-600 font-medium">No hay actividades disponibles</p>
+                </div>
             </div>
         </main>
     </section>
 
-    <script th:src="@{/js/eliminar/actividad.js}"></script>
+    <!-- Scripts en el orden correcto -->
     <script th:src="@{/js/dashboard.js}"></script>
+    <script th:src="@{/js/componentes/viewsChanges.js}"></script>
+    <script th:src="@{/js/eliminar/actividad.js}"></script>
     <script th:src="@{/js/dropdown.js}"></script>
 </body>
 

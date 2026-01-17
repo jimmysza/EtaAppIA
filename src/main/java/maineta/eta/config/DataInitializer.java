@@ -2,7 +2,6 @@ package maineta.eta.config;
 
 import java.math.BigDecimal;
 import java.util.Optional;
-import java.util.Set;
 
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -32,12 +31,15 @@ public class DataInitializer implements CommandLineRunner {
     private final AdminRepository adminRepository;
     private final PasswordEncoder passwordEncoder;
     private final CategoriaRepository categoriaRepository;
+
     /**
      * Inyecta el repositorio de roles para interactuar con la base de datos.
      *
      * @param rolRepository repositorio de la entidad Rol
      */
-    public DataInitializer(PasswordEncoder passwordEncoder, AdminRepository adminRepository,RolRepository rolRepository, IdiomaRepository idiomaRepository,UsuarioRepository usuarioRepository, CategoriaRepository categoriaRepository) {
+    public DataInitializer(PasswordEncoder passwordEncoder, AdminRepository adminRepository,
+            RolRepository rolRepository, IdiomaRepository idiomaRepository, UsuarioRepository usuarioRepository,
+            CategoriaRepository categoriaRepository) {
         this.rolRepository = rolRepository;
         this.idiomaRepository = idiomaRepository;
         this.usuarioRepository = usuarioRepository;
@@ -53,13 +55,12 @@ public class DataInitializer implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         // Definimos los roles que queremos garantizar que existan en la base de datos
-        String[] roles = {"ROLE_CLIENTE", "ROLE_COLABORADOR", "ROLE_ADMIN"};
+        String[] roles = { "ROLE_CLIENTE", "ROLE_COLABORADOR", "ROLE_ADMIN" };
 
         // Recorremos cada rol de la lista
         for (String nombreRol : roles) {
             // Verificamos si el rol ya existe en la base de datos
             Optional<Rol> rolExistente = rolRepository.findByNombre(nombreRol);
-
 
             // Si el rol NO existe, lo creamos y lo guardamos
             if (rolExistente.isEmpty()) {
@@ -71,9 +72,9 @@ public class DataInitializer implements CommandLineRunner {
         }
 
         String[][] idiomas = {
-                {"Español", "es"},
-                {"Inglés", "en"},
-                {"Francés", "fr"}
+                { "Español", "es" },
+                { "Inglés", "en" },
+                { "Francés", "fr" }
         };
 
         for (String[] idioma : idiomas) { // El tipo debe ser String[]
@@ -93,10 +94,11 @@ public class DataInitializer implements CommandLineRunner {
             }
         }
 
-        String[] categorias = {"Experiencias acuáticas y playa","Gastronomía y talleres","Tours historicos y culturales", "Vida nocturna y entretenimiento"};
+        String[] categorias = { "Experiencias acuáticas y playa", "Gastronomía y talleres",
+                "Tours historicos y culturales", "Vida nocturna y entretenimiento" };
 
         for (String categoria : categorias) { // El tipo debe ser String[]
-            
+
             // Verificamos si el idioma ya existe en la base de datos
             Optional<Categoria> categoriaExistente = categoriaRepository.findByNombre(categoria);
 
@@ -104,7 +106,8 @@ public class DataInitializer implements CommandLineRunner {
             if (categoriaExistente.isEmpty()) {
                 Categoria nuevoCategoria = new Categoria();
                 nuevoCategoria.setNombre(categoria);
-                // Generar ruta de imagen basada en el nombre (ej. experiencias_acuaticas_y_playa.jpg)
+                // Generar ruta de imagen basada en el nombre (ej.
+                // experiencias_acuaticas_y_playa.jpg)
                 String rutaImagen = categoria.toLowerCase()
                         .replace(" ", "_")
                         .replace("ó", "o")
@@ -121,7 +124,7 @@ public class DataInitializer implements CommandLineRunner {
         }
 
         // --- Crear usuario ADMIN por defecto ---
-        String emailAdmin = "admin@gmail";    
+        String emailAdmin = "admin@gmail";
 
         if (usuarioRepository.findByEmail(emailAdmin).isEmpty()) {
             Usuario usuario = new Usuario();
@@ -151,4 +154,3 @@ public class DataInitializer implements CommandLineRunner {
         System.out.println("Inicialización de roles completada");
     }
 }
-

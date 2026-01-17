@@ -19,4 +19,8 @@ public interface ComentarioRepository extends JpaRepository<Comentario, Long> {
     @Transactional
     @Query("DELETE FROM Comentario c WHERE c.actividad.id = :actividadId")
     void deleteByActividadId(Long actividadId);
+
+    long countByActividad_IdActividad(Long idActividad);
+
+
 }

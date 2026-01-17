@@ -1,12 +1,14 @@
-.search {
+/* .search {
     z-index: 2;
     width: auto;
     position: relative;
     display: flex;
+    margin-top: 100px;
     justify-content: center;
+    margin: 130px auto 30px auto;
 }
 
-
+ */
 
 
 .search-container form {
@@ -30,25 +32,25 @@
     display: flex;
     align-items: center;
     justify-content: flex-start;
-    position: absolute;
+    position: relative;
     gap: 10px;
-    top: -8px;
+
     width: 60%;
     margin: 10px;
     padding: 13px 23px;
-    background-color: var(--color-white);
+    background-color: #f2f2f2;
     border-radius: 20px;
     outline: none;
     font-size: 14px;
     transition: all 0.3s ease;
     border: 1px solid #c4c4c4b0;
-    
+
 }
 
 .search-container svg {
     margin-top: 1px;
-    width: 20px;
-    height: 20px;
+    width: 25px;
+    height: 25px;
     color: gray;
 }
 
@@ -72,29 +74,63 @@
 }
 
 
-@media only screen and (min-width: 48rem) {
 
-    .search {
-        top: -60px;
-        margin: 30px auto 30px auto;
-    }
-    .search-container{
+
+/* =====================
+   PC / Laptop
+   ===================== */
+@media screen and (min-width: 1024px) {
+
+
+    .search-container {
         width: 100%;
         max-width: 80%;
     }
 }
 
-/*responsive celular */
-@media (max-width: 768px) {
 
-    .search-container{
-        width: 100%;
-        max-width: 80%;
-    }
-    .search {
+
+/* =====================
+Tablet
+===================== */
+@media screen and (min-width: 768px) and (max-width: 1023px) {}
+
+
+/* =====================
+   Celular
+   ===================== */
+@media screen and (max-width: 767px) {
+    .search-container {
         width: 100%;
         max-width: 100%;
-        top: 0px;
-        margin: 20px auto 0px auto;
     }
+
+    .search {
+        width: 100%;
+        position: relative;
+        max-width: 100%;
+        justify-content: center;
+        align-items: center;
+        gap: 10px;
+        display: flex;
+        padding: 20px;
+
+        flex-direction: row;
+        margin: 0px auto;
+        margin-top: 80px;
+    }
+
+    .filtros-container {
+        display: flex;
+        width: 30px;
+        justify-content: center;
+        align-items: center;
+
+    }
+
+
+
+
+
+
 }

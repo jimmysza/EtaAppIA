@@ -41,12 +41,21 @@ public class ActividadServiceImpl implements ActividadService {
     }
 
     @Override
-    public Page<Actividad> ObtenerActividadesPorTitulo(String titulo, Pageable pageable){
+    public int ContadorActividadesPorCategoria(Long idCategoria) {
+        return actividadRepository.countByCategoria_IdCategoria(idCategoria);
+    };
+
+    @Override
+    public Page<Actividad> ObtenerActividadesPorTitulo(String titulo, Pageable pageable) {
         return actividadRepository.findByTituloContainingIgnoreCase(titulo, pageable);
     }
 
     @Override
     public Actividad obtenerPorId(Long id) {
+        if (id == null) {
+            throw new IllegalArgumentException("El id de la actividad no puede ser null");
+        }
+
         return actividadRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("No se encontró la actividad con ID: " + id));
     }
@@ -72,7 +81,7 @@ public class ActividadServiceImpl implements ActividadService {
         Pageable pageable = PageRequest.of(page, size); // Objeto que define página y tamaño
 
         if (idCategoria != null) {
-            return actividadRepository.findByCategoria_IdCategoria(idCategoria,pageable);
+            return actividadRepository.findByCategoria_IdCategoria(idCategoria, pageable);
         }
 
         return actividadRepository.findAll(pageable);
@@ -82,8 +91,8 @@ public class ActividadServiceImpl implements ActividadService {
     public Page<Actividad> buscarActividadesPorNombreDeCategoria(String nombreCategoria, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
 
-        if (nombreCategoria != null  && !nombreCategoria.isEmpty()) {
-            return actividadRepository.findByCategoria_NombreContainingIgnoreCase(nombreCategoria,pageable);
+        if (nombreCategoria != null && !nombreCategoria.isEmpty()) {
+            return actividadRepository.findByCategoria_NombreContainingIgnoreCase(nombreCategoria, pageable);
         }
 
         return actividadRepository.findAll(pageable);
@@ -99,7 +108,6 @@ public class ActividadServiceImpl implements ActividadService {
             throw new EntityNotFoundException("No se encontró actividad con la categoría: " + nombreCategoria);
         }
     }
-
 
     /**
      * 🔹 Listar actividades de un colaborador con filtros y paginación.
@@ -174,7 +182,7 @@ public class ActividadServiceImpl implements ActividadService {
     @Override
     @Transactional
     public void deleteActivity(long id) {
-        
+
         comentarioRepository.deleteByActividadId(id);
         actividadRepository.deleteById(id);
     }
@@ -195,6 +203,15 @@ public class ActividadServiceImpl implements ActividadService {
 
     @Override
     public Actividad actualizar(Long id, Actividad nuevaActividad) {
+
+        if (id == null) {
+            throw new IllegalArgumentException("El id de la actividad no puede ser null");
+        }
+
+        if (nuevaActividad == null) {
+            throw new IllegalArgumentException("La Actividad no puede ser null");
+        }
+
         return actividadRepository.findById(id).map(actividad -> {
             actividad.setTitulo(nuevaActividad.getTitulo());
             actividad.setDescripcion(nuevaActividad.getDescripcion());
@@ -203,7 +220,5 @@ public class ActividadServiceImpl implements ActividadService {
             return actividadRepository.save(actividad);
         }).orElseThrow(() -> new RuntimeException("Actividad no encontrada"));
     }
-
-
 
 }

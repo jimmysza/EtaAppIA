@@ -51,6 +51,8 @@ public interface ActividadService {
      */
     Page<Actividad> getActividadesConPaginacionDeColaborador(int page, int size, Long idColaborador, String filtroTitulo);
 
+    int ContadorActividadesPorCategoria(Long idCategoria);
+
     /**
      * Obtiene todas las actividades paginadas sin filtros adicionales.
      *

@@ -11,4 +11,5 @@ public interface ComentarioService {
     void guardar(Comentario comentario);
     List<Comentario> listarPorActividad(Long idActividad);
     Page<Comentario> listarComentarioPorIdYPaginacion(Long idActividad, int page, int size);
+    long ContarComentariosPorActividad(long idActividad);
 }

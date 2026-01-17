@@ -21,6 +21,10 @@ public class ComentarioServiceImpl implements ComentarioService {
     }
 
     @Override
+    public long ContarComentariosPorActividad(long idActividad){
+        return comentarioRepository.countByActividad_IdActividad(idActividad);
+    }
+    @Override
     public void guardar(Comentario comentario) {
         comentarioRepository.save(comentario);
     }

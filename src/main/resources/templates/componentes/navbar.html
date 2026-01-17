@@ -6,7 +6,10 @@
         <div class="container-100">
             <nav class="navbar">
                 <a th:href="@{/}" class="brand">
-                    <img th:src="@{/images/logos/etabluerrvg.webp}" alt="logo" class="logo" />
+                    <!-- <img th:src="@{/images/logos/etabluerrvg.webp}" alt="logo" class="logo" /> -->
+                    <span id="logoText" class="text-2xl font-black tracking-tighter transition-colors text-blue-600">
+                        eta<span class="text-sm align-top">®</span>
+                    </span>
                 </a>
                 <div class="burger" id="burger">
                     <span class="burger-line"></span>
@@ -17,14 +20,24 @@
                     <ul class="menu-inner">
 
                         <div th:if="${pagina == 'detalle'}" class="menu-inner">
-                            <li><a href="#imagenes" class="menu-link">Imagenes</a></li>
-                            <li><a href="#informacion" class="menu-link">informacion</a></li>
-                            <li><a href="#reserva" class="menu-link">reserva</a></li>
+                            <li><a href="#imagenes"
+                                    class="nav-link text-sm font-bold uppercase tracking-wider transition-colors hover:text-blue-500 text-white/90">Imagenes</a>
+                            </li>
+                            <li><a href="#informacion"
+                                    class="nav-link text-sm font-bold uppercase tracking-wider transition-colors hover:text-blue-500 text-white/90">informacion</a>
+                            </li>
+                            <li><a href="#reserva"
+                                    class="nav-link text-sm font-bold uppercase tracking-wider transition-colors hover:text-blue-500 text-white/90">reserva</a>
+                            </li>
 
                         </div>
                         <div th:if="${pagina == 'indice'}" class="menu-inner">
-                            <li><a href="#actividades" class="menu-link">Tendencias</a></li>
-                            <li><a href="#actividades" class="menu-link">Actividades</a></li>
+                            <li><a href="#actividades"
+                                    class="font-bold uppercase tracking-wider transition-colors hover:text-blue-500 text-white/90">Tendencias</a>
+                            </li>
+                            <li><a href="#actividades"
+                                    class="font-bold uppercase tracking-wider transition-colors hover:text-blue-500 text-white/90">Actividades</a>
+                            </li>
                         </div>
 
                         <li class="sign-contain" th:if="${nombreUsuario == null}">
@@ -44,8 +57,8 @@
                             </a>
                         </li>
 
-
-                        <li class="dropdown" th:if="${nombreUsuario != null}">
+                        <!--Desktop View-->
+                        <li class="dropdown desktopView" th:if="${nombreUsuario != null}">
                             <a href="#" tabindex="0">
                                 <img th:src="@{/images/perfiles/perfil.webp}" alt="Perfil del cliente" />
                             </a>
@@ -53,7 +66,8 @@
 
                                 <!-- Opción para Cliente -->
                                 <div th:if="${userRole == 'ROLE_CLIENTE'}">
-                                    <a th:href="@{/cliente/dashboard}">
+                                    <a th:href="@{/cliente/dashboard}"
+                                        class="font-bold uppercase tracking-wider transition-colors hover:text-blue-500 text-white/90">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                             viewBox="0 0 24 24">
                                             <g fill="#000" fill-rule="evenodd" clip-rule="evenodd" stroke-width="0.2"
@@ -70,7 +84,8 @@
 
                                 <!-- Opción para Admin -->
                                 <div th:if="${userRole == 'ROLE_COLABORADOR'}">
-                                    <a th:href="@{/colaborador/actividades}">
+                                    <a th:href="@{/colaborador/actividades}"
+                                        class="font-bold uppercase tracking-wider transition-colors hover:text-blue-500 text-white/90">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                             viewBox="0 0 24 24">
                                             <g fill="#000" fill-rule="evenodd" clip-rule="evenodd" stroke-width="0.2"
@@ -102,10 +117,41 @@
 
                             </div>
                         </li>
+
+                        <!--Mobile view-->
+                        <div th:if="${nombreUsuario != null}" class="menu-inner mobileView">
+
+
+                            <li th:if="${userRole == 'ROLE_CLIENTE'}"><a th:href="@{/cliente/dashboard}"
+                                    href="#actividades"
+                                    class="font-bold uppercase tracking-wider transition-colors hover:text-blue-500 text-white/90">Perfil</a>
+                            </li>
+                            <li th:if="${userRole == 'ROLE_COLABORADOR'}"><a th:href="@{/colaborador/actividades}"
+                                    href="#actividades"
+                                    class="font-bold uppercase tracking-wider transition-colors hover:text-blue-500 text-white/90">Perfil</a>
+                            </li>
+                            <form th:action="@{/logout}" method="post">
+                                <button type="submit" class="btn-cerraSesion">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                                        <path fill="#fff"
+                                            d="M6 2h9a2 2 0 0 1 2 2v1a1 1 0 0 1-2 0V4H6v16h9v-1a1 1 0 0 1 2 0v1a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2"
+                                            stroke-width="0.2" stroke="#fff" />
+                                        <path fill="#fff"
+                                            d="M16.795 16.295c.39.39 1.02.39 1.41 0l3.588-3.588a1 1 0 0 0 0-1.414l-3.588-3.588a.999.999 0 0 0-1.411 1.411L18.67 11H10a1 1 0 0 0 0 2h8.67l-1.876 1.884a1 1 0 0 0 .001 1.411"
+                                            stroke-width="0.2" stroke="#fff" />
+                                    </svg> Cerrar sesión
+                                </button>
+                            </form>
+                        </div>
+
+
                     </ul>
                 </div>
                 <a th:href="@{/}" class="other-logo">
-                    <img th:src="@{/images/logos/etabluerrvg.webp}" alt="logo" class="logo" />
+                    <!-- <img th:src="@{/images/logos/etabluerrvg.webp}" alt="logo" class="logo" /> -->
+                    <span id="logoText" class="text-2xl font-black tracking-tighter transition-colors text-blue-600">
+                        eta<span class="text-sm align-top">®</span>
+                    </span>
                 </a>
             </nav>
         </div>
