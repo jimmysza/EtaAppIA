@@ -1,0 +1,10 @@
+=====================
+        Tasks
+=====================
+
+- [ ] Hacer navbar especial para resultados de busqueda
+- [ ] hacer view de resultados de busqueda
+- [ ] 
+- [ ] 
+- [ ] 
+- [ ] 

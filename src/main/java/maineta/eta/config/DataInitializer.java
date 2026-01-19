@@ -94,8 +94,8 @@ public class DataInitializer implements CommandLineRunner {
             }
         }
 
-        String[] categorias = { "Experiencias acuáticas y playa", "Gastronomía y talleres",
-                "Tours historicos y culturales", "Vida nocturna y entretenimiento" };
+        String[] categorias = { "Playa", "Gastronomía",
+                "Historia", "Entretenimiento","Cultura","Vida Nocturna" };
 
         for (String categoria : categorias) { // El tipo debe ser String[]
 

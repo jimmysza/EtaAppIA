@@ -465,10 +465,7 @@ div.menu-inner {
         border: none;
     }
 
-    ul .menu-inner li a {
-        color: var(--color-white);
 
-    }
 
     .navbar {
         background-color: transparent;

@@ -9,15 +9,16 @@
     box-sizing: border-box;
     word-wrap: break-word;
 }
+
 /* ================== Variables ========= ========= */
 :root {
     /* Colores */
     --color-black: #1C1C1C;
     --color-dark-blue: #021024;
-    
-    
-    
-    
+
+
+
+
     --color-black-100: hsl(240, 5%, 35%);
     --color-black-200: hsl(240, 5%, 25%);
     --color-black-300: hsl(240, 5%, 15%);
@@ -37,7 +38,7 @@
 
     --color-subtitulo: hsl(225, 8%, 42%);
     --color-white-500: hsl(206, 0%, 50%);
-    
+
 
 
     --color-blur: #9abadc96;
@@ -72,6 +73,10 @@ body {
     background-color: var(--color-white);
     color: var(--color-black);
     line-height: 1.5;
+}
+
+span {
+    font-family: var(--font-Sora);
 }
 
 /* ================== Links ================== */
@@ -157,15 +162,16 @@ button[type="submit"]:focus {
     }
 }
 
-.red{
+.red {
     color: #ff2200
 }
-.ColorBlue{
+
+.ColorBlue {
     color: var(--color-medium-blue);
 }
 
 
-.button-default{
+.button-default {
     gap: 6px;
     justify-content: center;
     display: flex;

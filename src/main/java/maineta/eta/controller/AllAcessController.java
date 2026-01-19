@@ -6,7 +6,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import maineta.eta.dto.CategoriaDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.Authentication;
@@ -21,6 +20,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import maineta.eta.config.UsuarioHelper;
 import maineta.eta.dto.ActividadDTO;
+import maineta.eta.dto.CategoriaDTO;
 import maineta.eta.dto.ReservaDTO;
 import maineta.eta.entity.Actividad;
 import maineta.eta.entity.BusquedaForm;
@@ -122,7 +122,7 @@ public class AllAcessController {
 
         Page<Categoria> categoriaPage = categoriaService.buscarTodasPorPaginacion(page, pageSizeCategorias);
 
-        List<CategoriaDTO> categoriaDTOS =  categoriaPage.stream().map(
+        List<CategoriaDTO> categoriaDTOS = categoriaPage.stream().map(
                 categoria -> {
                     CategoriaDTO dto = new CategoriaDTO();
                     dto.setNombre(categoria.getNombre());
@@ -130,8 +130,7 @@ public class AllAcessController {
                     dto.setIdCategoria(categoria.getIdCategoria());
                     dto.setImagen(categoria.getImagen());
                     return dto;
-                }
-        ).toList();
+                }).toList();
 
         // Construcción del DTO con el 18%
         List<ActividadDTO> actividadesDTO = actividadesPage.stream()
@@ -148,7 +147,8 @@ public class AllAcessController {
                     dto.setCodigoIdioma(actividad.getIdioma().getCodigo());
                     dto.setCreatedAt(actividad.getCreatedAt());
                     dto.setCalificacion(actividad.getCalificacion());
-                    dto.setCantidadComentario(comentarioService.ContarComentariosPorActividad(actividad.getIdActividad()));
+                    dto.setCantidadComentario(
+                            comentarioService.ContarComentariosPorActividad(actividad.getIdActividad()));
                     dto.setIdCategoria(
                             actividad.getCategoria() != null ? actividad.getCategoria().getIdCategoria() : null);
                     dto.setIdColaborador(
@@ -213,8 +213,43 @@ public class AllAcessController {
             actividadesPage = actividadService.getActividadesWithPaginationMain(page, pageSize, null);
         }
 
+        // Construcción del DTO con el 18%
+        List<ActividadDTO> actividadesDTO = actividadesPage.stream()
+                .map(actividad -> {
+                    ActividadDTO dto = new ActividadDTO();
+                    dto.setIdActividad(actividad.getIdActividad());
+                    dto.setTitulo(actividad.getTitulo());
+                    dto.setDescripcion(actividad.getDescripcion());
+                    dto.setCalificacion(actividad.getCalificacion());
+                    dto.setUbicacion(actividad.getUbicacion());
+                    dto.setImagen(actividad.getImagen());
+                    dto.setIdIdioma(actividad.getIdioma().getIdIdioma());
+                    dto.setNombreIdioma(actividad.getIdioma().getNombre());
+                    dto.setCodigoIdioma(actividad.getIdioma().getCodigo());
+                    dto.setCreatedAt(actividad.getCreatedAt());
+                    dto.setCalificacion(actividad.getCalificacion());
+                    dto.setCantidadComentario(
+                            comentarioService.ContarComentariosPorActividad(actividad.getIdActividad()));
+                    dto.setIdCategoria(
+                            actividad.getCategoria() != null ? actividad.getCategoria().getIdCategoria() : null);
+                    dto.setIdColaborador(
+                            actividad.getColaborador() != null ? actividad.getColaborador().getIdColaborador() : null);
+                    dto.setNombreCategoria(
+                            actividad.getCategoria() != null ? actividad.getCategoria().getNombre() : "Sin categoría");
+
+                    System.out.println("categoria => " + actividad.getCategoria());
+                    System.out.println("colaborador => " + actividad.getColaborador());
+
+                    // precios
+                    dto.setPrecio(actividad.getPrecio());
+                    dto.setPrecioConsumidor(usuarioHelper.CalcularPrecioConsumidor(actividad.getPrecio()));
+
+                    return dto;
+                })
+                .toList();
+
         model.addAttribute("busqueda", new BusquedaForm());
-        model.addAttribute("actividades", actividadesPage);
+        model.addAttribute("actividades", actividadesDTO);
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", actividadesPage.getTotalPages());
         model.addAttribute("filtroNombre", termino);

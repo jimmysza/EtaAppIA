@@ -1,0 +1,48 @@
+# Resumen del Proyecto: "ETA"
+
+## ¿De qué trata el proyecto?
+
+"ETA" (eta_app) es una plataforma web completa diseñada para conectar a proveedores de actividades turísticas y recreativas con clientes. Funciona como un marketplace donde los "Colaboradores" (proveedores) pueden publicar y gestionar sus actividades, y los "Clientes" pueden descubrir, reservar y pagar por estas experiencias.
+
+El sistema está estructurado en torno a tres roles de usuario principales:
+
+1.  **Cliente**: Es el usuario final que busca y reserva actividades. Pueden registrarse, iniciar sesión (incluyendo con Google), buscar actividades por texto o categoría, ver detalles, hacer reservaciones según la disponibilidad y gestionar su perfil y sus reservas desde un panel personal.
+2.  **Colaborador**: Es el proveedor del servicio o actividad. Tienen un panel para crear, editar y gestionar sus propias actividades, definir la disponibilidad (cupos, fechas), y ver las reservas que han recibido.
+3.  **Administrador**: Supervisa toda la plataforma. Tienen un panel de control con estadísticas clave (ingresos por comisiones, número de usuarios, etc.) y gestionan los datos maestros del sistema, como las categorías de actividades y los idiomas disponibles.
+
+La plataforma calcula automáticamente precios y comisiones, gestiona la disponibilidad de cupos y ofrece una experiencia de usuario fluida desde el descubrimiento de la actividad hasta la finalización de la reserva.
+
+## Tecnologías Utilizadas
+
+- **Backend**:
+  - **Lenguaje**: Java 17
+  - **Framework**: Spring Boot 3
+    - **Módulos Clave**: Spring Web (para la API REST y controladores MVC), Spring Data JPA (para la persistencia de datos con Hibernate), Spring Security (para la autenticación y autorización, incluyendo login con usuario/contraseña y OAuth 2.0 para Google).
+  - **Base de Datos**: MySQL.
+  - **Herramienta de Construcción**: Apache Maven.
+
+- **Frontend**:
+  - **Motor de Plantillas**: Thymeleaf (para renderizado del lado del servidor).
+  - **Estilos**: Tailwind CSS (para un diseño moderno y responsivo).
+  - **JavaScript**: Vanilla JS para la interactividad del lado del cliente (modales, alertas, etc.).
+
+- **Despliegue y Entorno**:
+  - **Contenerización**: Docker (configurado a través de `Dockerfile` y `docker-compose.yml` para orquestar la aplicación y la base de datos).
+
+- **Librerías Adicionales**:
+  - **Lombok**: Para reducir el código repetitivo en las entidades y DTOs de Java.
+
+## Logros Clave / Funcionalidades Destacadas
+
+Este proyecto es un excelente ejemplo de una aplicación web monolítica full-stack con funcionalidades robustas, ideal para un portafolio o CV.
+
+- **Arquitectura de Software Completa**: Implementación de una arquitectura Modelo-Vista-Controlador (MVC) con una clara separación de responsabilidades (controladores, servicios, repositorios, entidades).
+- **Sistema de Autenticación y Autorización Multi-rol**: Sistema de seguridad robusto que diferencia los permisos y las vistas para Administradores, Clientes y Colaboradores. Incluye protección de rutas y gestión de sesiones.
+- **Integración con OAuth 2.0**: Permite a los usuarios registrarse e iniciar sesión de forma segura y conveniente utilizando sus cuentas de Google.
+- **Gestión de Transacciones y Reservas**: Lógica de negocio para gestionar el ciclo de vida completo de una reserva: creación, consulta, actualización de disponibilidad (cupos) y cancelación.
+- **Panel de Control (Dashboard) Analítico**: El dashboard de administrador no solo gestiona datos, sino que también calcula y muestra métricas de negocio importantes, como los ingresos generados por comisiones, demostrando la capacidad de implementar lógica de negocio compleja.
+- **Interfaz de Usuario Dinámica y Responsiva**: Uso de Thymeleaf y Tailwind CSS para crear una interfaz limpia, moderna y adaptable a diferentes dispositivos, con componentes interactivos manejados por JavaScript.
+- **Buenas Prácticas de Desarrollo**:
+  - **Manejo de Dependencias**: Uso de Maven para una gestión centralizada del proyecto.
+  - **Persistencia de Datos Eficiente**: Uso de Spring Data JPA y Hibernate para mapear objetos Java a una base de datos relacional de forma eficiente.
+  - **Entorno de Desarrollo Reproducible**: Gracias a Docker, el proyecto puede ser levantado y ejecutado en cualquier máquina de forma consistente.
