@@ -22,44 +22,10 @@ body {
 }
 
 
-/*Categorias*/
-.Categorias {
-    width: 100%;
-    max-width: 1365px;
-    margin: 0px auto;
-    height: fit-content;
-    padding: 1.5rem 3rem 0rem 3rem;
-}
-
-.container-Categorias {
-    display: flex;
-    width: 100%;
-    align-items: center;
-    justify-content: center;
-    gap: 28px;
-}
-
-.circle-cat {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    gap: 10px;
-    text-align: center;
-    padding: 7px 20px;
-    cursor: pointer;
-    background-color: #e9e6e6;
-    border-radius: 20px;
-    max-width: 100px;
-    min-width: 100px;
-    max-height: 100px;
-    min-height: 100px;
-}
 
 .count-cat {
-    font-size: 8px;
-    color: #e9e6e6;
+    font-size: 12px;
+    color: #bab8b8;
 }
 
 

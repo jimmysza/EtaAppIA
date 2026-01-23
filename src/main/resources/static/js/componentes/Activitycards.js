@@ -1,4 +1,4 @@
-
+  
 const scrollContainer = document.getElementById('scrollContainer');
 const scrollLeftBtn = document.getElementById('scrollLeft');
 const scrollRightBtn = document.getElementById('scrollRight');

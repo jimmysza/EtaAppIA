@@ -1,0 +1,888 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Horizontal Scroll - Modern Version</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Hide scrollbar */
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        /* Smooth scrolling */
+        .scroll-container {
+            scroll-behavior: smooth;
+            -webkit-overflow-scrolling: touch;
+            overscroll-behavior-x: contain;
+        }
+
+        /* Arrow styles */
+        .arrow {
+            width: 40px;
+            height: 40px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            user-select: none;
+        }
+
+        .arrow:hover:not(.disabled) {
+            background: #f3f4f6;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            transform: scale(1.05);
+        }
+
+        .arrow.disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
+        .arrow svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        /* Badge filter styles */
+        .badge-filter {
+            background-color: #f3f4f6;
+            color: #6b7280;
+            user-select: none;
+        }
+
+        .badge-filter:hover {
+            background-color: #e5e7eb;
+            transform: translateY(-1px);
+        }
+
+        .badge-filter.active {
+            background-color: #1f2937;
+            color: white;
+        }
+
+        .badge-filter.more-btn {
+            background-color: #eff6ff;
+            color: #2563eb;
+            border: 1px solid #dbeafe;
+        }
+
+        .badge-filter.more-btn:hover {
+            background-color: #dbeafe;
+        }
+
+        /* Modal styles */
+        #categoriesModal.show {
+            display: flex;
+        }
+
+        .modal-category-btn.selected {
+            border-color: #3b82f6;
+            background-color: #eff6ff;
+        }
+
+        .card {
+            transition: transform 0.3s ease;
+            user-select: none;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+        }
+
+        .card img {
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover img {
+            transform: scale(1.05);
+        }
+
+        /* Hide arrows on touch devices */
+        @media (hover: none) and (pointer: coarse) {
+            .arrows-container {
+                display: none !important;
+            }
+        }
+
+        /* Desktop: hide arrows when content fits */
+        @media (min-width: 1024px) {
+            .hs-wrapper.content-fits .arrows-container {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50">
+
+    <div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
+
+        <!-- Filter Section with Badges -->
+        <div class="mb-12">
+            <div class="flex items-center justify-between mb-6">
+                <div>
+                    <h1 class="text-3xl md:text-4xl font-bold text-gray-900 mb-2">Explore Activities</h1>
+                    <p class="text-gray-600">Find your next adventure</p>
+                </div>
+            </div>
+
+            <!-- Category Badges with Horizontal Scroll and Navigation -->
+            <div class="badge-wrapper relative">
+                <!-- Botón izquierdo (solo desktop) -->
+                <button
+                    class="arrow arrow-prev-badge disabled absolute left-0 top-1/2 -translate-y-1/2 -translate-x-5 z-10 hidden md:flex">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                        stroke-width="2.5">
+                        <polyline points="15 18 9 12 15 6"></polyline>
+                    </svg>
+                </button>
+
+                <div class="scroll-container-badges scroll-container hide-scrollbar overflow-x-auto">
+                    <div class="flex gap-3 pb-2 px-1">
+                        <button
+                            class="badge-filter active flex-none px-6 py-3 rounded-full font-semibold text-sm whitespace-nowrap transition-all select-none">
+                            All
+                        </button>
+                        <button
+                            class="badge-filter flex-none px-6 py-3 rounded-full font-semibold text-sm whitespace-nowrap transition-all select-none">
+                            Adventure
+                        </button>
+                        <button
+                            class="badge-filter flex-none px-6 py-3 rounded-full font-semibold text-sm whitespace-nowrap transition-all select-none">
+                            Culture
+                        </button>
+                        <button
+                            class="badge-filter flex-none px-6 py-3 rounded-full font-semibold text-sm whitespace-nowrap transition-all select-none">
+                            Food & Drink
+                        </button>
+                        <button
+                            class="badge-filter flex-none px-6 py-3 rounded-full font-semibold text-sm whitespace-nowrap transition-all select-none">
+                            Nature
+                        </button>
+                        <button
+                            class="badge-filter flex-none px-6 py-3 rounded-full font-semibold text-sm whitespace-nowrap transition-all select-none">
+                            Sports
+                        </button>
+                        <button
+                            class="badge-filter flex-none px-6 py-3 rounded-full font-semibold text-sm whitespace-nowrap transition-all select-none">
+                            Entertainment
+                        </button>
+                        <button
+                            class="badge-filter flex-none px-6 py-3 rounded-full font-semibold text-sm whitespace-nowrap transition-all select-none">
+                            Wellness
+                        </button>
+                        <button id="moreCategories"
+                            class="badge-filter more-btn flex-none px-6 py-3 rounded-full font-semibold text-sm whitespace-nowrap transition-all flex items-center gap-2 select-none">
+                            <span>More</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="1"></circle>
+                                <circle cx="12" cy="5" r="1"></circle>
+                                <circle cx="12" cy="19" r="1"></circle>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Botón derecho (solo desktop) -->
+                <button
+                    class="arrow arrow-next-badge absolute right-0 top-1/2 -translate-y-1/2 translate-x-5 z-10 hidden md:flex">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                        stroke-width="2.5">
+                        <polyline points="9 18 15 12 9 6"></polyline>
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- Modal for More Categories -->
+        <div id="categoriesModal"
+            class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50 backdrop-blur-sm">
+            <div class="bg-white rounded-2xl shadow-2xl max-w-2xl w-full mx-4 max-h-[80vh] overflow-hidden">
+                <!-- Modal Header -->
+                <div class="flex items-center justify-between p-6 border-b border-gray-200">
+                    <h3 class="text-2xl font-bold text-gray-900">All Categories</h3>
+                    <button id="closeModal"
+                        class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-gray-100 transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- Modal Content -->
+                <div class="p-6 overflow-y-auto max-h-[calc(80vh-120px)]">
+                    <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                        <button
+                            class="modal-category-btn p-4 rounded-xl border-2 border-gray-200 hover:border-blue-500 hover:bg-blue-50 transition-all text-left">
+                            <div class="flex items-center gap-3">
+                                <div
+                                    class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center text-2xl">
+                                    🏔️</div>
+                                <div>
+                                    <p class="font-semibold text-gray-900">Adventure</p>
+                                    <p class="text-xs text-gray-500">234 activities</p>
+                                </div>
+                            </div>
+                        </button>
+
+                        <button
+                            class="modal-category-btn p-4 rounded-xl border-2 border-gray-200 hover:border-blue-500 hover:bg-blue-50 transition-all text-left">
+                            <div class="flex items-center gap-3">
+                                <div
+                                    class="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center text-2xl">
+                                    🎭</div>
+                                <div>
+                                    <p class="font-semibold text-gray-900">Culture</p>
+                                    <p class="text-xs text-gray-500">156 activities</p>
+                                </div>
+                            </div>
+                        </button>
+
+                        <button
+                            class="modal-category-btn p-4 rounded-xl border-2 border-gray-200 hover:border-blue-500 hover:bg-blue-50 transition-all text-left">
+                            <div class="flex items-center gap-3">
+                                <div
+                                    class="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center text-2xl">
+                                    🍕</div>
+                                <div>
+                                    <p class="font-semibold text-gray-900">Food & Drink</p>
+                                    <p class="text-xs text-gray-500">189 activities</p>
+                                </div>
+                            </div>
+                        </button>
+
+                        <button
+                            class="modal-category-btn p-4 rounded-xl border-2 border-gray-200 hover:border-blue-500 hover:bg-blue-50 transition-all text-left">
+                            <div class="flex items-center gap-3">
+                                <div
+                                    class="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center text-2xl">
+                                    🌿</div>
+                                <div>
+                                    <p class="font-semibold text-gray-900">Nature</p>
+                                    <p class="text-xs text-gray-500">312 activities</p>
+                                </div>
+                            </div>
+                        </button>
+
+                        <button
+                            class="modal-category-btn p-4 rounded-xl border-2 border-gray-200 hover:border-blue-500 hover:bg-blue-50 transition-all text-left">
+                            <div class="flex items-center gap-3">
+                                <div
+                                    class="w-10 h-10 bg-yellow-100 rounded-full flex items-center justify-center text-2xl">
+                                    ⚽</div>
+                                <div>
+                                    <p class="font-semibold text-gray-900">Sports</p>
+                                    <p class="text-xs text-gray-500">267 activities</p>
+                                </div>
+                            </div>
+                        </button>
+
+                        <button
+                            class="modal-category-btn p-4 rounded-xl border-2 border-gray-200 hover:border-blue-500 hover:bg-blue-50 transition-all text-left">
+                            <div class="flex items-center gap-3">
+                                <div
+                                    class="w-10 h-10 bg-pink-100 rounded-full flex items-center justify-center text-2xl">
+                                    🎪</div>
+                                <div>
+                                    <p class="font-semibold text-gray-900">Entertainment</p>
+                                    <p class="text-xs text-gray-500">198 activities</p>
+                                </div>
+                            </div>
+                        </button>
+
+                        <button
+                            class="modal-category-btn p-4 rounded-xl border-2 border-gray-200 hover:border-blue-500 hover:bg-blue-50 transition-all text-left">
+                            <div class="flex items-center gap-3">
+                                <div
+                                    class="w-10 h-10 bg-indigo-100 rounded-full flex items-center justify-center text-2xl">
+                                    🧘</div>
+                                <div>
+                                    <p class="font-semibold text-gray-900">Wellness</p>
+                                    <p class="text-xs text-gray-500">145 activities</p>
+                                </div>
+                            </div>
+                        </button>
+
+                        <button
+                            class="modal-category-btn p-4 rounded-xl border-2 border-gray-200 hover:border-blue-500 hover:bg-blue-50 transition-all text-left">
+                            <div class="flex items-center gap-3">
+                                <div
+                                    class="w-10 h-10 bg-orange-100 rounded-full flex items-center justify-center text-2xl">
+                                    🎨</div>
+                                <div>
+                                    <p class="font-semibold text-gray-900">Art</p>
+                                    <p class="text-xs text-gray-500">223 activities</p>
+                                </div>
+                            </div>
+                        </button>
+
+                        <button
+                            class="modal-category-btn p-4 rounded-xl border-2 border-gray-200 hover:border-blue-500 hover:bg-blue-50 transition-all text-left">
+                            <div class="flex items-center gap-3">
+                                <div
+                                    class="w-10 h-10 bg-teal-100 rounded-full flex items-center justify-center text-2xl">
+                                    🎵</div>
+                                <div>
+                                    <p class="font-semibold text-gray-900">Music</p>
+                                    <p class="text-xs text-gray-500">178 activities</p>
+                                </div>
+                            </div>
+                        </button>
+
+                        <button
+                            class="modal-category-btn p-4 rounded-xl border-2 border-gray-200 hover:border-blue-500 hover:bg-blue-50 transition-all text-left">
+                            <div class="flex items-center gap-3">
+                                <div
+                                    class="w-10 h-10 bg-cyan-100 rounded-full flex items-center justify-center text-2xl">
+                                    🏖️</div>
+                                <div>
+                                    <p class="font-semibold text-gray-900">Beach</p>
+                                    <p class="text-xs text-gray-500">156 activities</p>
+                                </div>
+                            </div>
+                        </button>
+
+                        <button
+                            class="modal-category-btn p-4 rounded-xl border-2 border-gray-200 hover:border-blue-500 hover:bg-blue-50 transition-all text-left">
+                            <div class="flex items-center gap-3">
+                                <div
+                                    class="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center text-2xl">
+                                    🏛️</div>
+                                <div>
+                                    <p class="font-semibold text-gray-900">History</p>
+                                    <p class="text-xs text-gray-500">201 activities</p>
+                                </div>
+                            </div>
+                        </button>
+
+                        <button
+                            class="modal-category-btn p-4 rounded-xl border-2 border-gray-200 hover:border-blue-500 hover:bg-blue-50 transition-all text-left">
+                            <div class="flex items-center gap-3">
+                                <div
+                                    class="w-10 h-10 bg-rose-100 rounded-full flex items-center justify-center text-2xl">
+                                    ❤️</div>
+                                <div>
+                                    <p class="font-semibold text-gray-900">Romance</p>
+                                    <p class="text-xs text-gray-500">89 activities</p>
+                                </div>
+                            </div>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 1 -->
+        <div class="hs-wrapper mb-16">
+            <div class="flex items-center justify-between mb-6">
+                <h2 class="text-2xl md:text-3xl font-bold text-gray-900">Popular Destinations</h2>
+                <div class="arrows-container flex gap-2">
+                    <button class="arrow arrow-prev disabled">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                            stroke-width="2.5">
+                            <polyline points="15 18 9 12 15 6"></polyline>
+                        </svg>
+                    </button>
+                    <button class="arrow arrow-next">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                            stroke-width="2.5">
+                            <polyline points="9 18 15 12 9 6"></polyline>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <div class="relative -mx-4 sm:mx-0">
+                <div class="scroll-container hide-scrollbar overflow-x-auto px-4 sm:px-0">
+                    <div class="flex gap-4 pb-2">
+                        <!-- Card 1 -->
+                        <div class="card flex-none w-[280px] sm:w-[calc(25%-12px)]">
+                            <a href="#" class="block group">
+                                <div class="relative rounded-2xl overflow-hidden mb-3 aspect-square">
+                                    <img src="https://images.unsplash.com/photo-1552832230-c0197dd311b5?w=400&h=400&fit=crop"
+                                        alt="Rome" class="w-full h-full object-cover">
+                                    <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+                                </div>
+                                <div class="px-1">
+                                    <h3 class="text-lg font-bold text-gray-900 mb-1">Rome</h3>
+                                    <p class="text-sm text-gray-500">Italy • 234 activities</p>
+                                </div>
+                            </a>
+                        </div>
+
+                        <!-- Card 2 -->
+                        <div class="card flex-none w-[280px] sm:w-[calc(25%-12px)]">
+                            <a href="#" class="block group">
+                                <div class="relative rounded-2xl overflow-hidden mb-3 aspect-square">
+                                    <img src="https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=400&h=400&fit=crop"
+                                        alt="Paris" class="w-full h-full object-cover">
+                                    <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+                                </div>
+                                <div class="px-1">
+                                    <h3 class="text-lg font-bold text-gray-900 mb-1">Paris</h3>
+                                    <p class="text-sm text-gray-500">France • 456 activities</p>
+                                </div>
+                            </a>
+                        </div>
+
+                        <!-- Card 3 -->
+                        <div class="card flex-none w-[280px] sm:w-[calc(25%-12px)]">
+                            <a href="#" class="block group">
+                                <div class="relative rounded-2xl overflow-hidden mb-3 aspect-square">
+                                    <img src="https://images.unsplash.com/photo-1534351590666-13e3e96b5017?w=400&h=400&fit=crop"
+                                        alt="Amsterdam" class="w-full h-full object-cover">
+                                    <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+                                </div>
+                                <div class="px-1">
+                                    <h3 class="text-lg font-bold text-gray-900 mb-1">Amsterdam</h3>
+                                    <p class="text-sm text-gray-500">Netherlands • 189 activities</p>
+                                </div>
+                            </a>
+                        </div>
+
+                        <!-- Card 4 -->
+                        <div class="card flex-none w-[280px] sm:w-[calc(25%-12px)]">
+                            <a href="#" class="block group">
+                                <div class="relative rounded-2xl overflow-hidden mb-3 aspect-square">
+                                    <img src="https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?w=400&h=400&fit=crop"
+                                        alt="New York" class="w-full h-full object-cover">
+                                    <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+                                </div>
+                                <div class="px-1">
+                                    <h3 class="text-lg font-bold text-gray-900 mb-1">New York City</h3>
+                                    <p class="text-sm text-gray-500">USA • 567 activities</p>
+                                </div>
+                            </a>
+                        </div>
+
+                        <!-- Card 5 -->
+                        <div class="card flex-none w-[280px] sm:w-[calc(25%-12px)]">
+                            <a href="#" class="block group">
+                                <div class="relative rounded-2xl overflow-hidden mb-3 aspect-square">
+                                    <img src="https://images.unsplash.com/photo-1554797589-7241bb691973?w=400&h=400&fit=crop"
+                                        alt="Boston" class="w-full h-full object-cover">
+                                    <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+                                </div>
+                                <div class="px-1">
+                                    <h3 class="text-lg font-bold text-gray-900 mb-1">Boston</h3>
+                                    <p class="text-sm text-gray-500">USA • 234 activities</p>
+                                </div>
+                            </a>
+                        </div>
+
+                        <!-- Card 6 -->
+                        <div class="card flex-none w-[280px] sm:w-[calc(25%-12px)]">
+                            <a href="#" class="block group">
+                                <div class="relative rounded-2xl overflow-hidden mb-3 aspect-square">
+                                    <img src="https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?w=400&h=400&fit=crop"
+                                        alt="Chicago" class="w-full h-full object-cover">
+                                    <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+                                </div>
+                                <div class="px-1">
+                                    <h3 class="text-lg font-bold text-gray-900 mb-1">Chicago</h3>
+                                    <p class="text-sm text-gray-500">USA • 345 activities</p>
+                                </div>
+                            </a>
+                        </div>
+
+                        <!-- Card 7 -->
+                        <div class="card flex-none w-[280px] sm:w-[calc(25%-12px)]">
+                            <a href="#" class="block group">
+                                <div class="relative rounded-2xl overflow-hidden mb-3 aspect-square">
+                                    <img src="https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=400&h=400&fit=crop"
+                                        alt="Tokyo" class="w-full h-full object-cover">
+                                    <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+                                </div>
+                                <div class="px-1">
+                                    <h3 class="text-lg font-bold text-gray-900 mb-1">Tokyo</h3>
+                                    <p class="text-sm text-gray-500">Japan • 678 activities</p>
+                                </div>
+                            </a>
+                        </div>
+
+                        <!-- Card 8 -->
+                        <div class="card flex-none w-[280px] sm:w-[calc(25%-12px)]">
+                            <a href="#" class="block group">
+                                <div class="relative rounded-2xl overflow-hidden mb-3 aspect-square">
+                                    <img src="https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?w=400&h=400&fit=crop"
+                                        alt="London" class="w-full h-full object-cover">
+                                    <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+                                </div>
+                                <div class="px-1">
+                                    <h3 class="text-lg font-bold text-gray-900 mb-1">London</h3>
+                                    <p class="text-sm text-gray-500">UK • 432 activities</p>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 2 -->
+        <div class="hs-wrapper mb-16">
+            <div class="flex items-center justify-between mb-6">
+                <h2 class="text-2xl md:text-3xl font-bold text-gray-900">Trending Activities</h2>
+                <div class="arrows-container flex gap-2">
+                    <button class="arrow arrow-prev disabled">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                            stroke-width="2.5">
+                            <polyline points="15 18 9 12 15 6"></polyline>
+                        </svg>
+                    </button>
+                    <button class="arrow arrow-next">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                            stroke-width="2.5">
+                            <polyline points="9 18 15 12 9 6"></polyline>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <div class="relative -mx-4 sm:mx-0">
+                <div class="scroll-container hide-scrollbar overflow-x-auto px-4 sm:px-0">
+                    <div class="flex gap-4 pb-2">
+                        <!-- Repeat cards -->
+                        <div class="card flex-none w-[280px] sm:w-[calc(25%-12px)]">
+                            <a href="#" class="block group">
+                                <div class="relative rounded-2xl overflow-hidden mb-3 aspect-square">
+                                    <img src="https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=400&h=400&fit=crop"
+                                        alt="Activity" class="w-full h-full object-cover">
+                                    <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+                                </div>
+                                <div class="px-1">
+                                    <h3 class="text-lg font-bold text-gray-900 mb-1">Beach Adventure</h3>
+                                    <p class="text-sm text-gray-500">Water Sports</p>
+                                </div>
+                            </a>
+                        </div>
+
+                        <div class="card flex-none w-[280px] sm:w-[calc(25%-12px)]">
+                            <a href="#" class="block group">
+                                <div class="relative rounded-2xl overflow-hidden mb-3 aspect-square">
+                                    <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=400&fit=crop"
+                                        alt="Activity" class="w-full h-full object-cover">
+                                    <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+                                </div>
+                                <div class="px-1">
+                                    <h3 class="text-lg font-bold text-gray-900 mb-1">Mountain Hiking</h3>
+                                    <p class="text-sm text-gray-500">Adventure</p>
+                                </div>
+                            </a>
+                        </div>
+
+                        <div class="card flex-none w-[280px] sm:w-[calc(25%-12px)]">
+                            <a href="#" class="block group">
+                                <div class="relative rounded-2xl overflow-hidden mb-3 aspect-square">
+                                    <img src="https://images.unsplash.com/photo-1533929736458-ca588d08c8be?w=400&h=400&fit=crop"
+                                        alt="Activity" class="w-full h-full object-cover">
+                                    <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+                                </div>
+                                <div class="px-1">
+                                    <h3 class="text-lg font-bold text-gray-900 mb-1">City Tour</h3>
+                                    <p class="text-sm text-gray-500">Culture</p>
+                                </div>
+                            </a>
+                        </div>
+
+                        <div class="card flex-none w-[280px] sm:w-[calc(25%-12px)]">
+                            <a href="#" class="block group">
+                                <div class="relative rounded-2xl overflow-hidden mb-3 aspect-square">
+                                    <img src="https://images.unsplash.com/photo-1414016642750-7fdd78dc33d9?w=400&h=400&fit=crop"
+                                        alt="Activity" class="w-full h-full object-cover">
+                                    <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+                                </div>
+                                <div class="px-1">
+                                    <h3 class="text-lg font-bold text-gray-900 mb-1">Food Experience</h3>
+                                    <p class="text-sm text-gray-500">Gastronomy</p>
+                                </div>
+                            </a>
+                        </div>
+
+                        <div class="card flex-none w-[280px] sm:w-[calc(25%-12px)]">
+                            <a href="#" class="block group">
+                                <div class="relative rounded-2xl overflow-hidden mb-3 aspect-square">
+                                    <img src="https://images.unsplash.com/photo-1501594907352-04cda38ebc29?w=400&h=400&fit=crop"
+                                        alt="Activity" class="w-full h-full object-cover">
+                                    <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+                                </div>
+                                <div class="px-1">
+                                    <h3 class="text-lg font-bold text-gray-900 mb-1">Sunset Views</h3>
+                                    <p class="text-sm text-gray-500">Nature</p>
+                                </div>
+                            </a>
+                        </div>
+
+                        <div class="card flex-none w-[280px] sm:w-[calc(25%-12px)]">
+                            <a href="#" class="block group">
+                                <div class="relative rounded-2xl overflow-hidden mb-3 aspect-square">
+                                    <img src="https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=400&h=400&fit=crop"
+                                        alt="Activity" class="w-full h-full object-cover">
+                                    <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+                                </div>
+                                <div class="px-1">
+                                    <h3 class="text-lg font-bold text-gray-900 mb-1">Lake Adventure</h3>
+                                    <p class="text-sm text-gray-500">Relaxation</p>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // Initialize all horizontal scroll sections
+        class HorizontalScroll {
+            constructor(wrapper) {
+                this.wrapper = wrapper;
+                this.scrollContainer = wrapper.querySelector('.scroll-container');
+                this.prevArrow = wrapper.querySelector('.arrow-prev');
+                this.nextArrow = wrapper.querySelector('.arrow-next');
+
+                if (!this.scrollContainer || !this.prevArrow || !this.nextArrow) return;
+
+                this.init();
+            }
+
+            init() {
+                // Arrow click events
+                this.prevArrow.addEventListener('click', () => this.scrollPrev());
+                this.nextArrow.addEventListener('click', () => this.scrollNext());
+
+                // Update arrows on scroll
+                this.scrollContainer.addEventListener('scroll', () => this.updateArrows());
+
+                // Update arrows on window resize
+                window.addEventListener('resize', () => this.updateArrows());
+
+                // Mouse drag functionality (desktop only)
+                this.enableDragScroll();
+
+                // Initial arrow state
+                this.updateArrows();
+            }
+
+            scrollPrev() {
+                const scrollAmount = this.scrollContainer.offsetWidth * 0.8;
+                this.scrollContainer.scrollBy({
+                    left: -scrollAmount,
+                    behavior: 'smooth'
+                });
+            }
+
+            scrollNext() {
+                const scrollAmount = this.scrollContainer.offsetWidth * 0.8;
+                this.scrollContainer.scrollBy({
+                    left: scrollAmount,
+                    behavior: 'smooth'
+                });
+            }
+
+            updateArrows() {
+                const { scrollLeft, scrollWidth, clientWidth } = this.scrollContainer;
+                const maxScroll = scrollWidth - clientWidth;
+
+                // Update prev arrow
+                if (scrollLeft <= 10) {
+                    this.prevArrow.classList.add('disabled');
+                } else {
+                    this.prevArrow.classList.remove('disabled');
+                }
+
+                // Update next arrow
+                if (scrollLeft >= maxScroll - 10) {
+                    this.nextArrow.classList.add('disabled');
+                } else {
+                    this.nextArrow.classList.remove('disabled');
+                }
+
+                // Hide arrows if content fits (desktop only)
+                if (window.innerWidth >= 1024 && scrollWidth <= clientWidth + 10) {
+                    this.wrapper.classList.add('content-fits');
+                } else {
+                    this.wrapper.classList.remove('content-fits');
+                }
+            }
+
+            enableDragScroll() {
+                let isDragging = false;
+                let startX;
+                let scrollStart;
+
+                this.scrollContainer.addEventListener('mousedown', (e) => {
+                    isDragging = true;
+                    startX = e.pageX - this.scrollContainer.offsetLeft;
+                    scrollStart = this.scrollContainer.scrollLeft;
+                    this.scrollContainer.style.cursor = 'grabbing';
+                    this.scrollContainer.style.scrollBehavior = 'auto';
+                });
+
+                this.scrollContainer.addEventListener('mouseleave', () => {
+                    isDragging = false;
+                    this.scrollContainer.style.cursor = 'grab';
+                });
+
+                this.scrollContainer.addEventListener('mouseup', () => {
+                    isDragging = false;
+                    this.scrollContainer.style.cursor = 'grab';
+                    this.scrollContainer.style.scrollBehavior = 'smooth';
+                });
+
+                this.scrollContainer.addEventListener('mousemove', (e) => {
+                    if (!isDragging) return;
+                    e.preventDefault();
+                    const x = e.pageX - this.scrollContainer.offsetLeft;
+                    const walk = (x - startX) * 2;
+                    this.scrollContainer.scrollLeft = scrollStart - walk;
+                });
+            }
+        }
+
+        // Initialize all horizontal scroll sections
+        document.querySelectorAll('.hs-wrapper').forEach(wrapper => {
+            new HorizontalScroll(wrapper);
+        });
+
+        // Initialize badge scroll with navigation buttons
+        const badgeWrapper = document.querySelector('.badge-wrapper');
+        if (badgeWrapper) {
+            const badgeScroll = new HorizontalScroll(badgeWrapper);
+            // Override selectors for badge-specific elements
+            badgeScroll.scrollContainer = badgeWrapper.querySelector('.scroll-container-badges');
+            badgeScroll.prevArrow = badgeWrapper.querySelector('.arrow-prev-badge');
+            badgeScroll.nextArrow = badgeWrapper.querySelector('.arrow-next-badge');
+            badgeScroll.init();
+        }
+
+        // Badge filter functionality
+        let isScrollingBadge = false;
+        let startXBadge = 0;
+
+        document.querySelectorAll('.badge-filter:not(.more-btn)').forEach(badge => {
+            const container = document.querySelector('.scroll-container-badges');
+
+            // Detectar inicio de arrastre
+            badge.addEventListener('touchstart', function (e) {
+                isScrollingBadge = false;
+                startXBadge = e.touches[0].pageX;
+            }, { passive: true });
+
+            badge.addEventListener('mousedown', function (e) {
+                isScrollingBadge = false;
+                startXBadge = e.pageX;
+            });
+
+            // Detectar movimiento
+            badge.addEventListener('touchmove', function (e) {
+                const x = e.touches[0].pageX;
+                const walk = Math.abs(startXBadge - x);
+                if (walk > 5) {
+                    isScrollingBadge = true;
+                }
+            }, { passive: true });
+
+            badge.addEventListener('mousemove', function (e) {
+                const x = e.pageX;
+                const walk = Math.abs(startXBadge - x);
+                if (walk > 5) {
+                    isScrollingBadge = true;
+                }
+            });
+
+            // Solo activar badge si NO estamos scrolleando
+            badge.addEventListener('click', function (e) {
+                if (!isScrollingBadge) {
+                    // Remove active from all badges
+                    document.querySelectorAll('.badge-filter').forEach(b => b.classList.remove('active'));
+                    // Add active to clicked badge
+                    this.classList.add('active');
+
+                    // Here you would filter your content
+                    const category = this.textContent.trim();
+                    console.log('Filter by:', category);
+                }
+            });
+        });
+
+        // Modal functionality
+        const modal = document.getElementById('categoriesModal');
+        const moreBtn = document.getElementById('moreCategories');
+        const closeBtn = document.getElementById('closeModal');
+
+        moreBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            modal.classList.add('show');
+            document.body.style.overflow = 'hidden';
+        });
+
+        closeBtn.addEventListener('click', () => {
+            modal.classList.remove('show');
+            document.body.style.overflow = 'auto';
+        });
+
+        // Close modal on outside click
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                modal.classList.remove('show');
+                document.body.style.overflow = 'auto';
+            }
+        });
+
+        // Close modal on Escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && modal.classList.contains('show')) {
+                modal.classList.remove('show');
+                document.body.style.overflow = 'auto';
+            }
+        });
+
+        // Modal category selection
+        document.querySelectorAll('.modal-category-btn').forEach(btn => {
+            btn.addEventListener('click', function () {
+                const categoryName = this.querySelector('.font-semibold').textContent;
+
+                // Remove active from all badges
+                document.querySelectorAll('.badge-filter').forEach(b => b.classList.remove('active'));
+
+                // Find and activate the corresponding badge (if exists)
+                const matchingBadge = Array.from(document.querySelectorAll('.badge-filter:not(.more-btn)')).find(
+                    badge => badge.textContent.trim() === categoryName
+                );
+
+                if (matchingBadge) {
+                    matchingBadge.classList.add('active');
+                }
+
+                // Close modal
+                modal.classList.remove('show');
+                document.body.style.overflow = 'auto';
+
+                // Filter content
+                console.log('Filter by:', categoryName);
+            });
+        });
+    </script>
+
+</body>
+
+</html>

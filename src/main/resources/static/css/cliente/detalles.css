@@ -151,7 +151,7 @@ h1 {
     background-color: #ffffff;
     z-index: 9;
     width: 100%;
-    max-width: 100%     ;
+    max-width: 100%;
     padding-top: 0px;
     transition: box-shadow 0.3s ease;
 }
@@ -185,7 +185,7 @@ h1 {
 }
 
 
-.nav-inicio:first-child svg{
+.nav-inicio:first-child svg {
     rotate: 0deg;
 }
 
@@ -334,7 +334,8 @@ h1 {
     color: #8f8f8f;
     margin-top: 4px;
 }
-.contenido-title{
+
+.contenido-title {
     margin-top: 16px;
     font-size: 20px;
     font-weight: 900;
@@ -471,26 +472,35 @@ h1 {
         height: auto;
         max-height: 300px;
     }
+
     #navbar {
         display: none;
     }
 
-    .contenido{
+    .contenido {
         padding: 20px;
     }
 
-    .activity-detail-container{
+    .activity-detail-container {
         margin: 0;
         width: 100%;
     }
 
-    .button-default{
+    .button-default {
         margin: 0 auto;
+    }
+
+    .galeria-container {
+        display: flex;
+        justify-content: center;
+        width: 100%;
+        margin-top: 90px;
+        padding: 0 20px;
     }
 }
 
 
-select{
+select {
     width: 100%;
     max-width: 600px;
     padding: 8px;
@@ -500,7 +510,7 @@ select{
     box-sizing: border-box;
 }
 
-option{
+option {
     padding: 10px;
     font-size: 16px;
     color: black;

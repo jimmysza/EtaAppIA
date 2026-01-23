@@ -1,7 +1,6 @@
 package maineta.eta.service;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -39,6 +38,23 @@ public class ActividadServiceImpl implements ActividadService {
         this.actividadRepository = actividadRepository;
         this.comentarioRepository = comentarioRepository;
     }
+
+    public Map<Long, Long> contarActividadesPorCategorias(List<Long> categoriaIds) {
+
+        List<Object[]> resultados =
+                actividadRepository.contarActividadesPorCategorias(categoriaIds);
+
+        Map<Long, Long> conteo = new HashMap<>();
+
+        for (Object[] fila : resultados) {
+            Long idCategoria = (Long) fila[0];
+            Long cantidad = (Long) fila[1];
+            conteo.put(idCategoria, cantidad);
+        }
+
+        return conteo;
+    }
+
 
     @Override
     public int ContadorActividadesPorCategoria(Long idCategoria) {

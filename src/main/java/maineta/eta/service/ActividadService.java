@@ -1,6 +1,7 @@
 package maineta.eta.service;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.data.domain.Page;
 
@@ -64,6 +65,7 @@ public interface ActividadService {
      */
     Page<Actividad> getActividadesWithPagination(int page, int size);
 
+    public Map<Long, Long> contarActividadesPorCategorias(List<Long> categoriaIds);
     /**
      * Lista todas las actividades sin paginación.
      *
