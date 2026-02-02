@@ -9,89 +9,302 @@
     <link rel="stylesheet" th:href="@{/css/colaborador/navColab.css}">
     <link rel="stylesheet" th:href="@{/css/componentes/modales.css}">
     <link rel="stylesheet" th:href="@{/css/colaborador/detallesColab.css}">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Estilos para los botones del sidebar */
+        .btnEdicion {
+            transition: all 0.2s ease;
+        }
+
+        .btnEdicion:hover {
+            background-color: #f3f4f6;
+            border-color: #111827;
+        }
+
+        .btnEdicion.active {
+            background-color: #e5e7eb;
+            border-color: #111827;
+            border-width: 2px;
+        }
+
+        /* Estilos para las secciones del formulario */
+        .form-edit {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .form-edit.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Estilos para el contenedor principal */
+        main {
+            padding: 2rem;
+        }
+
+        .form-container {
+            background: white;
+            border-radius: 0.75rem;
+            padding: 2rem;
+
+        }
+
+        .form-edit label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            font-size: 1.125rem;
+        }
+
+        .form-edit input[type="text"],
+        .form-edit input[type="number"],
+        .form-edit textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.5rem;
+            margin-bottom: 1rem;
+            font-size: 1rem;
+        }
+
+        .form-edit input[type="text"]:focus,
+        .form-edit input[type="number"]:focus {
+            outline: none;
+            border-color: #111827;
+            box-shadow: 0 0 0 3px rgba(17, 24, 39, 0.1);
+        }
+
+        .info-display {
+            background-color: #f9fafb;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .info-display p {
+            margin: 0.5rem 0;
+            font-size: 1rem;
+            color: #374151;
+        }
+
+        .button-default {
+            background-color: #111827;
+            color: white;
+            padding: 0.875rem 1.5rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            transition: background-color 0.2s;
+            margin-top: 1rem;
+        }
+
+        .button-default:hover {
+            background-color: #000000;
+        }
+    </style>
 </head>
 
-<body>
+<body class="mx-0 my-0">
 
     <div th:replace="~{componentes/nav_colab :: nav_colab}"></div>
+    <div class="flex">
 
-    <main>
-
-        <form class="nav_secciones" th:action="@{/colaborador/actividades/actualizar/{id}(id=${actividad.idActividad})}"
-            th:object="${actividad}" method="post">
-            <ul>
-                <li class="form-edit">
-                    <label for="titulo"><strong>Título:</strong>
-                    </label>
-                    <input type="text" id="titulo" th:field="*{titulo}"
-                        style="width: 100%; padding: 8px; margin-bottom: 16px;" />
-
-                </li>
-                <li class="form-edit">
-                    <label for="descripcion"><strong>Descripción:</strong></label>
-                    <input type="text" id="descripcion" th:field="*{descripcion}"
-                        style="width: 100%; padding: 8px; margin-bottom: 16px; box-sizing: border-box;" />
-                </li>
-                <li class="form-edit">
-                    <label for="imagen"><strong>Imagen Actual:</strong>
-                    </label>
-                    <img th:src="@{|/uploads/${actividad.imagen}|}" alt="Imagen de la actividad"
-                        style="max-width: 200px; height: auto; display: block; margin-bottom: 16px;" />
-                    <input type="file" id="imagen" name="file" />
-                </li>
-                <li class="form-edit">
-                    <label for="precio"><strong> Precio:</strong></label>
-                    <input type="number" id="precio" th:field="*{precio}" step="0.01"
-                        style="width: 100%; padding: 8px; margin-bottom: 16px; box-sizing: border-box;" />
-                </li>
-                <li class="form-edit">
-
-                    <label for=""><strong>Idioma</strong></label>
-                    <p th:text="${actividad.idioma.nombre}"></p> <!-- mostrará 'español' -->
-                    <p th:text="${actividad.idioma.codigo}"></p>
-                </li>
-                <li class="form-edit">
-                    <label for=""><strong>Calificacion</strong></label>
-                    <p th:text="${actividad.calificacion}"></p>
-
-                </li>
-                <li class="form-edit">
-                    <h2>PLataGanada</h2>
-                    <p th:text="${plataGanada}"></p>
-
-                </li>
-                <li class="form-edit">
-                    <label for="ubicacion"><strong>Lugar:</strong></label><br>
-                    <input type="text" id="ubicacion" th:field="*{ubicacion}"
-                        style="width: 100%; padding: 8px; margin-bottom: 16px; box-sizing: border-box;" />
-                </li>
-            </ul>
-            <button type="submit" class="button-default">Guardar cambios</button>
-        </form>
-
-        <div class="btns">
-
-
-
-            <a th:href="@{/colaborador/actividades}" class="btn btn-secondary">Volver</a>
-
-
-            <!--type="submit"-->
-            <button class="button-default btn_delete text-open-delete" id="open-delete-modal"
-                th:attr="data-id=${actividad.idActividad}">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24">
+        <aside
+            class="w-1/4 border-r-2 border-gray-200 flex flex-col justify-start items-center gap-5 pt-10 overflow-y-scroll max-h-[90vh] pb-20 px-4">
+            <a id="btnTitulo"
+                class="btnEdicion active text-xl font-bold px-6 py-3 border border-gray-200 w-full cursor-pointer rounded-xl">
+                Título
+            </a>
+            <a id="btnDesc"
+                class="btnEdicion text-xl font-bold px-6 py-3 border border-gray-200 w-full cursor-pointer rounded-xl">
+                Descripción
+            </a>
+            <a id="btnImg"
+                class="btnEdicion text-xl font-bold px-6 py-3 border border-gray-200 w-full cursor-pointer rounded-xl">
+                Imagen
+            </a>
+            <a id="btnPrecio"
+                class="btnEdicion text-xl font-bold px-6 py-3 border border-gray-200 w-full cursor-pointer rounded-xl">
+                Precio
+            </a>
+            <a id="btnIdioma"
+                class="btnEdicion text-xl font-bold px-6 py-3 border border-gray-200 w-full cursor-pointer rounded-xl">
+                Idioma
+            </a>
+            <a id="btnCalificacion"
+                class="btnEdicion text-xl font-bold px-6 py-3 border border-gray-200 w-full cursor-pointer rounded-xl">
+                Calificación
+            </a>
+            <a id="btnPlata"
+                class="btnEdicion text-xl font-bold px-6 py-3 border border-gray-200 w-full cursor-pointer rounded-xl">
+                Plata Ganada
+            </a>
+            <a id="btnUbicacion"
+                class="btnEdicion text-xl font-bold px-6 py-3 border border-gray-200 w-full cursor-pointer rounded-xl">
+                Ubicación
+            </a>
+            <button class="
+            text-xl font-bold px-6 py-3  w-full cursor-pointer rounded-xl bg-red-600 text-white flex justify-center items-center
+             text-open-delete" id="open-delete-modal" th:attr="data-id=${actividad.idActividad}">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                    style="display: inline-block; vertical-align: middle; margin-right: 0.5rem;">
                     <g fill="none">
                         <path fill="#fff" d="M8 21h8a2 2 0 0 0 2-2V7H6v12a2 2 0 0 0 2 2" opacity="0.16" />
                         <path stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
                             d="M14 11v6m-4-6v6M6 7v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V7M4 7h16M7 7l2-4h6l2 4" />
                     </g>
                 </svg>
-
-                Eliminar
+                Eliminar Actividad
             </button>
-        </div>
-    </main>
-    <!-- Modal para Eliminar , borre close btn-->
+        </aside>
+
+        <main class="w-full overflow-y-scroll max-h-[90vh]">
+            <div class="form-container">
+                <div class="flex flex-col">
+
+                    <!-- Sección Título -->
+                    <form class="form-edit active" id="seccionTitulo" method="post" th:action="@{/colaborador/actividades/actualizarTitulo/{id}(id=${actividad.idActividad})}" th:object="${actividad}">
+                        <label for="titulo">Título</label>
+                        <input type="text" id="titulo" th:field="*{titulo}"
+                            placeholder="Ingresa el título de la actividad" />
+                        <p class="text-sm text-gray-500 mt-2">Este es el nombre principal de tu actividad</p>
+
+                        <button type="submit" class="button-default">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                                style="display: inline-block; vertical-align: middle; margin-right: 0.5rem;">
+                                <path fill="currentColor"
+                                    d="M21 7v12q0 .825-.587 1.413T19 21H5q-.825 0-1.412-.587T3 19V5q0-.825.588-1.412T5 3h12zm-2 .85L12.85 14H11v-1.85L17.15 6H19zM5 19h14V9h-2v4q0 .425-.288.713T16 14h-4q-.425 0-.712-.288T11 13V9H5z" />
+                            </svg>
+                            Guardar Cambios
+                        </button>
+                    </form>
+
+                    <!-- Sección Descripción -->
+                    <form class="form-edit" id="seccionDesc" method="post" action="#" th:object="${actividad}">
+                        <label for="descripcion">Descripción</label>
+                        <textarea id="descripcion" th:field="*{descripcion}" rows="6"
+                            style="width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 0.5rem;"></textarea>
+
+                        <p class="text-sm text-gray-500 mt-2">Proporciona información detallada</p>
+                        <button type="submit" class="button-default">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                                style="display: inline-block; vertical-align: middle; margin-right: 0.5rem;">
+                                <path fill="currentColor"
+                                    d="M21 7v12q0 .825-.587 1.413T19 21H5q-.825 0-1.412-.587T3 19V5q0-.825.588-1.412T5 3h12zm-2 .85L12.85 14H11v-1.85L17.15 6H19zM5 19h14V9h-2v4q0 .425-.288.713T16 14h-4q-.425 0-.712-.288T11 13V9H5z" />
+                            </svg>
+                            Guardar Cambios
+                        </button>
+                    </form>
+
+
+                    <!-- Sección Imagen -->
+                    <div class="form-edit" id="seccionImg">
+                        <label>Imagen Actual</label>
+                        <div class="info-display">
+                            <img th:src="@{|/uploads/${actividad.imagen}|}" alt="Imagen de la actividad"
+                                style="max-width: 400px; height: auto; display: block; margin-bottom: 1rem; border-radius: 0.5rem;" />
+                        </div>
+                        <label for="imagen">Cambiar Imagen</label>
+                        <input type="file" id="imagen" name="file" accept="image/*"
+                            style="width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 0.5rem;" />
+                        <p class="text-sm text-gray-500 mt-2">Sube una nueva imagen para tu actividad</p>
+                    </div>
+
+                    <!-- Sección Precio -->
+                    <form class="form-edit" id="seccionPrecio" method="post" action="#" th:object="${actividad}">
+                        <label for="precio">Precio</label>
+                        <div style="display: flex; align-items: center; gap: 0.5rem;">
+                            <span>$</span>
+                            <input type="number" id="precio" th:field="*{precio}" step="0.01" />
+                            <span>COP</span>
+                        </div>
+
+                        <button type="submit" class="button-default">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                                style="display: inline-block; vertical-align: middle; margin-right: 0.5rem;">
+                                <path fill="currentColor"
+                                    d="M21 7v12q0 .825-.587 1.413T19 21H5q-.825 0-1.412-.587T3 19V5q0-.825.588-1.412T5 3h12zm-2 .85L12.85 14H11v-1.85L17.15 6H19zM5 19h14V9h-2v4q0 .425-.288.713T16 14h-4q-.425 0-.712-.288T11 13V9H5z" />
+                            </svg>
+                            Guardar Cambios
+                        </button>
+                    </form>
+
+
+                    <!-- Sección Idioma -->
+                    <div class="form-edit" id="seccionIdioma">
+                        <label>Idioma de la Actividad</label>
+                        <div class="info-display">
+                            <p><strong>Idioma:</strong> <span th:text="${actividad.idioma.nombre}">Español</span></p>
+                            <p><strong>Código:</strong> <span th:text="${actividad.idioma.codigo}">ES</span></p>
+                        </div>
+                        <p class="text-sm text-gray-500 mt-2">Información del idioma en el que se ofrece la actividad
+                        </p>
+                    </div>
+
+                    <!-- Sección Calificación -->
+                    <div class="form-edit" id="seccionCalificacion">
+                        <label>Calificación</label>
+                        <div class="info-display">
+                            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                <span style="font-size: 2rem; font-weight: 600;"
+                                    th:text="${actividad.calificacion}">4.5</span>
+                                <span style="font-size: 1.5rem; color: #fbbf24;">★</span>
+                            </div>
+                        </div>
+                        <p class="text-sm text-gray-500 mt-2">Calificación promedio de los usuarios</p>
+                    </div>
+
+                    <!-- Sección Plata Ganada -->
+                    <div class="form-edit" id="seccionPlata">
+                        <label>Plata Ganada</label>
+                        <div class="info-display">
+                            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                <span style="font-size: 2rem; font-weight: 600;">$</span>
+                                <span style="font-size: 2rem; font-weight: 600;" th:text="${plataGanada}">0</span>
+                                <span style="font-size: 1.25rem; color: #6b7280;">COP</span>
+                            </div>
+                        </div>
+                        <p class="text-sm text-gray-500 mt-2">Total de ingresos generados por esta actividad</p>
+                    </div>
+
+                    <!-- Sección Ubicación -->
+                    <form class="form-edit" id="seccionUbicacion" method="post" action="#" th:object="${actividad}">
+                        <label for="ubicacion">Ubicación</label>
+                        <input type="text" id="ubicacion" th:field="*{ubicacion}"
+                            placeholder="Ej: Cartagena, Bolívar" />
+
+                        <button type="submit" class="button-default">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                                style="display: inline-block; vertical-align: middle; margin-right: 0.5rem;">
+                                <path fill="currentColor"
+                                    d="M21 7v12q0 .825-.587 1.413T19 21H5q-.825 0-1.412-.587T3 19V5q0-.825.588-1.412T5 3h12zm-2 .85L12.85 14H11v-1.85L17.15 6H19zM5 19h14V9h-2v4q0 .425-.288.713T16 14h-4q-.425 0-.712-.288T11 13V9H5z" />
+                            </svg>
+                            Guardar Cambios
+                        </button>
+                    </form>
+
+
+                </div>
+
+
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal para Eliminar -->
     <div class="modal modal-delete">
         <form class="card" method="post">
             <div class="header-modal">
@@ -105,12 +318,11 @@
                 <div class="content">
                     <span class="title">Eliminando Actividad</span>
                     <p class="message">
-                        Estas Seguro que tu quieres eliminar la Actividad? todos sus datos sera
-                        permanentemente eliminado.
+                        ¿Estás seguro que quieres eliminar la actividad? Todos sus datos serán
+                        permanentemente eliminados.
                     </p>
                 </div>
                 <div class="actions">
-
                     <a id="delete-confirm-btn" class="delete-btn desactivate">Eliminar</a>
                     <button type="button" class="cancel close-btn-modal">Cancelar</button>
                 </div>
@@ -120,6 +332,39 @@
 
     <script th:src="@{/js/eliminar/actividad.js}"></script>
     <script th:src="@{/js/dashboard.js}"></script>
+    <script>
+        // Función para mostrar secciones según el botón clickeado
+        function mostrarSeccion(seccionId) {
+            // Ocultar todas las secciones
+            document.querySelectorAll('.form-edit').forEach(seccion => {
+                seccion.classList.remove('active');
+            });
+
+            // Mostrar la sección seleccionada
+            const seccionSeleccionada = document.getElementById(seccionId);
+            if (seccionSeleccionada) {
+                seccionSeleccionada.classList.add('active');
+            }
+
+            // Remover clase active de todos los botones
+            document.querySelectorAll('.btnEdicion').forEach(btn => {
+                btn.classList.remove('active');
+            });
+
+            // Agregar clase active al botón clickeado
+            event.target.classList.add('active');
+        }
+
+        // Agregar event listeners a todos los botones
+        document.getElementById('btnTitulo').addEventListener('click', () => mostrarSeccion('seccionTitulo'));
+        document.getElementById('btnDesc').addEventListener('click', () => mostrarSeccion('seccionDesc'));
+        document.getElementById('btnImg').addEventListener('click', () => mostrarSeccion('seccionImg'));
+        document.getElementById('btnPrecio').addEventListener('click', () => mostrarSeccion('seccionPrecio'));
+        document.getElementById('btnIdioma').addEventListener('click', () => mostrarSeccion('seccionIdioma'));
+        document.getElementById('btnCalificacion').addEventListener('click', () => mostrarSeccion('seccionCalificacion'));
+        document.getElementById('btnPlata').addEventListener('click', () => mostrarSeccion('seccionPlata'));
+        document.getElementById('btnUbicacion').addEventListener('click', () => mostrarSeccion('seccionUbicacion'));
+    </script>
 </body>
 
 </html>

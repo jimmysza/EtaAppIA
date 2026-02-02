@@ -109,6 +109,24 @@ public class ColaboradorController {
         return "redirect:/colaborador/actividades"; // Redirige a la
     }
 
+    @PostMapping("/actividades/actualizarTitulo/{id}")
+    public String updateTitulo(@PathVariable Long id, @ModelAttribute("actividad") Actividad nuevaActividad) {
+        actividadService.actualizarTitulo(id, nuevaActividad);
+        return "redirect:/colaborador/actividades"; // Redirige a la
+    }
+
+    @PostMapping("/actividades/actualizarDescripcion/{id}")
+    public String updateDescripcion(@PathVariable Long id, @ModelAttribute("actividad") Actividad nuevaActividad) {
+        actividadService.actualizarDescripcion(id, nuevaActividad);
+        return "redirect:/colaborador/actividades"; // Redirige a la
+    }
+
+    @PostMapping("/actividades/actualizarPrecio/{id}")
+    public String updatePrecio(@PathVariable Long id, @ModelAttribute("actividad") Actividad nuevaActividad) {
+        actividadService.actualizarPrecio(id, nuevaActividad);
+        return "redirect:/colaborador/actividades"; // Redirige a la
+    }
+
     // 🔹 Listar actividades del colaborador con paginación y filtros
     @GetMapping("/actividades")
     public String listar(@RequestParam(defaultValue = "0") int page,
@@ -266,7 +284,7 @@ public class ColaboradorController {
         model.addAttribute("actividad", actividad);
         model.addAttribute("plataGanada", plataGanada);
 
-        return "colaborador/detalle-actividad";
+        return "colaborador//detalle-actividad";
     }
 
 }

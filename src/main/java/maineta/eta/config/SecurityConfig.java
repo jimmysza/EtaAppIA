@@ -103,8 +103,8 @@ public class SecurityConfig {
                         .authorizeHttpRequests(requests -> requests
                                 .requestMatchers(
                                         "/registro/**",
+                                        "/actividad/**",
                                         "/login",
-                                        "/detalle/**",
                                         "/css/**",
                                         "/404",
                                         "/terminos-condiciones",

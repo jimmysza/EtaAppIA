@@ -28,7 +28,7 @@
     <div class=" hidden md:flex md:w-[40%] lg:w-[45%] bg-[#5885AF] relative items-center justify-center p-12 overflow-hidden">
       <div class="content">
         <a th:href="@{/}"
-          class=" absolute top-8 left-8 flex items-center gap-2 bg-white/20 backdrop-blur-md border border-white/30 text-white px-6 py-3 rounded-2xl font-bold hover:bg-white/30 transition-all active:scale-95 group">
+          class="absolute top-8 left-8 flex items-center gap-2 bg-white/20 backdrop-blur-md border border-white/30 text-white px-6 py-3 rounded-2xl font-bold hover:bg-white/30 transition-all active:scale-95 group">
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
             <path fill="currentColor"
               d="m4 10l-.707.707L2.586 10l.707-.707zm17 8a1 1 0 1 1-2 0zM8.293 15.707l-5-5l1.414-1.414l5 5zm-5-6.414l5-5l1.414 1.414l-5 5zM4 9h10v2H4zm17 7v2h-2v-2zm-7-7a7 7 0 0 1 7 7h-2a5 5 0 0 0-5-5z" />
@@ -57,15 +57,9 @@
 
     </div>
 
-  <div class="login-root">
+  <div class="login-root relative">
 
-    <a th:href="@{/}" class="return rt-2">
-      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-        <path fill="currentColor"
-          d="m4 10l-.707.707L2.586 10l.707-.707zm17 8a1 1 0 1 1-2 0zM8.293 15.707l-5-5l1.414-1.414l5 5zm-5-6.414l5-5l1.414 1.414l-5 5zM4 9h10v2H4zm17 7v2h-2v-2zm-7-7a7 7 0 0 1 7 7h-2a5 5 0 0 0-5-5z" />
-      </svg>
-      <span>Anterior pagina</span>
-    </a>
+    
 
     <h1 class="p-bold">Registrate con tu email</h1>
     <p class="text-sma">Bienvenido, Conviertete en un Colaborador</p>
@@ -179,9 +173,18 @@
       <button type="submit" class="login-button div9">Unete</button>
       <!--10 -->
       <p class="text-slate-500 font-medium pt-4 text-center div10">¿ya tienes una cuenta? <a th:href="@{/login?role=colaborador}" class="ColorBlue">inicia sesion</a></p>
+      <a th:href="@{/}"
+          class="div7 mt-10 relative w-full flex items-center gap-2 bg-black/20 backdrop-blur-md border border-black/30 text-black px-2 py-2 rounded-2xl font-bold hover:bg-black/30 transition-all active:scale-95 group">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+            <path fill="currentColor"
+              d="m4 10l-.707.707L2.586 10l.707-.707zm17 8a1 1 0 1 1-2 0zM8.293 15.707l-5-5l1.414-1.414l5 5zm-5-6.414l5-5l1.414 1.414l-5 5zM4 9h10v2H4zm17 7v2h-2v-2zm-7-7a7 7 0 0 1 7 7h-2a5 5 0 0 0-5-5z" />
+          </svg>
+          <span>Anterior pagina</span>
+        </a>
 
 
     </form>
+    
   </div>
 </main>
 <script th:src="@{/js/contraseñaMostrar.js}"></script>

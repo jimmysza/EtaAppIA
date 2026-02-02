@@ -18,9 +18,6 @@ main.registro {
 }
 
 
-
-
-
 .login-root {
     min-width: 400px;
     max-width: 800px;
@@ -256,9 +253,6 @@ main.registro {
 
 
 
-.rt-2 {
-    display: none;
-}
 
 @media screen and (max-width: 800px) {
 

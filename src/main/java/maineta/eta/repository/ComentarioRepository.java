@@ -23,14 +23,20 @@ public interface ComentarioRepository extends JpaRepository<Comentario, Long> {
     void deleteByActividadId(Long actividadId);
 
     @Query("""
-        SELECT c.actividad.idActividad, COUNT(c)
-        FROM Comentario c
-        WHERE c.actividad.idActividad IN :ids
-        GROUP BY c.actividad.idActividad
-    """)
+                SELECT c.actividad.idActividad, COUNT(c)
+                FROM Comentario c
+                WHERE c.actividad.idActividad IN :ids
+                GROUP BY c.actividad.idActividad
+            """)
     List<Object[]> contarComentariosPorActividades(@Param("ids") List<Long> ids);
 
     long countByActividad_IdActividad(Long idActividad);
 
+    @Query("""
+                SELECT COALESCE(AVG(c.calificacion), 0)
+                FROM Comentario c
+                WHERE c.actividad.idActividad = :idActividad
+            """)
+    Double promedioCalificacionPorActividad(Long idActividad);
 
 }

@@ -291,8 +291,8 @@
                 class="grid auto-cols-[calc(50%-8px)] md:auto-cols-[calc(33.333%-16px)] lg:auto-cols-[calc(25%-12px)] grid-flow-col gap-4 overflow-x-auto hide-scrollbar scroll-container pb-2 ">
 
                 <!-- Card 1 -->
-                <a class="card group cursor-pointer rounded-xl" th:each=" actividad : ${actividades}"
-                    th:href="@{/detalle/{id}(id=${actividad.idActividad})}">
+                <a class="card group cursor-pointer rounded-xl" th:each="actividad : ${actividades}" th:href="@{/actividad/{slug}-{id}(slug=${#strings.replace(#strings.toLowerCase(actividad.titulo),' ', '-')},id=${actividad.idActividad})}">
+
 
 
 
@@ -655,23 +655,6 @@
     <script th:src="@{/js/componentes/Activitycards.js}"></script>
     <script th:src="@{/js/componentes/categorias.js}"></script>
     <script th:src="@{/js/alert.js}"></script>
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            const lenis = new Lenis({
-                autoRaf: true,
-                smoothWheel: true,
-                lerp: 0.1
-            });
-
-            function smoothLoop(time) {
-                lenis.raf(time);
-                requestAnimationFrame(smoothLoop);
-            }
-            requestAnimationFrame(smoothLoop);
-        });
-    </script>
-
-
 </body>
 
 </html>

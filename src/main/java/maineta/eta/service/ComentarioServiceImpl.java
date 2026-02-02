@@ -40,6 +40,12 @@ public class ComentarioServiceImpl implements ComentarioService {
     }
 
     @Override
+    public int calcularPromedioActividad(Long idActividad) {
+        Double promedio = comentarioRepository.promedioCalificacionPorActividad(idActividad);
+        return (int) Math.round(promedio);
+    }
+
+    @Override
     public void guardar(Comentario comentario) {
         comentarioRepository.save(comentario);
     }

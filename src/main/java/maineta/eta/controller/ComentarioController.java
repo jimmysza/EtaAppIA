@@ -4,6 +4,7 @@ import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import maineta.eta.config.UsuarioHelper;
 import maineta.eta.entity.Actividad;
 import maineta.eta.entity.Cliente;
 import maineta.eta.entity.Comentario;
@@ -26,81 +27,74 @@ public class ComentarioController {
     private final UsuarioService usuarioService;
     private final ReservaService reservaService;
     private final ClienteService clienteService;
+    private final UsuarioHelper usuarioHelper;
 
     public ComentarioController(ComentarioService comentarioService,
-                                ActividadService actividadService,
-                                UsuarioService usuarioService,
-                                ReservaService reservaService,ClienteService clienteService) {
+            ActividadService actividadService,
+            UsuarioService usuarioService,
+            ReservaService reservaService, ClienteService clienteService, UsuarioHelper usuarioHelper) {
         this.comentarioService = comentarioService;
         this.actividadService = actividadService;
         this.usuarioService = usuarioService;
         this.reservaService = reservaService;
         this.clienteService = clienteService;
+        this.usuarioHelper = usuarioHelper;
     }
 
-    public void ActualizarCalificacionActividad(){
+    public void ActualizarCalificacionActividad() {
 
     }
 
     @Transactional
     @PostMapping("/agregar/{idActividad}")
-    public String agregarComentario(@PathVariable Long idActividad,
-                                    @RequestParam("texto") String texto,
-                                    @RequestParam("calificacion") Integer calificacion,
-                                    Principal principal,RedirectAttributes redirectAttributes) {
+    public String agregarComentario(
+            @PathVariable Long idActividad,
+            @RequestParam("texto") String texto,
+            @RequestParam("calificacion") Integer calificacion,
+            Principal principal,
+            RedirectAttributes redirectAttributes) {
 
         Usuario usuario = usuarioService.obtenerPorEmail(principal.getName());
         Actividad actividad = actividadService.obtenerPorId(idActividad);
 
-
-        int suma = 0;
-        int contador = 0;
-
-        List<Comentario> comentarios = comentarioService.listarPorActividad(idActividad);
-
-        for (Comentario comentario : comentarios) {
-            suma += comentario.getCalificacion();
-            contador++;
+        if (actividad == null) {
+            redirectAttributes.addFlashAttribute("error", "Actividad no encontrada");
+            return "redirect:/";
         }
 
-        int promedio = 0;
+        // 🔹 Validar reserva realizada
+        boolean realizoActividad = reservaService.existeReservaRealizada(
+                usuario.getId(),
+                actividad.getIdActividad());
 
-        if (contador > 0) {
-            promedio = (int) Math.round((double) suma / contador);
-        }
-
-        actividad.setCalificacion(promedio);
-
-        boolean realizoActividad = reservaService.existeReservaRealizada(usuario.getId(), actividad.getIdActividad());
-
-        if (realizoActividad) {
-            redirectAttributes.addFlashAttribute("error", "No Has Realizado la Actividad");
-            return "redirect:/detalle/" + idActividad;
+        if (!realizoActividad) {
+            redirectAttributes.addFlashAttribute(
+                    "error",
+                    "Debes realizar la actividad para poder comentar");
+            return "redirect:/detalle/" + actividad.getTitulo() + "-" + idActividad;
         }
 
         Cliente cliente = clienteService.obtenerPorUsuario(usuario)
                 .orElseThrow(() -> new RuntimeException("No se encontró cliente para el usuario"));
 
-
-
-
+        // 🔹 Guardar comentario
         Comentario comentario = new Comentario();
         comentario.setActividad(actividad);
-        comentario.setFechaComentario(LocalDateTime.now());
-        comentario.setTexto(texto);
         comentario.setCliente(cliente);
+        comentario.setTexto(texto);
         comentario.setCalificacion(calificacion);
-
         comentario.setFechaComentario(LocalDateTime.now());
-
-
-
 
         comentarioService.guardar(comentario);
 
-        redirectAttributes.addFlashAttribute("exito", "Comentario Creado");
-        return "redirect:/detalle/" + idActividad;
-    }
+        // 🔹 Recalcular promedio (INCLUYE el nuevo comentario)
+        int promedio = comentarioService.calcularPromedioActividad(idActividad);
+        actividad.setCalificacion(promedio);
 
+        redirectAttributes.addFlashAttribute("exito", "Comentario creado correctamente");
+
+        return "redirect:/detalle/" + usuarioHelper.generarTituloUrl(actividad.getTitulo())
+            + "-" + idActividad;
+    }
 
 }

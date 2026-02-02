@@ -9,11 +9,14 @@
 
             <div class="nav-enlances">
 
-                <a th:href="@{/colaborador/detalle/{id}(id=${actividad.idActividad})}" >Informacion </a>
-                <a th:if="${actividad != null}" th:href="@{/colaborador/disponibilidades/{idActividad}(idActividad=${actividad.idActividad})}">Disponibilidad </a>
+                <a th:href="@{/colaborador/detalle/{id}(id=${actividad.idActividad})}">Informacion </a>
+                <a th:if="${actividad != null}"
+                    th:href="@{/colaborador/disponibilidades/{idActividad}(idActividad=${actividad.idActividad})}">Disponibilidad
+                </a>
 
 
-                <a th:if="${actividad != null}" th:href="@{/colaborador/reservas/{idActividad}(idActividad=${actividad.idActividad})}">
+                <a th:if="${actividad != null}"
+                    th:href="@{/colaborador/reservas/{idActividad}(idActividad=${actividad.idActividad})}">
                     Ver Reservas
                 </a>
             </div>

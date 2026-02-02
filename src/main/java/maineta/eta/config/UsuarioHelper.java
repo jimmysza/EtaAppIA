@@ -39,6 +39,15 @@ public class UsuarioHelper {
         return precioFinalBD;
     }
 
+    public
+    String generarTituloUrl(String titulo) {
+    return titulo.toLowerCase()
+            .replaceAll("[^a-z0-9\\s-]", "")
+            .replaceAll("\\s+", "-")
+            .replaceAll("-+", "-");
+}
+
+
 
     public void agregarInfoUsuarioModel(Model model, Authentication auth) {
         if (auth != null && auth.isAuthenticated() && !auth.getPrincipal().equals("anonymousUser")) {

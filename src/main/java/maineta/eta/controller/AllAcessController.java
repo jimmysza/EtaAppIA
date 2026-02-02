@@ -68,13 +68,15 @@ public class AllAcessController {
                 return "error/403"; // Devuelve la vista login.html
         }
 
-        @GetMapping("/detalle/{id}")
+        @GetMapping("/actividad/{slug}-{id}")
         public String verDetalleActividad(
+                        @PathVariable("slug") String slug,
                         @PathVariable("id") Long id,
                         Model model,
                         @RequestParam(defaultValue = "0") int page,
                         @RequestParam(required = false) String nombre,
-                        Authentication auth) { // 👈 solo necesitas pasar Authentication
+                        Authentication auth) {
+                // 👈 solo necesitas pasar Authentication
 
                 usuarioHelper.agregarInfoUsuarioModel(model, auth);
 
@@ -342,7 +344,7 @@ public class AllAcessController {
                         return dto;
                 }).getContent();
 
-                int pageSizeCategorias = 10;
+                int pageSizeCategorias = 8;
                 Page<Categoria> categoriaPage = categoriaService.buscarTodasPorPaginacion(page, pageSizeCategorias);
 
                 /*
@@ -460,7 +462,8 @@ public class AllAcessController {
                                         return dto;
                                 })
                                 .toList();
-
+                int pageSizeCategorias = 8;
+                Page<Categoria> categoriaPage = categoriaService.buscarTodasPorPaginacion(page, pageSizeCategorias);
                 /*
                  * ===============================
                  * 🔹 Model
@@ -471,7 +474,7 @@ public class AllAcessController {
                 model.addAttribute("currentPage", page);
                 model.addAttribute("totalPages", actividadesPage.getTotalPages());
                 model.addAttribute("filtroNombre", nombreCategoria);
-
+                model.addAttribute("categorias", categoriaPage);
                 List<Integer> pageNumbers = IntStream
                                 .range(0, actividadesPage.getTotalPages())
                                 .boxed()

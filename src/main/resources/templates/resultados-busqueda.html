@@ -171,9 +171,10 @@
         /* Hide arrows on touch devices */
         @media (hover: none) and (pointer: coarse) {
             .arrows-container {
-                display: none !important;
+                display: none;
             }
         }
+
 
         /* Desktop: hide arrows when content fits */
         @media (min-width: 1024px) {
@@ -365,7 +366,7 @@
         <div class="badge-wrapper relative mt-4 max-w-[96%]">
             <!-- Botón izquierdo (solo desktop) -->
             <button
-                class="arrow arrow-prev-badge disabled absolute left-0 top-1/2 -translate-y-1/2 -translate-x-5 z-10 hidden md:flex">
+                class="hidden lg:flex arrow arrow-prev-badge disabled absolute left-0 top-1/2 -translate-y-1/2 -translate-x-5 z-10 ">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
                     stroke-width="2.5">
                     <polyline points="15 18 9 12 15 6"></polyline>
@@ -378,34 +379,11 @@
                         class="badge-filter active flex-none px-6 py-3 rounded-full font-semibold text-sm whitespace-nowrap transition-all select-none">
                         All
                     </button>
-                    <button
-                        class="badge-filter flex-none px-6 py-3 rounded-full font-semibold text-sm whitespace-nowrap transition-all select-none">
-                        Adventure
-                    </button>
-                    <button
-                        class="badge-filter flex-none px-6 py-3 rounded-full font-semibold text-sm whitespace-nowrap transition-all select-none">
-                        Culture
-                    </button>
-                    <button
-                        class="badge-filter flex-none px-6 py-3 rounded-full font-semibold text-sm whitespace-nowrap transition-all select-none">
-                        Food & Drink
-                    </button>
-                    <button
-                        class="badge-filter flex-none px-6 py-3 rounded-full font-semibold text-sm whitespace-nowrap transition-all select-none">
-                        Nature
-                    </button>
-                    <button
-                        class="badge-filter flex-none px-6 py-3 rounded-full font-semibold text-sm whitespace-nowrap transition-all select-none">
-                        Sports
-                    </button>
-                    <button
-                        class="badge-filter flex-none px-6 py-3 rounded-full font-semibold text-sm whitespace-nowrap transition-all select-none">
-                        Entertainment
-                    </button>
-                    <button
-                        class="badge-filter flex-none px-6 py-3 rounded-full font-semibold text-sm whitespace-nowrap transition-all select-none">
-                        Wellness
-                    </button>
+                    <a th:each="categoria : ${categorias}"
+                        th:href="@{/actividades/categoria/{nombreCategoria}(nombreCategoria=${categoria.nombre})}"
+                        class="badge-filter  flex-none px-6 py-3 rounded-full font-semibold text-sm whitespace-nowrap transition-all select-none">
+                        <span th:text="${categoria.nombre}"></span>
+                    </a>
                     <button id="moreCategories"
                         class="badge-filter more-btn flex-none px-6 py-3 rounded-full font-semibold text-sm whitespace-nowrap transition-all flex items-center gap-2 select-none">
                         <span>More</span>
@@ -421,7 +399,7 @@
 
             <!-- Botón derecho (solo desktop) -->
             <button
-                class="arrow arrow-next-badge absolute right-0 top-1/2 -translate-y-1/2 translate-x-5 z-10 hidden md:flex">
+                class=" hidden lg:flex arrow arrow-next-badge absolute right-0 top-1/2 -translate-y-1/2 translate-x-5 z-10">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
                     stroke-width="2.5">
                     <polyline points="9 18 15 12 9 6"></polyline>
@@ -448,7 +426,7 @@
             </div>
 
             <!-- Modal Content -->
-            <div class="p-6 overflow-y-auto max-h-[calc(80vh-120px)]">
+            <div class="p-6 overflow-y-auto max-h-[calc(80vh-120px)] z-10">
                 <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
                     <button
                         class="modal-category-btn p-4 rounded-xl border-2 border-gray-200 hover:border-blue-500 hover:bg-blue-50 transition-all text-left">
@@ -627,7 +605,7 @@
 
                 <!-- Card 1 -->
                 <a class="card group cursor-pointer rounded-xl" th:each="actividad : ${actividades}"
-                    th:href="@{/detalle/{id}(id=${actividad.idActividad})}">
+                    th:href="@{/actividad/{slug}-{id}(slug=${#strings.replace(#strings.toLowerCase(actividad.titulo),' ', '-')},id=${actividad.idActividad})}">
 
 
 
@@ -654,7 +632,7 @@
                         </span>
                         <!--FAVORITO-->
                         <button type="button" onclick="event.preventDefault(); event.stopPropagation();"
-                            class="absolute top-3 right-3 w-8 h-8 bg-white/90 hover:bg-white rounded-full flex items-center justify-center shadow-sm hover:scale-110 transition-transform z-60">
+                            class="absolute top-3 right-3 w-8 h-8 bg-white/90 hover:bg-white rounded-full flex items-center justify-center shadow-sm hover:scale-110 transition-transform z-9">
                             <svg class="w-5 h-5 text-gray-700 hover:text-red-500" fill="none" stroke="currentColor"
                                 viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -672,7 +650,7 @@
                         <h3 class="font-semibold text-gray-900 mb-1 line-clamp-1" th:text="${actividad.titulo}"></h3>
 
                         <div class="flex items-center gap-1">
-                            <p class="text-sm text-blue-600 mb-1 font-bold"
+                            <p class="pl-1 text-sm text-blue-600 mb-1 font-bold"
                                 th:text="${ '$ ' + #numbers.formatDecimal(actividad.precioConsumidor, 0, 0)}"></p>
                         </div>
 
@@ -970,21 +948,7 @@
             });
         });
     </script>
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            const lenis = new Lenis({
-                autoRaf: true,
-                smoothWheel: true,
-                lerp: 0.1
-            });
 
-            function smoothLoop(time) {
-                lenis.raf(time);
-                requestAnimationFrame(smoothLoop);
-            }
-            requestAnimationFrame(smoothLoop);
-        });
-    </script>
 </body>
 
 </html>

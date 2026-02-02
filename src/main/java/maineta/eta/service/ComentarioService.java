@@ -12,4 +12,7 @@ public interface ComentarioService {
     List<Comentario> listarPorActividad(Long idActividad);
     Page<Comentario> listarComentarioPorIdYPaginacion(Long idActividad, int page, int size);
     Map<Long, Integer> contarComentariosPorActividades(List<Long> ids);
+    int calcularPromedioActividad(Long idActividad);
+
+
 }
