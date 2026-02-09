@@ -94,6 +94,7 @@ public class CategoriaServiceImpl implements CategoriaService {
         if (!categoriaRepository.existsById(id)) {
             throw new RuntimeException("Categoría no encontrada con id: " + id);
         }
+        
         categoriaRepository.deleteById(id);
     }
 

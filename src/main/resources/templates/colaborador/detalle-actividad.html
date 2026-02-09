@@ -31,6 +31,7 @@
         .form-edit {
             display: none;
             animation: fadeIn 0.3s ease;
+
         }
 
         .form-edit.active {
@@ -120,10 +121,15 @@
 <body class="mx-0 my-0">
 
     <div th:replace="~{componentes/nav_colab :: nav_colab}"></div>
-    <div class="flex">
+
+    <div th:if="${message}" th:class="'alert alert-' + ${type}">
+        <span th:text="${message}"></span>
+    </div>
+
+    <div class="flex max-w-[1560px] mx-auto">
 
         <aside
-            class="w-1/4 border-r-2 border-gray-200 flex flex-col justify-start items-center gap-5 pt-10 overflow-y-scroll max-h-[90vh] pb-20 px-4">
+            class=" min-w-[200px] max-w-[500px] border-r-2 border-gray-200 flex flex-col justify-start items-center gap-5 pt-10 overflow-y-scroll max-h-[90vh] pb-20 px-4">
             <a id="btnTitulo"
                 class="btnEdicion active text-xl font-bold px-6 py-3 border border-gray-200 w-full cursor-pointer rounded-xl">
                 Título
@@ -176,24 +182,28 @@
                 <div class="flex flex-col">
 
                     <!-- Sección Título -->
-                    <form class="form-edit active" id="seccionTitulo" method="post" th:action="@{/colaborador/actividades/actualizarTitulo/{id}(id=${actividad.idActividad})}" th:object="${actividad}">
+                    <form class="form-edit active" id="seccionTitulo" method="post"
+                        th:action="@{/colaborador/actividades/{id}/actualizar(id=${actividad.idActividad})}"
+                        th:object="${actividadUpdateDto}">
+
                         <label for="titulo">Título</label>
                         <input type="text" id="titulo" th:field="*{titulo}"
                             placeholder="Ingresa el título de la actividad" />
-                        <p class="text-sm text-gray-500 mt-2">Este es el nombre principal de tu actividad</p>
+
+                        <p class="text-sm text-gray-500 mt-2">
+                            Este es el nombre principal de tu actividad
+                        </p>
 
                         <button type="submit" class="button-default">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
-                                style="display: inline-block; vertical-align: middle; margin-right: 0.5rem;">
-                                <path fill="currentColor"
-                                    d="M21 7v12q0 .825-.587 1.413T19 21H5q-.825 0-1.412-.587T3 19V5q0-.825.588-1.412T5 3h12zm-2 .85L12.85 14H11v-1.85L17.15 6H19zM5 19h14V9h-2v4q0 .425-.288.713T16 14h-4q-.425 0-.712-.288T11 13V9H5z" />
-                            </svg>
                             Guardar Cambios
                         </button>
                     </form>
 
+
                     <!-- Sección Descripción -->
-                    <form class="form-edit" id="seccionDesc" method="post" action="#" th:object="${actividad}">
+                    <form class="form-edit" id="seccionDesc" method="post"
+                        th:action="@{/colaborador/actividades/{id}/actualizar(id=${actividad.idActividad})}"
+                        th:object="${actividadUpdateDto}">
                         <label for="descripcion">Descripción</label>
                         <textarea id="descripcion" th:field="*{descripcion}" rows="6"
                             style="width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 0.5rem;"></textarea>
@@ -211,20 +221,50 @@
 
 
                     <!-- Sección Imagen -->
-                    <div class="form-edit" id="seccionImg">
+                    <form class="form-edit" id="seccionImg" method="post"
+                        th:action="@{/colaborador/actividades/{id}/actualizar(id=${actividad.idActividad})}"
+                        enctype="multipart/form-data" th:object="${actividadUpdateDto}">
+
                         <label>Imagen Actual</label>
                         <div class="info-display">
                             <img th:src="@{|/uploads/${actividad.imagen}|}" alt="Imagen de la actividad"
                                 style="max-width: 400px; height: auto; display: block; margin-bottom: 1rem; border-radius: 0.5rem;" />
                         </div>
-                        <label for="imagen">Cambiar Imagen</label>
-                        <input type="file" id="imagen" name="file" accept="image/*"
-                            style="width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 0.5rem;" />
+
+                        <label for="imagenFile" id="dropZone"
+                            class="border-2 border-dashed border-gray-300 bg-gray-50 rounded-xl p-12 mb-6 text-center transition-colors cursor-pointer hover:border-gray-400 block">
+                            <!-- ❌ ELIMINA th:field="*{imagen}" -->
+                            <input type="file" id="imagenFile" name="imagenFile" class="hidden" accept="image/*">
+                            <svg class="w-10 h-10 mx-auto mb-4 text-gray-400" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12">
+                                </path>
+                            </svg>
+                            <p id="fileName" class="text-gray-700 text-base mb-1">
+                                Selecciona una imagen o arrastra aquí
+                            </p>
+                            <p class="text-gray-400 text-sm">
+                                JPG, PNG o WEBP, tamaño máximo 10MB
+                            </p>
+                        </label>
+
                         <p class="text-sm text-gray-500 mt-2">Sube una nueva imagen para tu actividad</p>
-                    </div>
+
+                        <button type="submit" class="button-default">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                                style="display: inline-block; vertical-align: middle; margin-right: 0.5rem;">
+                                <path fill="currentColor"
+                                    d="M21 7v12q0 .825-.587 1.413T19 21H5q-.825 0-1.412-.587T3 19V5q0-.825.588-1.412T5 3h12zm-2 .85L12.85 14H11v-1.85L17.15 6H19zM5 19h14V9h-2v4q0 .425-.288.713T16 14h-4q-.425 0-.712-.288T11 13V9H5z" />
+                            </svg>
+                            Guardar Cambios
+                        </button>
+                    </form>
 
                     <!-- Sección Precio -->
-                    <form class="form-edit" id="seccionPrecio" method="post" action="#" th:object="${actividad}">
+                    <form class="form-edit" id="seccionPrecio" method="post"
+                        th:action="@{/colaborador/actividades/{id}/actualizar(id=${actividad.idActividad})}"
+                        th:object="${actividadUpdateDto}">
                         <label for="precio">Precio</label>
                         <div style="display: flex; align-items: center; gap: 0.5rem;">
                             <span>$</span>
@@ -244,15 +284,37 @@
 
 
                     <!-- Sección Idioma -->
-                    <div class="form-edit" id="seccionIdioma">
+                    <form class="form-edit" id="seccionIdioma" method="post"
+                        th:action="@{/colaborador/actividades/{id}/actualizar(id=${actividad.idActividad})}"
+                        th:object="${actividadUpdateDto}">
                         <label>Idioma de la Actividad</label>
+
                         <div class="info-display">
                             <p><strong>Idioma:</strong> <span th:text="${actividad.idioma.nombre}">Español</span></p>
                             <p><strong>Código:</strong> <span th:text="${actividad.idioma.codigo}">ES</span></p>
                         </div>
+
+
+
                         <p class="text-sm text-gray-500 mt-2">Información del idioma en el que se ofrece la actividad
                         </p>
-                    </div>
+                        
+                        <select id="idiomaSelect"
+                            class="w-full px-4 py-3 bg-gray-50 border-0 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 pr-12">
+                            <option value="" disabled selected>Selecciona un idioma</option>
+                            <option th:each="idio : ${idiomas}" th:value="${idio.idIdioma}" th:text="${idio.nombre}">
+                            </option>
+                        </select>
+
+                        <button type="submit" class="button-default">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                                style="display: inline-block; vertical-align: middle; margin-right: 0.5rem;">
+                                <path fill="currentColor"
+                                    d="M21 7v12q0 .825-.587 1.413T19 21H5q-.825 0-1.412-.587T3 19V5q0-.825.588-1.412T5 3h12zm-2 .85L12.85 14H11v-1.85L17.15 6H19zM5 19h14V9h-2v4q0 .425-.288.713T16 14h-4q-.425 0-.712-.288T11 13V9H5z" />
+                            </svg>
+                            Guardar Cambios
+                        </button>
+                    </form>
 
                     <!-- Sección Calificación -->
                     <div class="form-edit" id="seccionCalificacion">
@@ -281,7 +343,9 @@
                     </div>
 
                     <!-- Sección Ubicación -->
-                    <form class="form-edit" id="seccionUbicacion" method="post" action="#" th:object="${actividad}">
+                    <form class="form-edit" id="seccionUbicacion" method="post"
+                        th:action="@{/colaborador/actividades/{id}/actualizar(id=${actividad.idActividad})}"
+                        th:object="${actividadUpdateDto}">
                         <label for="ubicacion">Ubicación</label>
                         <input type="text" id="ubicacion" th:field="*{ubicacion}"
                             placeholder="Ej: Cartagena, Bolívar" />
@@ -332,6 +396,7 @@
 
     <script th:src="@{/js/eliminar/actividad.js}"></script>
     <script th:src="@{/js/dashboard.js}"></script>
+    <script th:src="@{/js/alert.js}"></script>
     <script>
         // Función para mostrar secciones según el botón clickeado
         function mostrarSeccion(seccionId) {
@@ -364,6 +429,49 @@
         document.getElementById('btnCalificacion').addEventListener('click', () => mostrarSeccion('seccionCalificacion'));
         document.getElementById('btnPlata').addEventListener('click', () => mostrarSeccion('seccionPlata'));
         document.getElementById('btnUbicacion').addEventListener('click', () => mostrarSeccion('seccionUbicacion'));
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const dropZone = document.getElementById('dropZone');
+            const fileInput = document.getElementById('imagenFile');
+            const fileName = document.getElementById('fileName');
+
+            // Click en la zona de drop
+            dropZone.addEventListener('click', function (e) {
+                if (e.target.tagName !== 'INPUT') {
+                    fileInput.click();
+                }
+            });
+
+            // Cambio de archivo
+            fileInput.addEventListener('change', function (e) {
+                if (this.files && this.files[0]) {
+                    fileName.textContent = this.files[0].name;
+                    dropZone.classList.add('border-blue-400', 'bg-blue-50');
+                }
+            });
+
+            // Drag and drop
+            dropZone.addEventListener('dragover', function (e) {
+                e.preventDefault();
+                this.classList.add('border-blue-400', 'bg-blue-50');
+            });
+
+            dropZone.addEventListener('dragleave', function (e) {
+                e.preventDefault();
+                this.classList.remove('border-blue-400', 'bg-blue-50');
+            });
+
+            dropZone.addEventListener('drop', function (e) {
+                e.preventDefault();
+                this.classList.remove('border-blue-400', 'bg-blue-50');
+
+                const files = e.dataTransfer.files;
+                if (files.length > 0) {
+                    fileInput.files = files;
+                    fileName.textContent = files[0].name;
+                }
+            });
+        });
     </script>
 </body>
 

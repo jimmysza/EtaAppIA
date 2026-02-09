@@ -20,14 +20,17 @@ public interface ActividadRepository extends JpaRepository<Actividad, Long> {
     //SELECT COUNT(*) FROM actividad WHERE id_categoria = ?
     int countByCategoria_IdCategoria(Long idCategoria);
 
+
     //combinacion de las dos anteriores
     Page<Actividad> findByColaborador_IdColaboradorAndTituloContainingIgnoreCase(Long idColaborador, String titulo, Pageable pageable);
+
 
     // buscar activiidad por categoria
     Page<Actividad> findByCategoria_IdCategoria(Long idCategoria, Pageable pageable);
 
     //buscar actividad por categoria del nonmbre
     Page<Actividad> findByCategoria_NombreContainingIgnoreCase(String nombreCategoria, Pageable pageable);
+
     Actividad findByCategoria_NombreContainingIgnoreCase(String nombreCategoria);
 
 

@@ -1,6 +1,9 @@
 package maineta.eta.service;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -10,10 +13,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import jakarta.persistence.EntityNotFoundException;
+import maineta.eta.dto.ActividadUpdateDto;
 import maineta.eta.entity.Actividad;
 import maineta.eta.entity.Categoria;
+import maineta.eta.entity.Idioma;
 import maineta.eta.repository.ActividadRepository;
 import maineta.eta.repository.ComentarioRepository;
+import maineta.eta.repository.IdiomaRepository;
 
 /**
  * 🔹 Implementación de la interfaz ActividadService.
@@ -29,20 +35,21 @@ public class ActividadServiceImpl implements ActividadService {
     // Inyección de dependencias: repositorio que conecta con la BD
     private final ActividadRepository actividadRepository;
     private final ComentarioRepository comentarioRepository;
+    private final IdiomaRepository idiomaRepository;
 
     /**
      * Constructor con @Autowired para inyectar el repositorio automáticamente.
      */
     @Autowired
-    public ActividadServiceImpl(ActividadRepository actividadRepository, ComentarioRepository comentarioRepository) {
+    public ActividadServiceImpl(IdiomaRepository idiomaRepository, ActividadRepository actividadRepository, ComentarioRepository comentarioRepository) {
         this.actividadRepository = actividadRepository;
         this.comentarioRepository = comentarioRepository;
+        this.idiomaRepository = idiomaRepository;
     }
 
     public Map<Long, Long> contarActividadesPorCategorias(List<Long> categoriaIds) {
 
-        List<Object[]> resultados =
-                actividadRepository.contarActividadesPorCategorias(categoriaIds);
+        List<Object[]> resultados = actividadRepository.contarActividadesPorCategorias(categoriaIds);
 
         Map<Long, Long> conteo = new HashMap<>();
 
@@ -54,7 +61,6 @@ public class ActividadServiceImpl implements ActividadService {
 
         return conteo;
     }
-
 
     @Override
     public int ContadorActividadesPorCategoria(Long idCategoria) {
@@ -217,24 +223,72 @@ public class ActividadServiceImpl implements ActividadService {
         return actividadRepository.findById(id).orElse(null);
     }
 
+    @Transactional
     @Override
-    public Actividad actualizar(Long id, Actividad nuevaActividad) {
+    public Actividad actualizarActividad(Long id, ActividadUpdateDto dto) {
 
-        if (id == null) {
-            throw new IllegalArgumentException("El id de la actividad no puede ser null");
+        Actividad actividad = actividadRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Actividad no encontrada"));
+
+        if (dto.getTitulo() != null) {
+            actividad.setTitulo(dto.getTitulo());
         }
 
-        if (nuevaActividad == null) {
-            throw new IllegalArgumentException("La Actividad no puede ser null");
+        if (dto.getUbicacion() != null) {
+            actividad.setUbicacion(dto.getUbicacion());
         }
 
-        return actividadRepository.findById(id).map(actividad -> {
-            actividad.setTitulo(nuevaActividad.getTitulo());
-            actividad.setDescripcion(nuevaActividad.getDescripcion());
-            actividad.setPrecio(nuevaActividad.getPrecio());
-            actividad.setUbicacion(nuevaActividad.getUbicacion());
-            return actividadRepository.save(actividad);
-        }).orElseThrow(() -> new RuntimeException("Actividad no encontrada"));
+        if (dto.getDescripcion() != null) {
+            actividad.setDescripcion(dto.getDescripcion());
+        }
+
+        if (dto.getIdIdioma() != null) {
+            Idioma idioma = idiomaRepository.getReferenceById(dto.getIdIdioma());
+            actividad.setIdioma(idioma);
+        }
+
+        if (dto.getPrecio() != null) {
+            actividad.setPrecio(dto.getPrecio());
+        }
+
+        // Solo actualizar si realmente hay una nueva imagen
+        if (dto.getImagen() != null && !dto.getImagen().isEmpty()) {
+            actividad.setImagen(dto.getImagen());
+        }
+
+        return actividadRepository.save(actividad);
+    }
+
+    @Transactional
+    @Override
+    public Actividad actualizarTitulo(Long id, String titulo) {
+        Actividad actividad = obtenerPorId(id);
+        actividad.setTitulo(titulo);
+        return actividadRepository.save(actividad);
+    }
+
+    @Transactional
+    @Override
+    public Actividad actualizarDescripcion(Long id, String descripcion) {
+        Actividad actividad = obtenerPorId(id);
+        actividad.setDescripcion(descripcion);
+        return actividadRepository.save(actividad);
+    }
+
+    @Transactional
+    @Override
+    public Actividad actualizarPrecio(Long id, java.math.BigDecimal precio) {
+        Actividad actividad = obtenerPorId(id);
+        actividad.setPrecio(precio);
+        return actividadRepository.save(actividad);
+    }
+
+    @Transactional
+    @Override
+    public Actividad actualizarUbicacion(Long id, String ubicacion) {
+        Actividad actividad = obtenerPorId(id);
+        actividad.setUbicacion(ubicacion);
+        return actividadRepository.save(actividad);
     }
 
 }

@@ -1,15 +1,15 @@
 package maineta.eta.controller;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import maineta.eta.entity.*;
-import maineta.eta.service.*;
 import org.springframework.data.domain.Page;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,6 +18,21 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import maineta.eta.dto.ActividadUpdateDto;
+import maineta.eta.entity.Actividad;
+import maineta.eta.entity.Colaborador;
+import maineta.eta.entity.Disponibilidad;
+import maineta.eta.entity.Reserva;
+import maineta.eta.entity.Usuario;
+import maineta.eta.service.ActividadService;
+import maineta.eta.service.CategoriaService;
+import maineta.eta.service.ColaboradorService;
+import maineta.eta.service.DisponibilidadService;
+import maineta.eta.service.IUploadFileService;
+import maineta.eta.service.IdiomaService;
+import maineta.eta.service.ReservaService;
+import maineta.eta.service.UsuarioService;
 
 @Controller
 @RequestMapping("/colaborador") // Todas las rutas de este controlador empiezan por "/colaborador"
@@ -35,7 +50,9 @@ public class ColaboradorController {
     private final ReservaService reservaService;
 
     public ColaboradorController(ActividadService actividadService, UsuarioService usuarioService,
-            ColaboradorService colaboradorService, IUploadFileService uploadFileService, CategoriaService categoriaService, IdiomaService idiomaService, DisponibilidadService disponibilidadService, ReservaService reservaService) {
+            ColaboradorService colaboradorService, IUploadFileService uploadFileService,
+            CategoriaService categoriaService, IdiomaService idiomaService, DisponibilidadService disponibilidadService,
+            ReservaService reservaService) {
         this.actividadService = actividadService;
         this.usuarioService = usuarioService;
         this.colaboradorService = colaboradorService;
@@ -69,7 +86,8 @@ public class ColaboradorController {
     }
 
     @PostMapping("/actividades/addAct")
-    public String addActivity(@ModelAttribute("actividad") Actividad actividad,
+    public String addActivity(
+            @ModelAttribute("actividad") Actividad actividad,
             @RequestParam("imagenFile") MultipartFile imagenFile,
             Authentication authentication) {
 
@@ -101,30 +119,48 @@ public class ColaboradorController {
         return "redirect:/colaborador/actividades";
     }
 
-    
+    @PostMapping("/actividades/{id}/actualizar")
+    public String actualizarActividad(
+            @PathVariable Long id,
+            @ModelAttribute("actividadUpdateDto") ActividadUpdateDto dto,
+            @RequestParam(value = "imagenFile", required = false) MultipartFile imagenFile,
+            BindingResult result,
+            RedirectAttributes flash,
+            Model model) {
 
-    @PostMapping("/actividades/actualizar/{id}")
-    public String updateActividad(@PathVariable Long id, @ModelAttribute("actividad") Actividad nuevaActividad) {
-        actividadService.actualizar(id, nuevaActividad);
-        return "redirect:/colaborador/actividades"; // Redirige a la
-    }
+        try {
+            Actividad actividad = actividadService.obtenerPorId(id);
 
-    @PostMapping("/actividades/actualizarTitulo/{id}")
-    public String updateTitulo(@PathVariable Long id, @ModelAttribute("actividad") Actividad nuevaActividad) {
-        actividadService.actualizarTitulo(id, nuevaActividad);
-        return "redirect:/colaborador/actividades"; // Redirige a la
-    }
+            // Manejar la imagen si se subió una nueva
+            if (imagenFile != null && !imagenFile.isEmpty()) {
+                // Eliminar imagen anterior si existe
+                if (actividad.getImagen() != null && !actividad.getImagen().isEmpty()) {
+                    uploadFileService.delete(actividad.getImagen());
+                }
 
-    @PostMapping("/actividades/actualizarDescripcion/{id}")
-    public String updateDescripcion(@PathVariable Long id, @ModelAttribute("actividad") Actividad nuevaActividad) {
-        actividadService.actualizarDescripcion(id, nuevaActividad);
-        return "redirect:/colaborador/actividades"; // Redirige a la
-    }
+                // Guardar nueva imagen
+                String nombreImagen = uploadFileService.copy(imagenFile);
+                dto.setImagen(nombreImagen);
+            }
+            // Si no se subió imagen, el DTO ya tiene null y el servicio mantendrá la actual
 
-    @PostMapping("/actividades/actualizarPrecio/{id}")
-    public String updatePrecio(@PathVariable Long id, @ModelAttribute("actividad") Actividad nuevaActividad) {
-        actividadService.actualizarPrecio(id, nuevaActividad);
-        return "redirect:/colaborador/actividades"; // Redirige a la
+            actividadService.actualizarActividad(id, dto);
+            flash.addFlashAttribute("message", "Actividad actualizada correctamente");
+            flash.addFlashAttribute("type", "success");
+
+        } catch (IOException e) {
+
+            flash.addFlashAttribute("message", "Error al subir la imagen");
+            flash.addFlashAttribute("type", "danger");
+            return "redirect:/colaborador/detalle/" + id;
+        } catch (Exception e) {
+            flash.addFlashAttribute("message", "Error al Actualizar Actividad");
+            flash.addFlashAttribute("type", "danger");
+            return "redirect:/colaborador/detalle/" + id;
+        }
+
+        return "redirect:/colaborador/detalle/" + id;
+
     }
 
     // 🔹 Listar actividades del colaborador con paginación y filtros
@@ -164,7 +200,7 @@ public class ColaboradorController {
     // 🔹 Eliminar actividad por ID
     @GetMapping("/eliminar/{id}")
     public String deleteById(@PathVariable("id") Long id) {
-        
+
         Actividad actividad = actividadService.listarById(id);
 
         // Si existe y tiene imagen asociada, eliminar también la imagen del servidor
@@ -198,10 +234,12 @@ public class ColaboradorController {
             @RequestParam(required = true) Long idActividad,
             RedirectAttributes redirectAttrs) {
 
-        /*if (disponibilidad.getFecha().isBefore(LocalDateTime.now())) {
-            redirectAttrs.addFlashAttribute("error", "La fecha debe ser futura");
-            return "redirect:/colaborador/disponibilidades/" + idActividad;
-        }*/
+        /*
+         * if (disponibilidad.getFecha().isBefore(LocalDateTime.now())) {
+         * redirectAttrs.addFlashAttribute("error", "La fecha debe ser futura");
+         * return "redirect:/colaborador/disponibilidades/" + idActividad;
+         * }
+         */
         try {
 
             Actividad actividad = actividadService.obtenerPorId(idActividad);
@@ -235,25 +273,6 @@ public class ColaboradorController {
         return "colaborador/reservaciones-actividad";
     }
 
-    @PostMapping("/reserva/actualizar/{id}")
-    public String actualizarEstado(
-            @PathVariable Long id,
-            @RequestParam String estado,
-            @RequestParam Long idActividad, // ← add this
-            RedirectAttributes redirectAttrs) {
-
-        Reserva original = reservaService.ObtenerReservaPorId(id)
-                .orElseThrow(() -> new IllegalArgumentException("Reserva no encontrada: " + id));
-
-        original.setEstado(estado);
-        reservaService.guardarReserva(original);
-
-        redirectAttrs.addFlashAttribute("mensaje", "Estado actualizado correctamente ✅");
-
-        // ✅ Redirect to the correct URL with idActividad
-        return "redirect:/colaborador/reservas/" + idActividad;
-    }
-
     // 🔹 Ver detalle de una actividad específica
     @GetMapping("/detalle/{id}")
     public String verDetalleAcividad(@PathVariable("id") Long id, Model model) {
@@ -280,11 +299,29 @@ public class ColaboradorController {
             }
         }
 
+        // Crear y poblar el DTO para el formulario de edición
+        ActividadUpdateDto dto = new ActividadUpdateDto();
+        dto.setIdActividad(actividad.getIdActividad());
+        dto.setTitulo(actividad.getTitulo());
+        dto.setDescripcion(actividad.getDescripcion());
+        dto.setUbicacion(actividad.getUbicacion());
+        dto.setPrecio(actividad.getPrecio());
+        dto.setCondiciones(actividad.getCondiciones());
+        dto.setNormas(actividad.getNormas());
+        dto.setIncluye(actividad.getIncluye());
+        if (actividad.getCategoria() != null)
+            dto.setIdCategoria(actividad.getCategoria().getIdCategoria());
+        if (actividad.getIdioma() != null)
+            dto.setIdIdioma(actividad.getIdioma().getIdIdioma());
+
+        model.addAttribute("categorias", categoriaService.listarCategorias());
+        model.addAttribute("idiomas", idiomaService.listarIdiomas());
         model.addAttribute("reservas", reservas);
         model.addAttribute("actividad", actividad);
+        model.addAttribute("actividadUpdateDto", dto);
         model.addAttribute("plataGanada", plataGanada);
 
-        return "colaborador//detalle-actividad";
+        return "colaborador/detalle-actividad";
     }
 
 }
