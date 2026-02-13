@@ -150,6 +150,14 @@
                 class="btnEdicion text-xl font-bold px-6 py-3 border border-gray-200 w-full cursor-pointer rounded-xl">
                 Idioma
             </a>
+            <a id="btnCategoria"
+                class="btnEdicion text-xl font-bold px-6 py-3 border border-gray-200 w-full cursor-pointer rounded-xl">
+                Categoria
+            </a>
+            <a id="btnMasInformacion"
+                class="btnEdicion text-xl font-bold px-6 py-3 border border-gray-200 w-full cursor-pointer rounded-xl">
+                Mas Informacion
+            </a>
             <a id="btnCalificacion"
                 class="btnEdicion text-xl font-bold px-6 py-3 border border-gray-200 w-full cursor-pointer rounded-xl">
                 Calificación
@@ -209,6 +217,42 @@
                             style="width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 0.5rem;"></textarea>
 
                         <p class="text-sm text-gray-500 mt-2">Proporciona información detallada</p>
+                        <button type="submit" class="button-default">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                                style="display: inline-block; vertical-align: middle; margin-right: 0.5rem;">
+                                <path fill="currentColor"
+                                    d="M21 7v12q0 .825-.587 1.413T19 21H5q-.825 0-1.412-.587T3 19V5q0-.825.588-1.412T5 3h12zm-2 .85L12.85 14H11v-1.85L17.15 6H19zM5 19h14V9h-2v4q0 .425-.288.713T16 14h-4q-.425 0-.712-.288T11 13V9H5z" />
+                            </svg>
+                            Guardar Cambios
+                        </button>
+                    </form>
+
+
+                    <!--MAs informacion-->
+                    <form class="form-edit" id="seccionMasInformacion" method="post"
+
+                        th:action="@{/colaborador/actividades/{id}/actualizar(id=${actividad.idActividad})}"
+                        th:object="${actividadUpdateDto}">
+
+                        <p class="text-sm text-gray-500 mt-2">Proporciona información detallada</p>
+                        <label for="incluye">Incluye</label>
+                        <textarea id="incluye" th:field="*{incluye}" rows="6"
+                            style="width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 0.5rem;"></textarea>
+
+                        <p class="text-sm text-gray-500 mt-2">Proporciona información detallada</p>
+                        
+                        <label for="normas">Normas</label>
+                        <textarea id="normas" th:field="*{normas}" rows="6"
+                            style="width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 0.5rem;"></textarea>
+
+                        <p class="text-sm text-gray-500 mt-2">Proporciona información detallada</p>
+
+
+                        <label for="condiciones">Condiciones</label>
+                        <textarea id="condiciones" th:field="*{condiciones}" rows="6"
+                            style="width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 0.5rem;"></textarea>
+
+
                         <button type="submit" class="button-default">
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
                                 style="display: inline-block; vertical-align: middle; margin-right: 0.5rem;">
@@ -298,13 +342,52 @@
 
                         <p class="text-sm text-gray-500 mt-2">Información del idioma en el que se ofrece la actividad
                         </p>
-                        
-                        <select id="idiomaSelect"
-                            class="w-full px-4 py-3 bg-gray-50 border-0 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 pr-12">
-                            <option value="" disabled selected>Selecciona un idioma</option>
+
+                        <select th:field="*{idIdioma}" class="w-full px-4 py-3 bg-gray-50 border-0 rounded-lg text-gray-900
+               placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 pr-12">
+
+                            <option value="" disabled>Selecciona un idioma</option>
+
                             <option th:each="idio : ${idiomas}" th:value="${idio.idIdioma}" th:text="${idio.nombre}">
                             </option>
                         </select>
+
+
+                        <button type="submit" class="button-default">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                                style="display: inline-block; vertical-align: middle; margin-right: 0.5rem;">
+                                <path fill="currentColor"
+                                    d="M21 7v12q0 .825-.587 1.413T19 21H5q-.825 0-1.412-.587T3 19V5q0-.825.588-1.412T5 3h12zm-2 .85L12.85 14H11v-1.85L17.15 6H19zM5 19h14V9h-2v4q0 .425-.288.713T16 14h-4q-.425 0-.712-.288T11 13V9H5z" />
+                            </svg>
+                            Guardar Cambios
+                        </button>
+                    </form>
+                    <!-- Sección Categoria -->
+                    <form class="form-edit" id="seccionCategoria" method="post"
+                        th:action="@{/colaborador/actividades/{id}/actualizar(id=${actividad.idActividad})}"
+                        th:object="${actividadUpdateDto}">
+                        <label>Categoria de la Actividad</label>
+
+                        <div class="info-display">
+                            <p><strong>Categoria:</strong>
+                                <span th:text="${actividad.categoria.nombre}">Español</span>
+                            </p>
+                        </div>
+
+
+
+                        <p class="text-sm text-gray-500 mt-2">Información del Categoria en el que se ofrece la actividad
+                        </p>
+
+                        <select th:field="*{idCategoria}" class="w-full px-4 py-3 bg-gray-50 border-0 rounded-lg text-gray-900
+               placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 pr-12">
+
+                            <option value="" disabled>Selecciona un Categoria</option>
+
+                            <option th:each="cat : ${categorias}" th:value="${cat.idCategoria}" th:text="${cat.nombre}">
+                            </option>
+                        </select>
+
 
                         <button type="submit" class="button-default">
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
@@ -429,6 +512,8 @@
         document.getElementById('btnCalificacion').addEventListener('click', () => mostrarSeccion('seccionCalificacion'));
         document.getElementById('btnPlata').addEventListener('click', () => mostrarSeccion('seccionPlata'));
         document.getElementById('btnUbicacion').addEventListener('click', () => mostrarSeccion('seccionUbicacion'));
+        document.getElementById('btnCategoria').addEventListener('click', () => mostrarSeccion('seccionCategoria'));
+        document.getElementById('btnMasInformacion').addEventListener('click', () => mostrarSeccion('seccionMasInformacion'));
 
         document.addEventListener('DOMContentLoaded', function () {
             const dropZone = document.getElementById('dropZone');

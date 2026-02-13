@@ -1,11 +1,13 @@
 package maineta.eta.service;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.web.multipart.MultipartFile;
 
 import maineta.eta.dto.ActividadUpdateDto;
 import maineta.eta.entity.Actividad;
@@ -130,7 +132,8 @@ public interface ActividadService {
      */
     Actividad listarById(Long id);
 
-    Actividad actualizarActividad(Long id, ActividadUpdateDto dto);
+    /* Actividad actualizarActividad(Long id, ActividadUpdateDto dto); */
+    void actualizarActividad(Long id, ActividadUpdateDto dto, MultipartFile imagenFile) throws IOException;
 
     Page<Actividad> buscarActividadPorIdCategoria(Long idCategoria, int page, int size);
 

@@ -1,5 +1,6 @@
 package maineta.eta.service;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -11,6 +12,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import jakarta.persistence.EntityNotFoundException;
 import maineta.eta.dto.ActividadUpdateDto;
@@ -18,6 +20,7 @@ import maineta.eta.entity.Actividad;
 import maineta.eta.entity.Categoria;
 import maineta.eta.entity.Idioma;
 import maineta.eta.repository.ActividadRepository;
+import maineta.eta.repository.CategoriaRepository;
 import maineta.eta.repository.ComentarioRepository;
 import maineta.eta.repository.IdiomaRepository;
 
@@ -34,16 +37,23 @@ public class ActividadServiceImpl implements ActividadService {
 
     // Inyección de dependencias: repositorio que conecta con la BD
     private final ActividadRepository actividadRepository;
+    private final IUploadFileService uploadFileService;
     private final ComentarioRepository comentarioRepository;
     private final IdiomaRepository idiomaRepository;
+    private final CategoriaRepository categoriaRepository;
 
     /**
      * Constructor con @Autowired para inyectar el repositorio automáticamente.
      */
     @Autowired
-    public ActividadServiceImpl(IdiomaRepository idiomaRepository, ActividadRepository actividadRepository, ComentarioRepository comentarioRepository) {
+    public ActividadServiceImpl(IdiomaRepository idiomaRepository, IUploadFileService uploadFileService,
+            CategoriaRepository categoriaRepository,
+            ActividadRepository actividadRepository,
+            ComentarioRepository comentarioRepository) {
         this.actividadRepository = actividadRepository;
+        this.categoriaRepository = categoriaRepository;
         this.comentarioRepository = comentarioRepository;
+        this.uploadFileService = uploadFileService;
         this.idiomaRepository = idiomaRepository;
     }
 
@@ -223,13 +233,21 @@ public class ActividadServiceImpl implements ActividadService {
         return actividadRepository.findById(id).orElse(null);
     }
 
-    @Transactional
     @Override
-    public Actividad actualizarActividad(Long id, ActividadUpdateDto dto) {
+    @Transactional
+    public void actualizarActividad(
+            Long id,
+            ActividadUpdateDto dto,
+            MultipartFile imagenFile) throws IOException {
+
+        if (id == null) {
+            throw new IllegalArgumentException("El id no puede ser null");
+        }
 
         Actividad actividad = actividadRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Actividad no encontrada"));
 
+        // -------- campos simples --------
         if (dto.getTitulo() != null) {
             actividad.setTitulo(dto.getTitulo());
         }
@@ -242,21 +260,42 @@ public class ActividadServiceImpl implements ActividadService {
             actividad.setDescripcion(dto.getDescripcion());
         }
 
+        if (dto.getPrecio() != null) {
+            actividad.setPrecio(dto.getPrecio());
+        }
+
+        // -------- relación ManyToOne --------
         if (dto.getIdIdioma() != null) {
             Idioma idioma = idiomaRepository.getReferenceById(dto.getIdIdioma());
             actividad.setIdioma(idioma);
         }
 
-        if (dto.getPrecio() != null) {
-            actividad.setPrecio(dto.getPrecio());
+        if (dto.getIdCategoria() != null) {
+            Categoria categoria = categoriaRepository.getReferenceById(dto.getIdCategoria());
+            actividad.setCategoria(categoria);
+        }
+        if(dto.getIncluye() != null){
+            actividad.setIncluye(dto.getIncluye());
+        }
+        if(dto.getCondiciones() != null){
+            actividad.setCondiciones(dto.getCondiciones());
+        }
+        if(dto.getNormas() != null){
+            actividad.setNormas(dto.getNormas());
         }
 
-        // Solo actualizar si realmente hay una nueva imagen
-        if (dto.getImagen() != null && !dto.getImagen().isEmpty()) {
-            actividad.setImagen(dto.getImagen());
+        // -------- imagen --------
+        if (imagenFile != null && !imagenFile.isEmpty()) {
+
+            // eliminar imagen anterior
+            if (actividad.getImagen() != null && !actividad.getImagen().isEmpty()) {
+                uploadFileService.delete(actividad.getImagen());
+            }
+
+            String nombreImagen = uploadFileService.copy(imagenFile);
+            actividad.setImagen(nombreImagen);
         }
 
-        return actividadRepository.save(actividad);
     }
 
     @Transactional

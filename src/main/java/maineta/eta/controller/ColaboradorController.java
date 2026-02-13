@@ -9,7 +9,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import jakarta.persistence.EntityNotFoundException;
 import maineta.eta.dto.ActividadUpdateDto;
 import maineta.eta.entity.Actividad;
 import maineta.eta.entity.Colaborador;
@@ -124,43 +124,32 @@ public class ColaboradorController {
             @PathVariable Long id,
             @ModelAttribute("actividadUpdateDto") ActividadUpdateDto dto,
             @RequestParam(value = "imagenFile", required = false) MultipartFile imagenFile,
-            BindingResult result,
-            RedirectAttributes flash,
-            Model model) {
+            RedirectAttributes flash) {
 
         try {
-            Actividad actividad = actividadService.obtenerPorId(id);
 
-            // Manejar la imagen si se subió una nueva
-            if (imagenFile != null && !imagenFile.isEmpty()) {
-                // Eliminar imagen anterior si existe
-                if (actividad.getImagen() != null && !actividad.getImagen().isEmpty()) {
-                    uploadFileService.delete(actividad.getImagen());
-                }
+            actividadService.actualizarActividad(id, dto, imagenFile);
 
-                // Guardar nueva imagen
-                String nombreImagen = uploadFileService.copy(imagenFile);
-                dto.setImagen(nombreImagen);
-            }
-            // Si no se subió imagen, el DTO ya tiene null y el servicio mantendrá la actual
-
-            actividadService.actualizarActividad(id, dto);
             flash.addFlashAttribute("message", "Actividad actualizada correctamente");
             flash.addFlashAttribute("type", "success");
+
+        } catch (EntityNotFoundException e) {
+
+            flash.addFlashAttribute("message", e.getMessage());
+            flash.addFlashAttribute("type", "danger");
 
         } catch (IOException e) {
 
             flash.addFlashAttribute("message", "Error al subir la imagen");
             flash.addFlashAttribute("type", "danger");
-            return "redirect:/colaborador/detalle/" + id;
+
         } catch (Exception e) {
-            flash.addFlashAttribute("message", "Error al Actualizar Actividad");
+
+            flash.addFlashAttribute("message", "Error al actualizar la actividad");
             flash.addFlashAttribute("type", "danger");
-            return "redirect:/colaborador/detalle/" + id;
         }
 
         return "redirect:/colaborador/detalle/" + id;
-
     }
 
     // 🔹 Listar actividades del colaborador con paginación y filtros
