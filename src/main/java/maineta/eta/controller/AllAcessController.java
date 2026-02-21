@@ -8,7 +8,6 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -32,6 +31,7 @@ import maineta.eta.service.ActividadService;
 import maineta.eta.service.CategoriaService;
 import maineta.eta.service.ComentarioService;
 import maineta.eta.service.DisponibilidadService;
+import maineta.eta.service.IdiomaService;
 
 // 🔹 Controlador principal que maneja las páginas accesibles para todos los usuarios
 @Controller
@@ -43,16 +43,18 @@ public class AllAcessController {
         private final ActividadService actividadService;
         private final ComentarioService comentarioService;
         private final DisponibilidadService disponibilidadService;
+        private final IdiomaService idiomaService;
 
         // 🔹 Constructor con inyección de dependencias
         public AllAcessController(DisponibilidadService disponibilidadService, UsuarioHelper usuarioHelper,
                         ComentarioService comentarioService, ActividadService actividadService,
-                        CategoriaService categoriaService) {
+                        CategoriaService categoriaService, IdiomaService idiomaService) {
                 this.categoriaService = categoriaService;
                 this.actividadService = actividadService;
                 this.usuarioHelper = usuarioHelper;
                 this.comentarioService = comentarioService;
                 this.disponibilidadService = disponibilidadService;
+                this.idiomaService = idiomaService;
         }
 
         // 🔹 Endpoint para mostrar la página de login
@@ -230,6 +232,7 @@ public class AllAcessController {
 
                 model.addAttribute("actividades", actividadesDTO);
                 model.addAttribute("categorias", categoriaDTOS);
+                model.addAttribute("idiomas", idiomaService.listarIdiomas());
                 model.addAttribute("busqueda", new BusquedaForm());
                 model.addAttribute("actividad", new Actividad());
                 model.addAttribute("currentPage", page);
@@ -258,24 +261,63 @@ public class AllAcessController {
         public String buscarActividades(
                         @ModelAttribute("busqueda") BusquedaForm form,
                         @RequestParam(defaultValue = "0") int page,
+                        @RequestParam(required = false) Long idiomaId,
+                        @RequestParam(required = false) Long categoriaId,
+                        @RequestParam(required = false) BigDecimal precioMin,
+                        @RequestParam(required = false) BigDecimal precioMax,
                         Model model,
                         Authentication auth) {
 
-                String termino = form.getTitulo();
-                int pageSize = 6;
+                // Redirigir al GET con todos los parámetros para permitir URLs compartibles
+                String redirectUrl = "redirect:/actividades/buscar?";
+                
+                if (form.getTitulo() != null && !form.getTitulo().trim().isEmpty()) {
+                        redirectUrl += "nombre=" + form.getTitulo().trim();
+                }
+                if (idiomaId != null) {
+                        redirectUrl += "&idiomaId=" + idiomaId;
+                }
+                if (categoriaId != null) {
+                        redirectUrl += "&categoriaId=" + categoriaId;
+                }
+                if (precioMin != null) {
+                        redirectUrl += "&precioMin=" + precioMin;
+                }
+                if (precioMax != null) {
+                        redirectUrl += "&precioMax=" + precioMax;
+                }
+                if (page > 0) {
+                        redirectUrl += "&page=" + page;
+                }
+                
+                return redirectUrl;
+        }
+
+        @GetMapping("/actividades/buscar")
+        public String buscarActividadesGet(
+                        @RequestParam(required = false) String nombre,
+                        @RequestParam(required = false) Long idiomaId,
+                        @RequestParam(required = false) Long categoriaId,
+                        @RequestParam(required = false) BigDecimal precioMin,
+                        @RequestParam(required = false) BigDecimal precioMax,
+                        @RequestParam(defaultValue = "0") int page,
+                        Model model,
+                        Authentication auth) {
 
                 usuarioHelper.agregarInfoUsuarioModel(model, auth);
 
-                Page<Actividad> actividadesPage;
+                int pageSize = 6;
+                int pageSizeCategorias = 8;
 
-                if (termino != null && !termino.trim().isEmpty()) {
-                        actividadesPage = actividadService.ObtenerActividadesPorTitulo(
-                                        termino.trim(),
-                                        PageRequest.of(page, pageSize));
-                } else {
-                        actividadesPage = actividadService.getActividadesWithPaginationMain(
-                                        page, pageSize, null);
-                }
+                // Usar el nuevo método con filtros
+                Page<Actividad> actividadesPage = actividadService.buscarConFiltros(
+                                nombre,
+                                idiomaId,
+                                categoriaId,
+                                precioMin,
+                                precioMax,
+                                page,
+                                pageSize);
 
                 /*
                  * ===============================
@@ -344,20 +386,26 @@ public class AllAcessController {
                         return dto;
                 }).getContent();
 
-                int pageSizeCategorias = 8;
                 Page<Categoria> categoriaPage = categoriaService.buscarTodasPorPaginacion(page, pageSizeCategorias);
 
                 /*
                  * ===============================
-                 * 🔹 Model
+                 * 🔹 Model - Datos para la vista
                  * ===============================
                  */
                 model.addAttribute("busqueda", new BusquedaForm());
                 model.addAttribute("actividades", actividadesDTO);
-                model.addAttribute("currentPage", page);
                 model.addAttribute("categorias", categoriaPage);
+                model.addAttribute("idiomas", idiomaService.listarIdiomas());
+                model.addAttribute("currentPage", page);
                 model.addAttribute("totalPages", actividadesPage.getTotalPages());
-                model.addAttribute("filtroNombre", termino);
+
+                // Filtros actuales para mantenerlos en la vista
+                model.addAttribute("filtroNombre", nombre);
+                model.addAttribute("filtroIdiomaId", idiomaId);
+                model.addAttribute("filtroCategoriaId", categoriaId);
+                model.addAttribute("filtroPrecioMin", precioMin);
+                model.addAttribute("filtroPrecioMax", precioMax);
 
                 List<Integer> pageNumbers = IntStream
                                 .range(0, actividadesPage.getTotalPages())

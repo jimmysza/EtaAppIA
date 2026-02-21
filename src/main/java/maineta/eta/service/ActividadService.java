@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 
 import maineta.eta.dto.ActividadUpdateDto;
@@ -28,7 +27,7 @@ import maineta.eta.entity.Actividad;
  */
 public interface ActividadService {
 
-    Page<Actividad> ObtenerActividadesPorTitulo(String titulo, Pageable pageable);
+    Page<Actividad> buscarMisActividades(Long colaboradorId, String titulo, int page, int size);
 
     /**
      * Obtiene una lista de actividades paginadas desde la base de datos,
@@ -140,4 +139,26 @@ public interface ActividadService {
     Page<Actividad> buscarActividadesPorNombreDeCategoria(String nombreCategoria, int page, int size);
 
     Actividad buscarActividadPorNombreDeCategoria(String nombreCategoria);
+
+    /**
+     * Busca actividades con filtros dinámicos usando JPA Specifications.
+     *
+     * @param titulo      Filtro por título (búsqueda parcial, case-insensitive)
+     * @param idiomaId    Filtro por ID de idioma
+     * @param categoriaId Filtro por ID de categoría
+     * @param precioMin   Precio mínimo
+     * @param precioMax   Precio máximo
+     * @param page        Número de página
+     * @param size        Tamaño de página
+     * @return Una página de actividades filtradas
+     */
+    Page<Actividad> buscarConFiltros(
+            String titulo,
+            Long idiomaId,
+            Long categoriaId,
+            BigDecimal precioMin,
+            BigDecimal precioMax,
+            int page,
+            int size);
+
 }

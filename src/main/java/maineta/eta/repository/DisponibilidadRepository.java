@@ -7,9 +7,12 @@ import org.springframework.stereotype.Repository;
 
 import maineta.eta.entity.Disponibilidad;
 
-
 @Repository
 public interface DisponibilidadRepository extends JpaRepository<Disponibilidad, Long> {
 
     List<Disponibilidad> findByActividadIdActividad(Long idActividad);
+
+    @org.springframework.data.jpa.repository.Modifying
+    @org.springframework.transaction.annotation.Transactional
+    void deleteByActividad_IdActividad(Long idActividad);
 }

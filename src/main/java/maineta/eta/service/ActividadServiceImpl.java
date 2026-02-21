@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -22,6 +23,7 @@ import maineta.eta.entity.Idioma;
 import maineta.eta.repository.ActividadRepository;
 import maineta.eta.repository.CategoriaRepository;
 import maineta.eta.repository.ComentarioRepository;
+import maineta.eta.repository.DisponibilidadRepository;
 import maineta.eta.repository.IdiomaRepository;
 
 /**
@@ -41,6 +43,7 @@ public class ActividadServiceImpl implements ActividadService {
     private final ComentarioRepository comentarioRepository;
     private final IdiomaRepository idiomaRepository;
     private final CategoriaRepository categoriaRepository;
+    private final DisponibilidadRepository disponibilidadRepository;
 
     /**
      * Constructor con @Autowired para inyectar el repositorio automáticamente.
@@ -49,12 +52,14 @@ public class ActividadServiceImpl implements ActividadService {
     public ActividadServiceImpl(IdiomaRepository idiomaRepository, IUploadFileService uploadFileService,
             CategoriaRepository categoriaRepository,
             ActividadRepository actividadRepository,
-            ComentarioRepository comentarioRepository) {
+            ComentarioRepository comentarioRepository,
+            DisponibilidadRepository disponibilidadRepository) {
         this.actividadRepository = actividadRepository;
         this.categoriaRepository = categoriaRepository;
         this.comentarioRepository = comentarioRepository;
         this.uploadFileService = uploadFileService;
         this.idiomaRepository = idiomaRepository;
+        this.disponibilidadRepository = disponibilidadRepository;
     }
 
     public Map<Long, Long> contarActividadesPorCategorias(List<Long> categoriaIds) {
@@ -78,8 +83,23 @@ public class ActividadServiceImpl implements ActividadService {
     };
 
     @Override
-    public Page<Actividad> ObtenerActividadesPorTitulo(String titulo, Pageable pageable) {
-        return actividadRepository.findByTituloContainingIgnoreCase(titulo, pageable);
+    public Page<Actividad> buscarMisActividades(
+            Long colaboradorId,
+            String titulo,
+            int page,
+            int size) {
+
+        Pageable pageable = PageRequest.of(page, size, Sort.by("titulo").ascending());
+
+        if (titulo == null || titulo.isBlank()) {
+            return actividadRepository.findByColaborador_IdColaborador(colaboradorId, pageable);
+        }
+
+        return actividadRepository
+                .findByColaborador_IdColaboradorAndTituloContainingIgnoreCase(
+                        colaboradorId,
+                        titulo,
+                        pageable);
     }
 
     @Override
@@ -214,7 +234,7 @@ public class ActividadServiceImpl implements ActividadService {
     @Override
     @Transactional
     public void deleteActivity(long id) {
-
+        disponibilidadRepository.deleteByActividad_IdActividad(id);
         comentarioRepository.deleteByActividadId(id);
         actividadRepository.deleteById(id);
     }
@@ -274,13 +294,13 @@ public class ActividadServiceImpl implements ActividadService {
             Categoria categoria = categoriaRepository.getReferenceById(dto.getIdCategoria());
             actividad.setCategoria(categoria);
         }
-        if(dto.getIncluye() != null){
+        if (dto.getIncluye() != null) {
             actividad.setIncluye(dto.getIncluye());
         }
-        if(dto.getCondiciones() != null){
+        if (dto.getCondiciones() != null) {
             actividad.setCondiciones(dto.getCondiciones());
         }
-        if(dto.getNormas() != null){
+        if (dto.getNormas() != null) {
             actividad.setNormas(dto.getNormas());
         }
 
@@ -328,6 +348,32 @@ public class ActividadServiceImpl implements ActividadService {
         Actividad actividad = obtenerPorId(id);
         actividad.setUbicacion(ubicacion);
         return actividadRepository.save(actividad);
+    }
+
+    /**
+     * 🔹 Buscar actividades con filtros dinámicos usando JPA Specifications.
+     * Permite combinar múltiples filtros: título, idioma, categoría, precios.
+     */
+    @Override
+    public Page<Actividad> buscarConFiltros(
+            String titulo,
+            Long idiomaId,
+            Long categoriaId,
+            java.math.BigDecimal precioMin,
+            java.math.BigDecimal precioMax,
+            int page,
+            int size) {
+
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+
+        org.springframework.data.jpa.domain.Specification<Actividad> spec = maineta.eta.specification.ActividadSpecification.filtrar(
+                titulo,
+                idiomaId,
+                categoriaId,
+                precioMin,
+                precioMax);
+
+        return actividadRepository.findAll(spec, pageable);
     }
 
 }

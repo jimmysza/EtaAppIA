@@ -138,50 +138,45 @@
 
             <!-- Search Form -->
             <form class="bg-white rounded-2xl shadow-xl p-6 max-w-4xl mx-auto" th:action="@{/actividades/buscar}"
-                th:object="${busqueda}" method="post">
+                method="get">
                 <!-- Search by Title/Description -->
                 <div class="mb-4">
-                    <input type="text" placeholder="Buscar por título o descripción..." th:field="*{titulo}"
+                    <input type="text" name="nombre" placeholder="Buscar por título o descripción..."
                         class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                 </div>
 
                 <!-- Filters Row -->
                 <div class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
-                    <!-- Location -->
+                    <!-- Categoría -->
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Ubicacion</label>
-                        <select
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Categoría</label>
+                        <select name="categoriaId"
                             class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-none bg-white">
-                            <option>Todas las ubicaciones</option>
-                            <option>New York</option>
-                            <option>Los Angeles</option>
-                            <option>Chicago</option>
-                            <option>Miami</option>
+                            <option value="">Todas las categorías</option>
+                            <option th:each="cat : ${categorias}" th:value="${cat.idCategoria}" th:text="${cat.nombre}"></option>
                         </select>
                     </div>
 
-                    <!-- Property Type -->
+                    <!-- Idioma -->
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Property Type</label>
-                        <select
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Idioma</label>
+                        <select name="idiomaId"
                             class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-none bg-white">
-                            <option>All</option>
-                            <option>Single Family</option>
-                            <option>Multi Family</option>
-                            <option>Condo</option>
-                            <option>Townhouse</option>
+                            <option value="">Todos los idiomas</option>
+                            <option th:each="idioma : ${idiomas}" th:value="${idioma.idIdioma}" th:text="${idioma.nombre}"></option>
                         </select>
                     </div>
 
-                    <!-- Budget -->
+                    <!-- Precio Máximo -->
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Budget</label>
-                        <select
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Precio Máximo</label>
+                        <select name="precioMax"
                             class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-none bg-white">
-                            <option>$500 - $1200</option>
-                            <option>$1200 - $2500</option>
-                            <option>$2500 - $5000</option>
-                            <option>$5000+</option>
+                            <option value="">Sin límite</option>
+                            <option value="50000">Hasta $50000</option>
+                            <option value="100000">Hasta $100,000</option>
+                            <option value="500000">Hasta $500,000</option>
+                            <option value="2000000">Hasta $1M</option>
                         </select>
                     </div>
 
@@ -202,7 +197,9 @@
 
 
 
+    <!-- Categorias -->
     <section class="max-w-[1350px] mx-auto">
+
 
         <!-- Título de la sección -->
         <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-8">
@@ -260,7 +257,7 @@
     </section>
 
     <!--ACTIVIDADES-->
-    <div id="populares" class="max-w-[1302px] mx-auto px-6 py-8">
+    <div id="populares" class="max-w-[1350px] mx-auto px-6 py-8">
 
         <!-- Header con título y navegación -->
         <div class="flex items-center justify-between mb-6">
