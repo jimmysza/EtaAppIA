@@ -3,7 +3,10 @@ package maineta.eta.controller;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
 import org.springframework.security.core.Authentication;
@@ -249,16 +252,35 @@ public class ColaboradorController {
     @GetMapping("/reservas/{idActividad}")
     public String verReservas(@PathVariable Long idActividad, Model model) {
         Actividad actividad = actividadService.obtenerPorId(idActividad);
+        List<Disponibilidad> disponibilidades = disponibilidadService.obtenerPorActividad(idActividad);
         List<Reserva> reservas = reservaService.getReservasPorIdActividad(idActividad);
 
-        // Protege contra null
         if (reservas == null) {
-            reservas = List.of(); // o Collections.emptyList()
+            reservas = List.of();
         }
 
-        model.addAttribute("reservas", reservas);
+        // Agrupar reservas por disponibilidad
+        Map<Long, List<Reserva>> reservasPorDisponibilidad = reservas.stream()
+                .filter(r -> r.getDisponibilidad() != null)
+                .collect(Collectors.groupingBy(
+                        r -> r.getDisponibilidad().getIdDisponibilidad(),
+                        LinkedHashMap::new,
+                        Collectors.toList()));
+
+        // Reservas sin disponibilidad asignada
+        List<Reserva> reservasSinDisponibilidad = reservas.stream()
+                .filter(r -> r.getDisponibilidad() == null)
+                .collect(Collectors.toList());
+
+        int totalReservas = reservas.size();
+        int totalPersonasReservadas = reservas.stream().mapToInt(Reserva::getCantidad).sum();
+
         model.addAttribute("actividad", actividad);
-        model.addAttribute("reserva", new Reserva()); // solo para tener el objeto, aunque no se use
+        model.addAttribute("disponibilidades", disponibilidades);
+        model.addAttribute("reservasPorDisponibilidad", reservasPorDisponibilidad);
+        model.addAttribute("reservasSinDisponibilidad", reservasSinDisponibilidad);
+        model.addAttribute("totalReservas", totalReservas);
+        model.addAttribute("totalPersonasReservadas", totalPersonasReservadas);
         return "colaborador/reservaciones-actividad";
     }
 
@@ -309,8 +331,41 @@ public class ColaboradorController {
         model.addAttribute("actividad", actividad);
         model.addAttribute("actividadUpdateDto", dto);
         model.addAttribute("plataGanada", plataGanada);
+        model.addAttribute("imagenes", actividadService.obtenerImagenesPorActividad(actividad.getIdActividad()));
 
         return "colaborador/detalle-actividad";
+    }
+
+    // Agregar imágenes adicionales a una actividad
+    @PostMapping("/actividades/{id}/imagenes/agregar")
+    public String agregarImagenes(@PathVariable("id") Long id,
+            @RequestParam("imagenesExtra") List<MultipartFile> imagenesExtra,
+            RedirectAttributes redirectAttributes) {
+        try {
+            actividadService.agregarImagenes(id, imagenesExtra);
+            redirectAttributes.addFlashAttribute("message", "Imágenes agregadas correctamente");
+            redirectAttributes.addFlashAttribute("type", "success");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("message", "Error al agregar imágenes: " + e.getMessage());
+            redirectAttributes.addFlashAttribute("type", "danger");
+        }
+        return "redirect:/colaborador/detalle/" + id;
+    }
+
+    // Eliminar una imagen adicional
+    @GetMapping("/imagenes/eliminar/{idImagen}/{idActividad}")
+    public String eliminarImagen(@PathVariable("idImagen") Long idImagen,
+            @PathVariable("idActividad") Long idActividad,
+            RedirectAttributes redirectAttributes) {
+        try {
+            actividadService.eliminarImagen(idImagen);
+            redirectAttributes.addFlashAttribute("message", "Imagen eliminada correctamente");
+            redirectAttributes.addFlashAttribute("type", "success");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("message", "Error al eliminar imagen: " + e.getMessage());
+            redirectAttributes.addFlashAttribute("type", "danger");
+        }
+        return "redirect:/colaborador/detalle/" + idActividad;
     }
 
 }

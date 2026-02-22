@@ -14,8 +14,86 @@
     <script src="https://cdn.tailwindcss.com"></script>
 
     <style>
-
-
+        .resumen-general {
+            display: flex;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+        .resumen-card {
+            background: #1e293b;
+            color: #fff;
+            border-radius: 0.75rem;
+            padding: 1.25rem 1.75rem;
+            min-width: 180px;
+            text-align: center;
+        }
+        .resumen-card h3 {
+            font-size: 0.85rem;
+            color: #94a3b8;
+            margin-bottom: 0.25rem;
+        }
+        .resumen-card .valor {
+            font-size: 1.75rem;
+            font-weight: 700;
+        }
+        .disponibilidad-section {
+            margin-bottom: 2rem;
+            border: 1px solid #334155;
+            border-radius: 0.75rem;
+            overflow: hidden;
+        }
+        .disponibilidad-header {
+            background: #1e293b;
+            color: #fff;
+            padding: 1rem 1.25rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+        }
+        .disponibilidad-header h3 {
+            margin: 0;
+            font-size: 1rem;
+        }
+        .disponibilidad-badges {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+        .badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        .badge-cupos {
+            background: #334155;
+            color: #94a3b8;
+        }
+        .badge-reservas {
+            background: #1d4ed8;
+            color: #fff;
+        }
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 1rem;
+        }
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #60a5fa;
+            text-decoration: none;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+        }
+        .back-link:hover {
+            text-decoration: underline;
+        }
     </style>
 </head>
 
@@ -23,44 +101,152 @@
 
     <div th:replace="~{componentes/nav_colab :: nav_colab}"></div>
 
-    <main>
+    <main style="padding: 1.5rem;">
 
-        <div class="executions-table-wrapper">
-            <table class="executions-table">
-                <thead>
-                    <tr>
-                        <th>Cantidad</th>
-                        <th>Estado</th>
-                        <th>fecha de Reserva</th>
-                        <th>Cliente</th>
-                        <th>Acciones</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr th:if="${reservas == null or #lists.isEmpty(reservas)}">
-                        <td colspan="5" class="text-center">Aún no hay reservaciones</td>
-                    </tr>
+        <!-- Enlace de regreso -->
+        <a th:href="@{'/colaborador/detalle/' + ${actividad.idActividad}}" class="back-link">
+            ← Volver al detalle de la actividad
+        </a>
 
-                    <tr th:if="${reservas != null && !reservas.empty}" th:each="r : ${reservas}">
-                        <td th:text="${r.cantidad}"></td>
-                        <td th:text="${r.estado}"></td>
-                        <td th:text="${r.fechaReserva}"></td>
-                        <td th:text="${r.cliente.usuario.nombre}"></td>
-                        <td>
-                            <button class="edit-btn open-edit-modal" th:data-id="${r.idReserva}"
-                                th:data-estado="${r.estado}">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-                                    <path fill="#fff"
-                                        d="m7 17.013l4.413-.015l9.632-9.54c.378-.378.586-.88.586-1.414s-.208-1.036-.586-1.414l-1.586-1.586c-.756-.756-2.075-.752-2.825-.003L7 12.583zM18.045 4.458l1.589 1.583l-1.597 1.582l-1.586-1.585zM9 13.417l6.03-5.973l1.586 1.586l-6.029 5.97r1L9 15.006z" />
-                                    <path fill="#fff"
-                                        d="M5 21h14c1.103 0 2-.897 2-2v-8.668l-2 2V19H8.158c-.026 0-.053.01-.079.01c-.033 0-.066-.009-.1-.01H5V5h6.847l2-2H5c-1.103 0-2 .897-2 2v14c0 1.103.897 2 2 2" />
-                                </svg>
-                            </button>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+        <h2 class="section-title" th:text="'Reservas de: ' + ${actividad.titulo}"></h2>
+
+        <!-- Resumen general -->
+        <div class="resumen-general">
+            <div class="resumen-card">
+                <h3>Total de Reservas</h3>
+                <div class="valor" th:text="${totalReservas}">0</div>
+            </div>
+            <div class="resumen-card">
+                <h3>Personas Reservadas</h3>
+                <div class="valor" th:text="${totalPersonasReservadas}">0</div>
+            </div>
+            <div class="resumen-card">
+                <h3>Disponibilidades</h3>
+                <div class="valor" th:text="${#lists.size(disponibilidades)}">0</div>
+            </div>
+            <div class="resumen-card" style="background: #065f46;">
+                <h3>Ingresos Totales</h3>
+                <div class="valor" th:text="'$' + ${#numbers.formatDecimal(ingresoTotal, 1, 2)}">$0.00</div>
+            </div>
         </div>
+
+        <!-- Sin disponibilidades -->
+        <div th:if="${#lists.isEmpty(disponibilidades)}" class="disponibilidad-section">
+            <div class="disponibilidad-header">
+                <h3>No hay disponibilidades creadas para esta actividad</h3>
+            </div>
+        </div>
+
+        <!-- Botón para ocultar/mostrar todas las tablas -->
+        <div th:if="${!#lists.isEmpty(disponibilidades)}" style="margin-bottom: 1rem;">
+            <button id="btn-toggle-todas" onclick="toggleTodas()"
+                    style="background: #334155; color: #fff; border: none; padding: 0.5rem 1rem; border-radius: 0.5rem; cursor: pointer; font-size: 0.85rem;">
+                Ocultar todas
+            </button>
+        </div>
+
+        <!-- Tablas por disponibilidad -->
+        <div th:each="disp, iterStat : ${disponibilidades}" class="disponibilidad-section">
+            <div class="disponibilidad-header" style="cursor: pointer;" th:onclick="'toggleTabla(' + ${iterStat.index} + ')'">
+                <h3>
+                    <span th:text="${#temporals.format(disp.fecha, 'dd/MM/yyyy')}"></span>
+                    &mdash;
+                    <span th:text="${disp.horaInicio}"></span> a <span th:text="${disp.horaFin}"></span>
+                    <span th:id="'icon-' + ${iterStat.index}" style="margin-left: 0.5rem; font-size: 0.8rem;">▼</span>
+                </h3>
+                <div class="disponibilidad-badges">
+                    <span class="badge badge-cupos"
+                          th:text="'Cupos: ' + ${disp.cuposDisponibles} + ' / ' + ${disp.cuposTotales}"></span>
+                    <span class="badge badge-reservas"
+                          th:text="'Reservas: ' + (${reservasPorDisponibilidad.containsKey(disp.idDisponibilidad)} ? ${#lists.size(reservasPorDisponibilidad.get(disp.idDisponibilidad))} : 0)"></span>
+                    <span class="badge" style="background: #065f46; color: #fff;"
+                          th:text="'Ingresos: $' + (${ingresosPorDisponibilidad.containsKey(disp.idDisponibilidad)} ? ${#numbers.formatDecimal(ingresosPorDisponibilidad.get(disp.idDisponibilidad), 1, 2)} : '0.00')"></span>
+                </div>
+            </div>
+            <div class="executions-table-wrapper" th:id="'tabla-' + ${iterStat.index}">
+                <table class="executions-table">
+                    <thead>
+                        <tr>
+                            <th>Cantidad</th>
+                            <th>Estado</th>
+                            <th>Fecha de Reserva</th>
+                            <th>Cliente</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:if="${!reservasPorDisponibilidad.containsKey(disp.idDisponibilidad)}">
+                            <td colspan="5" class="text-center">Sin reservas para esta disponibilidad</td>
+                        </tr>
+                        <tr th:if="${reservasPorDisponibilidad.containsKey(disp.idDisponibilidad)}"
+                            th:each="r : ${reservasPorDisponibilidad.get(disp.idDisponibilidad)}">
+                            <td th:text="${r.cantidad}"></td>
+                            <td th:text="${r.estado}"></td>
+                            <td th:text="${#temporals.format(r.fechaReserva, 'dd/MM/yyyy HH:mm')}"></td>
+                            <td th:text="${r.cliente.usuario.nombre}"></td>
+                            <td>
+                                <button class="edit-btn open-edit-modal"
+                                    th:data-id="${r.idReserva}"
+                                    th:data-estado="${r.estado}">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                                        <path fill="#fff"
+                                            d="m7 17.013l4.413-.015l9.632-9.54c.378-.378.586-.88.586-1.414s-.208-1.036-.586-1.414l-1.586-1.586c-.756-.756-2.075-.752-2.825-.003L7 12.583zM18.045 4.458l1.589 1.583l-1.597 1.582l-1.586-1.585zM9 13.417l6.03-5.973l1.586 1.586l-6.029 5.97L9 15.006z" />
+                                        <path fill="#fff"
+                                            d="M5 21h14c1.103 0 2-.897 2-2v-8.668l-2 2V19H8.158c-.026 0-.053.01-.079.01c-.033 0-.066-.009-.1-.01H5V5h6.847l2-2H5c-1.103 0-2 .897-2 2v14c0 1.103.897 2 2 2" />
+                                    </svg>
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Reservas sin disponibilidad asignada -->
+        <div th:if="${!#lists.isEmpty(reservasSinDisponibilidad)}" class="disponibilidad-section">
+            <div class="disponibilidad-header">
+                <h3>Reservas sin disponibilidad asignada</h3>
+                <div class="disponibilidad-badges">
+                    <span class="badge badge-reservas"
+                    th:text="'Reservas: ' + ${#lists.size(reservasSinDisponibilidad)}"></span>
+                </div>
+            </div>
+            <div class="executions-table-wrapper">
+                <table class="executions-table">
+                    <thead>
+                        <tr>
+                            <th>Cantidad</th>
+                            <th>Estado</th>
+                            <th>Fecha de Reserva</th>
+                            <th>Cliente</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="r : ${reservasSinDisponibilidad}">
+                            <td th:text="${r.cantidad}"></td>
+                            <td th:text="${r.estado}"></td>
+                            <td th:text="${#temporals.format(r.fechaReserva, 'dd/MM/yyyy HH:mm')}"></td>
+                            <td th:text="${r.cliente.usuario.nombre}"></td>
+                            <td>
+                                <button class="edit-btn open-edit-modal"
+                                    th:data-id="${r.idReserva}"
+                                    th:data-estado="${r.estado}">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                                        <path fill="#fff"
+                                            d="m7 17.013l4.413-.015l9.632-9.54c.378-.378.586-.88.586-1.414s-.208-1.036-.586-1.414l-1.586-1.586c-.756-.756-2.075-.752-2.825-.003L7 12.583zM18.045 4.458l1.589 1.583l-1.597 1.582l-1.586-1.585zM9 13.417l6.03-5.973l1.586 1.586l-6.029 5.97L9 15.006z" />
+                                        <path fill="#fff"
+                                            d="M5 21h14c1.103 0 2-.897 2-2v-8.668l-2 2V19H8.158c-.026 0-.053.01-.079.01c-.033 0-.066-.009-.1-.01H5V5h6.847l2-2H5c-1.103 0-2 .897-2 2v14c0 1.103.897 2 2 2" />
+                                    </svg>
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Modal para editar estado -->
         <div class="modal modal-edit">
             <form method="post" id="edit-reserva-form">
                 <input type="hidden" name="idActividad" th:value="${actividad.idActividad}" />
@@ -75,9 +261,9 @@
                 <div class="inputs-form">
                     <label for="estado">Estado <span class="red">*</span></label>
                     <select name="estado" id="modal-estado-select" required>
-                        <option value="Pendiente" th:selected="${reserva.estado == 'Pendiente'}">Pendiente</option>
-                        <option value="Hecho" th:selected="${reserva.estado == 'Hecho'}">Hecho</option>
-                        <option value="Cancelada" th:selected="${reserva.estado == 'Cancelada'}">Cancelada</option>
+                        <option value="Pendiente">Pendiente</option>
+                        <option value="Hecho">Hecho</option>
+                        <option value="Cancelada">Cancelada</option>
                     </select>
 
                     <div class="btnSubmit">
@@ -87,6 +273,30 @@
             </form>
         </div>
     </main>
+    <script>
+        function toggleTabla(index) {
+            const tabla = document.getElementById('tabla-' + index);
+            const icon = document.getElementById('icon-' + index);
+            if (tabla.style.display === 'none') {
+                tabla.style.display = '';
+                icon.textContent = '▼';
+            } else {
+                tabla.style.display = 'none';
+                icon.textContent = '▶';
+            }
+        }
+
+        function toggleTodas() {
+            const tablas = document.querySelectorAll('[id^="tabla-"]');
+            const icons = document.querySelectorAll('[id^="icon-"]');
+            const algunaVisible = Array.from(tablas).some(t => t.style.display !== 'none');
+            tablas.forEach((t, i) => {
+                t.style.display = algunaVisible ? 'none' : '';
+                if (icons[i]) icons[i].textContent = algunaVisible ? '▶' : '▼';
+            });
+            document.getElementById('btn-toggle-todas').textContent = algunaVisible ? 'Mostrar todas' : 'Ocultar todas';
+        }
+    </script>
     <script th:inline="javascript">
         /*<![CDATA[*/
         document.querySelectorAll('.open-edit-modal').forEach(button => {
@@ -100,7 +310,6 @@
 
                 const form = document.getElementById('edit-reserva-form');
                 form.action = `/colaborador/reserva/actualizar/${id}`;
-                // También podrías pasar idActividad como campo oculto (recomendado)
                 document.querySelector('input[name="idActividad"]').value = idActividad;
             });
         });

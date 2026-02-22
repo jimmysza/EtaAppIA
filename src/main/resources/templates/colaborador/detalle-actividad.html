@@ -140,7 +140,11 @@
             </a>
             <a id="btnImg"
                 class="btnEdicion text-xl font-bold px-6 py-3 border border-gray-200 w-full cursor-pointer rounded-xl">
-                Imagen
+                Imagen Principal
+            </a>
+            <a id="btnImagenes"
+                class="btnEdicion text-xl font-bold px-6 py-3 border border-gray-200 w-full cursor-pointer rounded-xl">
+                Imágenes Adicionales
             </a>
             <a id="btnPrecio"
                 class="btnEdicion text-xl font-bold px-6 py-3 border border-gray-200 w-full cursor-pointer rounded-xl">
@@ -269,7 +273,7 @@
                         th:action="@{/colaborador/actividades/{id}/actualizar(id=${actividad.idActividad})}"
                         enctype="multipart/form-data" th:object="${actividadUpdateDto}">
 
-                        <label>Imagen Actual</label>
+                        <label>Imagen Principal</label>
                         <div class="info-display">
                             <img th:src="@{|/uploads/${actividad.imagen}|}" alt="Imagen de la actividad"
                                 style="max-width: 400px; height: auto; display: block; margin-bottom: 1rem; border-radius: 0.5rem;" />
@@ -277,7 +281,6 @@
 
                         <label for="imagenFile" id="dropZone"
                             class="border-2 border-dashed border-gray-300 bg-gray-50 rounded-xl p-12 mb-6 text-center transition-colors cursor-pointer hover:border-gray-400 block">
-                            <!-- ❌ ELIMINA th:field="*{imagen}" -->
                             <input type="file" id="imagenFile" name="imagenFile" class="hidden" accept="image/*">
                             <svg class="w-10 h-10 mx-auto mb-4 text-gray-400" fill="none" stroke="currentColor"
                                 viewBox="0 0 24 24">
@@ -286,7 +289,7 @@
                                 </path>
                             </svg>
                             <p id="fileName" class="text-gray-700 text-base mb-1">
-                                Selecciona una imagen o arrastra aquí
+                                Cambiar imagen principal
                             </p>
                             <p class="text-gray-400 text-sm">
                                 JPG, PNG o WEBP, tamaño máximo 10MB
@@ -304,6 +307,55 @@
                             Guardar Cambios
                         </button>
                     </form>
+
+                    <!-- Sección Imágenes Adicionales -->
+                    <div class="form-edit" id="seccionImagenes">
+                        <label>Imágenes Adicionales</label>
+
+                        <!-- Galería de imágenes existentes -->
+                        <div style="display: flex; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.5rem;">
+                            <div th:if="${imagenes == null or #lists.isEmpty(imagenes)}" class="info-display" style="width: 100%;">
+                                <p>No hay imágenes adicionales</p>
+                            </div>
+                            <div th:each="img : ${imagenes}" style="position: relative; display: inline-block;">
+                                <img th:src="@{|/uploads/${img.nombre}|}" alt="Imagen adicional"
+                                    style="width: 200px; height: 150px; object-fit: cover; border-radius: 0.5rem; border: 1px solid #d1d5db;" />
+                                <a th:href="@{/colaborador/imagenes/eliminar/{idImagen}/{idActividad}(idImagen=${img.idImagen}, idActividad=${actividad.idActividad})}"
+                                   style="position: absolute; top: 0.25rem; right: 0.25rem; background: #ef4444; color: white; border-radius: 50%; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; text-decoration: none; font-weight: bold; font-size: 14px;"
+                                   title="Eliminar imagen"
+                                   onclick="return confirm('¿Estás seguro de eliminar esta imagen?')">
+                                    ✕
+                                </a>
+                            </div>
+                        </div>
+
+                        <!-- Formulario para subir más imágenes -->
+                        <form method="post"
+                            th:action="@{/colaborador/actividades/{id}/imagenes/agregar(id=${actividad.idActividad})}"
+                            enctype="multipart/form-data">
+
+                            <label for="imagenesExtra" id="dropZoneExtra"
+                                class="border-2 border-dashed border-gray-300 bg-gray-50 rounded-xl p-8 mb-4 text-center transition-colors cursor-pointer hover:border-gray-400 block">
+                                <input type="file" id="imagenesExtra" name="imagenesExtra" class="hidden" accept="image/*" multiple>
+                                <svg class="w-8 h-8 mx-auto mb-3 text-gray-400" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12">
+                                    </path>
+                                </svg>
+                                <p id="fileNameExtra" class="text-gray-700 text-base mb-1">
+                                    Selecciona imágenes adicionales
+                                </p>
+                                <p class="text-gray-400 text-sm">
+                                    Puedes seleccionar varias imágenes a la vez
+                                </p>
+                            </label>
+
+                            <button type="submit" class="button-default">
+                                Subir Imágenes
+                            </button>
+                        </form>
+                    </div>
 
                     <!-- Sección Precio -->
                     <form class="form-edit" id="seccionPrecio" method="post"
@@ -514,6 +566,7 @@
         document.getElementById('btnUbicacion').addEventListener('click', () => mostrarSeccion('seccionUbicacion'));
         document.getElementById('btnCategoria').addEventListener('click', () => mostrarSeccion('seccionCategoria'));
         document.getElementById('btnMasInformacion').addEventListener('click', () => mostrarSeccion('seccionMasInformacion'));
+        document.getElementById('btnImagenes').addEventListener('click', () => mostrarSeccion('seccionImagenes'));
 
         document.addEventListener('DOMContentLoaded', function () {
             const dropZone = document.getElementById('dropZone');
@@ -556,6 +609,46 @@
                     fileName.textContent = files[0].name;
                 }
             });
+
+            // Drop zone for extra images
+            const dropZoneExtra = document.getElementById('dropZoneExtra');
+            const fileInputExtra = document.getElementById('imagenesExtra');
+            const fileNameExtra = document.getElementById('fileNameExtra');
+
+            if (dropZoneExtra && fileInputExtra) {
+                dropZoneExtra.addEventListener('click', function (e) {
+                    if (e.target.tagName !== 'INPUT') {
+                        fileInputExtra.click();
+                    }
+                });
+
+                fileInputExtra.addEventListener('change', function () {
+                    if (this.files && this.files.length > 0) {
+                        fileNameExtra.textContent = this.files.length + ' archivo(s) seleccionado(s)';
+                        dropZoneExtra.classList.add('border-blue-400', 'bg-blue-50');
+                    }
+                });
+
+                dropZoneExtra.addEventListener('dragover', function (e) {
+                    e.preventDefault();
+                    this.classList.add('border-blue-400', 'bg-blue-50');
+                });
+
+                dropZoneExtra.addEventListener('dragleave', function (e) {
+                    e.preventDefault();
+                    this.classList.remove('border-blue-400', 'bg-blue-50');
+                });
+
+                dropZoneExtra.addEventListener('drop', function (e) {
+                    e.preventDefault();
+                    this.classList.remove('border-blue-400', 'bg-blue-50');
+                    const files = e.dataTransfer.files;
+                    if (files.length > 0) {
+                        fileInputExtra.files = files;
+                        fileNameExtra.textContent = files.length + ' archivo(s) seleccionado(s)';
+                    }
+                });
+            }
         });
     </script>
 </body>

@@ -1,94 +1,153 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 
-<body>
-    <section class="preguntas_frecuentes" th:fragment="preguntasFrecuentes">
-        <div class="ctrl2">
-            <h3 class="question">Preguntas <span>Frecuentes</span></h3>
+<body >
+
+    <section th:fragment="preguntasFrecuentes" class="w-full max-w-7xl mx-auto px-6 md:px-10 py-12 md:py-20">
+
+        <!-- Grid Container -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 py-15">
+
+            <!-- Left Column - Title (Sticky) -->
+            <div class="lg:col-span-4">
+                <div class="lg:sticky lg:top-20">
+                    <h3 class="text-4xl md:text-3xl font-bold text-text-primary mb-4">
+                        ¿Cuáles son los mejores lugares para visitar en 
+                        <span class="text-blue-600">Cartagena</span>
+                        ?                    
+                    </h3>
+
+                </div>
+            </div>
+
+            <!-- Right Column - Accordion -->
+            <div class="lg:col-span-8">
+                <div class="space-y-0 overflow-hidden">
+
+                    <!-- FAQ Item 1 -->
+                    <div class="faq-item border-b border-border-color last:border-b-0">
+                        <button
+                            class="w-full px-6 py-6 text-left focus:outline-none focus:bg-gray-50 transition-colors duration-200 group"
+                            onclick="toggleFAQ(this)" aria-expanded="false">
+                            <div class="flex items-start justify-between gap-4">
+                                <h3
+                                    class="text-lg md:text-xl font-semibold text-text-primary pr-8 group-hover:text-primary transition-colors duration-200">
+                                    How this work?
+                                </h3>
+                                <span class="flex-shrink-0 w-6 h-6 flex items-center justify-center">
+                                    <svg class="w-6 h-6 text-text-secondary transform transition-transform duration-300 group-hover:text-primary"
+                                        fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M19 9l-7 7-7-7" />
+                                    </svg>
+                                </span>
+                            </div>
+                        </button>
+                        <div class="faq-content max-h-0 overflow-hidden transition-all duration-300 ease-in-out">
+                            <div class="px-6 pb-6">
+                                <p class="text-text-secondary leading-relaxed">
+                                    Yet bed any for assistance indulgence unpleasing. Not thoughts all exercise
+                                    blessing.
+                                    Indulgence way everything joy alteration boisterous the attachment.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- FAQ Item 2 -->
+                    <div class="faq-item border-b border-border-color last:border-b-0">
+                        <button
+                            class="w-full px-6 py-6 text-left focus:outline-none focus:bg-gray-50 transition-colors duration-200 group"
+                            onclick="toggleFAQ(this)" aria-expanded="false">
+                            <div class="flex items-start justify-between gap-4">
+                                <h3
+                                    class="text-lg md:text-xl font-semibold text-text-primary pr-8 group-hover:text-primary transition-colors duration-200">
+                                    Are there any additional fee?
+                                </h3>
+                                <span class="flex-shrink-0 w-6 h-6 flex items-center justify-center">
+                                    <svg class="w-6 h-6 text-text-secondary transform transition-transform duration-300 group-hover:text-primary"
+                                        fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M12 4v16m8-8H4" />
+                                    </svg>
+                                </span>
+                            </div>
+                        </button>
+                        <div class="faq-content max-h-0 overflow-hidden transition-all duration-300 ease-in-out">
+                            <div class="px-6 pb-6">
+                                <p class="text-text-secondary leading-relaxed">
+                                    Yet bed any for assistance indulgence unpleasing. Not thoughts all exercise
+                                    blessing.
+                                    Indulgence way everything joy alteration boisterous the attachment.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- FAQ Item 3 -->
+                    <div class="faq-item border-b border-border-color last:border-b-0">
+                        <button
+                            class="w-full px-6 py-6 text-left focus:outline-none focus:bg-gray-50 transition-colors duration-200 group"
+                            onclick="toggleFAQ(this)" aria-expanded="false">
+                            <div class="flex items-start justify-between gap-4">
+                                <h3
+                                    class="text-lg md:text-xl font-semibold text-text-primary pr-8 group-hover:text-primary transition-colors duration-200">
+                                    How can I get the app?
+                                </h3>
+                                <span class="flex-shrink-0 w-6 h-6 flex items-center justify-center">
+                                    <svg class="w-6 h-6 text-text-secondary transform transition-transform duration-300 group-hover:text-primary"
+                                        fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M12 4v16m8-8H4" />
+                                    </svg>
+                                </span>
+                            </div>
+                        </button>
+                        <div class="faq-content max-h-0 overflow-hidden transition-all duration-300 ease-in-out">
+                            <div class="px-6 pb-6">
+                                <p class="text-text-secondary leading-relaxed">
+                                    Yet bed any for assistance indulgence unpleasing. Not thoughts all exercise
+                                    blessing.
+                                    Indulgence way everything joy alteration boisterous the attachment.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- FAQ Item 4 -->
+                    <div class="faq-item border-b border-border-color last:border-b-0">
+                        <button
+                            class="w-full px-6 py-6 text-left focus:outline-none focus:bg-gray-50 transition-colors duration-200 group"
+                            onclick="toggleFAQ(this)" aria-expanded="false">
+                            <div class="flex items-start justify-between gap-4">
+                                <h3
+                                    class="text-lg md:text-xl font-semibold text-text-primary pr-8 group-hover:text-primary transition-colors duration-200">
+                                    What features do you offer and other not?
+                                </h3>
+                                <span class="flex-shrink-0 w-6 h-6 flex items-center justify-center">
+                                    <svg class="w-6 h-6 text-text-secondary transform transition-transform duration-300 group-hover:text-primary"
+                                        fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M12 4v16m8-8H4" />
+                                    </svg>
+                                </span>
+                            </div>
+                        </button>
+                        <div class="faq-content max-h-0 overflow-hidden transition-all duration-300 ease-in-out">
+                            <div class="px-6 pb-6">
+                                <p class="text-text-secondary leading-relaxed">
+                                    Yet bed any for assistance indulgence unpleasing. Not thoughts all exercise
+                                    blessing.
+                                    Indulgence way everything joy alteration boisterous the attachment.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
         </div>
+    </section>
 
-        <div class="container_preguntas">
-
-            <div class="flex preguntas_card ">
-
-                <div class="preguntas_card_text">
-                    <h3>¿Cuáles son los mejores lugares para visitar en Cartagena?</h3>
-                    <p>
-                        Los mejores lugares para visitar en Cartagena son la Ciudad Amurallada, el Castillo de San
-                        Felipe,
-                        las Islas del Rosario y el Parque Nacional Natural Corales del Rosario y San Bernardo.
-                    </p>
-                </div>
-
-                <button class="btn_preguntas_card">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 1024 1024">
-                        <path fill="currentColor"
-                            d="M104.704 338.752a64 64 0 0 1 90.496 0l316.8 316.8l316.8-316.8a64 64 0 0 1 90.496 90.496L557.248 791.296a64 64 0 0 1-90.496 0L104.704 429.248a64 64 0 0 1 0-90.496" />
-                    </svg>
-                </button>
-
-            </div>
-
-            <div class="preguntas_card flex">
-
-                <div class="preguntas_card_text">
-                    <h3>¿Cuales son los diferentes tipos de Actividades?</h3>
-                    <p>
-                        Los mejores lugares para visitar en Cartagena son la Ciudad Amurallada, el Castillo de San
-                        Felipe,
-                        las Islas del Rosario y el Parque Nacional Natural Corales del Rosario y San Bernardo.
-                    </p>
-                </div>
-
-                <button class="btn_preguntas_card">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 1024 1024">
-                        <path fill="currentColor"
-                            d="M104.704 338.752a64 64 0 0 1 90.496 0l316.8 316.8l316.8-316.8a64 64 0 0 1 90.496 90.496L557.248 791.296a64 64 0 0 1-90.496 0L104.704 429.248a64 64 0 0 1 0-90.496" />
-                    </svg>
-                </button>
-
-            </div>
-
-            <div class="preguntas_card flex">
-
-                <div class="preguntas_card_text">
-                    <h3>¿Cuáles son los mejores lugares para visitar en Cartagena?</h3>
-                    <p>
-                        Los mejores lugares para visitar en Cartagena son la Ciudad Amurallada, el Castillo de San
-                        Felipe,
-                        las Islas del Rosario y el Parque Nacional Natural Corales del Rosario y San Bernardo.
-                    </p>
-                </div>
-
-                <button class="btn_preguntas_card">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 1024 1024">
-                        <path fill="currentColor"
-                            d="M104.704 338.752a64 64 0 0 1 90.496 0l316.8 316.8l316.8-316.8a64 64 0 0 1 90.496 90.496L557.248 791.296a64 64 0 0 1-90.496 0L104.704 429.248a64 64 0 0 1 0-90.496" />
-                    </svg>
-                </button>
-
-            </div>
-
-
-            <div class="preguntas_card flex border-y-1 ">
-
-                <div class="preguntas_card_text">
-                    <h3>¿Cuáles son los mejores lugares para visitar en Cartagena?</h3>
-                    <p>
-                        Los mejores lugares para visitar en Cartagena son la Ciudad Amurallada, el Castillo de San
-                        Felipe,
-                        las Islas del Rosario y el Parque Nacional Natural Corales del Rosario y San Bernardo.
-                    </p>
-                </div>
-
-                <button class="btn_preguntas_card">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 1024 1024">
-                        <path fill="currentColor"
-                            d="M104.704 338.752a64 64 0 0 1 90.496 0l316.8 316.8l316.8-316.8a64 64 0 0 1 90.496 90.496L557.248 791.296a64 64 0 0 1-90.496 0L104.704 429.248a64 64 0 0 1 0-90.496" />
-                    </svg>
-                </button>
-
-            </div>
-
-        </div>
-    </section></body>
+</body>

@@ -10,6 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import maineta.eta.dto.ActividadUpdateDto;
 import maineta.eta.entity.Actividad;
+import maineta.eta.entity.ImagenActividad;
 
 /**
  * 🔹 Interfaz del servicio de Actividad.
@@ -160,5 +161,11 @@ public interface ActividadService {
             BigDecimal precioMax,
             int page,
             int size);
+
+    void agregarImagenes(Long idActividad, List<MultipartFile> archivos) throws IOException;
+
+    void eliminarImagen(Long idImagen);
+
+    List<ImagenActividad> obtenerImagenesPorActividad(Long idActividad);
 
 }

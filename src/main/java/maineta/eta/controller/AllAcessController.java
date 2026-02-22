@@ -113,6 +113,7 @@ public class AllAcessController {
                                 .collect(Collectors.toList());
                 model.addAttribute("pageNumbers", pageNumbers);
                 model.addAttribute("pagina", "detalle");
+                model.addAttribute("imagenes", actividadService.obtenerImagenesPorActividad(id));
                 return "detalle-actividad";
         }
 

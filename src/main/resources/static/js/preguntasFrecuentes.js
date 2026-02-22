@@ -1,17 +1,38 @@
-document.querySelectorAll('.preguntas_card').forEach(card => {
-    card.addEventListener('click', () => {
-        const textContainer = card.querySelector('.preguntas_card_text');
-        const icon = card.querySelector('.btn_preguntas_card svg');
+   function toggleFAQ(button) {
+            const faqItem = button.closest('.faq-item');
+            const content = faqItem.querySelector('.faq-content');
+            const icon = button.querySelector('svg');
+            const isExpanded = button.getAttribute('aria-expanded') === 'true';
 
-        // Alternar la altura del contenido
-        textContainer.classList.toggle('expanded');
+            // Close all other FAQs
+            document.querySelectorAll('.faq-item').forEach(item => {
+                if (item !== faqItem) {
+                    const otherContent = item.querySelector('.faq-content');
+                    const otherButton = item.querySelector('button');
+                    const otherIcon = otherButton.querySelector('svg');
+                    
+                    otherContent.style.maxHeight = '0px';
+                    otherButton.setAttribute('aria-expanded', 'false');
+                    otherIcon.style.transform = 'rotate(0deg)';
+                }
+            });
 
-        // Rotar el icono del botón
-        icon.classList.toggle('rotated');
-    });
-});
+            // Toggle current FAQ
+            if (!isExpanded) {
+                content.style.maxHeight = content.scrollHeight + 'px';
+                button.setAttribute('aria-expanded', 'true');
+                icon.style.transform = 'rotate(180deg)';
+            } else {
+                content.style.maxHeight = '0px';
+                button.setAttribute('aria-expanded', 'false');
+                icon.style.transform = 'rotate(0deg)';
+            }
+        }
 
-  document.querySelector('.container-bookmark').addEventListener('click', function () {
-    this.classList.toggle('bookmarked');
-  });
-
+        // Auto-expand first item on load (optional)
+        document.addEventListener('DOMContentLoaded', () => {
+            const firstButton = document.querySelector('.faq-item button');
+            if (firstButton) {
+                toggleFAQ(firstButton);
+            }
+        });

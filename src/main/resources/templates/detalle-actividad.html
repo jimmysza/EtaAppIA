@@ -91,10 +91,163 @@
     </section>
 
     <section class="galeria-container" id="galeria">
-        <div class="galeria">
-            <img th:src="@{|/uploads/${actividad.imagen}|}" th:alt="${actividad.titulo}" />
+        <div class="galeria-grid">
+            <!-- Imagen principal -->
+            <div class="galeria-main" onclick="abrirModal(this.querySelector('img').src)">
+                <img th:src="@{|/uploads/${actividad.imagen}|}" th:alt="${actividad.titulo}" />
+            </div>
+            <!-- Thumbnails (max 6) -->
+            <div th:if="${imagenes != null and !#lists.isEmpty(imagenes)}" class="galeria-thumbs">
+                <div th:each="img, iterStat : ${imagenes}" th:if="${iterStat.index < 6}" 
+                     class="galeria-thumb" onclick="abrirModal(this.querySelector('img').src)">
+                    <img th:src="@{|/uploads/${img.nombre}|}" alt="Imagen adicional" />
+                </div>
+            </div>
         </div>
     </section>
+
+    <!-- Modal para ver imagen en grande -->
+    <div id="modalImagen" class="modal-imagen-overlay" onclick="cerrarModal(event)">
+        <button class="modal-imagen-close" onclick="cerrarModal(event)">&times;</button>
+        <button class="modal-imagen-prev" onclick="cambiarImagen(-1)">
+            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+        </button>
+        <img id="modalImagenSrc" src="" alt="Imagen ampliada" class="modal-imagen-content" />
+        <button class="modal-imagen-next" onclick="cambiarImagen(1)">
+            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+        </button>
+        <div class="modal-imagen-counter" id="modalContador"></div>
+    </div>
+
+    <style>
+        .galeria-grid {
+            width: 100%;
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 0 20px;
+        }
+        .galeria-main {
+            width: 100%;
+            height: 456px;
+            border-radius: 20px;
+            overflow: hidden;
+            cursor: pointer;
+            box-shadow: var(--shadow-medium);
+        }
+        .galeria-main img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+        .galeria-main:hover img {
+            transform: scale(1.02);
+        }
+        .galeria-thumbs {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .galeria-thumb {
+            height: 100px;
+            border-radius: 12px;
+            overflow: hidden;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .galeria-thumb img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+        .galeria-thumb:hover img {
+            transform: scale(1.08);
+            opacity: 0.85;
+        }
+
+        /* Modal lightbox */
+        .modal-imagen-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+        }
+        .modal-imagen-overlay.activo {
+            display: flex;
+        }
+        .modal-imagen-content {
+            max-width: 90vw;
+            max-height: 90vh;
+            object-fit: contain;
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+            cursor: default;
+        }
+        .modal-imagen-close {
+            position: absolute;
+            top: 20px; right: 30px;
+            font-size: 40px;
+            color: white;
+            background: none;
+            border: none;
+            cursor: pointer;
+            line-height: 1;
+            z-index: 10000;
+        }
+        .modal-imagen-close:hover {
+            color: #ccc;
+        }
+        .modal-imagen-prev,
+        .modal-imagen-next {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255,255,255,0.15);
+            border: none;
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s;
+            z-index: 10000;
+        }
+        .modal-imagen-prev { left: 20px; }
+        .modal-imagen-next { right: 20px; }
+        .modal-imagen-prev:hover,
+        .modal-imagen-next:hover {
+            background: rgba(255,255,255,0.35);
+        }
+        .modal-imagen-counter {
+            position: absolute;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: white;
+            font-size: 14px;
+            background: rgba(0,0,0,0.5);
+            padding: 4px 14px;
+            border-radius: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .galeria-main { height: 260px; }
+            .galeria-thumbs {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            .galeria-thumb { height: 80px; }
+        }
+    </style>
 
 
 
@@ -204,11 +357,8 @@
                     visitantes
                     pueden disfrutar de la gastronomía local y cócteles refrescantes. Además, Cholon es famosa por su
                     vibrante vida nocturna, con fiestas en la playa que atraen a turistas y lugareños por igual.</p>
-
-
-
-
             </div>
+            
             <p class="contenido-title">Incluye</p>
             <p th:text="${actividad.incluye}"></p>
             <p class="contenido-title">Normas</p>
@@ -222,55 +372,100 @@
                 <h3 class="title-time price-tag">$
                     <span th:text="${#numbers.formatDecimal(precioConsumidor, 0, 0)}"></span>
 
-                    <span
-                        class="title-time reserva">/reserva</span></h3>
+                    <span class="title-time reserva">/reserva</span>
+                </h3>
                 <form th:action="@{/cliente/checkout}" method="post" th:object="${reservaDTO}" class="card-reservas">
 
                     <p>Disponibilidades</p>
                     <select th:field="*{idDisponibilidad}" required>
                         <option value="">Seleccione una fecha</option>
                         <option th:each="dispo : ${disponibilidades}" th:value="${dispo.idDisponibilidad}" th:text="|${#temporals.format(dispo.fecha, 'dd/MM/yyyy')} - 
-                 ${#temporals.format(dispo.horaInicio, 'HH:mm')} a 
-                 ${#temporals.format(dispo.horaFin, 'HH:mm')}|">
+                ${#temporals.format(dispo.horaInicio, 'HH:mm')} a 
+                ${#temporals.format(dispo.horaFin, 'HH:mm')}|">
                         </option>
 
                     </select>
 
-                    <button type="submit"  class="btn btn-secondary">Reservar</button>
+                    <button type="submit" class="btn btn-secondary">Reservar</button>
 
                 </form>
 
 
             </div>
         </div>
-
         </div>
-
-
     </section>
-
-
-
-
 
     <div th:replace="~{componentes/comentarios :: reseñas}"></div>
 
     <div th:replace="~{componentes/preguntasFrecuentes :: preguntasFrecuentes}"></div>
-
 
     <div th:replace="~{componentes/footer :: footer}"></div>
 
 
 
     <script th:src="@{/js/componentes/navbar.js}"></script>
-
-
     <script th:src="@{/js/preguntasFrecuentes.js}"></script>
-
     <script th:src="@{/js/ingreso.js}"></script>
     <script th:src="@{/js/detalle.js}"></script>
     <script th:src="@{/js/modales.js}"></script>
     <script th:src="@{/js/alert.js}"></script>
+
+    <script>
+        // Recopilar todas las imágenes de la galería
+        let todasLasImagenes = [];
+        let indiceActual = 0;
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Imagen principal
+            const mainImg = document.querySelector('.galeria-main img');
+            if (mainImg) todasLasImagenes.push(mainImg.src);
+            // Thumbnails
+            document.querySelectorAll('.galeria-thumb img').forEach(img => {
+                todasLasImagenes.push(img.src);
+            });
+        });
+
+        function abrirModal(src) {
+            indiceActual = todasLasImagenes.indexOf(src);
+            if (indiceActual === -1) indiceActual = 0;
+            mostrarImagenModal();
+            document.getElementById('modalImagen').classList.add('activo');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function mostrarImagenModal() {
+            document.getElementById('modalImagenSrc').src = todasLasImagenes[indiceActual];
+            document.getElementById('modalContador').textContent = (indiceActual + 1) + ' / ' + todasLasImagenes.length;
+        }
+
+        function cambiarImagen(dir) {
+            indiceActual += dir;
+            if (indiceActual < 0) indiceActual = todasLasImagenes.length - 1;
+            if (indiceActual >= todasLasImagenes.length) indiceActual = 0;
+            mostrarImagenModal();
+        }
+
+        function cerrarModal(e) {
+            if (e.target === document.getElementById('modalImagen') || e.target.classList.contains('modal-imagen-close')) {
+                document.getElementById('modalImagen').classList.remove('activo');
+                document.body.style.overflow = '';
+            }
+        }
+
+        document.addEventListener('keydown', function(e) {
+            const modal = document.getElementById('modalImagen');
+            if (!modal.classList.contains('activo')) return;
+            if (e.key === 'Escape') {
+                modal.classList.remove('activo');
+                document.body.style.overflow = '';
+            } else if (e.key === 'ArrowLeft') {
+                cambiarImagen(-1);
+            } else if (e.key === 'ArrowRight') {
+                cambiarImagen(1);
+            }
+        });
+    </script>
 
 </body>
 

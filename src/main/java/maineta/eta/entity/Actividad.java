@@ -91,7 +91,8 @@ public class Actividad {
     @ToString.Exclude
     private List<Reserva> reservas;
 
-
-
+    @OneToMany(mappedBy = "actividad", cascade = CascadeType.ALL, orphanRemoval = true)
+    @ToString.Exclude
+    private List<ImagenActividad> imagenes = new ArrayList<>();
 
 }

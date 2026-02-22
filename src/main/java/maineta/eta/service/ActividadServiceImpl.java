@@ -20,11 +20,13 @@ import maineta.eta.dto.ActividadUpdateDto;
 import maineta.eta.entity.Actividad;
 import maineta.eta.entity.Categoria;
 import maineta.eta.entity.Idioma;
+import maineta.eta.entity.ImagenActividad;
 import maineta.eta.repository.ActividadRepository;
 import maineta.eta.repository.CategoriaRepository;
 import maineta.eta.repository.ComentarioRepository;
 import maineta.eta.repository.DisponibilidadRepository;
 import maineta.eta.repository.IdiomaRepository;
+import maineta.eta.repository.ImagenActividadRepository;
 
 /**
  * 🔹 Implementación de la interfaz ActividadService.
@@ -44,6 +46,7 @@ public class ActividadServiceImpl implements ActividadService {
     private final IdiomaRepository idiomaRepository;
     private final CategoriaRepository categoriaRepository;
     private final DisponibilidadRepository disponibilidadRepository;
+    private final ImagenActividadRepository imagenActividadRepository;
 
     /**
      * Constructor con @Autowired para inyectar el repositorio automáticamente.
@@ -53,11 +56,13 @@ public class ActividadServiceImpl implements ActividadService {
             CategoriaRepository categoriaRepository,
             ActividadRepository actividadRepository,
             ComentarioRepository comentarioRepository,
-            DisponibilidadRepository disponibilidadRepository) {
+            DisponibilidadRepository disponibilidadRepository,
+            ImagenActividadRepository imagenActividadRepository) {
         this.actividadRepository = actividadRepository;
         this.categoriaRepository = categoriaRepository;
         this.comentarioRepository = comentarioRepository;
         this.uploadFileService = uploadFileService;
+        this.imagenActividadRepository = imagenActividadRepository;
         this.idiomaRepository = idiomaRepository;
         this.disponibilidadRepository = disponibilidadRepository;
     }
@@ -374,6 +379,36 @@ public class ActividadServiceImpl implements ActividadService {
                 precioMax);
 
         return actividadRepository.findAll(spec, pageable);
+    }
+
+    @Override
+    @Transactional
+    public void agregarImagenes(Long idActividad, List<MultipartFile> archivos) throws IOException {
+        Actividad actividad = actividadRepository.findById(idActividad)
+                .orElseThrow(() -> new EntityNotFoundException("Actividad no encontrada"));
+
+        for (MultipartFile archivo : archivos) {
+            if (archivo != null && !archivo.isEmpty()) {
+                String nombreImagen = uploadFileService.copy(archivo);
+                ImagenActividad imagen = new ImagenActividad(nombreImagen, actividad);
+                actividad.getImagenes().add(imagen);
+            }
+        }
+    }
+
+    @Override
+    @Transactional
+    public void eliminarImagen(Long idImagen) {
+        ImagenActividad imagen = imagenActividadRepository.findById(idImagen)
+                .orElseThrow(() -> new EntityNotFoundException("Imagen no encontrada"));
+
+        uploadFileService.delete(imagen.getNombre());
+        imagenActividadRepository.delete(imagen);
+    }
+
+    @Override
+    public List<ImagenActividad> obtenerImagenesPorActividad(Long idActividad) {
+        return imagenActividadRepository.findByActividad_IdActividad(idActividad);
     }
 
 }

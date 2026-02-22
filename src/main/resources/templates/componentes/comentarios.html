@@ -1,137 +1,279 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 
-<body>
-    <section id="reseñas" class="reseñas" th:fragment="reseñas">
-        <!---Reseña Titulo-->
-        <div class="contain-title-reseña">
-            <h3 class="c-t-r-20">Reseñas de <span th:text="${actividad.titulo}"></span></h3>
-        </div>
-
-
-        <!--Reseñas Actividad-->
-        <div class="container-reseña">
-
-
-            <div class="button-default btn_add">
-
-                <a class="flex gap-2 items-center justify-center text-open-add" id="open-add-modal">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24">
-                        <path fill="#fff"
-                            d="M12 4c4.411 0 8 3.589 8 8s-3.589 8-8 8s-8-3.589-8-8s3.589-8 8-8m0-2C6.477 2 2 6.477 2 12s4.477 10 10 10s10-4.477 10-10S17.523 2 12 2m5 9h-4V7h-2v4H7v2h4v4h2v-4h4z"
-                            stroke-width="0.5" stroke="#fff" />
-                    </svg>
-                    Agregar Comentario</a>
-            </div>
-            <!--Buscador de Reseñas-->
-            <!--   <div class="search-reseñas">
-                <div class="search-container-reseñas">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256" {...props}>
-                        <path fill="currentColor"
-                            d="M232.49 215.51L185 168a92.12 92.12 0 1 0-17 17l47.53 47.54a12 12 0 0 0 17-17ZM44 112a68 68 0 1 1 68 68a68.07 68.07 0 0 1-68-68">
-                        </path>
-                    </svg>
-                    <input type="text" placeholder="Buscar eventos, lugares, viajes..." />
-                </div>
-            </div> -->
-
-            <!--Excepcion si no hay comentarios-->
-            <div th:if="${comentarios.totalElements == 0}">
-                <p>No hay comentarios todavía.</p>
-            </div>
-
-            <!--Carta de reseña-->
-            <div class="card-reseña" th:each="comentario : ${comentarios.content}">
-                <div class="personal_info">
-                    <!--img reseña-->
-                    <img th:src="@{/images/perfiles/perfil.webp}" class="img-reseña" alt="Perfil del cliente" />
-                    <div class="name">
-                        <a href="" th:text="${comentario.cliente.usuario.nombre}"></a>
-                        <div class="flex align-center gap-2">
-
-                            <div class="calificacion flex center">
-                                <!-- ⭐ Estrellas llenas -->
-                                <span
-                                    th:each="i : ${#numbers.sequence(1, T(java.lang.Integer).parseInt(comentario.calificacion))}">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-                                        <path fill="#000"
-                                            d="m12 17.275l-4.15 2.5q-.275.175-.575.15t-.525-.2t-.35-.437t-.05-.588l1.1-4.725L3.775 10.8q-.25-.225-.312-.513t.037-.562t.3-.45t.55-.225l4.85-.425l1.875-4.45q.125-.3.388-.45t.537-.15t.537.15t.388.45l1.875 4.45l4.85.425q.35.05.55.225t.3.45t.038.563t-.313.512l-3.675 3.175l1.1 4.725q.075.325-.05.588t-.35.437t-.525.2t-.575-.15z"
-                                            stroke-width="0.2" stroke="#000" />
+<body class="bg-gray-50">
+    <section id="reseñas" th:fragment="reseñas" 
+    class="w-full max-w-7xl mx-auto px-6 md:px-10 py-12 md:py-20">
+        
+        <!-- Grid Container -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
+            
+            <!-- Left Column - Rating Summary (Sticky) -->
+            <div class="lg:col-span-4">
+                <div class="lg:sticky lg:top-8">
+                    <!-- Overall Rating -->
+                    <div class="mb-8">
+                        <h3 class="text-sm font-semibold text-text-secondary uppercase tracking-wide mb-4">
+                            Overall rating
+                        </h3>
+                        <div class="flex items-baseline gap-2 mb-3">
+                            <span class="text-5xl md:text-6xl font-bold text-text-primary" 
+                                  th:text="${promedioCalificacion != null ? #numbers.formatDecimal(promedioCalificacion, 1, 1) : '0.0'}">3.6</span>
+                            <span class="text-2xl text-text-secondary">/5</span>
+                        </div>
+                        <div class="flex items-center gap-1 mb-2">
+                            <!-- Dynamic Overall Stars -->
+                            <th:block th:with="avg=${promedioCalificacion != null ? promedioCalificacion : 0}">
+                                <!-- Full stars -->
+                                <th:block th:each="i : ${#numbers.sequence(1, avg >= 1 ? T(java.lang.Math).floor(avg).intValue() : 0)}">
+                                    <svg class="w-8 h-8 text-text-primary fill-current" viewBox="0 0 24 24">
+                                        <path d="m12 17.275l-4.15 2.5q-.275.175-.575.15t-.525-.2t-.35-.437t-.05-.588l1.1-4.725L3.775 10.8q-.25-.225-.312-.513t.037-.562t.3-.45t.55-.225l4.85-.425l1.875-4.45q.125-.3.388-.45t.537-.15t.537.15t.388.45l1.875 4.45l4.85.425q.35.05.55.225t.3.45t.038.563t-.313.512l-3.675 3.175l1.1 4.725q.075.325-.05.588t-.35.437t-.525.2t-.575-.15z"/>
                                     </svg>
-                                </span>
-
-                                <!-- ☆ Estrellas vacías -->
-                                <span
-                                    th:each="i : ${#numbers.sequence(1, 5 - T(java.lang.Integer).parseInt(comentario.calificacion))}">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-                                        <path fill="#000"
-                                            d="m8.85 16.825l3.15-1.9l3.15 1.925l-.825-3.6l2.775-2.4l-3.65-.325l-1.45-3.4l-1.45 3.375l-3.65.325l2.775 2.425zm3.15.45l-4.15 2.5q-.275.175-.575.15t-.525-.2t-.35-.437t-.05-.588l1.1-4.725L3.775 10.8q-.25-.225-.312-.513t.037-.562t.3-.45t.55-.225l4.85-.425l1.875-4.45q.125-.3.388-.45t.537-.15t.537.15t.388.45l1.875 4.45l4.85.425q.35.05.55.225t.3.45t.038.563t-.313.512l-3.675 3.175l1.1 4.725q.075.325-.05.588t-.35.437t-.525.2t-.575-.15zm0-5.025"
-                                            stroke-width="0.2" stroke="#000" />
+                                </th:block>
+                                <!-- Half star (if fractional part >= 0.25 and < 0.75) -->
+                                <svg th:if="${avg - T(java.lang.Math).floor(avg) >= 0.25 and avg - T(java.lang.Math).floor(avg) < 0.75}" 
+                                     class="w-8 h-8 text-text-primary fill-current" viewBox="0 0 24 24">
+                                    <path d="m8.85 16.825l3.15-1.9l3.15 1.925l-.825-3.6l2.775-2.4l-3.65-.325l-1.45-3.4l-1.45 3.375l-3.65.325l2.775 2.425zm3.15.45l-4.15 2.5q-.275.175-.575.15t-.525-.2t-.35-.437t-.05-.588l1.1-4.725L3.775 10.8q-.25-.225-.312-.513t.037-.562t.3-.45t.55-.225l4.85-.425l1.875-4.45q.125-.3.388-.45t.537-.15t.537.15t.388.45l1.875 4.45l4.85.425q.35.05.55.225t.3.45t.038.563t-.313.512l-3.675 3.175l1.1 4.725q.075.325-.05.588t-.35.437t-.525.2t-.575-.15zm0-5.025"/>
+                                </svg>
+                                <!-- Empty stars -->
+                                <th:block th:each="i : ${#numbers.sequence(1, 5 - T(java.lang.Math).ceil(avg).intValue() > 0 ? 5 - T(java.lang.Math).ceil(avg).intValue() : 0)}">
+                                    <svg class="w-8 h-8 text-gray-300 fill-current" viewBox="0 0 24 24">
+                                        <path d="m8.85 16.825l3.15-1.9l3.15 1.925l-.825-3.6l2.775-2.4l-3.65-.325l-1.45-3.4l-1.45 3.375l-3.65.325l2.775 2.425zm3.15.45l-4.15 2.5q-.275.175-.575.15t-.525-.2t-.35-.437t-.05-.588l1.1-4.725L3.775 10.8q-.25-.225-.312-.513t.037-.562t.3-.45t.55-.225l4.85-.425l1.875-4.45q.125-.3.388-.45t.537-.15t.537.15t.388.45l1.875 4.45l4.85.425q.35.05.55.225t.3.45t.038.563t-.313.512l-3.675 3.175l1.1 4.725q.075.325-.05.588t-.35.437t-.525.2t-.575-.15zm0-5.025"/>
                                     </svg>
-                                </span>
+                                </th:block>
+                            </th:block>
+                        </div>
+                        <p class="text-sm text-text-secondary">
+                            based on <span th:text="${comentarios.totalElements}">0</span> reviews
+                        </p>
+                    </div>
+
+                    <!-- Review Summary -->
+                    <div class="space-y-3 mb-8">
+                        <h4 class="text-sm font-semibold text-text-secondary uppercase tracking-wide mb-4">
+                            Review summary
+                        </h4>
+                        <div class="flex items-center gap-3">
+                            <span class="text-sm text-text-secondary w-32">Guide</span>
+                            <div class="flex-1 bg-gray-200 rounded-full h-2">
+                                <div class="bg-text-primary h-2 rounded-full" style="width: 70%"></div>
                             </div>
-
-
-
-
-
-
-                            <div class="info_date flex center gap-3">
-                                <p th:text="${#temporals.format(comentario.fechaComentario, 'dd MMM yyyy')}"></p>
+                            <span class="text-sm font-semibold text-text-primary">3.5/5</span>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <span class="text-sm text-text-secondary w-32">Transportation</span>
+                            <div class="flex-1 bg-gray-200 rounded-full h-2">
+                                <div class="bg-text-primary h-2 rounded-full" style="width: 76%"></div>
                             </div>
+                            <span class="text-sm font-semibold text-text-primary">3.8/5</span>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <span class="text-sm text-text-secondary w-32">Value for money</span>
+                            <div class="flex-1 bg-gray-200 rounded-full h-2">
+                                <div class="bg-text-primary h-2 rounded-full" style="width: 74%"></div>
+                            </div>
+                            <span class="text-sm font-semibold text-text-primary">3.7/5</span>
                         </div>
                     </div>
-
-                </div>
-                <div class="card-reseña-text">
-                    <p th:text="${comentario.texto}">Hace mucho calor en la pared sin sombra, así que hay que ir
-                        temprano. Tiene buenas vistas y no
-                        hay mucha gente.</p>
-                    <div class="flex location gap-3">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-                            <path fill="currentColor"
-                                d="M12 12q.825 0 1.413-.587T14 10t-.587-1.412T12 8t-1.412.588T10 10t.588 1.413T12 12m0 7.35q3.05-2.8 4.525-5.087T18 10.2q0-2.725-1.737-4.462T12 4T7.738 5.738T6 10.2q0 1.775 1.475 4.063T12 19.35M12 22q-4.025-3.425-6.012-6.362T4 10.2q0-3.75 2.413-5.975T12 2t5.588 2.225T20 10.2q0 2.5-1.987 5.438T12 22m0-12" />
-                        </svg>
-                        <a th:text="${actividad.ubicacion}"></a>
-                    </div>
                 </div>
             </div>
 
-            <!-- Botón Página Anterior -->
-            <!-- Botón Página Anterior -->
-            <a class="button-default" th:if="${currentPage > 0}"
-                th:href="@{/detalle/{id}(id=${id}, page=${currentPage - 1})} + '#reseñas'">
-                Anterior
-            </a>
+            <!-- Right Column - Reviews List -->
+            <div class="lg:col-span-8">
+                <!-- Search & Filter Bar -->
+                <div class="bg-white rounded-2xl shadow-sm p-4 mb-6">
+                    <div class="flex flex-col md:flex-row gap-4 items-center justify-between">
+                        <!-- Search Input -->
+                        <div class="relative flex-1 w-full md:max-w-md">
+                            <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-text-secondary" 
+                                 fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                      d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                            </svg>
+                            <input type="text" 
+                                   placeholder="Buscar reseñas..."
+                                   class="w-full pl-10 pr-4 py-2.5 border border-border-color rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200">
+                        </div>
 
-            <!-- Botón Página Siguiente -->
-            <a class="button-default" th:if="${currentPage < totalPages - 1}"
-                th:href="@{/detalle/{id}(id=${id}, page=${currentPage + 1})} + '#reseñas'">
-                Siguiente
-            </a>
+                        <!-- Sort & Filter -->
+                        <div class="flex gap-3 w-full md:w-auto">
+                            <div class="flex items-center gap-2">
+                                <span class="text-sm text-text-secondary whitespace-nowrap">Sort by:</span>
+                                <select class="px-4 py-2.5 border border-border-color rounded-lg focus:outline-none focus:ring-2 focus:ring-primary cursor-pointer bg-white">
+                                    <option>Recomendado</option>
+                                    <option>Más Reciente</option>
+                                    <option>Mayor Calificación</option>
+                                    <option>Menor Calificación</option>
+                                </select>
+                            </div>
+                            <button class="flex items-center gap-2 px-4 py-2.5 border border-border-color rounded-lg hover:bg-gray-50 transition-colors duration-200">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                          d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/>
+                                </svg>
+                                <span class="text-sm font-medium">Filtrar</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
 
+                <!-- Add Comment Button -->
+                <button id="open-add-modal"
+                        class="w-full md:w-auto mb-6 flex items-center justify-center gap-2 px-6 py-3 bg-primary hover:bg-primary-dark text-white font-semibold rounded-lg transition-colors duration-200 shadow-sm hover:shadow-md">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 4c4.411 0 8 3.589 8 8s-3.589 8-8 8s-8-3.589-8-8s3.589-8 8-8m0-2C6.477 2 2 6.477 2 12s4.477 10 10 10s10-4.477 10-10S17.523 2 12 2m5 9h-4V7h-2v4H7v2h4v4h2v-4h4z"/>
+                    </svg>
+                    Agregar Comentario
+                </button>
 
+                <!-- No Comments Message -->
+                <div th:if="${comentarios.totalElements == 0}" 
+                     class="text-center py-12 bg-white rounded-2xl shadow-sm">
+                    <svg class="w-16 h-16 mx-auto text-gray-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                              d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
+                    </svg>
+                    <p class="text-text-secondary text-lg">No hay comentarios todavía.</p>
+                    <p class="text-text-secondary text-sm mt-2">¡Sé el primero en dejar una reseña!</p>
+                </div>
 
+                <!-- Reviews List -->
+                <div class="space-y-6">
+                    <!-- Review Card -->
+                    <div th:each="comentario : ${comentarios.content}" 
+                         class="bg-white rounded-2xl shadow-sm p-6 hover:shadow-md transition-shadow duration-200">
+                        
+                        <!-- Review Header -->
+                        <div class="flex items-start gap-4 mb-4">
+                            <!-- Avatar -->
+                            <div class="flex-shrink-0">
+                                <div class="w-12 h-12 rounded-full bg-primary flex items-center justify-center text-white font-semibold text-lg"
+                                     th:text="${comentario.cliente.usuario.nombre != null ? comentario.cliente.usuario.nombre.substring(0,1).toUpperCase() : 'U'}">
+                                    G
+                                </div>
+                            </div>
 
+                            <!-- User Info -->
+                            <div class="flex-1 min-w-0">
+                                <div class="flex items-center justify-between mb-1">
+                                    <h4 class="font-semibold text-text-primary" 
+                                        th:text="${comentario.cliente.usuario.nombre}">
+                                        Viajero
+                                    </h4>
+                                    <button class="text-text-secondary hover:text-text-primary">
+                                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                                            <path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/>
+                                        </svg>
+                                    </button>
+                                </div>
+                                
+                                <div class="flex flex-wrap items-center gap-3 text-sm text-text-secondary">
+                                    <span th:text="${#temporals.format(comentario.fechaComentario, 'MMMM d, yyyy')}">
+                                        February 13, 2026
+                                    </span>
+                                    <span>•</span>
+                                    <span class="flex items-center gap-1">
+                                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                                            <path d="M9 11.75A2.25 2.25 0 1 1 11.25 14A2.25 2.25 0 0 1 9 11.75zm3-4.5A2.25 2.25 0 1 1 14.25 9.5A2.25 2.25 0 0 1 12 7.25zm8.77 5.36l-1-3.37a1 1 0 0 0-1-.73h-3V7a1 1 0 0 0-1-1H9.5a1 1 0 0 0-1 1v1.5h-3a1 1 0 0 0-1 .73l-1 3.37a1 1 0 0 0 .26.9l5 4.42a1 1 0 0 0 1.48 0l5-4.42a1 1 0 0 0 .26-.9z"/>
+                                        </svg>
+                                        Reserva verificada
+                                    </span>
+                                </div>
+
+                                <!-- Stars -->
+                                <div class="flex items-center gap-1 mt-2">
+                                    <!-- Full stars -->
+                                    <span th:each="i : ${#numbers.sequence(1, T(java.lang.Integer).parseInt(comentario.calificacion))}">
+                                        <svg class="w-5 h-5 text-text-primary fill-current" viewBox="0 0 24 24">
+                                            <path d="m12 17.275l-4.15 2.5q-.275.175-.575.15t-.525-.2t-.35-.437t-.05-.588l1.1-4.725L3.775 10.8q-.25-.225-.312-.513t.037-.562t.3-.45t.55-.225l4.85-.425l1.875-4.45q.125-.3.388-.45t.537-.15t.537.15t.388.45l1.875 4.45l4.85.425q.35.05.55.225t.3.45t.038.563t-.313.512l-3.675 3.175l1.1 4.725q.075.325-.05.588t-.35.437t-.525.2t-.575-.15z"/>
+                                        </svg>
+                                    </span>
+                                    <!-- Empty stars -->
+                                    <span th:each="i : ${#numbers.sequence(1, 5 - T(java.lang.Integer).parseInt(comentario.calificacion))}">
+                                        <svg class="w-5 h-5 text-gray-300 fill-current" viewBox="0 0 24 24">
+                                            <path d="m8.85 16.825l3.15-1.9l3.15 1.925l-.825-3.6l2.775-2.4l-3.65-.325l-1.45-3.4l-1.45 3.375l-3.65.325l2.775 2.425zm3.15.45l-4.15 2.5q-.275.175-.575.15t-.525-.2t-.35-.437t-.05-.588l1.1-4.725L3.775 10.8q-.25-.225-.312-.513t.037-.562t.3-.45t.55-.225l4.85-.425l1.875-4.45q.125-.3.388-.45t.537-.15t.537.15t.388.45l1.875 4.45l4.85.425q.35.05.55.225t.3.45t.038.563t-.313.512l-3.675 3.175l1.1 4.725q.075.325-.05.588t-.35.437t-.525.2t-.575-.15zm0-5.025"/>
+                                        </svg>
+                                    </span>
+                                    <span class="ml-2 text-sm font-semibold text-text-primary" 
+                                          th:text="${comentario.calificacion}">5</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Review Text -->
+                        <div class="space-y-3">
+                            <p class="text-text-primary leading-relaxed" th:text="${comentario.texto}">
+                                Hace mucho calor en la pared sin sombra, así que hay que ir temprano.
+                            </p>
+                            
+                            <!-- Location -->
+                            <div class="flex items-center gap-2 text-sm text-text-secondary">
+                                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M12 12q.825 0 1.413-.587T14 10t-.587-1.412T12 8t-1.412.588T10 10t.588 1.413T12 12m0 7.35q3.05-2.8 4.525-5.087T18 10.2q0-2.725-1.737-4.462T12 4T7.738 5.738T6 10.2q0 1.775 1.475 4.063T12 19.35M12 22q-4.025-3.425-6.012-6.362T4 10.2q0-3.75 2.413-5.975T12 2t5.588 2.225T20 10.2q0 2.5-1.987 5.438T12 22m0-12"/>
+                                </svg>
+                                <span th:text="${actividad.ubicacion}">Ubicación</span>
+                            </div>
+
+                            <!-- Read More Button -->
+                            <button class="text-primary hover:text-primary-dark font-semibold text-sm flex items-center gap-1 group">
+                                Leer más
+                                <svg class="w-4 h-4 transform group-hover:translate-x-1 transition-transform" 
+                                     fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                                </svg>
+                            </button>
+                        </div>
+
+                        <!-- Review Footer -->
+                        <div class="flex items-center justify-between mt-4 pt-4 border-t border-border-color">
+                            <button class="flex items-center gap-2 text-sm text-text-secondary hover:text-primary transition-colors">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                          d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5"/>
+                                </svg>
+                                <span>¿Te fue útil?</span>
+                            </button>
+                            <button class="text-sm text-primary hover:text-primary-dark font-semibold">
+                                Traducir
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pagination -->
+                <div class="flex items-center justify-between mt-8">
+                    <a th:if="${currentPage > 0}"
+                       th:href="@{/detalle/{id}(id=${id}, page=${currentPage - 1})} + '#reseñas'"
+                       class="px-6 py-3 border border-border-color rounded-lg hover:bg-gray-50 font-semibold transition-colors duration-200">
+                        ← Anterior
+                    </a>
+                    <span class="text-sm text-text-secondary">
+                        Página <span th:text="${currentPage + 1}">1</span> de <span th:text="${totalPages}">10</span>
+                    </span>
+                    <a th:if="${currentPage < totalPages - 1}"
+                       th:href="@{/detalle/{id}(id=${id}, page=${currentPage + 1})} + '#reseñas'"
+                       class="px-6 py-3 border border-border-color rounded-lg hover:bg-gray-50 font-semibold transition-colors duration-200">
+                        Siguiente →
+                    </a>
+                </div>
+            </div>
 
         </div>
 
-
+        <!-- Modal Agregar Comentario -->
         <div class="modal modal-add">
-
             <form th:action="@{/comentarios/agregar/{idActividad}(idActividad=${actividad.idActividad})}" method="post">
 
                 <div class="form-heading">
                     <h2>Agregar Comentario</h2>
                     <p>Agrega tus Comentario</p>
-                    <span class=" close-modal close-btn-modal">&times;</span>
+                    <span class="close-modal close-btn-modal">&times;</span>
                 </div>
 
                 <div class="inputs-form">
 
                     <label for="comentario">Comentario <span class="red">*</span></label>
                     <textarea name="texto" id="comentario" placeholder="Escribe tu comentario..." required></textarea>
-
 
                     <label for="calificacion">Calificación: <span class="red">*</span></label>
                     <select name="calificacion" id="calificacion" required>
@@ -143,18 +285,13 @@
                     </select>
 
                     <div class="btnSubmit">
-                        <button type="submit" class="btn-submit button-default
-                        ">Enviar Comentario</button>
+                        <button type="submit" class="btn-submit button-default">Enviar Comentario</button>
                     </div>
 
                 </div>
 
             </form>
-
         </div>
 
-
-
     </section>
-    </div>
 </body>
