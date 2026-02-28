@@ -1,11 +1,11 @@
 package maineta.eta.service;
 
-import maineta.eta.entity.Actividad;
-import maineta.eta.entity.Comentario;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import java.util.Map;
 import java.util.List;
+import java.util.Map;
+
+import org.springframework.data.domain.Page;
+
+import maineta.eta.entity.Comentario;
 
 public interface ComentarioService {
     void guardar(Comentario comentario);
@@ -13,6 +13,7 @@ public interface ComentarioService {
     Page<Comentario> listarComentarioPorIdYPaginacion(Long idActividad, int page, int size);
     Map<Long, Integer> contarComentariosPorActividades(List<Long> ids);
     int calcularPromedioActividad(Long idActividad);
-
+    Double calcularPromedioDecimal(Long idActividad);
+    Map<Integer, Long> obtenerDistribucionEstrellas(Long idActividad);
 
 }

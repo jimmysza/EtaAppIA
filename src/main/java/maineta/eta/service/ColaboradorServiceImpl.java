@@ -2,18 +2,13 @@ package maineta.eta.service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import maineta.eta.entity.Colaborador;
 import maineta.eta.entity.Usuario;
 import maineta.eta.repository.ColaboradorRepository;
-import maineta.eta.repository.RolRepository;
 import maineta.eta.repository.UsuarioRepository;
-import maineta.eta.entity.Usuario;
 
 /**
  * 🔹 Implementación de la interfaz ColaboradorService.
@@ -34,7 +29,6 @@ public class ColaboradorServiceImpl implements ColaboradorService {
      * Spring se encarga de inyectar automáticamente los repositorios y el
      * passwordEncoder necesarios para trabajar con la base de datos y la seguridad.
      */
-    @Autowired
     public ColaboradorServiceImpl(UsuarioRepository usuarioRepository,
                                 ColaboradorRepository colaboradorRepository,UsuarioManagerService usuarioManagerService) {
         this.usuarioRepository = usuarioRepository;

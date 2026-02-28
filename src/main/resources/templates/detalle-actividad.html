@@ -258,13 +258,18 @@
                 <div class="badges">
                     <span class="badge badge-star">
                         <span th:text="${actividad.calificacion}"></span>
-
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
-                            fill="currentColor">
-                            <path fill="currentColor"
-                                d="M12 2l2.5 6.1l6.5.5l-5 4.3l1.5 6.5L12 16.4l-5 4.3l1.5-6.5l-5-4.3l6.5-.5L12 2z">
-                            </path>
-                        </svg>
+                        <!-- Full stars (filled) -->
+                        <th:block th:each="i : ${#numbers.sequence(1, actividad.calificacion > 0 ? actividad.calificacion : 0)}">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="#FFD700">
+                                <path d="m12 17.275l-4.15 2.5q-.275.175-.575.15t-.525-.2t-.35-.437t-.05-.588l1.1-4.725L3.775 10.8q-.25-.225-.312-.513t.037-.562t.3-.45t.55-.225l4.85-.425l1.875-4.45q.125-.3.388-.45t.537-.15t.537.15t.388.45l1.875 4.45l4.85.425q.35.05.55.225t.3.45t.038.563t-.313.512l-3.675 3.175l1.1 4.725q.075.325-.05.588t-.35.437t-.525.2t-.575-.15z"/>
+                            </svg>
+                        </th:block>
+                        <!-- Empty stars -->
+                        <th:block th:if="${actividad.calificacion < 5}" th:each="i : ${#numbers.sequence(1, 5 - actividad.calificacion)}">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FFD700" stroke-width="1.5">
+                                <path d="m12 17.275l-4.15 2.5q-.275.175-.575.15t-.525-.2t-.35-.437t-.05-.588l1.1-4.725L3.775 10.8q-.25-.225-.312-.513t.037-.562t.3-.45t.55-.225l4.85-.425l1.875-4.45q.125-.3.388-.45t.537-.15t.537.15t.388.45l1.875 4.45l4.85.425q.35.05.55.225t.3.45t.038.563t-.313.512l-3.675 3.175l1.1 4.725q.075.325-.05.588t-.35.437t-.525.2t-.575-.15z"/>
+                            </svg>
+                        </th:block>
                     </span>
 
                     <!-- <span class="badge">2,9 km</span>
@@ -376,20 +381,56 @@
                 </h3>
                 <form th:action="@{/cliente/checkout}" method="post" th:object="${reservaDTO}" class="card-reservas">
 
-                    <p>Disponibilidades</p>
-                    <select th:field="*{idDisponibilidad}" required>
-                        <option value="">Seleccione una fecha</option>
-                        <option th:each="dispo : ${disponibilidades}" th:value="${dispo.idDisponibilidad}" th:text="|${#temporals.format(dispo.fecha, 'dd/MM/yyyy')} - 
-                ${#temporals.format(dispo.horaInicio, 'HH:mm')} a 
-                ${#temporals.format(dispo.horaFin, 'HH:mm')}|">
-                        </option>
+                    <p style="font-weight:600; margin-bottom:6px;">Selecciona fecha y horario</p>
 
-                    </select>
+                    <!-- Selector de fecha -->
+                    <div style="margin-bottom:12px;">
+                        <label style="font-size:0.85rem; color:#6b7280;">Fecha</label>
+                        <select id="fechaSelect" onchange="cargarHorarios()" 
+                                style="width:100%; padding:8px 12px; border:1px solid #d1d5db; border-radius:8px; font-size:0.9rem; margin-top:4px;">
+                            <option value="">Seleccione una fecha</option>
+                            <th:block th:each="dispo : ${disponibilidades}">
+                                <option th:if="${dispo.estado == 'DISPONIBLE' && dispo.cuposDisponibles > 0}"
+                                        th:value="${dispo.fecha}"
+                                        th:data-id="${dispo.idDisponibilidad}"
+                                        th:data-hora="${#temporals.format(dispo.horaInicio, 'HH:mm') + ' - ' + #temporals.format(dispo.horaFin, 'HH:mm')}"
+                                        th:data-cupos="${dispo.cuposDisponibles}"
+                                        th:text="${#temporals.format(dispo.fecha, 'dd/MM/yyyy') + '  |  ' + #temporals.format(dispo.horaInicio, 'HH:mm') + ' - ' + #temporals.format(dispo.horaFin, 'HH:mm') + '  (' + dispo.cuposDisponibles + ' cupos)'}">
+                                </option>
+                            </th:block>
+                        </select>
+                    </div>
+
+                    <!-- Hidden field for the actual disponibilidad ID -->
+                    <input type="hidden" th:field="*{idDisponibilidad}" id="idDisponibilidadHidden" />
+
+                    <!-- Info de cupos -->
+                    <div id="cuposInfo" style="display:none; background:#ecfdf5; border:1px solid #a7f3d0; border-radius:8px; padding:8px 12px; margin-bottom:12px; font-size:0.85rem; color:#065f46;">
+                        <span id="cuposInfoText"></span>
+                    </div>
 
                     <button type="submit" class="btn btn-secondary">Reservar</button>
 
                 </form>
 
+                <script>
+                function cargarHorarios() {
+                    var sel = document.getElementById('fechaSelect');
+                    var opt = sel.options[sel.selectedIndex];
+                    var hidden = document.getElementById('idDisponibilidadHidden');
+                    var info = document.getElementById('cuposInfo');
+                    var infoText = document.getElementById('cuposInfoText');
+
+                    if (opt && opt.value) {
+                        hidden.value = opt.getAttribute('data-id');
+                        infoText.textContent = opt.getAttribute('data-hora') + ' — ' + opt.getAttribute('data-cupos') + ' cupos disponibles';
+                        info.style.display = 'block';
+                    } else {
+                        hidden.value = '';
+                        info.style.display = 'none';
+                    }
+                }
+                </script>
 
             </div>
         </div>

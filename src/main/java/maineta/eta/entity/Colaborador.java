@@ -11,12 +11,10 @@ import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
 @Entity
 @Data
 @AllArgsConstructor
-@ToString(exclude = {"actividades", "usuario"})
 @NoArgsConstructor
 @Table(name = "colaborador")
 public class Colaborador {

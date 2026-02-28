@@ -78,17 +78,12 @@ public class ReservaServiceImpl implements ReservaService {
 
     @Override
     public boolean existeReservaRealizada(Long idCliente, Long idActividad) {
-        Optional<Reserva> reservaOpt = reservaRepository
+        List<Reserva> reservas = reservaRepository
                 .findByCliente_IdAndActividad_IdActividad(idCliente, idActividad);
 
-        if (reservaOpt.isPresent()) {
-            Reserva reserva = reservaOpt.get();
-            String estado = reserva.getEstado();
-
-            return "Hecho".equalsIgnoreCase(estado); // más seguro (case insensitive)
-        }
-
-        return false;
+        // Verificar si ALGUNA reserva tiene estado "Hecho"
+        return reservas.stream()
+                .anyMatch(r -> "Hecho".equalsIgnoreCase(r.getEstado()));
     }
 
 

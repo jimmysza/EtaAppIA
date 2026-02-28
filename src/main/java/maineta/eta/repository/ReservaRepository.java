@@ -15,7 +15,7 @@ public interface ReservaRepository extends JpaRepository<Reserva, Long> {
     // ✅ Nuevo método para verificar si ya existe una reserva del cliente para una actividad
     List<Reserva> findByCliente(Cliente cliente);
     List<Reserva> findByActividad_IdActividad(Long idActividad);
-    Optional<Reserva> findByCliente_IdAndActividad_IdActividad(Long idCliente, Long idActividad);
+    List<Reserva> findByCliente_IdAndActividad_IdActividad(Long idCliente, Long idActividad);
     Optional<Reserva> findByidReserva(Long idReserva);
 
     

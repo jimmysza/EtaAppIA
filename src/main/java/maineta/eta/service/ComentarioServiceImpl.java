@@ -1,17 +1,17 @@
 package maineta.eta.service;
 
-import maineta.eta.entity.Actividad;
-import maineta.eta.entity.Comentario;
-import maineta.eta.repository.ComentarioRepository;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import maineta.eta.entity.Comentario;
+import maineta.eta.repository.ComentarioRepository;
 
 @Service
 public class ComentarioServiceImpl implements ComentarioService {
@@ -43,6 +43,27 @@ public class ComentarioServiceImpl implements ComentarioService {
     public int calcularPromedioActividad(Long idActividad) {
         Double promedio = comentarioRepository.promedioCalificacionPorActividad(idActividad);
         return (int) Math.round(promedio);
+    }
+
+    @Override
+    public Double calcularPromedioDecimal(Long idActividad) {
+        return comentarioRepository.promedioCalificacionPorActividad(idActividad);
+    }
+
+    @Override
+    public Map<Integer, Long> obtenerDistribucionEstrellas(Long idActividad) {
+        Map<Integer, Long> distribucion = new HashMap<>();
+        // Inicializar todas las estrellas en 0
+        for (int i = 1; i <= 5; i++) {
+            distribucion.put(i, 0L);
+        }
+        List<Object[]> data = comentarioRepository.distribucionCalificacionPorActividad(idActividad);
+        for (Object[] row : data) {
+            Integer calificacion = (Integer) row[0];
+            Long cantidad = (Long) row[1];
+            distribucion.put(calificacion, cantidad);
+        }
+        return distribucion;
     }
 
     @Override

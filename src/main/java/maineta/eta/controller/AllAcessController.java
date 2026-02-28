@@ -114,6 +114,16 @@ public class AllAcessController {
                 model.addAttribute("pageNumbers", pageNumbers);
                 model.addAttribute("pagina", "detalle");
                 model.addAttribute("imagenes", actividadService.obtenerImagenesPorActividad(id));
+
+                // Datos dinámicos para la sección de reseñas
+                Double promedioCalificacion = comentarioService.calcularPromedioDecimal(id);
+                Map<Integer, Long> distribucionEstrellas = comentarioService.obtenerDistribucionEstrellas(id);
+                long totalComentarios = comentarioPage.getTotalElements();
+
+                model.addAttribute("promedioCalificacion", promedioCalificacion);
+                model.addAttribute("distribucionEstrellas", distribucionEstrellas);
+                model.addAttribute("totalComentarios", totalComentarios);
+
                 return "detalle-actividad";
         }
 

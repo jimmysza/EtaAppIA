@@ -295,7 +295,7 @@ div.menu-inner {
     display: none;
     flex-direction: column;
     align-items: center;
-    background-color: #3c3838 !important;
+    background-color: #ffffff !important;
     border: 1px solid #E5E5E5;
     padding: 5px;
     gap: 15px;
@@ -384,6 +384,7 @@ div.menu-inner {
     .btn-cerraSesion:hover,
     .dropdown-contain a:hover {
         background-color: #F2F2F2;
+        color: #000;
     }
 
     .header {

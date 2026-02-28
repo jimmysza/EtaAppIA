@@ -39,4 +39,12 @@ public interface ComentarioRepository extends JpaRepository<Comentario, Long> {
             """)
     Double promedioCalificacionPorActividad(Long idActividad);
 
+    @Query("""
+                SELECT c.calificacion, COUNT(c)
+                FROM Comentario c
+                WHERE c.actividad.idActividad = :idActividad
+                GROUP BY c.calificacion
+            """)
+    List<Object[]> distribucionCalificacionPorActividad(@Param("idActividad") Long idActividad);
+
 }

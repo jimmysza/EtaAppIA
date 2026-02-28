@@ -3,11 +3,9 @@ package maineta.eta.service;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 
 import maineta.eta.entity.Categoria;
@@ -26,7 +24,6 @@ import maineta.eta.repository.CategoriaRepository;
 public class CategoriaServiceImpl implements CategoriaService {
 
     // Inyección de dependencias: repositorio que maneja las operaciones CRUD de Categoria
-    @Autowired
     private final CategoriaRepository categoriaRepository;
 
     /**

@@ -14,6 +14,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Entity
 @Data
@@ -35,9 +36,17 @@ public class Disponibilidad {
     private int cuposTotales;
     private int cuposDisponibles;
 
+    @Column(nullable = false, length = 20)
+    private String estado = "DISPONIBLE"; // DISPONIBLE, CANCELADO, COMPLETADO
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_actividad", nullable = false)
     private Actividad actividad;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_patron")
+    @ToString.Exclude
+    private PatronDisponibilidad patron;
 
     // 🔹 Constructor útil opcional
     public Disponibilidad(LocalDate fecha, LocalTime horaInicio, LocalTime horaFin) {

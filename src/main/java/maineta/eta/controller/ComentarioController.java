@@ -2,14 +2,7 @@ package maineta.eta.controller;
 
 import java.security.Principal;
 import java.time.LocalDateTime;
-import java.util.List;
 
-import maineta.eta.config.UsuarioHelper;
-import maineta.eta.entity.Actividad;
-import maineta.eta.entity.Cliente;
-import maineta.eta.entity.Comentario;
-import maineta.eta.entity.Usuario;
-import maineta.eta.service.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,6 +10,17 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import maineta.eta.config.UsuarioHelper;
+import maineta.eta.entity.Actividad;
+import maineta.eta.entity.Cliente;
+import maineta.eta.entity.Comentario;
+import maineta.eta.entity.Usuario;
+import maineta.eta.service.ActividadService;
+import maineta.eta.service.ClienteService;
+import maineta.eta.service.ComentarioService;
+import maineta.eta.service.ReservaService;
+import maineta.eta.service.UsuarioService;
 
 @Controller
 @RequestMapping("/comentarios")
@@ -62,20 +66,20 @@ public class ComentarioController {
             return "redirect:/";
         }
 
-        // 🔹 Validar reserva realizada
+        Cliente cliente = clienteService.obtenerPorUsuario(usuario)
+                .orElseThrow(() -> new RuntimeException("No se encontró cliente para el usuario"));
+
+        // 🔹 Validar reserva realizada (usar cliente.getId(), no usuario.getId())
         boolean realizoActividad = reservaService.existeReservaRealizada(
-                usuario.getId(),
+                cliente.getId(),
                 actividad.getIdActividad());
 
         if (!realizoActividad) {
             redirectAttributes.addFlashAttribute(
                     "error",
                     "Debes realizar la actividad para poder comentar");
-            return "redirect:/detalle/" + actividad.getTitulo() + "-" + idActividad;
+            return "redirect:/actividad/" + usuarioHelper.generarTituloUrl(actividad.getTitulo()) + "-" + idActividad;
         }
-
-        Cliente cliente = clienteService.obtenerPorUsuario(usuario)
-                .orElseThrow(() -> new RuntimeException("No se encontró cliente para el usuario"));
 
         // 🔹 Guardar comentario
         Comentario comentario = new Comentario();
@@ -93,7 +97,7 @@ public class ComentarioController {
 
         redirectAttributes.addFlashAttribute("exito", "Comentario creado correctamente");
 
-        return "redirect:/detalle/" + usuarioHelper.generarTituloUrl(actividad.getTitulo())
+        return "redirect:/actividad/" + usuarioHelper.generarTituloUrl(actividad.getTitulo())
             + "-" + idActividad;
     }
 
