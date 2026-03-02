@@ -7,6 +7,10 @@
     <link rel="stylesheet" th:href="@{/css/global.css}">
     <link rel="stylesheet" th:href="@{/css/actividad/crearActividad.css}">
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
     <link rel="icon" th:href="@{/images/logos/etabluerrvg.webp}" type="image/x-icon" />
     <link rel="icon" th:href="@{/images/logos/logo.webp}" type="image/x-icon" />
@@ -19,6 +23,35 @@
             position: absolute;
             right: 12px;
             cursor: pointer;
+        }
+
+        #map-wrapper {
+            width: 100%;
+            max-width: 100%;
+            height: 200px !important;
+            max-height: 200px !important;
+            border-radius: 12px;
+            overflow: hidden !important;
+            border: 1px solid #e5e7eb;
+            position: relative;
+        }
+
+        #map {
+            position: absolute !important;
+            top: 0;
+            left: 0;
+            width: 100% !important;
+            height: 100% !important;
+            z-index: 0;
+        }
+
+        .leaflet-container {
+            height: 100% !important;
+            width: 100% !important;
+        }
+
+        .leaflet-tile-container img {
+            max-width: none !important;
         }
     </style>
 </head>
@@ -135,6 +168,37 @@
                     </div>
                 </div>
 
+                <!-- Mapa para seleccionar ubicación -->
+
+                <div class="mb-6">
+                    <label class="block text-gray-900 font-bold mb-2">
+                        Ubicación en el Mapa <span class="text-red-500">*</span>
+                    </label>
+                    <p class="text-sm text-gray-500 mb-3">Haz clic en el mapa para marcar la ubicación exacta de tu
+                        actividad</p>
+
+                    <div id="map-wrapper">
+                        <div id="map"></div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4 mt-3">
+                        <div>
+                            <label class="block text-gray-600 text-sm mb-1">Latitud</label>
+                            <input type="text" id="latitudDisplay" readonly
+                                class="w-full px-3 py-2 bg-gray-100 border-0 rounded-lg text-gray-700 text-sm"
+                                placeholder="Selecciona en el mapa">
+                            <input type="hidden" id="latitud" th:field="*{latitud}">
+                        </div>
+                        <div>
+                            <label class="block text-gray-600 text-sm mb-1">Longitud</label>
+                            <input type="text" id="longitudDisplay" readonly
+                                class="w-full px-3 py-2 bg-gray-100 border-0 rounded-lg text-gray-700 text-sm"
+                                placeholder="Selecciona en el mapa">
+                            <input type="hidden" id="longitud" th:field="*{longitud}">
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Categorías -->
                 <div class="mb-6">
                     <label class="block text-gray-900 font-bold mb-2">
@@ -149,7 +213,7 @@
                         </select>
                         <button type="button" id="addCategoriaBtn"
                             class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-700 hover:text-gray-900">
-                           <!--  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <!--  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M12 4v16m8-8H4"></path>
                             </svg> -->
@@ -227,7 +291,8 @@
                     </label>
                     <label for="imagenesExtra" id="dropZoneExtra"
                         class="border-2 border-dashed border-gray-300 bg-gray-50 rounded-xl p-8 mb-2 text-center transition-colors cursor-pointer hover:border-gray-400 block">
-                        <input type="file" id="imagenesExtra" name="imagenesExtra" class="hidden" accept="image/*" multiple>
+                        <input type="file" id="imagenesExtra" name="imagenesExtra" class="hidden" accept="image/*"
+                            multiple>
                         <svg class="w-8 h-8 mx-auto mb-3 text-gray-400" fill="none" stroke="currentColor"
                             viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -313,7 +378,7 @@
             }
         });
 
-     
+
 
         // Categorías handling
         const categoriaSelect = document.getElementById('categoriaSelect');
@@ -444,6 +509,74 @@
     <div id="errorMsg" class="alert z-100 alert-danger">...</div>
 
     <script th:src="@{/js/alert.js}"></script>
+
+    <!-- Script para el mapa de ubicación -->
+    <script>
+        let map = null;
+        let marker = null;
+
+        function initMap() {
+            if (map !== null) {
+                map.remove();
+                map = null;
+                marker = null;
+            }
+
+            map = L.map('map').setView([10.3910, -75.4794], 13);
+
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; OpenStreetMap contributors'
+            }).addTo(map);
+
+            map.on('click', function(e) {
+                const lat = e.latlng.lat;
+                const lng = e.latlng.lng;
+
+                document.getElementById('latitud').value = lat;
+                document.getElementById('longitud').value = lng;
+                document.getElementById('latitudDisplay').value = lat.toFixed(6);
+                document.getElementById('longitudDisplay').value = lng.toFixed(6);
+
+                if (marker) {
+                    marker.setLatLng(e.latlng);
+                } else {
+                    marker = L.marker(e.latlng, { draggable: true }).addTo(map);
+                    marker.on('dragend', function(event) {
+                        const pos = event.target.getLatLng();
+                        document.getElementById('latitud').value = pos.lat;
+                        document.getElementById('longitud').value = pos.lng;
+                        document.getElementById('latitudDisplay').value = pos.lat.toFixed(6);
+                        document.getElementById('longitudDisplay').value = pos.lng.toFixed(6);
+                    });
+                }
+            });
+
+            const lat = document.getElementById('latitud').value;
+            const lng = document.getElementById('longitud').value;
+            if (lat && lng && !isNaN(lat) && !isNaN(lng)) {
+                const latlng = L.latLng(parseFloat(lat), parseFloat(lng));
+                marker = L.marker(latlng, { draggable: true }).addTo(map);
+                map.setView(latlng, 15);
+                document.getElementById('latitudDisplay').value = parseFloat(lat).toFixed(6);
+                document.getElementById('longitudDisplay').value = parseFloat(lng).toFixed(6);
+                marker.on('dragend', function(event) {
+                    const pos = event.target.getLatLng();
+                    document.getElementById('latitud').value = pos.lat;
+                    document.getElementById('longitud').value = pos.lng;
+                    document.getElementById('latitudDisplay').value = pos.lat.toFixed(6);
+                    document.getElementById('longitudDisplay').value = pos.lng.toFixed(6);
+                });
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(initMap, 300);
+        });
+
+        window.addEventListener('resize', function() {
+            if (map) map.invalidateSize();
+        });
+    </script>
 </body>
 
 </html>

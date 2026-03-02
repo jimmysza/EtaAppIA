@@ -13,6 +13,10 @@
     <link rel="stylesheet" th:href="@{/css/componentes/comentarios.css}">
     <link rel="stylesheet" th:href="@{/css/componentes/modales.css}">
     <link rel="icon" th:href="@{/images/logos/Logo.webp}" type="image/x-icon" />
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 
 
@@ -80,7 +84,7 @@
                     th:data-id="${actividad.idActividad}" onclick="toggleFavDetalle(this);"
                     th:title="${esFavorito} ? 'Quitar de favoritos' : 'Agregar a favoritos'">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
-                        th:fill="${esFavorito} ? '#ef4444' : '#000'" th:stroke="${esFavorito} ? '#ef4444' : '#000'"
+                        th:fill="${esFavorito} ? '#ef4444' : 'none'" th:stroke="${esFavorito} ? '#ef4444' : '#000'"
                         stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="fav-icon-detalle">
                         <path
                             d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
@@ -425,6 +429,15 @@
             <p class="contenido-title">Condiciones</p>
             <p th:text="${actividad.condiciones}"></p>
 
+            <!-- Mapa de ubicación -->
+            <div th:if="${actividad.latitud != null and actividad.longitud != null}" class="mt-8">
+                <p class="contenido-title">Ubicación</p>
+                <div style="width:100%; height:220px; border-radius:12px; overflow:hidden; border:1px solid #e5e7eb;">
+                    <div id="mapaCliente" style="width:100%; height:100%;"></div>
+                </div>
+                <p class="text-sm text-gray-500 mt-2" th:text="${actividad.ubicacion}"></p>
+            </div>
+
         </div>
         <div class="activity-detail-container">
             <div class="reserva-container">
@@ -588,6 +601,27 @@
                 })
                 .catch(() => window.location.href = '/login');
         }
+    </script>
+
+    <!-- Script del mapa de ubicación para cliente -->
+    <script th:if="${actividad.latitud != null and actividad.longitud != null}" th:inline="javascript">
+        document.addEventListener('DOMContentLoaded', function() {
+            const lat = /*[[${actividad.latitud}]]*/ 10.3910;
+            const lng = /*[[${actividad.longitud}]]*/ -75.4794;
+            const titulo = /*[[${actividad.titulo}]]*/ 'Actividad';
+            const ubicacion = /*[[${actividad.ubicacion}]]*/ '';
+
+            const mapaCliente = L.map('mapaCliente').setView([lat, lng], 15);
+
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; OpenStreetMap'
+            }).addTo(mapaCliente);
+
+            L.marker([lat, lng])
+                .addTo(mapaCliente)
+                .bindPopup('<b>' + titulo + '</b><br>' + ubicacion)
+                .openPopup();
+        });
     </script>
 
 </body>

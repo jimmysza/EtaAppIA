@@ -42,6 +42,12 @@ public class Actividad {
 
     private String ubicacion;
 
+    @Column(name = "latitud")
+    private Double latitud;
+
+    @Column(name = "longitud")
+    private Double longitud;
+
     @Lob
     private String normas;
 

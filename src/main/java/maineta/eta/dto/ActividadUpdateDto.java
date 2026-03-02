@@ -12,6 +12,8 @@ public class ActividadUpdateDto {
     private String descripcion;
     private String imagen;
     private String ubicacion;
+    private Double latitud;
+    private Double longitud;
 
     private int calificacion;
     private BigDecimal precio; // Precio original

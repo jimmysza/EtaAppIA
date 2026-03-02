@@ -281,6 +281,14 @@ public class ActividadServiceImpl implements ActividadService {
             actividad.setUbicacion(dto.getUbicacion());
         }
 
+        if (dto.getLatitud() != null) {
+            actividad.setLatitud(dto.getLatitud());
+        }
+
+        if (dto.getLongitud() != null) {
+            actividad.setLongitud(dto.getLongitud());
+        }
+
         if (dto.getDescripcion() != null) {
             actividad.setDescripcion(dto.getDescripcion());
         }
