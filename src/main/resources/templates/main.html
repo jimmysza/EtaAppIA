@@ -317,9 +317,14 @@
                             </span>
                         </span>
                         <!--FAVORITO-->
-                        <button
-                            class="absolute top-3 right-3 w-8 h-8 bg-white/90 hover:bg-white rounded-full flex items-center justify-center shadow-sm hover:scale-110 transition-transform">
-                            <svg class="w-5 h-5 text-gray-700 hover:text-red-500" fill="none" stroke="currentColor"
+                        <button type="button"
+                            class="btn-fav absolute top-3 right-3 w-8 h-8 bg-white/90 hover:bg-white rounded-full flex items-center justify-center shadow-sm hover:scale-110 transition-transform"
+                            th:data-id="${actividad.idActividad}"
+                            onclick="event.preventDefault(); event.stopPropagation(); toggleFav(this);">
+                            <svg class="w-5 h-5 fav-icon"
+                                th:classappend="${favoritosIds != null and favoritosIds.contains(actividad.idActividad)} ? ' text-red-500' : ' text-gray-700'"
+                                th:fill="${favoritosIds != null and favoritosIds.contains(actividad.idActividad)} ? 'currentColor' : 'none'"
+                                stroke="currentColor"
                                 viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
@@ -623,6 +628,37 @@
     <script th:src="@{/js/componentes/Activitycards.js}"></script>
     <script th:src="@{/js/componentes/categorias.js}"></script>
     <script th:src="@{/js/alert.js}"></script>
+
+    <script>
+        function toggleFav(btn) {
+            const id = btn.getAttribute('data-id');
+            fetch('/cliente/favorito/toggle/' + id, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' }
+            })
+            .then(res => {
+                if (res.status === 401 || res.redirected) {
+                    window.location.href = '/login';
+                    return;
+                }
+                return res.json();
+            })
+            .then(data => {
+                if (!data) return;
+                const svg = btn.querySelector('.fav-icon');
+                if (data.favorito) {
+                    svg.setAttribute('fill', 'currentColor');
+                    svg.classList.add('text-red-500');
+                    svg.classList.remove('text-gray-700');
+                } else {
+                    svg.setAttribute('fill', 'none');
+                    svg.classList.remove('text-red-500');
+                    svg.classList.add('text-gray-700');
+                }
+            })
+            .catch(err => console.error('Error toggling favorito:', err));
+        }
+    </script>
 </body>
 
 </html>

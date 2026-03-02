@@ -1,11 +1,10 @@
 package maineta.eta.controller;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
-import maineta.eta.dto.ReservaDTO;
-import maineta.eta.entity.*;
-import maineta.eta.service.*;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -17,9 +16,25 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import maineta.eta.config.UsuarioHelper;
+import maineta.eta.dto.ActividadDTO;
+import maineta.eta.dto.ReservaDTO;
+import maineta.eta.entity.Actividad;
+import maineta.eta.entity.Cliente;
+import maineta.eta.entity.Disponibilidad;
+import maineta.eta.entity.Favorito;
+import maineta.eta.entity.Reserva;
+import maineta.eta.entity.Usuario;
+import maineta.eta.service.ActividadService;
+import maineta.eta.service.ClienteService;
+import maineta.eta.service.ComentarioService;
+import maineta.eta.service.DisponibilidadService;
+import maineta.eta.service.FavoritoService;
+import maineta.eta.service.ReservaService;
+import maineta.eta.service.UsuarioService;
 
 @Controller
 @RequestMapping("/cliente")
@@ -31,6 +46,8 @@ public class ClienteController {
     private final UsuarioHelper usuarioHelper;
     private final ClienteService clienteService;
     private final UsuarioService usuarioService;
+    private final FavoritoService favoritoService;
+    private final ComentarioService comentarioService;
 
     public ClienteController(
             ActividadService actividadService,
@@ -38,7 +55,9 @@ public class ClienteController {
             DisponibilidadService disponibilidadService,
             UsuarioHelper usuarioHelper,
             ClienteService clienteService,
-            UsuarioService usuarioService) {
+            UsuarioService usuarioService,
+            FavoritoService favoritoService,
+            ComentarioService comentarioService) {
 
         this.actividadService = actividadService;
         this.reservaService = reservaService;
@@ -46,6 +65,8 @@ public class ClienteController {
         this.usuarioHelper = usuarioHelper;
         this.clienteService = clienteService;
         this.usuarioService = usuarioService;
+        this.favoritoService = favoritoService;
+        this.comentarioService = comentarioService;
     }
 
     @GetMapping("/dashboard")
@@ -218,6 +239,93 @@ public class ClienteController {
 
         redirectAttributes.addFlashAttribute("exito", "Reserva cancelada correctamente");
         return "redirect:/cliente/dashboard";
+    }
+
+    // ========================
+    // FAVORITOS
+    // ========================
+
+    /**
+     * Toggle favorito vía AJAX (POST).
+     * Retorna JSON con { "favorito": true/false }
+     */
+    @PostMapping("/favorito/toggle/{idActividad}")
+    @ResponseBody
+    public Map<String, Object> toggleFavorito(@PathVariable Long idActividad, Authentication authentication) {
+        String email = authentication.getName();
+        Usuario usuario = usuarioService.obtenerPorEmail(email);
+        Cliente cliente = clienteService.obtenerPorUsuario(usuario)
+                .orElseThrow(() -> new RuntimeException("Cliente no encontrado"));
+
+        Actividad actividad = actividadService.listarById(idActividad);
+        boolean agregado = favoritoService.toggleFavorito(cliente, actividad);
+
+        return Map.of("favorito", agregado);
+    }
+
+    /**
+     * Página de favoritos del cliente.
+     */
+    @GetMapping("/favoritos")
+    public String verFavoritos(Authentication authentication, Model model, Authentication auth) {
+        usuarioHelper.agregarInfoUsuarioModel(model, auth);
+
+        String email = authentication.getName();
+        Usuario usuario = usuarioService.obtenerPorEmail(email);
+        Cliente cliente = clienteService.obtenerPorUsuario(usuario)
+                .orElseThrow(() -> new RuntimeException("Cliente no encontrado"));
+
+        List<Favorito> favoritos = favoritoService.obtenerFavoritosDeCliente(cliente);
+
+        // Obtener IDs de actividades para contar comentarios
+        List<Long> actividadIds = favoritos.stream()
+                .map(f -> f.getActividad().getIdActividad())
+                .toList();
+
+        Map<Long, Integer> comentariosPorActividad = actividadIds.isEmpty()
+                ? Map.of()
+                : comentarioService.contarComentariosPorActividades(actividadIds);
+
+        // Mapear a DTOs
+        List<ActividadDTO> actividadesDTO = favoritos.stream()
+                .map(fav -> {
+                    Actividad actividad = fav.getActividad();
+                    ActividadDTO dto = new ActividadDTO();
+                    dto.setIdActividad(actividad.getIdActividad());
+                    dto.setTitulo(actividad.getTitulo());
+                    dto.setDescripcion(actividad.getDescripcion());
+                    dto.setCalificacion(actividad.getCalificacion());
+                    dto.setUbicacion(actividad.getUbicacion());
+                    dto.setImagen(actividad.getImagen());
+                    dto.setCreatedAt(actividad.getCreatedAt());
+
+                    dto.setIdIdioma(actividad.getIdioma().getIdIdioma());
+                    dto.setNombreIdioma(actividad.getIdioma().getNombre());
+                    dto.setCodigoIdioma(actividad.getIdioma().getCodigo());
+
+                    dto.setCantidadComentario(
+                            comentariosPorActividad.getOrDefault(actividad.getIdActividad(), 0));
+
+                    if (actividad.getCategoria() != null) {
+                        dto.setIdCategoria(actividad.getCategoria().getIdCategoria());
+                        dto.setNombreCategoria(actividad.getCategoria().getNombre());
+                    } else {
+                        dto.setNombreCategoria("Sin categoría");
+                    }
+
+                    if (actividad.getColaborador() != null) {
+                        dto.setIdColaborador(actividad.getColaborador().getIdColaborador());
+                    }
+
+                    dto.setPrecio(actividad.getPrecio());
+                    dto.setPrecioConsumidor(usuarioHelper.CalcularPrecioConsumidor(actividad.getPrecio()));
+
+                    return dto;
+                })
+                .collect(Collectors.toList());
+
+        model.addAttribute("actividades", actividadesDTO);
+        return "cliente/favoritos";
     }
 
 

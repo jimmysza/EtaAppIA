@@ -1,9 +1,11 @@
 package maineta.eta.controller;
 
 import java.math.BigDecimal;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -25,13 +27,18 @@ import maineta.eta.dto.ReservaDTO;
 import maineta.eta.entity.Actividad;
 import maineta.eta.entity.BusquedaForm;
 import maineta.eta.entity.Categoria;
+import maineta.eta.entity.Cliente;
 import maineta.eta.entity.Comentario;
 import maineta.eta.entity.Disponibilidad;
+import maineta.eta.entity.Usuario;
 import maineta.eta.service.ActividadService;
 import maineta.eta.service.CategoriaService;
+import maineta.eta.service.ClienteService;
 import maineta.eta.service.ComentarioService;
 import maineta.eta.service.DisponibilidadService;
+import maineta.eta.service.FavoritoService;
 import maineta.eta.service.IdiomaService;
+import maineta.eta.service.UsuarioService;
 
 // 🔹 Controlador principal que maneja las páginas accesibles para todos los usuarios
 @Controller
@@ -44,17 +51,25 @@ public class AllAcessController {
         private final ComentarioService comentarioService;
         private final DisponibilidadService disponibilidadService;
         private final IdiomaService idiomaService;
+        private final FavoritoService favoritoService;
+        private final ClienteService clienteService;
+        private final UsuarioService usuarioService;
 
         // 🔹 Constructor con inyección de dependencias
         public AllAcessController(DisponibilidadService disponibilidadService, UsuarioHelper usuarioHelper,
                         ComentarioService comentarioService, ActividadService actividadService,
-                        CategoriaService categoriaService, IdiomaService idiomaService) {
+                        CategoriaService categoriaService, IdiomaService idiomaService,
+                        FavoritoService favoritoService, ClienteService clienteService,
+                        UsuarioService usuarioService) {
                 this.categoriaService = categoriaService;
                 this.actividadService = actividadService;
                 this.usuarioHelper = usuarioHelper;
                 this.comentarioService = comentarioService;
                 this.disponibilidadService = disponibilidadService;
                 this.idiomaService = idiomaService;
+                this.favoritoService = favoritoService;
+                this.clienteService = clienteService;
+                this.usuarioService = usuarioService;
         }
 
         // 🔹 Endpoint para mostrar la página de login
@@ -123,6 +138,21 @@ public class AllAcessController {
                 model.addAttribute("promedioCalificacion", promedioCalificacion);
                 model.addAttribute("distribucionEstrellas", distribucionEstrellas);
                 model.addAttribute("totalComentarios", totalComentarios);
+
+                // Verificar si la actividad es favorita del cliente logueado
+                boolean esFavorito = false;
+                if (auth != null && auth.isAuthenticated() && !auth.getPrincipal().equals("anonymousUser")) {
+                        try {
+                                Usuario usuario = usuarioService.obtenerPorEmail(auth.getName());
+                                Optional<Cliente> clienteOpt = clienteService.obtenerPorUsuario(usuario);
+                                if (clienteOpt.isPresent()) {
+                                        esFavorito = favoritoService.esFavorito(clienteOpt.get(), actividad);
+                                }
+                        } catch (Exception e) {
+                                // No es cliente, ignorar
+                        }
+                }
+                model.addAttribute("esFavorito", esFavorito);
 
                 return "detalle-actividad";
         }
@@ -257,6 +287,21 @@ public class AllAcessController {
                                 .toList();
 
                 model.addAttribute("pageNumbers", pageNumbers);
+
+                // Favoritos del cliente logueado
+                Set<Long> favoritosIds = Collections.emptySet();
+                if (auth != null && auth.isAuthenticated() && !auth.getPrincipal().equals("anonymousUser")) {
+                        try {
+                                Usuario usuario = usuarioService.obtenerPorEmail(auth.getName());
+                                Optional<Cliente> clienteOpt = clienteService.obtenerPorUsuario(usuario);
+                                if (clienteOpt.isPresent()) {
+                                        favoritosIds = favoritoService.obtenerIdsFavoritosDeCliente(clienteOpt.get());
+                                }
+                        } catch (Exception e) {
+                                // No es cliente, ignorar
+                        }
+                }
+                model.addAttribute("favoritosIds", favoritosIds);
 
                 return "main";
         }

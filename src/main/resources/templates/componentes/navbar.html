@@ -67,7 +67,7 @@
                                 <!-- Opción para Cliente -->
                                 <div th:if="${userRole == 'ROLE_CLIENTE'}">
                                     <a th:href="@{/cliente/dashboard}"
-                                        class="font-bold uppercase tracking-wider transition-colors hover:text-blue-500 text-white/90">
+                                        class=" ">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                             viewBox="0 0 24 24">
                                             <g fill="#000" fill-rule="evenodd" clip-rule="evenodd" stroke-width="0.2"
@@ -85,7 +85,7 @@
                                 <!-- Opción para Admin -->
                                 <div th:if="${userRole == 'ROLE_COLABORADOR'}">
                                     <a th:href="@{/colaborador/actividades}"
-                                        class="font-bold uppercase tracking-wider transition-colors hover:text-blue-500 text-white/90">
+                                        class="">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                             viewBox="0 0 24 24">
                                             <g fill="#000" fill-rule="evenodd" clip-rule="evenodd" stroke-width="0.2"

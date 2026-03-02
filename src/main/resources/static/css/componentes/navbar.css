@@ -378,6 +378,9 @@ div.menu-inner {
         font-size: 14px;
         border-radius: 9.5px;
         font-weight: 800;
+        background-color: #ffffff;
+        color: #000;
+
         gap: 10px;
     }
 

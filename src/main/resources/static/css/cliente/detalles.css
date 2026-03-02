@@ -219,7 +219,7 @@ h1 {
     padding: 5px;
 }
 
-.social-nav a {
+.social-nav a{
     background: var(--color-medium-blue);
     border-radius: 100%;
     padding: 10px;
