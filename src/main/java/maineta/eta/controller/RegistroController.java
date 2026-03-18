@@ -1,5 +1,15 @@
 package maineta.eta.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
 import maineta.eta.entity.Admin;
 import maineta.eta.entity.Cliente;
 import maineta.eta.entity.Colaborador;
@@ -8,14 +18,8 @@ import maineta.eta.service.AdminService;
 import maineta.eta.service.ClienteService;
 import maineta.eta.service.ColaboradorService;
 import maineta.eta.service.UsuarioService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import maineta.eta.service.VerificacionCorreoService;
+import maineta.eta.service.VerificacionCorreoService.EstadoVerificacion;
 
 /**
  * 🔹 Controlador que se encarga del registro de nuevos usuarios en el sistema.
@@ -43,16 +47,19 @@ public class RegistroController {
     private final ClienteService clienteService;
     private final ColaboradorService colaboradorService;
     private final AdminService adminService;
+    private final VerificacionCorreoService verificacionCorreoService;
 
     // 🔹 Constructor con inyección de dependencias
     // Spring automáticamente inyecta los servicios necesarios al crear este controlador
     RegistroController(UsuarioService usuarioService,
             ClienteService clienteService, AdminService adminService,
-            ColaboradorService colaboradorService) {
+            ColaboradorService colaboradorService,
+            VerificacionCorreoService verificacionCorreoService) {
         this.usuarioService = usuarioService;
         this.colaboradorService = colaboradorService;
         this.clienteService = clienteService;
         this.adminService = adminService;
+        this.verificacionCorreoService = verificacionCorreoService;
     }
 
     // ==================================================
@@ -94,8 +101,7 @@ public class RegistroController {
             RedirectAttributes redirectAttributes) {
         try {
             clienteService.registrarCliente(cliente);
-            redirectAttributes.addFlashAttribute("exito", "Cliente registrado con éxito.");
-            return "redirect:/login?role=cliente";
+            return "redirect:/login?role=cliente&pendingVerification";
         } catch (RuntimeException e) {
             // ✅ Usa el mensaje EXACTO que vino del servicio
             redirectAttributes.addFlashAttribute("error", e.getMessage());
@@ -129,8 +135,7 @@ public class RegistroController {
 
         try {
             colaboradorService.registrarColaborador(colaborador); 
-            redirectAttributes.addFlashAttribute("exito", "Colaborador registrado con éxito.");
-            return "redirect:/login?role=colaborador&exito";
+            return "redirect:/login?role=colaborador&pendingVerification";
 
         } catch (RuntimeException e) {
             
@@ -159,5 +164,20 @@ public class RegistroController {
             redirectAttributes.addFlashAttribute("error", e.getMessage());
             return "redirect:/registro/admin";
         }
+    }
+
+    @GetMapping("/verificar")
+    public String verificarCuenta(@RequestParam("token") String token) {
+        EstadoVerificacion estado = verificacionCorreoService.verificarCuenta(token);
+
+        if (estado == EstadoVerificacion.VERIFICADA || estado == EstadoVerificacion.YA_VERIFICADA) {
+            return "redirect:/login?verified";
+        }
+
+        if (estado == EstadoVerificacion.TOKEN_EXPIRADO) {
+            return "redirect:/login?expiredToken";
+        }
+
+        return "redirect:/login?invalidToken";
     }
 }

@@ -3,16 +3,17 @@ package maineta.eta.service;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import maineta.eta.entity.Cliente;
 import maineta.eta.entity.Usuario;
 import maineta.eta.repository.ClienteRepository;
 import maineta.eta.repository.ColaboradorRepository;
 import maineta.eta.repository.RolRepository;
 import maineta.eta.repository.UsuarioRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
  * 🔹 Implementación de la interfaz ClienteService
@@ -37,6 +38,7 @@ public class ClienteServiceImpl implements ClienteService {
     private final ClienteRepository clienteRepository;
     private final ColaboradorRepository colaboradorRepository;
     private final UsuarioManagerService usuarioManagerService;
+    private final VerificacionCorreoService verificacionCorreoService;
 
     @Autowired
     public ClienteServiceImpl(
@@ -45,7 +47,8 @@ public class ClienteServiceImpl implements ClienteService {
             RolRepository rolRepository,
             PasswordEncoder passwordEncoder,
             ClienteRepository clienteRepository,
-            UsuarioManagerService usuarioManagerService
+            UsuarioManagerService usuarioManagerService,
+            VerificacionCorreoService verificacionCorreoService
     ) {
         this.usuarioRepository = usuarioRepository;
         this.rolRepository = rolRepository;
@@ -53,6 +56,7 @@ public class ClienteServiceImpl implements ClienteService {
         this.passwordEncoder = passwordEncoder;
         this.clienteRepository = clienteRepository;
         this.usuarioManagerService = usuarioManagerService;
+        this.verificacionCorreoService = verificacionCorreoService;
     }
 
     @Override
@@ -75,7 +79,9 @@ public class ClienteServiceImpl implements ClienteService {
         );
 
         cliente.setUsuario(usuarioGuardado);
-        return clienteRepository.save(cliente);
+        Cliente clienteGuardado = clienteRepository.save(cliente);
+        verificacionCorreoService.enviarCorreoVerificacion(usuarioGuardado);
+        return clienteGuardado;
     }
 
     @Override

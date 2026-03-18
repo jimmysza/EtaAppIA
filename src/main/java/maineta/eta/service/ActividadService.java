@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.web.multipart.MultipartFile;
@@ -29,6 +30,10 @@ import maineta.eta.entity.ImagenActividad;
 public interface ActividadService {
 
     Page<Actividad> buscarMisActividades(Long colaboradorId, String titulo, int page, int size);
+
+        List<Actividad> listarPorColaborador(Long idColaborador);
+
+        Optional<Actividad> obtenerActividadDestacadaDeColaborador(Long idColaborador);
 
     /**
      * Obtiene una lista de actividades paginadas desde la base de datos,

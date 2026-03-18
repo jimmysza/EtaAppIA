@@ -1,16 +1,15 @@
 package maineta.eta.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+
 import jakarta.transaction.Transactional;
 import maineta.eta.entity.Rol;
 import maineta.eta.entity.Usuario;
 import maineta.eta.repository.ColaboradorRepository;
 import maineta.eta.repository.RolRepository;
 import maineta.eta.repository.UsuarioRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
-
-import java.util.Set;
 
 @Service
 public class UsuarioManagerService {
@@ -20,14 +19,16 @@ public class UsuarioManagerService {
     private final ColaboradorRepository colaboradorRepository;
     private final RolRepository rolRepository;
     private final PasswordEncoder passwordEncoder;
+    private final VerificacionCorreoService verificacionCorreoService;
 
 
     @Autowired
-    public UsuarioManagerService(UsuarioRepository usuarioRepository, RolRepository rolRepository,ColaboradorRepository colaboradorRepository,PasswordEncoder passwordEncoder) {
+    public UsuarioManagerService(UsuarioRepository usuarioRepository, RolRepository rolRepository,ColaboradorRepository colaboradorRepository,PasswordEncoder passwordEncoder, VerificacionCorreoService verificacionCorreoService) {
         this.usuarioRepository = usuarioRepository;
         this.rolRepository = rolRepository;
         this.colaboradorRepository = colaboradorRepository;
         this.passwordEncoder = passwordEncoder;
+        this.verificacionCorreoService = verificacionCorreoService;
     }
 
     /**
@@ -63,6 +64,9 @@ public class UsuarioManagerService {
 
         // Asignar rol
         usuario.setRol(rol);
+
+        // Toda cuenta creada por registro tradicional requiere verificación por correo.
+        verificacionCorreoService.prepararVerificacion(usuario);
 
         // Guardar usuario
         return usuarioRepository.save(usuario);

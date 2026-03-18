@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,22 +19,26 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import maineta.eta.config.UsuarioHelper;
 import maineta.eta.dto.ActividadDTO;
 import maineta.eta.dto.CategoriaDTO;
+import maineta.eta.dto.ColaboradorPublicoDTO;
 import maineta.eta.dto.ReservaDTO;
 import maineta.eta.entity.Actividad;
 import maineta.eta.entity.BusquedaForm;
 import maineta.eta.entity.Categoria;
 import maineta.eta.entity.Cliente;
+import maineta.eta.entity.Colaborador;
 import maineta.eta.entity.Comentario;
 import maineta.eta.entity.Disponibilidad;
 import maineta.eta.entity.Usuario;
 import maineta.eta.service.ActividadService;
 import maineta.eta.service.CategoriaService;
 import maineta.eta.service.ClienteService;
+import maineta.eta.service.ColaboradorService;
 import maineta.eta.service.ComentarioService;
 import maineta.eta.service.DisponibilidadService;
 import maineta.eta.service.FavoritoService;
@@ -54,13 +59,14 @@ public class AllAcessController {
         private final FavoritoService favoritoService;
         private final ClienteService clienteService;
         private final UsuarioService usuarioService;
+        private final ColaboradorService colaboradorService;
 
         // 🔹 Constructor con inyección de dependencias
         public AllAcessController(DisponibilidadService disponibilidadService, UsuarioHelper usuarioHelper,
                         ComentarioService comentarioService, ActividadService actividadService,
                         CategoriaService categoriaService, IdiomaService idiomaService,
                         FavoritoService favoritoService, ClienteService clienteService,
-                        UsuarioService usuarioService) {
+                        UsuarioService usuarioService, ColaboradorService colaboradorService) {
                 this.categoriaService = categoriaService;
                 this.actividadService = actividadService;
                 this.usuarioHelper = usuarioHelper;
@@ -70,6 +76,7 @@ public class AllAcessController {
                 this.favoritoService = favoritoService;
                 this.clienteService = clienteService;
                 this.usuarioService = usuarioService;
+                this.colaboradorService = colaboradorService;
         }
 
         // 🔹 Endpoint para mostrar la página de login
@@ -276,6 +283,7 @@ public class AllAcessController {
                 model.addAttribute("idiomas", idiomaService.listarIdiomas());
                 model.addAttribute("busqueda", new BusquedaForm());
                 model.addAttribute("actividad", new Actividad());
+                model.addAttribute("anfitrionesDestacados", colaboradorService.obtenerDestacadosPorReservas(4));
                 model.addAttribute("currentPage", page);
                 model.addAttribute("totalPages", actividadesPage.getTotalPages());
                 model.addAttribute("filtroNombre", nombre);
@@ -304,6 +312,72 @@ public class AllAcessController {
                 model.addAttribute("favoritosIds", favoritosIds);
 
                 return "main";
+        }
+
+        @GetMapping("/anfitriones/{idColaborador}")
+        public String verPerfilPublicoColaborador(
+                        @PathVariable Long idColaborador,
+                        Model model,
+                        Authentication auth) {
+
+                usuarioHelper.agregarInfoUsuarioModel(model, auth);
+
+                Colaborador colaborador = colaboradorService.obtenerPorId(idColaborador)
+                                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+
+                ColaboradorPublicoDTO perfilColaborador = colaboradorService.obtenerResumenPublico(idColaborador)
+                                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+
+                List<Actividad> actividadesColaborador = actividadService.listarPorColaborador(idColaborador);
+                List<Long> actividadIds = actividadesColaborador.stream()
+                                .map(Actividad::getIdActividad)
+                                .toList();
+
+                Map<Long, Integer> comentariosPorActividad = actividadIds.isEmpty()
+                                ? Collections.emptyMap()
+                                : comentarioService.contarComentariosPorActividades(actividadIds);
+
+                List<ActividadDTO> actividadesDTO = actividadesColaborador.stream()
+                                .map(actividad -> {
+                                        ActividadDTO dto = new ActividadDTO();
+                                        dto.setIdActividad(actividad.getIdActividad());
+                                        dto.setTitulo(actividad.getTitulo());
+                                        dto.setDescripcion(actividad.getDescripcion());
+                                        dto.setCalificacion(actividad.getCalificacion());
+                                        dto.setUbicacion(actividad.getUbicacion());
+                                        dto.setImagen(actividad.getImagen());
+                                        dto.setCreatedAt(actividad.getCreatedAt());
+                                        dto.setPrecio(actividad.getPrecio());
+                                        dto.setPrecioConsumidor(usuarioHelper.CalcularPrecioConsumidor(actividad.getPrecio()));
+
+                                        if (actividad.getIdioma() != null) {
+                                                dto.setIdIdioma(actividad.getIdioma().getIdIdioma());
+                                                dto.setNombreIdioma(actividad.getIdioma().getNombre());
+                                                dto.setCodigoIdioma(actividad.getIdioma().getCodigo());
+                                        }
+
+                                        if (actividad.getCategoria() != null) {
+                                                dto.setIdCategoria(actividad.getCategoria().getIdCategoria());
+                                                dto.setNombreCategoria(actividad.getCategoria().getNombre());
+                                        } else {
+                                                dto.setNombreCategoria("Sin categoría");
+                                        }
+
+                                        dto.setIdColaborador(idColaborador);
+                                        dto.setCantidadComentario(
+                                                        comentariosPorActividad.getOrDefault(actividad.getIdActividad(), 0));
+
+                                        return dto;
+                                })
+                                .toList();
+
+                model.addAttribute("perfilColaborador", perfilColaborador);
+                model.addAttribute("colaborador", colaborador);
+                model.addAttribute("actividades", actividadesDTO);
+                model.addAttribute("favoritosIds", obtenerFavoritosIds(auth));
+                model.addAttribute("pagina", "perfil-colaborador");
+
+                return "perfil-colaborador";
         }
 
         // Pagina de terminos y condiciones
@@ -587,6 +661,24 @@ public class AllAcessController {
                 model.addAttribute("pageNumbers", pageNumbers);
 
                 return "resultados-busqueda";
+        }
+
+        private Set<Long> obtenerFavoritosIds(Authentication auth) {
+                if (auth == null || !auth.isAuthenticated() || auth.getPrincipal().equals("anonymousUser")) {
+                        return Collections.emptySet();
+                }
+
+                try {
+                        Usuario usuario = usuarioService.obtenerPorEmail(auth.getName());
+                        Optional<Cliente> clienteOpt = clienteService.obtenerPorUsuario(usuario);
+                        if (clienteOpt.isPresent()) {
+                                return favoritoService.obtenerIdsFavoritosDeCliente(clienteOpt.get());
+                        }
+                } catch (Exception e) {
+                        return Collections.emptySet();
+                }
+
+                return Collections.emptySet();
         }
 
 }

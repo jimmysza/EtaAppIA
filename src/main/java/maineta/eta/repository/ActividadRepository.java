@@ -1,6 +1,7 @@
 package maineta.eta.repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -18,6 +19,10 @@ public interface ActividadRepository extends JpaRepository<Actividad, Long>, Jpa
 
     // SELECT * FROM actividad WHERE id_colaborador = ?;
     Page<Actividad> findByColaborador_IdColaborador(Long idColaborador, Pageable pageable);
+
+        List<Actividad> findByColaborador_IdColaboradorOrderByCreatedAtDesc(Long idColaborador);
+
+        Optional<Actividad> findFirstByColaborador_IdColaboradorOrderByCreatedAtDesc(Long idColaborador);
 
     // combinacion de las dos anteriores
     Page<Actividad> findByColaborador_IdColaboradorAndTituloContainingIgnoreCase(Long idColaborador, String titulo,

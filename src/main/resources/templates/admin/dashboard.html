@@ -70,27 +70,21 @@
                 </div>
             </div>
             
-             <div class="filtro_db filtro_db-main">
-
-                <div class="filtro-function">
-                    <div class="svgc">
-
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><defs><path id="SVGgvnbobcx" d="M21.5 11v10h-19V11z"/></defs><g fill="none"><use href="#SVGgvnbobcx"/><path d="M12 13.5a2.5 2.5 0 1 1 0 5a2.5 2.5 0 0 1 0-5m5.136-7.209L19 5.67l1.824 5.333H3.002L3 11.004L14.146 2.1z"/><path stroke="#000" stroke-linecap="square" stroke-width="2" d="M21 11.003h-.176L19.001 5.67L3.354 11.003L3 11m-.5.004H3L14.146 2.1l2.817 3.95"/><g stroke="#000" stroke-linecap="square" stroke-width="2"><path d="M14.5 16a2.5 2.5 0 1 1-5 0a2.5 2.5 0 0 1 5 0Z"/><use href="#SVGgvnbobcx"/><path d="M2.5 11h2a2 2 0 0 1-2 2zm19 0h-2a2 2 0 0 0 2 2zm-19 10h2.002A2 2 0 0 0 2.5 18.998zm19 0h-2a2 2 0 0 1 2-2z"/></g></g></svg>
+            <div class="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+                <div class="flex items-center gap-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+                    <div class="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-indigo-100 text-slate-900">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><defs><path id="SVGgvnbobcx" d="M21.5 11v10h-19V11z"/></defs><g fill="none"><use href="#SVGgvnbobcx"/><path d="M12 13.5a2.5 2.5 0 1 1 0 5a2.5 2.5 0 0 1 0-5m5.136-7.209L19 5.67l1.824 5.333H3.002L3 11.004L14.146 2.1z"/><path stroke="currentColor" stroke-linecap="square" stroke-width="2" d="M21 11.003h-.176L19.001 5.67L3.354 11.003L3 11m-.5.004H3L14.146 2.1l2.817 3.95"/><g stroke="currentColor" stroke-linecap="square" stroke-width="2"><path d="M14.5 16a2.5 2.5 0 1 1-5 0a2.5 2.5 0 0 1 5 0Z"/><use href="#SVGgvnbobcx"/><path d="M2.5 11h2a2 2 0 0 1-2 2zm19 0h-2a2 2 0 0 0 2 2zm-19 10h2.002A2 2 0 0 0 2.5 18.998zm19 0h-2a2 2 0 0 1 2-2z"/></g></g></svg>
                     </div>
-
-                    
-
-                    <div class="filtro-eazy">
-                        <p>Ingresos</p>
-                        <span class="cantidades"><span  th:text="${#numbers.formatDecimal(plataGanada, 0, 0)}"></span>$</span>
-
+                    <div class="min-w-0">
+                        <p class="text-sm font-medium text-slate-500">Ingresos</p>
+                        <span class="block text-2xl font-semibold tracking-tight text-slate-900"><span th:text="${#numbers.formatDecimal(plataGanada, 0, 0)}"></span>$</span>
                     </div>
                 </div>
-                <div class="filtro-function">
-                    <div class="svgc">
 
-                        <svg xmlns="http://www.w3.org/2000/svg" width="38" height="38" viewBox="0 0 24 24">
-                            <g fill="none" stroke="#000" stroke-dasharray="28" stroke-dashoffset="28"
+                <div class="flex items-center gap-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+                    <div class="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-sky-100 text-slate-900">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24">
+                            <g fill="none" stroke="currentColor" stroke-dasharray="28" stroke-dashoffset="28"
                                 stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
                                 <path d="M4 21v-1c0 -3.31 2.69 -6 6 -6h4c3.31 0 6 2.69 6 6v1">
                                     <animate fill="freeze" attributeName="stroke-dashoffset" dur="0.4s" values="28;0" />
@@ -103,53 +97,42 @@
                             </g>
                         </svg>
                     </div>
-
-                    <div class="filtro-eazy">
-                        <p>Cantidad de clientes</p>
-                        <span class="cantidades" th:text="${CantidadCliente}"></span>
+                    <div class="min-w-0">
+                        <p class="text-sm font-medium text-slate-500">Cantidad de clientes</p>
+                        <span class="block text-2xl font-semibold tracking-tight text-slate-900" th:text="${CantidadCliente}"></span>
                     </div>
                 </div>
 
-                <div class="filtro-function">
-                    <div class="svgc">
-
-                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24">
-                            <path fill="#000"
-                                d="M3.5 8a5.5 5.5 0 1 1 8.596 4.547a9.005 9.005 0 0 1 5.9 8.18a.751.751 0 0 1-1.5.045a7.5 7.5 0 0 0-14.993 0a.75.75 0 0 1-1.499-.044a9.005 9.005 0 0 1 5.9-8.181A5.5 5.5 0 0 1 3.5 8M9 4a4 4 0 1 0 0 8a4 4 0 0 0 0-8m8.29 4q-.221 0-.434.03a.75.75 0 1 1-.212-1.484a4.53 4.53 0 0 1 3.38 8.097a6.69 6.69 0 0 1 3.956 6.107a.75.75 0 0 1-1.5 0a5.19 5.19 0 0 0-3.696-4.972l-.534-.16v-1.676l.41-.209A3.03 3.03 0 0 0 17.29 8"
-                                stroke-width="0.5" stroke="#000" />
+                <div class="flex items-center gap-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+                    <div class="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-pink-100 text-slate-900">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24">
+                            <path fill="currentColor"
+                                d="M3.5 8a5.5 5.5 0 1 1 8.596 4.547a9.005 9.005 0 0 1 5.9 8.18a.751.751 0 0 1-1.5.045a7.5 7.5 0 0 0-14.993 0a.75.75 0 0 1-1.499-.044a9.005 9.005 0 0 1 5.9-8.181A5.5 5.5 0 0 1 3.5 8M9 4a4 4 0 1 0 0 8a4 4 0 0 0 0-8m8.29 4q-.221 0-.434.03a.75.75 0 1 1-.212-1.484a4.53 4.53 0 0 1 3.38 8.097a6.69 6.69 0 0 1 3.956 6.107a.75.75 0 0 1-1.5 0a5.19 5.19 0 0 0-3.696-4.972l-.534-.16v-1.676l.41-.209A3.03 3.03 0 0 0 17.29 8" />
                         </svg>
                     </div>
-
-                    
-
-                    <div class="filtro-eazy">
-                        <p>Cantidad de Colaboradores</p>
-                        <span class="cantidades" th:text="${CantidadColaborador}"></span>
+                    <div class="min-w-0">
+                        <p class="text-sm font-medium text-slate-500">Cantidad de colaboradores</p>
+                        <span class="block text-2xl font-semibold tracking-tight text-slate-900" th:text="${CantidadColaborador}"></span>
                     </div>
                 </div>
 
-                <div class="filtro-function">
-                    <div class="svgc">
-
-                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24">
-                            <path fill="#000"
-                                d="M15 16h3q.425 0 .713-.288T19 15V9q0-.425-.288-.712T18 8h-3q-.425 0-.712.288T14 9v6q0 .425.288.713T15 16m1-2v-4h1v4zm-7 2h3q.425 0 .713-.288T13 15V9q0-.425-.288-.712T12 8H9q-.425 0-.712.288T8 9v6q0 .425.288.713T9 16m1-2v-4h1v4zm-3 1V9q0-.425-.288-.712T6 8t-.712.288T5 9v6q0 .425.288.713T6 16t.713-.288T7 15m-5 3V6q0-.825.588-1.412T4 4h16q.825 0 1.413.588T22 6v12q0 .825-.587 1.413T20 20H4q-.825 0-1.412-.587T2 18m2 0h16V6H4zm0 0V6z"
-                                stroke-width="0.4" stroke="#000" />
+                <div class="flex items-center gap-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+                    <div class="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-violet-100 text-slate-900">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24">
+                            <path fill="currentColor"
+                                d="M15 16h3q.425 0 .713-.288T19 15V9q0-.425-.288-.712T18 8h-3q-.425 0-.712.288T14 9v6q0 .425.288.713T15 16m1-2v-4h1v4zm-7 2h3q.425 0 .713-.288T13 15V9q0-.425-.288-.712T12 8H9q-.425 0-.712.288T8 9v6q0 .425.288.713T9 16m1-2v-4h1v4zm-3 1V9q0-.425-.288-.712T6 8t-.712.288T5 9v6q0 .425.288.713T6 16t.713-.288T7 15m-5 3V6q0-.825.588-1.412T4 4h16q.825 0 1.413.588T22 6v12q0 .825-.587 1.413T20 20H4q-.825 0-1.412-.587T2 18m2 0h16V6H4zm0 0V6z" />
                         </svg>
                     </div>
-
-                    <div class="filtro-eazy">
-                        <p>Cantidad de Usuarios</p>
-                        <span class="cantidades" th:text="${CantidadUsuarios}"></span>
+                    <div class="min-w-0">
+                        <p class="text-sm font-medium text-slate-500">Cantidad de usuarios</p>
+                        <span class="block text-2xl font-semibold tracking-tight text-slate-900" th:text="${CantidadUsuarios}"></span>
                     </div>
                 </div>
 
-
-                <div class="filtro-function">
-                    <div class="svgc">
-
-                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24">
-                            <g fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round"
+                <div class="flex items-center gap-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+                    <div class="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-amber-100 text-slate-900">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24">
+                            <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
                                 stroke-width="2">
                                 <path
                                     d="M2 11.5V5a2 2 0 0 1 2-2h3.9c.7 0 1.3.3 1.7.9l.8 1.2c.4.6 1 .9 1.7.9H20a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-9.5" />
@@ -158,52 +141,40 @@
                             </g>
                         </svg>
                     </div>
-
-                    <div class="filtro-eazy">
-                        <p>Cantidad de Reservaciones</p>
-                        <span class="cantidades" th:text="${CantidadReservacion}"></span>
+                    <div class="min-w-0">
+                        <p class="text-sm font-medium text-slate-500">Cantidad de reservaciones</p>
+                        <span class="block text-2xl font-semibold tracking-tight text-slate-900" th:text="${CantidadReservacion}"></span>
                     </div>
                 </div>
 
-                
-                <div class="filtro-function">
-                    <div class="svgc">
-
-                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 14 14">
-                            <path fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round"
+                <div class="flex items-center gap-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+                    <div class="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-emerald-100 text-slate-900">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 14 14">
+                            <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
                                 d="m4.656 2.255l-.39.09a1.19 1.19 0 0 1-.91 1.43a1.22 1.22 0 0 1-1.44-.92l-.78.16a.81.81 0 0 0-.61 1s.36 1.67.78 3.55m10.85-5.32a1.32 1.32 0 1 1-2.44-1l-.81-.38a.89.89 0 0 0-1.16.47l-3.36 7.91l-.44 1a.89.89 0 0 0 .47 1.16l4.06 1.73a.89.89 0 0 0 1.16-.47l3.8-8.94a.89.89 0 0 0-.43-1.13z"
                                 stroke-width="1" />
                         </svg>
                     </div>
-
-                    <div class="filtro-eazy">
-                        <p>Cantidad de Actividades</p>
-                        <span class="cantidades" th:text="${CantidadActividad}"></span>
+                    <div class="min-w-0">
+                        <p class="text-sm font-medium text-slate-500">Cantidad de actividades</p>
+                        <span class="block text-2xl font-semibold tracking-tight text-slate-900" th:text="${CantidadActividad}"></span>
                     </div>
                 </div>
 
-                <div class="filtro-function">
-                    <div class="svgc">
-
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="#000" fill-rule="evenodd" d="M7.25 6.258V6.5a.75.75 0 0 0 1.5 0v-.25h6.5v.25a.75.75 0 0 0 1.5 0v-.242q.166.006.302.017c.288.023.425.065.515.111c.236.12.427.311.547.547c.046.09.088.227.111.514c.024.296.025.68.025 1.253v.55H5.75V8.7c0-.572 0-.957.025-1.253c.023-.287.065-.424.111-.514a1.25 1.25 0 0 1 .547-.547c.09-.046.227-.088.514-.111a6 6 0 0 1 .303-.017M10.5 7a.75.75 0 0 0 0 1.5h3a.75.75 0 0 0 0-1.5z" clip-rule="evenodd" opacity="0.5"/><path fill="#000" d="M8.5 14a1.25 1.25 0 1 0 0-2.5a1.25 1.25 0 0 0 0 2.5m0 3.5a1.25 1.25 0 1 0 0-2.5a1.25 1.25 0 0 0 0 2.5m4.75-4.75a1.25 1.25 0 1 1-2.5 0a1.25 1.25 0 0 1 2.5 0M12 17.5a1.25 1.25 0 1 0 0-2.5a1.25 1.25 0 0 0 0 2.5m4.75-4.75a1.25 1.25 0 1 1-2.5 0a1.25 1.25 0 0 1 2.5 0"/><path fill="#000" fill-rule="evenodd" d="M8 3.25a.75.75 0 0 1 .75.75v.75h6.5V4a.75.75 0 0 1 1.5 0v.758q.228.006.425.022c.38.03.736.098 1.073.27a2.75 2.75 0 0 1 1.202 1.202c.172.337.24.693.27 1.073c.03.365.03.81.03 1.345v7.66c0 .535 0 .98-.03 1.345c-.03.38-.098.736-.27 1.073a2.75 2.75 0 0 1-1.201 1.202c-.338.172-.694.24-1.074.27c-.365.03-.81.03-1.344.03H8.17c-.535 0-.98 0-1.345-.03c-.38-.03-.736-.098-1.073-.27a2.75 2.75 0 0 1-1.202-1.2c-.172-.338-.24-.694-.27-1.074c-.03-.365-.03-.81-.03-1.344V8.67c0-.535 0-.98.03-1.345c.03-.38.098-.736.27-1.073A2.75 2.75 0 0 1 5.752 5.05c.337-.172.693-.24 1.073-.27q.197-.016.425-.022V4A.75.75 0 0 1 8 3.25M7.25 6.5v-.242a6 6 0 0 0-.303.017c-.287.023-.424.065-.514.111a1.25 1.25 0 0 0-.547.547c-.046.09-.088.227-.111.514c-.024.296-.025.68-.025 1.253v.55h12.5V8.7c0-.572 0-.957-.025-1.253c-.023-.287-.065-.424-.111-.514a1.25 1.25 0 0 0-.547-.547c-.09-.046-.227-.088-.515-.111a6 6 0 0 0-.302-.017V6.5a.75.75 0 0 1-1.5 0v-.25h-6.5v.25a.75.75 0 0 1-1.5 0m11 3.75H5.75v6.05c0 .572 0 .957.025 1.252c.023.288.065.425.111.515c.12.236.311.427.547.547c.09.046.227.088.514.111c.296.024.68.025 1.253.025h7.6c.572 0 .957 0 1.252-.025c.288-.023.425-.065.515-.111a1.25 1.25 0 0 0 .547-.547c.046-.09.088-.227.111-.515c.024-.295.025-.68.025-1.252z" clip-rule="evenodd"/></svg>
+                <div class="flex items-center gap-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+                    <div class="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-cyan-100 text-slate-900">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" fill-rule="evenodd" d="M7.25 6.258V6.5a.75.75 0 0 0 1.5 0v-.25h6.5v.25a.75.75 0 0 0 1.5 0v-.242q.166.006.302.017c.288.023.425.065.515.111c.236.12.427.311.547.547c.046.09.088.227.111.514c.024.296.025.68.025 1.253v.55H5.75V8.7c0-.572 0-.957.025-1.253c.023-.287.065-.424.111-.514a1.25 1.25 0 0 1 .547-.547c.09-.046.227-.088.514-.111a6 6 0 0 1 .303-.017M10.5 7a.75.75 0 0 0 0 1.5h3a.75.75 0 0 0 0-1.5z" clip-rule="evenodd" opacity="0.5"/><path fill="currentColor" d="M8.5 14a1.25 1.25 0 1 0 0-2.5a1.25 1.25 0 0 0 0 2.5m0 3.5a1.25 1.25 0 1 0 0-2.5a1.25 1.25 0 0 0 0 2.5m4.75-4.75a1.25 1.25 0 1 1-2.5 0a1.25 1.25 0 0 1 2.5 0M12 17.5a1.25 1.25 0 1 0 0-2.5a1.25 1.25 0 0 0 0 2.5m4.75-4.75a1.25 1.25 0 1 1-2.5 0a1.25 1.25 0 0 1 2.5 0"/><path fill="currentColor" fill-rule="evenodd" d="M8 3.25a.75.75 0 0 1 .75.75v.75h6.5V4a.75.75 0 0 1 1.5 0v.758q.228.006.425.022c.38.03.736.098 1.073.27a2.75 2.75 0 0 1 1.202 1.202c.172.337.24.693.27 1.073c.03.365.03.81.03 1.345v7.66c0 .535 0 .98-.03 1.345c-.03.38-.098.736-.27 1.073a2.75 2.75 0 0 1-1.201 1.202c-.338.172-.694.24-1.074.27c-.365.03-.81.03-1.344.03H8.17c-.535 0-.98 0-1.345-.03c-.38-.03-.736-.098-1.073-.27a2.75 2.75 0 0 1-1.202-1.2c-.172-.338-.24-.694-.27-1.074c-.03-.365-.03-.81-.03-1.344V8.67c0-.535 0-.98.03-1.345c.03-.38.098-.736.27-1.073A2.75 2.75 0 0 1 5.752 5.05c.337-.172.693-.24 1.073-.27q.197-.016.425-.022V4A.75.75 0 0 1 8 3.25M7.25 6.5v-.242a6 6 0 0 0-.303.017c-.287.023-.424.065-.514.111a1.25 1.25 0 0 0-.547.547c-.046.09-.088.227-.111.514c-.024.296-.025.68-.025 1.253v.55h12.5V8.7c0-.572 0-.957-.025-1.253c-.023-.287-.065-.424-.111-.514a1.25 1.25 0 0 0-.547-.547c-.09-.046-.227-.088-.515-.111a6 6 0 0 0-.302-.017V6.5a.75.75 0 0 1-1.5 0v-.25h-6.5v.25a.75.75 0 0 1-1.5 0m11 3.75H5.75v6.05c0 .572 0 .957.025 1.252c.023.288.065.425.111.515c.12.236.311.427.547.547c.09.046.227.088.514.111c.296.024.68.025 1.253.025h7.6c.572 0 .957 0 1.252-.025c.288-.023.425-.065.515-.111a1.25 1.25 0 0 0 .547-.547c.046-.09.088-.227.111-.515c.024-.295.025-.68.025-1.252z" clip-rule="evenodd"/></svg>
                     </div>
-
-                    <div class="filtro-eazy">
-                        <p>Cantidad de Disponibilidades</p>
-                        <span class="cantidades" th:text="${CantidadDisponibilidades}"></span>
+                    <div class="min-w-0">
+                        <p class="text-sm font-medium text-slate-500">Cantidad de disponibilidades</p>
+                        <span class="block text-2xl font-semibold tracking-tight text-slate-900" th:text="${CantidadDisponibilidades}"></span>
                     </div>
                 </div>
             </div>
 
-            <iframe title="dashboard-eta-final-_v4[1]" width="800" height="473.5" src="https://app.powerbi.com/view?r=eyJrIjoiZmUzYjRhMDAtNWYzMi00ODBjLTgyZDYtNjU0ODc0NTExODExIiwidCI6IjlkMTJiZjNmLWU0ZjYtNDdhYi05MTJmLTFhMmYwZmM0OGFhNCIsImMiOjR9&pageName=1b80442296685c84fe39" frameborder="0" allowFullScreen="true"></iframe>
-
+        <!--     <iframe title="dashboard-eta-final-_v4[1]" width="800" height="473.5" src="https://app.powerbi.com/view?r=eyJrIjoiZmUzYjRhMDAtNWYzMi00ODBjLTgyZDYtNjU0ODc0NTExODExIiwidCI6IjlkMTJiZjNmLWU0ZjYtNDdhYi05MTJmLTFhMmYwZmM0OGFhNCIsImMiOjR9&pageName=1b80442296685c84fe39" frameborder="0" allowFullScreen="true"></iframe>
+ -->
             
-            
-
-
-            
-
-           
 
 
         </main>

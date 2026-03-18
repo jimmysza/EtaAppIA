@@ -44,6 +44,232 @@
             color: var(--color-medium-blue);
         }
 
+        #searchBar {
+            max-width: 1480px;
+            margin: 0 auto 1.2rem;
+            padding: 0 1rem;
+        }
+
+        .search-panel {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.92);
+            border: 1px solid rgba(17, 24, 39, 0.08);
+            box-shadow: 0 26px 80px rgba(15, 23, 42, 0.12);
+            border-radius: 28px;
+            padding: 14px;
+        }
+
+        .search-bar {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .search-input-wrap {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            min-height: 64px;
+            padding: 0 18px;
+            border-radius: 22px;
+            background: #ffffff;
+            border: 1px solid rgba(17, 24, 39, 0.08);
+        }
+
+        .search-input-wrap svg {
+            color: #6b7280;
+            flex-shrink: 0;
+        }
+
+        .search-field {
+            width: 100%;
+            border: none;
+            outline: none;
+            background: transparent;
+            font-size: 1rem;
+            color: #111827;
+        }
+
+        .search-field::placeholder {
+            color: #9ca3af;
+        }
+
+        .filter-trigger {
+            min-height: 64px;
+            border-radius: 22px;
+            padding: 0 18px;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            border: 1px solid rgba(17, 24, 39, 0.08);
+            background: #f9fafb;
+            color: #111827;
+            font-weight: 700;
+            transition: transform 0.18s ease, box-shadow 0.18s ease, background-color 0.18s ease;
+        }
+
+        .filter-trigger:hover {
+            transform: translateY(-1px);
+        }
+
+        .filter-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 26px;
+            height: 26px;
+            padding: 0 8px;
+            border-radius: 999px;
+            background: #111827;
+            color: #ffffff;
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+
+        #filtersModal {
+            position: fixed;
+            inset: 0;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            background: rgba(15, 23, 42, 0.32);
+            backdrop-filter: blur(10px);
+            z-index: 1060;
+        }
+
+        #filtersModal.show {
+            display: flex;
+        }
+
+        .filters-modal-dialog {
+            width: min(100%, 760px);
+            background: #ffffff;
+            border-radius: 28px;
+            border: 1px solid rgba(17, 24, 39, 0.08);
+            box-shadow: 0 30px 90px rgba(15, 23, 42, 0.2);
+            overflow: hidden;
+        }
+
+        .filters-modal-header,
+        .filters-modal-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            padding: 22px 24px;
+            border-bottom: 1px solid rgba(17, 24, 39, 0.08);
+        }
+
+        .filters-modal-footer {
+            border-bottom: none;
+            border-top: 1px solid rgba(17, 24, 39, 0.08);
+        }
+
+        .filters-modal-title {
+            margin: 0;
+            font-size: 1.35rem;
+            font-weight: 800;
+            color: #111827;
+        }
+
+        .filters-modal-subtitle {
+            margin: 4px 0 0;
+            color: #6b7280;
+            font-size: 0.92rem;
+        }
+
+        .filters-modal-close {
+            width: 42px;
+            height: 42px;
+            border-radius: 14px;
+            border: 1px solid rgba(17, 24, 39, 0.08);
+            background: #f9fafb;
+            color: #111827;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .filters-modal-body {
+            padding: 24px;
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 18px;
+        }
+
+        .filter-field {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .filter-field-full {
+            grid-column: 1 / -1;
+        }
+
+        .filter-field label {
+            font-size: 0.88rem;
+            font-weight: 700;
+            color: #374151;
+        }
+
+        .filter-field select {
+            min-height: 52px;
+            border-radius: 16px;
+            border: 1px solid rgba(17, 24, 39, 0.12);
+            background: #f9fafb;
+            padding: 0 14px;
+            color: #111827;
+            outline: none;
+        }
+
+        .filters-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .filters-btn-secondary,
+        .filters-btn-primary {
+            min-height: 48px;
+            padding: 0 18px;
+            border-radius: 14px;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .filters-btn-secondary {
+            border: 1px solid rgba(17, 24, 39, 0.1);
+            background: #ffffff;
+            color: #374151;
+        }
+
+        .filters-btn-primary {
+            border: none;
+            background: #111827;
+            color: #ffffff;
+        }
+
+        @media (max-width: 900px) {
+            .search-bar {
+                grid-template-columns: 1fr;
+            }
+
+            .filters-modal-body {
+                grid-template-columns: 1fr;
+            }
+
+            .filters-modal-header,
+            .filters-modal-footer {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+
 
 
         .card-calificacion {
@@ -187,7 +413,7 @@
 
 <body class="resultados">
 
-    <header class=" header-search bg-transparent pb-4" id="header">
+   <!--  <header class=" header-search bg-transparent pb-4" id="header">
         <div class="container-100 bg-transparent">
             <nav class="navbar bg-transparent">
                 <a th:href="@{/}" class="brand">
@@ -242,14 +468,12 @@
                             </a>
                         </li>
 
-                        <!--Desktop View-->
+                        
                         <li class="dropdown desktopView" th:if="${nombreUsuario != null}">
                             <a href="#" tabindex="0">
                                 <img th:src="@{/images/perfiles/perfil.webp}" alt="Perfil del cliente" />
                             </a>
                             <div class="dropdown-contain">
-
-                                <!-- Opción para Cliente -->
                                 <div th:if="${userRole == 'ROLE_CLIENTE'}">
                                     <a th:href="@{/cliente/dashboard}">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
@@ -266,7 +490,7 @@
                                     </a>
                                 </div>
 
-                                <!-- Opción para Admin -->
+
                                 <div th:if="${userRole == 'ROLE_COLABORADOR'}">
                                     <a th:href="@{/colaborador/actividades}">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
@@ -283,7 +507,7 @@
                                     </a>
                                 </div>
 
-                                <!-- Formulario de cierre de sesión -->
+                                
                                 <form th:action="@{/logout}" method="post">
                                     <button type="submit" class="btn-cerraSesion">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
@@ -301,7 +525,7 @@
                             </div>
                         </li>
 
-                        <!--Mobile view-->
+                        
                         <div th:if="${nombreUsuario != null}" class="menu-inner mobileView">
 
 
@@ -330,51 +554,50 @@
 
                     </ul>
                 </div>
-                <a th:href="@{/}" class="other-logo">
-
-                    <span id="logoText" class="text-2xl font-black tracking-tighter transition-colors text-blue-600">
-                        eta<span class="text-sm align-top">®</span>
-                    </span>
-                </a>
             </nav>
         </div>
-    </header>
+    </header> -->
 
-    <div id="searchBar"
-        class="max-w-[1350px] search flex items-center  top-0 left-0 right-0 z-10 bg-white px-6 mx-auto">
-        <div class="search-container">
+    <div th:replace="~{componentes/navbar :: navbar}"></div>
 
-            <form th:action="@{/actividades/buscar}" method="get" id="searchForm">
-                <input type="text" name="nombre" th:value="${filtroNombre}" placeholder="Buscar por título..." />
+    <div id="searchBar">
+        <div class="search-panel">
+            <form th:action="@{/actividades/buscar}" method="get" id="searchForm" class="search-bar">
+                <label class="search-input-wrap" for="resultSearchInput">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                    </svg>
+                    <input id="resultSearchInput" class="search-field" type="text" name="nombre" th:value="${filtroNombre}" placeholder="Buscar por título..." />
+                </label>
+
                 <!-- Campos ocultos para mantener los filtros actuales -->
                 <input type="hidden" name="idiomaId" th:value="${filtroIdiomaId}" id="hiddenIdiomaId" />
                 <input type="hidden" name="categoriaId" th:value="${filtroCategoriaId}" id="hiddenCategoriaId" />
                 <input type="hidden" name="precioMin" th:value="${filtroPrecioMin}" id="hiddenPrecioMin" />
                 <input type="hidden" name="precioMax" th:value="${filtroPrecioMax}" id="hiddenPrecioMax" />
+
+                <button type="button" id="openFiltersBtn" class="filter-trigger" aria-haspopup="dialog" aria-controls="filtersModal">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                        <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
+                    </svg>
+                    <span>Filtros</span>
+                    <span th:if="${filtroCategoriaId != null || filtroIdiomaId != null || filtroPrecioMin != null || filtroPrecioMax != null}" class="filter-badge">!</span>
+                </button>
             </form>
-        </div>
-        <div class=" w-fit flex justify-center w-[30px] items-center">
-            <button type="button" id="openFiltersBtn" class="button-default rounded-[8px] p-4">
-                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24">
-                    <path fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M22 3H2l8 10v4l4 4v-8z" />
-                </svg>
-                Filtros
-                <span th:if="${filtroCategoriaId != null || filtroIdiomaId != null || filtroPrecioMin != null || filtroPrecioMax != null}" 
-                      class="ml-1 bg-white text-blue-600 rounded-full w-5 h-5 text-xs flex items-center justify-center font-bold">!</span>
-            </button>
         </div>
     </div>
 
     <!-- Modal de Filtros Avanzados -->
-    <div id="filtersModal"
-        class="fixed inset-0 z-1060 hidden items-center justify-center bg-black/50 backdrop-blur-sm">
-        <div class="bg-white rounded-2xl shadow-2xl max-w-lg w-full mx-4 max-h-fit overflow-hidden">
+    <div id="filtersModal" aria-hidden="true">
+        <div class="filters-modal-dialog">
             <!-- Modal Header -->
-            <div class="flex items-center justify-between p-6 border-b border-gray-200">
-                <h3 class="text-2xl font-bold text-gray-900">Filtros Avanzados</h3>
-                <button id="closeFiltersModal"
-                    class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-gray-100 transition-colors">
+            <div class="filters-modal-header">
+                <div>
+                    <h3 class="filters-modal-title">Filtros Avanzados</h3>
+                    <p class="filters-modal-subtitle">Ajusta lo necesario y aplica cuando estes listo.</p>
+                </div>
+                <button id="closeFiltersModal" class="filters-modal-close" aria-label="Cerrar filtros">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <line x1="18" y1="6" x2="6" y2="18"></line>
@@ -384,88 +607,86 @@
             </div>
 
             <!-- Modal Content -->
-            <form th:action="@{/actividades/buscar}" method="get" id="filtersForm" class="p-6 space-y-6">
+            <form th:action="@{/actividades/buscar}" method="get" id="filtersForm">
                 <!-- Mantener búsqueda por nombre -->
                 <input type="hidden" name="nombre" th:value="${filtroNombre}" id="filterNombre" />
-                
-                <!-- Filtro por Categoría -->
-                <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-2">Categoría</label>
-                    <select name="categoriaId" id="filterCategoria" 
-                        class="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all">
-                        <option value="">Todas las categorías</option>
-                        <option th:each="categoria : ${categorias}" 
-                                th:value="${categoria.idCategoria}" 
-                                th:text="${categoria.nombre}"
-                                th:selected="${filtroCategoriaId != null && filtroCategoriaId == categoria.idCategoria}">
-                        </option>
-                    </select>
-                </div>
 
-                <!-- Filtro por Idioma -->
-                <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-2">Idioma</label>
-                    <select name="idiomaId" id="filterIdioma" 
-                        class="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all">
-                        <option value="">Todos los idiomas</option>
-                        <option th:each="idioma : ${idiomas}" 
-                                th:value="${idioma.idIdioma}" 
-                                th:text="${idioma.nombre}"
-                                th:selected="${filtroIdiomaId != null && filtroIdiomaId == idioma.idIdioma}">
-                        </option>
-                    </select>
-                </div>
+                <div class="filters-modal-body">
+                    <!-- Filtro por Categoría -->
+                    <div class="filter-field">
+                        <label>Categoría</label>
+                        <select name="categoriaId" id="filterCategoria">
+                            <option value="">Todas las categorías</option>
+                            <option th:each="categoria : ${categorias}"
+                                    th:value="${categoria.idCategoria}"
+                                    th:text="${categoria.nombre}"
+                                    th:selected="${filtroCategoriaId != null && filtroCategoriaId == categoria.idCategoria}">
+                            </option>
+                        </select>
+                    </div>
 
-                <!-- Filtro por Rango de Precio -->
-                <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-2">Rango de Precio</label>
-                    
-                    <!-- Valores mostrados -->
-                    <div class="flex justify-between text-sm text-gray-600 mb-3">
+                    <!-- Filtro por Idioma -->
+                    <div class="filter-field">
+                        <label>Idioma</label>
+                        <select name="idiomaId" id="filterIdioma">
+                            <option value="">Todos los idiomas</option>
+                            <option th:each="idioma : ${idiomas}"
+                                    th:value="${idioma.idIdioma}"
+                                    th:text="${idioma.nombre}"
+                                    th:selected="${filtroIdiomaId != null && filtroIdiomaId == idioma.idIdioma}">
+                            </option>
+                        </select>
+                    </div>
+
+                    <!-- Filtro por Rango de Precio -->
+                    <div class="filter-field filter-field-full">
+                        <label>Rango de Precio</label>
+
+                        <!-- Valores mostrados -->
+                        <div class="flex justify-between text-sm text-gray-600 mb-3">
                         <span>$<span id="precioMinDisplay" th:text="${filtroPrecioMin != null ? filtroPrecioMin : '0'}">0</span></span>
                         <span>$<span id="precioMaxDisplay" th:text="${filtroPrecioMax != null ? filtroPrecioMax : '2000000'}">2,000,000</span></span>
-                    </div>
-                    
-                    <!-- Dual Range Slider Container -->
-                    <div class="relative h-2 mb-6">
-                        <!-- Track background -->
-                        <div class="absolute w-full h-2 bg-gray-200 rounded-full"></div>
-                        <!-- Active track -->
-                        <div id="priceTrack" class="absolute h-2 bg-blue-500 rounded-full" style="left: 0%; right: 0%;"></div>
-                        
-                        <!-- Range inputs -->
-                        <input type="range" name="precioMin" id="filterPrecioMin" 
-                            min="0" max="2000000" step="10000"
-                            th:value="${filtroPrecioMin != null ? filtroPrecioMin : '0'}"
-                            class="absolute w-full h-2 bg-transparent appearance-none pointer-events-none [&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-5 [&::-webkit-slider-thumb]:h-5 [&::-webkit-slider-thumb]:bg-white [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-blue-500 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:cursor-pointer [&::-webkit-slider-thumb]:shadow-md [&::-moz-range-thumb]:pointer-events-auto [&::-moz-range-thumb]:appearance-none [&::-moz-range-thumb]:w-5 [&::-moz-range-thumb]:h-5 [&::-moz-range-thumb]:bg-white [&::-moz-range-thumb]:border-2 [&::-moz-range-thumb]:border-blue-500 [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:cursor-pointer" 
-                            style="z-index: 3;" />
-                        <input type="range" name="precioMax" id="filterPrecioMax" 
-                            min="0" max="2000000" step="10000"
-                            th:value="${filtroPrecioMax != null ? filtroPrecioMax : '2000000'}"
-                            class="absolute w-full h-2 bg-transparent appearance-none pointer-events-none [&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-5 [&::-webkit-slider-thumb]:h-5 [&::-webkit-slider-thumb]:bg-white [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-blue-500 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:cursor-pointer [&::-webkit-slider-thumb]:shadow-md [&::-moz-range-thumb]:pointer-events-auto [&::-moz-range-thumb]:appearance-none [&::-moz-range-thumb]:w-5 [&::-moz-range-thumb]:h-5 [&::-moz-range-thumb]:bg-white [&::-moz-range-thumb]:border-2 [&::-moz-range-thumb]:border-blue-500 [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:cursor-pointer" 
-                            style="z-index: 4;" />
-                    </div>
-                    
-                    <!-- Labels de referencia -->
-                    <div class="flex justify-between text-xs text-gray-400">
+
+                        </div>
+
+                        <!-- Dual Range Slider Container -->
+                        <div class="relative h-2 mb-6">
+                            <!-- Track background -->
+                            <div class="absolute w-full h-2 bg-gray-200 rounded-full"></div>
+                            <!-- Active track -->
+                            <div id="priceTrack" class="absolute h-2 bg-blue-500 rounded-full" style="left: 0%; right: 0%;"></div>
+
+                            <!-- Range inputs -->
+                            <input type="range" name="precioMin" id="filterPrecioMin"
+                                min="0" max="2000000" step="10000"
+                                th:value="${filtroPrecioMin != null ? filtroPrecioMin : '0'}"
+                                class="absolute w-full h-2 bg-transparent appearance-none pointer-events-none [&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-5 [&::-webkit-slider-thumb]:h-5 [&::-webkit-slider-thumb]:bg-white [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-blue-500 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:cursor-pointer [&::-webkit-slider-thumb]:shadow-md [&::-moz-range-thumb]:pointer-events-auto [&::-moz-range-thumb]:appearance-none [&::-moz-range-thumb]:w-5 [&::-moz-range-thumb]:h-5 [&::-moz-range-thumb]:bg-white [&::-moz-range-thumb]:border-2 [&::-moz-range-thumb]:border-blue-500 [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:cursor-pointer"
+                                style="z-index: 3;" />
+                            <input type="range" name="precioMax" id="filterPrecioMax"
+                                min="0" max="2000000" step="10000"
+                                th:value="${filtroPrecioMax != null ? filtroPrecioMax : '2000000'}"
+                                class="absolute w-full h-2 bg-transparent appearance-none pointer-events-none [&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-5 [&::-webkit-slider-thumb]:h-5 [&::-webkit-slider-thumb]:bg-white [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-blue-500 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:cursor-pointer [&::-webkit-slider-thumb]:shadow-md [&::-moz-range-thumb]:pointer-events-auto [&::-moz-range-thumb]:appearance-none [&::-moz-range-thumb]:w-5 [&::-moz-range-thumb]:h-5 [&::-moz-range-thumb]:bg-white [&::-moz-range-thumb]:border-2 [&::-moz-range-thumb]:border-blue-500 [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:cursor-pointer"
+                                style="z-index: 4;" />
+                        </div>
+
+                        <!-- Labels de referencia -->
+                        <div class="flex justify-between text-xs text-gray-400">
                         <span>$0</span>
                         <span>$500k</span>
                         <span>$1M</span>
                         <span>$1.5M</span>
                         <span>$2M</span>
+                        </div>
                     </div>
                 </div>
 
                 <!-- Botones de acción -->
-                <div class="flex gap-3 pt-4 mt-4">
-                    <a th:href="@{/actividades/buscar}" 
-                        class="flex-1 py-3 px-4 border border-gray-300 rounded-xl text-gray-700 font-semibold text-center hover:bg-gray-50 transition-colors">
-                        Limpiar filtros
-                    </a>
-                    <button type="submit" 
-                        class="flex-1 py-3 px-4 bg-blue-600 text-white rounded-xl font-semibold hover:bg-blue-700 transition-colors">
-                        Aplicar filtros
-                    </button>
+                <div class="filters-modal-footer">
+                    <span class="text-sm text-slate-500">Pulsa aplicar para buscar con estos filtros.</span>
+                    <div class="filters-actions">
+                        <a th:href="@{/actividades/buscar}" class="filters-btn-secondary">Limpiar filtros</a>
+                        <button type="submit" class="filters-btn-primary">Aplicar filtros</button>
+                    </div>
                 </div>
             </form>
         </div>
@@ -1064,6 +1285,7 @@
             openFiltersBtn.addEventListener('click', (e) => {
                 e.stopPropagation();
                 filtersModal.classList.add('show');
+                filtersModal.setAttribute('aria-hidden', 'false');
                 filtersModal.style.display = 'flex';
                 document.body.style.overflow = 'hidden';
             });
@@ -1072,6 +1294,7 @@
         if (closeFiltersModal) {
             closeFiltersModal.addEventListener('click', () => {
                 filtersModal.classList.remove('show');
+                filtersModal.setAttribute('aria-hidden', 'true');
                 filtersModal.style.display = 'none';
                 document.body.style.overflow = 'auto';
             });
@@ -1082,6 +1305,7 @@
             filtersModal.addEventListener('click', (e) => {
                 if (e.target === filtersModal) {
                     filtersModal.classList.remove('show');
+                    filtersModal.setAttribute('aria-hidden', 'true');
                     filtersModal.style.display = 'none';
                     document.body.style.overflow = 'auto';
                 }
@@ -1092,6 +1316,7 @@
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape' && filtersModal && filtersModal.classList.contains('show')) {
                 filtersModal.classList.remove('show');
+                filtersModal.setAttribute('aria-hidden', 'true');
                 filtersModal.style.display = 'none';
                 document.body.style.overflow = 'auto';
             }

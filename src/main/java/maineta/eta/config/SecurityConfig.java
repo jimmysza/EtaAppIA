@@ -35,6 +35,9 @@ public class SecurityConfig {
         @Autowired
         private maineta.eta.config.CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler;
 
+        @Autowired
+        private maineta.eta.config.CustomAuthenticationFailureHandler customAuthenticationFailureHandler;
+
         // Servicio que implementa UserDetailsService para cargar usuarios desde base de datos
         @Autowired
         private UsuarioService usuarioService;
@@ -145,6 +148,7 @@ public class SecurityConfig {
                         .formLogin(form -> form
                                 .loginPage("/login") // Página de login personalizada
                                 .successHandler(customAuthenticationSuccessHandler) // Manejador de éxito personalizado
+                                .failureHandler(customAuthenticationFailureHandler)
                                 .permitAll())
 
                         // Configura el logout

@@ -7,25 +7,170 @@
     width: 100%;
     max-width: 100%;
     background: #F2F2F4;
+       background: #ffffff;
     height: 100vh;
     padding: 0;
     display: flex;
-    padding-top: 8px;
     margin: 0;
 }
 
 
-.side-bar {
-    width: 100%;
-    max-width: 200px;
-    flex-direction: column;
-    /*
-    position: fixed;
-    top: 0px;*/
+.sb-root {
+    width: 220px;
+    min-width: 220px;
     height: 100%;
-    align-items: flex-start;
-    padding: 0;
-    padding-top: 20px;
+    background: #ffffff;
+    display: flex;
+    flex-direction: column;
+    padding: 20px 12px 16px;
+    gap: 4px;
+ 
+}
+
+/* Logo */
+.sb-logo {
+    margin-bottom: 20px;
+    padding: 0 6px;
+}
+.sb-logo__link {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+}
+.sb-logo__img {
+    width: 32px;
+    height: 32px;
+    object-fit: contain;
+    border-radius: 8px;
+}
+.sb-logo__name {
+    font-size: 17px;
+    font-weight: 700;
+    color: #111;
+    letter-spacing: -0.3px;
+}
+
+/* Section title */
+.sb-section-title {
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: #9ca3af;
+    padding: 4px 10px 6px;
+    margin-top: 4px;
+}
+
+/* Nav */
+.sb-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+/* Shared link style */
+.sb-link {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 10px;
+    border-radius: 10px;
+    text-decoration: none;
+    font-size: 13.5px;
+    font-weight: 500;
+    color: #374151;
+    transition: background-color 0.15s ease, color 0.15s ease;
+    cursor: pointer;
+}
+.sb-link svg {
+    flex-shrink: 0;
+    color: #6b7280;
+    transition: color 0.15s ease;
+}
+.sb-link:hover {
+    background-color: #F3F4F6;
+    color: #111827;
+}
+.sb-link:hover svg {
+    color: #111827;
+}
+.sb-link:active {
+    background-color: #E5E7EB;
+}
+
+/* Danger link (logout) */
+.sb-link--danger {
+    color: #dc2626;
+}
+.sb-link--danger svg {
+    color: #dc2626;
+}
+.sb-link--danger:hover {
+    background-color: #fee2e2;
+    color: #b91c1c;
+}
+.sb-link--danger:hover svg {
+    color: #b91c1c;
+}
+
+/* Spacer pushes bottom section down */
+.sb-spacer {
+    flex: 1;
+}
+
+/* Admin user card */
+.sb-user-card {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 10px;
+    border-radius: 12px;
+    background: #F9FAFB;
+    border: 1px solid #E5E7EB;
+    margin-bottom: 10px;
+}
+.sb-user-card__avatar {
+    width: 36px;
+    height: 36px;
+    background: #E5E7EB;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+.sb-user-card__avatar svg {
+    color: #6b7280;
+}
+.sb-user-card__info {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+.sb-user-card__role {
+    font-size: 13px;
+    font-weight: 700;
+    color: #111827;
+    line-height: 1.2;
+    margin: 0;
+}
+.sb-user-card__name {
+    font-size: 11px;
+    color: #6b7280;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin: 0;
+}
+
+/* Bottom links block */
+.sb-bottom {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    border-top: 1px solid #E5E7EB;
+    padding-top: 10px;
 }
 
 .breadcrumbs {

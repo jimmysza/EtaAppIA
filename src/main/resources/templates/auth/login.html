@@ -24,6 +24,30 @@
         Debes registrarte o iniciar sesión para acceder.
     </div>
 
+    <div th:if="${param.pendingVerification}" class="alert alert-info">
+        Revisa tu correo para verificar tu cuenta antes de iniciar sesión.
+    </div>
+
+    <div th:if="${param.verified}" class="alert alert-success">
+        Tu cuenta fue verificada correctamente. Ya puedes iniciar sesión.
+    </div>
+
+    <div th:if="${param.notVerified}" class="alert alert-danger">
+        Tu cuenta aún no está verificada. Revisa tu correo y abre el enlace de verificación.
+    </div>
+
+    <div th:if="${param.expiredToken}" class="alert alert-danger">
+        El enlace de verificación expiró.
+    </div>
+
+    <div th:if="${param.invalidToken}" class="alert alert-danger">
+        El enlace de verificación no es válido.
+    </div>
+
+    <div th:if="${param.error}" class="alert alert-danger">
+        Credenciales inválidas.
+    </div>
+
     <!-- Mensajes flash -->
     <div th:if="${exito}" class="alert alert-success">
         <span th:text="${exito}"></span>

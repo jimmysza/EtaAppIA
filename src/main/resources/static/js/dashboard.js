@@ -1,4 +1,4 @@
-const sidebar = document.querySelector('.side-bar');
+const sidebar = document.querySelector('.sb-root');
 const sidebarToggle = document.getElementById('hideBar');
 
 sidebarToggle.addEventListener("click", () => {

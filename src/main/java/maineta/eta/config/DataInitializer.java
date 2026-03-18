@@ -116,7 +116,7 @@ public class DataInitializer implements CommandLineRunner {
                         .replace("ú", "u")
                         .replace("á", "a")
                         .replace("ñ", "n") + ".png";
-                nuevoCategoria.setImagen("/uploads/" + rutaImagen);
+                nuevoCategoria.setImagen("/src/main/resources/static/images/categorias/" + rutaImagen);
                 categoriaRepository.save(nuevoCategoria);
 
                 System.out.println("Categoría creada: " + categoria + " con imagen: " + nuevoCategoria.getImagen());

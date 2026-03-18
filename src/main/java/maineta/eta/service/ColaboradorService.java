@@ -3,6 +3,7 @@ package maineta.eta.service;
 import java.util.List;
 import java.util.Optional;
 
+import maineta.eta.dto.ColaboradorPublicoDTO;
 import maineta.eta.entity.Colaborador;
 import maineta.eta.entity.Usuario;
 
@@ -31,6 +32,12 @@ public interface ColaboradorService {
      * @return Lista de todos los colaboradores almacenados en la BD.
      */
     List<Colaborador> findAll();
+
+    Optional<Colaborador> obtenerPorId(Long idColaborador);
+
+    List<ColaboradorPublicoDTO> obtenerDestacadosPorReservas(int limite);
+
+    Optional<ColaboradorPublicoDTO> obtenerResumenPublico(Long idColaborador);
 
     /**
      * 🔹 Buscar un colaborador a partir de su Usuario.

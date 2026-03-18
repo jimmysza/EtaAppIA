@@ -1,88 +1,76 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
 <body>
-    <div class="side-bar flex flex-col" th:fragment="sideBarCliente">
-        <div class="logo-manager">
-            <a class="info-dashboard">
-                <div class="id-content">
-                    <h1 th:text="${nombreUsuario}"></h1>
-                    <p>Dashboard Cliente</p>
-                </div>
+    <div class="sb-root" th:fragment="sideBarCliente">
+
+        <!-- ── Logo ── -->
+        <div class="sb-logo">
+            <a th:href="@{/}" class="sb-logo__link">
+                <img th:src="@{/images/logos/Logo.webp}" alt="etaApp logo" class="sb-logo__img" />
+                <span class="sb-logo__name">etaApp</span>
             </a>
         </div>
-        <div class="menu menu-cliente">
-            <ul>
-                <div class="info gap-2">
 
-                    <p class="title-bar"> Platforma</p>
-                    
-                    <li class="menu-link">
-                        <a th:href="@{/cliente/dashboard}">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-                                <path fill="#000" fill-rule="evenodd"
-                                    d="M20 4H4a1 1 0 0 0-1 1v14a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1V5a1 1 0 0 0-1-1M4 2a3 3 0 0 0-3 3v14a3 3 0 0 0 3 3h16a3 3 0 0 0 3-3V5a3 3 0 0 0-3-3zm2 5h2v2H6zm5 0a1 1 0 1 0 0 2h6a1 1 0 1 0 0-2zm-3 4H6v2h2zm2 1a1 1 0 0 1 1-1h6a1 1 0 1 1 0 2h-6a1 1 0 0 1-1-1m-2 3H6v2h2zm2 1a1 1 0 0 1 1-1h6a1 1 0 1 1 0 2h-6a1 1 0 0 1-1-1"
-                                    clip-rule="evenodd" stroke-width="0.2" stroke="#000" />
-                            </svg>
-                            <p class="btn btn-primary btn-lg">
-                                Ver reservas
-                            </p>
-                        </a>
-                    </li>
-                    <li class="menu-link">
-                        <a th:href="@{/cliente/informacion}">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-                                <path fill="#000"
-                                    d="M12 12q-1.65 0-2.825-1.175T8 8t1.175-2.825T12 4t2.825 1.175T16 8t-1.175 2.825T12 12m-8 8v-2.8q0-.85.438-1.562T5.6 14.55q1.55-.775 3.15-1.162T12 13t3.25.388t3.15 1.162q.725.375 1.163 1.088T20 17.2V20z"
-                                    stroke-width="0.2" stroke="#000" />
-                            </svg>
-                            <p class="btn btn-primary btn-lg">
-                                Informacion Personal
-                            </p>
-                        </a>
-                    </li>
-                    <li class="menu-link">
-                        <a th:href="@{/cliente/favoritos}">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-                                <path fill="#000" stroke="#000" stroke-width="0.2" stroke-linecap="round" stroke-linejoin="round"
-                                    d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-                            </svg>
-                            <p class="btn btn-primary btn-lg">
-                                Favoritos
-                            </p>
-                        </a>
-                    </li>
+        <!-- ── Nav ── -->
+        <nav class="sb-nav">
+            <p class="sb-section-title">Plataforma</p>
 
-                </div>
-                <div class="cerrar">
-                    <li class="menu-link">
-                        <a th:href="@{/}">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-                                <path fill="#000"
-                                    d="M6 19h3v-6h6v6h3v-9l-6-4.5L6 10zm-2 2V9l8-6l8 6v12h-7v-6h-2v6zm8-8.75"
-                                    stroke-width="0.2" stroke="#000" />
-                            </svg>
-                            <p class="btn btn-primary btn-lg">
-                                Inicio
-                            </p>
-                        </a>
-                    </li>
-                    <li class="menu-link" sec:authorize="isAuthenticated()">
-                        <a class="" th:href="@{/logout}">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="small-icon">
-                                <g fill="none">
-                                    <path
-                                        d="m12.593 23.258l-.011.002l-.071.035l-.02.004l-.014-.004l-.071-.035q-.016-.005-.024.005l-.004.01l-.017.428l.005.02l.01.013l.104.074l.015.004l.012-.004l.104-.074l.012-.016l.004-.017l-.017-.427q-.004-.016-.017-.018m.265-.113l-.013.002l-.185.093l-.01.01l-.003.011l.018.43l.005.012l.008.007l.201.093q.019.005.029-.008l.004-.014l-.034-.614q-.005-.018-.02-.022m-.715.002a.02.02 0 0 0-.027.006l-.006.014l-.034.614q.001.018.017.024l.015-.002l.201-.093l.01-.008l.004-.011l.017-.43l-.003-.012l-.01-.01z" />
-                                    <path fill="#000"
-                                        d="M12 2.5a1.5 1.5 0 0 1 0 3H7a.5.5 0 0 0-.5.5v12a.5.5 0 0 0 .5.5h4.5a1.5 1.5 0 0 1 0 3H7A3.5 3.5 0 0 1 3.5 18V6A3.5 3.5 0 0 1 7 2.5Zm6.06 5.61l2.829 2.83a1.5 1.5 0 0 1 0 2.12l-2.828 2.83a1.5 1.5 0 1 1-2.122-2.122l.268-.268H12a1.5 1.5 0 0 1 0-3h4.207l-.268-.268a1.5 1.5 0 1 1 2.122-2.121Z" />
-                                </g>
-                            </svg>
-                            <p>Cerrar Sesion</p>
-                        </a>
-                    </li>
-                </div>
-            </ul>
+            <a th:href="@{/cliente/dashboard}" class="sb-link">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
+                </svg>
+                <span>Ver reservas</span>
+            </a>
+
+            <a th:href="@{/cliente/informacion}" class="sb-link">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+                </svg>
+                <span>Informacion Personal</span>
+            </a>
+
+            <a th:href="@{/cliente/favoritos}" class="sb-link">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+                </svg>
+                <span>Favoritos</span>
+            </a>
+        </nav>
+
+        <!-- ── Spacer ── -->
+        <div class="sb-spacer"></div>
+
+        <!-- ── User card ── -->
+        <div class="sb-user-card">
+            <div class="sb-user-card__avatar">
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+                </svg>
+            </div>
+            <div class="sb-user-card__info">
+                <h1 class="sb-user-card__role">Cliente</h1>
+                <p class="sb-user-card__name" th:text="${nombreUsuario}">usuario</p>
+            </div>
         </div>
+
+        <!-- ── Bottom links ── -->
+        <div class="sb-bottom">
+            <a th:href="@{/}" class="sb-link">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>
+                </svg>
+                <span>Inicio</span>
+            </a>
+
+            <a th:href="@{/logout}" class="sb-link sb-link--danger" sec:authorize="isAuthenticated()">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/>
+                </svg>
+                <span>Cerrar Sesion</span>
+            </a>
+        </div>
+
     </div>
 
 </body>

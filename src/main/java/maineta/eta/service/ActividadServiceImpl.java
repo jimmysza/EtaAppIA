@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -80,6 +81,16 @@ public class ActividadServiceImpl implements ActividadService {
         }
 
         return conteo;
+    }
+
+    @Override
+    public List<Actividad> listarPorColaborador(Long idColaborador) {
+        return actividadRepository.findByColaborador_IdColaboradorOrderByCreatedAtDesc(idColaborador);
+    }
+
+    @Override
+    public Optional<Actividad> obtenerActividadDestacadaDeColaborador(Long idColaborador) {
+        return actividadRepository.findFirstByColaborador_IdColaboradorOrderByCreatedAtDesc(idColaborador);
     }
 
     @Override

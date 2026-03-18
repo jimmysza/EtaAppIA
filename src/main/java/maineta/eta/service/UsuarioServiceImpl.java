@@ -58,11 +58,15 @@ public class UsuarioServiceImpl implements UsuarioService {
             // Ejemplo: "ROLE_CLIENTE", "ROLE_ADMIN"
         }
 
+        // Usuarios antiguos pueden tener este campo en null: en ese caso se consideran habilitados.
+        boolean cuentaHabilitada = usuario.getEmailVerificado() == null || Boolean.TRUE.equals(usuario.getEmailVerificado());
+
         // Crear y devolver un objeto User de Spring Security
         return User.builder()
                 .username(usuario.getEmail())       // el "username" será el email
                 .password(usuario.getPassword())   // contraseña encriptada
                 .authorities(authorities)          // roles convertidos en authorities
+            .disabled(!cuentaHabilitada)
                 .build();
     }
 

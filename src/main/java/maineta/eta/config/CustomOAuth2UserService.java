@@ -1,16 +1,17 @@
 package maineta.eta.config;
 
 
-import maineta.eta.entity.Rol;
-import maineta.eta.entity.Usuario;
-import maineta.eta.repository.RolRepository;
-import maineta.eta.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
+
+import maineta.eta.entity.Rol;
+import maineta.eta.entity.Usuario;
+import maineta.eta.repository.RolRepository;
+import maineta.eta.repository.UsuarioRepository;
 
 @Service
 public class CustomOAuth2UserService extends DefaultOAuth2UserService {
@@ -42,6 +43,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             Rol rolUser = rolRepository.findByNombre("ROLE_CLIENTE")
                     .orElseThrow(() -> new RuntimeException("No existe el rol ROLE_CLIENTE en la base de datos"));
             nuevo.setRol(rolUser);
+                nuevo.setEmailVerificado(Boolean.TRUE);
             return usuarioRepository.save(nuevo);
         });
 

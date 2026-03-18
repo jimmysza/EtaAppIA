@@ -32,11 +32,11 @@ public class AdminController {
     private final DisponibilidadService disponibilidadService;
 
     /* @Autowired */
-    public AdminController(CategoriaService categoriaService, IdiomaService idiomaService,  ComentarioService comentarioService,
-     ActividadService actividadService,
-     UsuarioService usuarioService, ColaboradorService colaboradorService,
-     ReservaService reservaService,
-     ClienteService clienteService, DisponibilidadService disponibilidadService) {
+    public AdminController(CategoriaService categoriaService, IdiomaService idiomaService, ComentarioService comentarioService,
+            ActividadService actividadService,
+            UsuarioService usuarioService, ColaboradorService colaboradorService,
+            ReservaService reservaService,
+            ClienteService clienteService, DisponibilidadService disponibilidadService) {
         this.categoriaService = categoriaService;
         this.idiomaService = idiomaService;
         this.disponibilidadService = disponibilidadService;
@@ -86,7 +86,6 @@ public class AdminController {
         return "admin/dashboard";
     }
 
-
     @GetMapping("/categorias")
     public String listarCategorias(Model model, Categoria categoria) {
         model.addAttribute("categorias", categoriaService.listarCategorias());
@@ -108,11 +107,11 @@ public class AdminController {
 
     @GetMapping("/idiomas")
     public String listaridiomas(Model model, Idioma idioma) {
-        
+
         List<Idioma> idiomas = idiomaService.listarIdiomas();
         model.addAttribute("idiomas", idiomas);
         model.addAttribute("idioma", new Idioma());
-        
+
         return "admin/idiomas"; // Asegúrate de tener esta plantilla creada
     }
 

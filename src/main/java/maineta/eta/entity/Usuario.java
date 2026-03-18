@@ -42,6 +42,15 @@ public class Usuario {
 
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
+
+    @Column(name = "email_verificado")
+    private Boolean emailVerificado = Boolean.FALSE;
+
+    @Column(name = "token_verificacion", length = 120)
+    private String tokenVerificacion;
+
+    @Column(name = "token_verificacion_expira_en")
+    private LocalDateTime tokenVerificacionExpiraEn;
     
    /*
      *  activo BOOLEAN DEFAULT TRUE,
