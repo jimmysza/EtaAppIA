@@ -117,6 +117,7 @@ public class SecurityConfig {
                                         "/registro/**",
                                         "/assets/**",
                                         "/fonts/**",
+                                        "/colaboradores/**",
                                         "/images/**",
                                         "/uploads/**")
                                 .permitAll() // Rutas públicas (login, recursos estáticos, páginas de error, etc.)

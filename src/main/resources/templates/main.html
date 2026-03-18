@@ -920,7 +920,7 @@
                 </div>
 
                 <a th:if="${anfitrionesDestacados != null and !#lists.isEmpty(anfitrionesDestacados)}"
-                    th:href="@{/anfitriones/{id}(id=${anfitrionesDestacados[0].idColaborador})}"
+                    th:href="@{/colaboradores/{id}(id=${anfitrionesDestacados[0].idColaborador})}"
                     class="inline-flex items-center gap-2 rounded-full bg-slate-950 text-white px-5 py-3 font-semibold w-fit">
                     Ver anfitrión líder
                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -932,7 +932,7 @@
 
             <div class="host-grid" th:if="${anfitrionesDestacados != null and !#lists.isEmpty(anfitrionesDestacados)}">
                 <a th:each="anfitrion : ${anfitrionesDestacados}"
-                    th:href="@{/anfitriones/{id}(id=${anfitrion.idColaborador})}"
+                    th:href="@{/colaboradores/{id}(id=${anfitrion.idColaborador})}"
                     class="host-card-link group">
                     <article class="host-card-public">
                         <div class="host-media">
@@ -952,7 +952,7 @@
                             th:text="${anfitrion.actividadDestacada}">Actividad destacada</span>
 
                         <p class="host-description">
-                            Revisa su perfil público, explora todas sus experiencias activas y compara rápidamente el volumen de reservas que ya genera.
+                            Descripcion
                         </p>
 
                         <div class="host-stat-grid">

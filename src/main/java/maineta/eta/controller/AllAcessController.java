@@ -314,7 +314,7 @@ public class AllAcessController {
                 return "main";
         }
 
-        @GetMapping("/anfitriones/{idColaborador}")
+        @GetMapping("/colaboradores/{idColaborador}")
         public String verPerfilPublicoColaborador(
                         @PathVariable Long idColaborador,
                         Model model,
