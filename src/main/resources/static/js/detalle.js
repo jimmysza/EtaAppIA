@@ -10,6 +10,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (window.scrollY > 205) {
             sticky?.classList.add("shadow");
             navbar.classList.add("border-none");
+            navbar.classList.add("bg-white");
 
             // Mostrar enlaces cuando se hace scroll
             navLinks.forEach(nav => {
@@ -22,6 +23,7 @@ document.addEventListener("DOMContentLoaded", () => {
             // Ocultar enlaces cuando vuelve al tope
             navLinks.forEach(nav => {
                 nav.classList.add("nav-hidden");
+                navbar.classList.remove("bg-white");
             });
         }
     });

@@ -25,6 +25,10 @@ services:
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: Jaime12.
 
+    # Volúmenes persistentes para recursos generados por la aplicación.
+    volumes:
+      - ./uploads:/app/uploads
+
     # Reinicia la app automáticamente si se cae.
     restart: always
 

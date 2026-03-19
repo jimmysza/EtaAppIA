@@ -94,6 +94,11 @@ public class ReservaServiceImpl implements ReservaService {
     }
 
     @Override
+    public List<Reserva> getReservasColaborador(Long idColaborador) {
+        return reservaRepository.findByActividad_Colaborador_IdColaboradorOrderByFechaReservaDesc(idColaborador);
+    }
+
+    @Override
     public List<Reserva> getReservasPorIdActividad(Long idActividad){
         return reservaRepository.findByActividad_IdActividad(idActividad);
     }

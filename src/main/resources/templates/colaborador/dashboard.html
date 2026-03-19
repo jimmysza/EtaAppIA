@@ -80,7 +80,36 @@
 
 
 
-            <!-- Tabla de Clientes -->
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID Reserva</th>
+                        <th>Cliente</th>
+                        <th>Actividad</th>
+                        <th>Fecha Reserva</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:if="${reservasColaborador == null or #lists.isEmpty(reservasColaborador)}">
+                        <td colspan="6" class="text-center">Aun no tienes reservas para chatear</td>
+                    </tr>
+
+                    <tr th:each="reserva : ${reservasColaborador}">
+                        <td th:text="${reserva.idReserva}"></td>
+                        <td th:text="${reserva.cliente.usuario.nombre}"></td>
+                        <td th:text="${reserva.actividad.titulo}"></td>
+                        <td th:text="${#temporals.format(reserva.fechaReserva, 'dd/MM/yyyy HH:mm')}"></td>
+                        <td th:text="${reserva.estado}"></td>
+                        <td>
+                            <a class="button-default" th:href="@{/colaborador/chats/{idReserva}(idReserva=${reserva.idReserva})}">
+                                Abrir chat
+                            </a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
 
         </main>
     </section>

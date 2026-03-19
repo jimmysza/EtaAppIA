@@ -8,6 +8,7 @@ import java.time.YearMonth;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
@@ -30,12 +31,15 @@ import maineta.eta.dto.DisponibilidadDetalleDTO;
 import maineta.eta.dto.PatronDisponibilidadDTO;
 import maineta.eta.entity.Actividad;
 import maineta.eta.entity.Colaborador;
+import maineta.eta.entity.ConversacionChat;
 import maineta.eta.entity.Disponibilidad;
+import maineta.eta.entity.MensajeChat;
 import maineta.eta.entity.PatronDisponibilidad;
 import maineta.eta.entity.Reserva;
 import maineta.eta.entity.Usuario;
 import maineta.eta.service.ActividadService;
 import maineta.eta.service.CategoriaService;
+import maineta.eta.service.ChatService;
 import maineta.eta.service.ColaboradorService;
 import maineta.eta.service.DisponibilidadService;
 import maineta.eta.service.IUploadFileService;
@@ -59,11 +63,13 @@ public class ColaboradorController {
     private final DisponibilidadService disponibilidadService;
     private final ReservaService reservaService;
     private final PatronDisponibilidadService patronDisponibilidadService;
+    private final ChatService chatService;
 
     public ColaboradorController(ActividadService actividadService, UsuarioService usuarioService,
             ColaboradorService colaboradorService, IUploadFileService uploadFileService,
             CategoriaService categoriaService, IdiomaService idiomaService, DisponibilidadService disponibilidadService,
-            ReservaService reservaService, PatronDisponibilidadService patronDisponibilidadService) {
+            ReservaService reservaService, PatronDisponibilidadService patronDisponibilidadService,
+            ChatService chatService) {
         this.actividadService = actividadService;
         this.usuarioService = usuarioService;
         this.colaboradorService = colaboradorService;
@@ -73,6 +79,7 @@ public class ColaboradorController {
         this.disponibilidadService = disponibilidadService;
         this.reservaService = reservaService;
         this.patronDisponibilidadService = patronDisponibilidadService;
+        this.chatService = chatService;
     }
 
     // 🔹 Vista para cambiar cliente (ejemplo de plantilla simple)
@@ -83,9 +90,51 @@ public class ColaboradorController {
 
     // 🔹 Dashboard principal del colaborador
     @GetMapping("/dashboard")
-    public String dashboard() {
+    public String dashboard(Authentication authentication, Model model) {
+
+        String email = authentication.getName();
+        Usuario usuario = usuarioService.obtenerPorEmail(email);
+        Colaborador colaborador = colaboradorService.obtenerPorUsuario(usuario)
+                .orElseThrow(() -> new RuntimeException("Colaborador no encontrado"));
+
+        model.addAttribute("reservasColaborador", reservaService.getReservasColaborador(colaborador.getIdColaborador()));
 
         return "colaborador/dashboard";
+    }
+
+    @GetMapping("/chats")
+    public String verChatsColaborador(Authentication authentication, Model model) {
+        String email = authentication.getName();
+        Usuario usuario = usuarioService.obtenerPorEmail(email);
+        Colaborador colaborador = colaboradorService.obtenerPorUsuario(usuario)
+                .orElseThrow(() -> new RuntimeException("Colaborador no encontrado"));
+
+        model.addAttribute("emailUsuario", email);
+        model.addAttribute("reservasColaborador", reservaService.getReservasColaborador(colaborador.getIdColaborador()));
+        model.addAttribute("conversaciones", chatService.listarConversacionesColaborador(email));
+
+        return "colaborador/chats";
+    }
+
+    @GetMapping("/chats/{idReserva}")
+    public String verChatColaboradorPorReserva(@PathVariable Long idReserva, Authentication authentication, Model model) {
+        String email = authentication.getName();
+        Usuario usuario = usuarioService.obtenerPorEmail(email);
+        Colaborador colaborador = colaboradorService.obtenerPorUsuario(usuario)
+                .orElseThrow(() -> new RuntimeException("Colaborador no encontrado"));
+
+        ConversacionChat conversacion = chatService.obtenerOCrearConversacionDesdeReservaColaborador(idReserva, email);
+        List<MensajeChat> mensajes = chatService.listarMensajes(
+            Objects.requireNonNull(conversacion.getIdConversacion()),
+            email);
+
+        model.addAttribute("emailUsuario", email);
+        model.addAttribute("reservasColaborador", reservaService.getReservasColaborador(colaborador.getIdColaborador()));
+        model.addAttribute("conversaciones", chatService.listarConversacionesColaborador(email));
+        model.addAttribute("conversacionSeleccionada", conversacion);
+        model.addAttribute("mensajes", mensajes);
+
+        return "colaborador/chats";
     }
 
     @GetMapping("/actividades/nueva")

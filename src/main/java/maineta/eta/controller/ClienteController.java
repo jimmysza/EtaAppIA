@@ -2,6 +2,7 @@ package maineta.eta.controller;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -24,11 +25,14 @@ import maineta.eta.dto.ActividadDTO;
 import maineta.eta.dto.ReservaDTO;
 import maineta.eta.entity.Actividad;
 import maineta.eta.entity.Cliente;
+import maineta.eta.entity.ConversacionChat;
 import maineta.eta.entity.Disponibilidad;
 import maineta.eta.entity.Favorito;
+import maineta.eta.entity.MensajeChat;
 import maineta.eta.entity.Reserva;
 import maineta.eta.entity.Usuario;
 import maineta.eta.service.ActividadService;
+import maineta.eta.service.ChatService;
 import maineta.eta.service.ClienteService;
 import maineta.eta.service.ComentarioService;
 import maineta.eta.service.DisponibilidadService;
@@ -48,6 +52,7 @@ public class ClienteController {
     private final UsuarioService usuarioService;
     private final FavoritoService favoritoService;
     private final ComentarioService comentarioService;
+    private final ChatService chatService;
 
     public ClienteController(
             ActividadService actividadService,
@@ -57,7 +62,8 @@ public class ClienteController {
             ClienteService clienteService,
             UsuarioService usuarioService,
             FavoritoService favoritoService,
-            ComentarioService comentarioService) {
+            ComentarioService comentarioService,
+            ChatService chatService) {
 
         this.actividadService = actividadService;
         this.reservaService = reservaService;
@@ -67,6 +73,7 @@ public class ClienteController {
         this.usuarioService = usuarioService;
         this.favoritoService = favoritoService;
         this.comentarioService = comentarioService;
+        this.chatService = chatService;
     }
 
     @GetMapping("/dashboard")
@@ -143,9 +150,6 @@ public class ClienteController {
             RedirectAttributes redirectAttributes) {
         try {
             // 1️⃣ Obtener el usuario autenticado actual
-            String emailActual = authentication.getName();
-            Usuario usuario = usuarioService.obtenerPorEmail(emailActual);
-
             // 2️⃣ Actualizar el cliente (y el usuario dentro de él)
             Cliente clienteActualizado = clienteService.actualizarCliente(id, cliente);
 
@@ -326,6 +330,46 @@ public class ClienteController {
 
         model.addAttribute("actividades", actividadesDTO);
         return "cliente/favoritos";
+    }
+
+    @GetMapping("/chats")
+    public String verChatsCliente(Authentication authentication, Model model, Authentication auth) {
+        usuarioHelper.agregarInfoUsuarioModel(model, auth);
+
+        String email = authentication.getName();
+        Usuario usuario = usuarioService.obtenerPorEmail(email);
+        Cliente cliente = clienteService.obtenerPorUsuario(usuario)
+                .orElseThrow(() -> new RuntimeException("Cliente no encontrado"));
+
+        model.addAttribute("emailUsuario", email);
+        model.addAttribute("reservas", reservaService.getReservasCliente(cliente));
+        model.addAttribute("conversaciones", chatService.listarConversacionesCliente(email));
+
+        return "cliente/chats";
+    }
+
+    @GetMapping("/chats/{idReserva}")
+    public String verChatClientePorReserva(@PathVariable Long idReserva, Authentication authentication, Model model,
+            Authentication auth) {
+        usuarioHelper.agregarInfoUsuarioModel(model, auth);
+
+        String email = authentication.getName();
+        Usuario usuario = usuarioService.obtenerPorEmail(email);
+        Cliente cliente = clienteService.obtenerPorUsuario(usuario)
+                .orElseThrow(() -> new RuntimeException("Cliente no encontrado"));
+
+        ConversacionChat conversacion = chatService.obtenerOCrearConversacionDesdeReservaCliente(idReserva, email);
+        List<MensajeChat> mensajes = chatService.listarMensajes(
+            Objects.requireNonNull(conversacion.getIdConversacion()),
+            email);
+
+        model.addAttribute("emailUsuario", email);
+        model.addAttribute("reservas", reservaService.getReservasCliente(cliente));
+        model.addAttribute("conversaciones", chatService.listarConversacionesCliente(email));
+        model.addAttribute("conversacionSeleccionada", conversacion);
+        model.addAttribute("mensajes", mensajes);
+
+        return "cliente/chats";
     }
 
 
