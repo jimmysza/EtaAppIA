@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Subir Documentos</title>
+</head>
+
+<body>
+
+    <h2>Subir RUT y Cédula</h2>
+
+    <form th:action="@{/documentos/subir}" method="post" enctype="multipart/form-data">
+
+        <label>RUT:</label>
+        <input type="file" name="rut" required><br><br>
+
+        <label>Cédula:</label>
+        <input type="file" name="cedula" required><br><br>
+
+        <button type="submit">Subir</button>
+    </form>
+
+    <p style="color:green" th:text="${mensaje}"></p>
+    <p style="color:red" th:text="${error}"></p>
+
+</body>
+<script>
+    document.querySelector("form").addEventListener("submit", function (e) {
+        const files = document.querySelectorAll("input[type='file']");
+
+        for (let fileInput of files) {
+            const file = fileInput.files[0];
+
+            if (file.size > 5 * 1024 * 1024) {
+                alert("El archivo supera los 5MB");
+                e.preventDefault();
+            }
+        }
+    });
+</script>
+
+</html>

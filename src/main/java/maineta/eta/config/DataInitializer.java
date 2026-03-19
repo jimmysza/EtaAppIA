@@ -1,6 +1,8 @@
 package maineta.eta.config;
 
 import java.math.BigDecimal;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Optional;
 
 import org.springframework.boot.CommandLineRunner;
@@ -91,6 +93,7 @@ public class DataInitializer implements CommandLineRunner {
                 nuevoIdioma.setCodigo(codigoIdioma); // Asumimos que la entidad Idioma tiene un método setCodigo
                 idiomaRepository.save(nuevoIdioma);
                 System.out.println("Idioma creado: " + nombreIdioma + " (" + codigoIdioma + ")");
+                Files.createDirectories(Paths.get("uploads"));
             }
         }
 
