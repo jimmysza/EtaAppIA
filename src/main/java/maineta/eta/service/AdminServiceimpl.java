@@ -1,18 +1,15 @@
 package maineta.eta.service;
 
-import maineta.eta.entity.Admin;
-import maineta.eta.repository.AdminRepository;
-import maineta.eta.repository.ColaboradorRepository;
-import maineta.eta.repository.RolRepository;
-import maineta.eta.repository.UsuarioRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import java.math.BigDecimal;
+
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import maineta.eta.entity.Admin;
 import maineta.eta.entity.Usuario;
-
-
-import java.util.Set;
+import maineta.eta.repository.AdminRepository;
+import maineta.eta.repository.RolRepository;
+import maineta.eta.repository.UsuarioRepository;
 
 @Service
 public class AdminServiceimpl implements AdminService {
@@ -22,7 +19,6 @@ public class AdminServiceimpl implements AdminService {
     private final PasswordEncoder passwordEncoder;
     private final AdminRepository adminRepository;
 
-    @Autowired
     public  AdminServiceimpl(UsuarioRepository usuarioRepository,AdminRepository adminRepository,PasswordEncoder passwordEncoder,RolRepository rolRepository) {
         this.usuarioRepository = usuarioRepository;
         this.adminRepository = adminRepository;
@@ -57,5 +53,18 @@ public class AdminServiceimpl implements AdminService {
     @Override
     public Admin buscarAdminPorId(long idAdmin) {
         return adminRepository.findByIdAdmin(idAdmin);
+    }
+
+    @Override
+    public Admin obtenerAdminPrincipal() {
+        return adminRepository.findTopByOrderByIdAdminAsc()
+                .orElseThrow(() -> new IllegalStateException("No existe un administrador configurado"));
+    }
+
+    @Override
+    public Admin actualizarPorcentajeComision(BigDecimal porcentajeComision) {
+        Admin admin = obtenerAdminPrincipal();
+        admin.setPorcentajeComision(porcentajeComision);
+        return adminRepository.save(admin);
     }
 }

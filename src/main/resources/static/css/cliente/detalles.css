@@ -148,7 +148,6 @@ h1 {
 .sticky-container {
     position: sticky;
     top: 0;
-    background-color: #ffffff;
     z-index: 9;
     width: 100%;
     max-width: 100%;
@@ -167,7 +166,7 @@ h1 {
 
     max-width: 1140px;
     margin: 0 auto;
-    background-color: #ffffff;
+    
     display: flex;
     justify-content: space-between;
     margin-top: 10px;

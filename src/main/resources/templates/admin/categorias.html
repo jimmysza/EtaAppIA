@@ -161,7 +161,7 @@
                         <button type="submit" class="button-default btn_add">Buscar</button>
                     </form> -->
 
-                    <div class="flex center gap-2">
+                    <div class="flex gap-2 center">
 
 
                         <!--Btn Filtros-->
@@ -178,7 +178,7 @@
                         <!--Btn Agregar-->
                         <div class="button-default btn_add">
 
-                            <a class="flex gap-2 items-center justify-center text-open-add" id="open-add-modal">
+                            <a class="flex items-center justify-center gap-2 text-open-add" id="open-add-modal">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24">
                                     <path fill="#fff"
                                         d="M12 4c4.411 0 8 3.589 8 8s-3.589 8-8 8s-8-3.589-8-8s3.589-8 8-8m0-2C6.477 2 2 6.477 2 12s4.477 10 10 10s10-4.477 10-10S17.523 2 12 2m5 9h-4V7h-2v4H7v2h4v4h2v-4h4z"
@@ -191,23 +191,58 @@
             </div>
             <div class="Actividades-Container">
 
-                <a th:each="categoria : ${categorias}" class="Actividad-card-link categorias-card">
-                    <div class="Actividad-card">
+                <div th:if="${mensaje}" class="alert alert-success" th:text="${mensaje}"></div>
+                <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
 
+                <div style="width: 100%; max-width: 1500px; margin: 20px auto; background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.08);">
+                    <table style="width: 100%; border-collapse: collapse;">
+                        <thead>
+                            <tr style="background-color: #f3f4f6; border-bottom: 2px solid #e5e7eb;">
+                                <th style="padding: 15px; text-align: left; font-weight: 600; font-size: 12px; color: #374151;">#</th>
+                                <th style="padding: 15px; text-align: left; font-weight: 600; font-size: 12px; color: #374151;">Imagen</th>
+                                <th style="padding: 15px; text-align: left; font-weight: 600; font-size: 12px; color: #374151;">Nombre Categoría</th>
+                                <th style="padding: 15px; text-align: center; font-weight: 600; font-size: 12px; color: #374151;">Actividades</th>
+                                <th style="padding: 15px; text-align: center; font-weight: 600; font-size: 12px; color: #374151;">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:if="${categorias == null or #lists.isEmpty(categorias)}" style="border-bottom: 1px solid #e5e7eb;">
+                                <td colspan="5" style="text-align: center; color: #999; padding: 30px;">
+                                    No hay categorías registradas aún
+                                </td>
+                            </tr>
+                            <tr th:each="categoria, iterStat : ${categorias}" style="border-bottom: 1px solid #e5e7eb; transition: background-color 0.2s;" onmouseover="this.style.backgroundColor='#f9fafb'" onmouseout="this.style.backgroundColor='transparent'">
+                                <td style="padding: 15px; font-size: 12px; color: #6b7280;">
+                                    <span th:text="${iterStat.count}"></span>
+                                </td>
+                                <td style="padding: 15px;">
+                                    <img th:if="${categoria.imagen != null and !#strings.isEmpty(categoria.imagen)}"
+                                        th:src="@{${categoria.imagen}}"
+                                        th:alt="${categoria.nombre}"
+                                        style="width: 56px; height: 56px; object-fit: cover; border-radius: 10px; border: 1px solid #e5e7eb;">
+                                    <div th:if="${categoria.imagen == null or #strings.isEmpty(categoria.imagen)}"
+                                        style="width: 56px; height: 56px; display: flex; align-items: center; justify-content: center; border-radius: 10px; background-color: #f3f4f6; color: #9ca3af; font-size: 11px; border: 1px solid #e5e7eb;">
+                                        Sin imagen
+                                    </div>
+                                </td>
+                                <td style="padding: 15px; font-size: 13px; font-weight: 500; color: #1f2937;">
+                                    <span th:text="${categoria.nombre}"></span>
+                                </td>
+                                <td style="padding: 15px; text-align: center; font-size: 12px; color: #6b7280;">
+                                    <span style="display: inline-block; background-color: #dbeafe; color: #0c4a6e; padding: 4px 10px; border-radius: 12px; font-weight: 600;">
+                                        <span th:text="${categoria.actividades != null ? #lists.size(categoria.actividades) : 0}"></span>
+                                    </span>
+                                </td>
+                                <td style="padding: 15px; text-align: center;">
+                                    <button th:attr="data-id=${categoria.idCategoria}" id="open-delete-modal" style="padding: 6px 10px; background-color: #ef4444; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 12px; transition: all 0.2s;" onmouseover="this.style.backgroundColor='#dc2626'" onmouseout="this.style.backgroundColor='#ef4444'">
+                                        Eliminar
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
 
-                        <button th:attr="data-id=${categoria.idCategoria}" id="open-delete-modal" class="text-open-delete">
-
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-                                <path fill="#052659" fill-rule="evenodd"
-                                    d="M7 1L1 7l5 5l-5 5l6 6l5-5l5 5l6-6l-5-5l5-5l-6-6l-5 5z" clip-rule="evenodd"
-                                    stroke-width="0.2" stroke="#052659" />
-                            </svg>
-                        </button>
-                        <div class="content-actividad">
-                            <h3 th:text="${categoria.nombre}"></h3>
-                        </div>
-                    </div>
-                </a>
             </div>
 
 
@@ -216,7 +251,7 @@
 
         <div class="modal modal-add">
 
-            <form th:action="@{/admin/categorias/nueva}" th:object="${categoria}" method="post">
+            <form th:action="@{/admin/categorias/nueva}" th:object="${categoria}" method="post" enctype="multipart/form-data">
 
                 <div class="form-heading">
                     <h2>Agregar Categoria</h2>
@@ -228,6 +263,9 @@
 
                     <label for="nombre">Nombre Categoria <span class="red">*</span></label>
                     <input id="nombre" type="text" th:field="*{nombre}" required />
+
+                    <label for="imagenFile">Imagen</label>
+                    <input id="imagenFile" type="file" name="imagenFile" accept="image/*" />
 
                     <div class="btnSubmit">
                         <button type="submit" class="btn-submit">Agregar</button>

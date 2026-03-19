@@ -3,7 +3,10 @@ package maineta.eta.service;
 import java.util.List;
 import java.util.Optional;
 
-import maineta.eta.entity.Actividad;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.lang.NonNull;
+
 import maineta.eta.entity.Cliente;
 import maineta.eta.entity.Usuario;
 
@@ -37,6 +40,7 @@ public interface ClienteService {
      * @return Lista con todos los clientes
      */
     List<Cliente> findAll();
+    Page<Cliente> findAll(@NonNull Pageable pageable);
     Cliente actualizarCliente(Long id, Cliente cliente);
     Optional<Cliente> obtenerPorUsuario(Usuario usuario);
 }

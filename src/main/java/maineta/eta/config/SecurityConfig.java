@@ -135,10 +135,12 @@ public class SecurityConfig {
                                 
 
                                 // Secciones exclusivas para clientes
+                                .requestMatchers("/cliente/chats/**").hasAuthority("ROLE_CLIENTE")
                                 .requestMatchers("/cliente/**","/comentarios/**").hasAuthority("ROLE_CLIENTE")
                                 .requestMatchers("/admin/**").hasAuthority("ROLE_ADMIN")
 
                                 // Secciones exclusivas para colaboradores
+                                .requestMatchers("/colaborador/chats/**").hasAuthority("ROLE_COLABORADOR")
                                 .requestMatchers("/colaborador/**", "/colaborador/dashboard", "/actividades/**")
                                 .hasAuthority("ROLE_COLABORADOR")
 

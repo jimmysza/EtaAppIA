@@ -1,31 +1,140 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" lang="es">
+
 <head>
-    <title>Lista de Clientes</title>
-  <link rel="icon" th:href="@{/images/logos/logo.webp}" type="image/x-icon" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" th:href="@{/css/global.css}">
+    <link rel="stylesheet" th:href="@{/css/adminBd.css}">
+    <link rel="icon" th:href="@{/images/logos/logo.webp}" type="image/x-icon" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>ETA | Clientes</title>
 </head>
+
 <body>
-<h2>Clientes Registrados</h2>
+    <section class="container-manager">
 
-<table border="1">
-    <thead>
-    <tr>
-        <th>Nombre</th>
-        <th>Email</th>
-        <th>Cédula</th>
-        <th>Dirección</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="cliente : ${clientes}">
-        <td th:text="${cliente.usuario.nombre}"></td>
-        <td th:text="${cliente.usuario.email}"></td>
-        <td th:text="${cliente.cedula}"></td>
-        <td th:text="${cliente.direccion}"></td>
-    </tr>
-    </tbody>
-</table>
+        <div th:replace="~{componentes/sidebarAdmin :: sidebarAdmin}"></div>
 
-<a th:href="@{/clientes/nuevo}">Registrar nuevo cliente</a>
+        <main class="main-content">
+            <div class="header_db">
+                <div class="flex gap-3">
+                    <svg id="hideBar" class="hidebar-dashboard" xmlns="http://www.w3.org/2000/svg" width="24"
+                        height="24" viewBox="0 0 24 24">
+                        <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                            stroke-width="1.5"
+                            d="M15 3.5v17M3 9.4c0-2.24 0-3.36.436-4.216a4 4 0 0 1 1.748-1.748C6.04 3 7.16 3 9.4 3h5.2c2.24 0 3.36 0 4.216.436a4 4 0 0 1 1.748 1.748C21 6.04 21 7.16 21 9.4v5.2c0 2.24 0 3.36-.436 4.216a4 4 0 0 1-1.748 1.748C17.96 21 16.84 21 14.6 21H9.4c-2.24 0-3.36 0-4.216-.436a4 4 0 0 1-1.748-1.748C3 17.96 3 16.84 3 14.6z" />
+                    </svg>
+                    <nav aria-label="Breadcrumb">
+                        <ol class="breadcrumbs" itemscope itemtype="https://schema.org/BreadcrumbList">
+                            <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+                                <a itemprop="item" href="/">
+                                    <span itemprop="name">Inicio</span>
+                                </a>
+                                <meta itemprop="position" content="1" />
+                            </li>
+
+                            <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+                                <a itemprop="item" href="/admin/dashboard">
+                                    <span itemprop="name">Admin</span>
+                                </a>
+                                <meta itemprop="position" content="2" />
+                            </li>
+
+                            <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+                                <a itemprop="item">
+                                    <span itemprop="name">Clientes</span>
+                                </a>
+                                <meta itemprop="position" content="3" />
+                            </li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+
+            <div class="filtro_db">
+                <div class="Identifier-Dashboard">
+                    <div class="svg-contain">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24">
+                            <g fill="none" stroke="currentColor" stroke-dasharray="28" stroke-dashoffset="28"
+                                stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
+                                <path d="M4 21v-1c0 -3.31 2.69 -6 6 -6h4c3.31 0 6 2.69 6 6v1">
+                                    <animate fill="freeze" attributeName="stroke-dashoffset" dur="0.4s"
+                                        values="28;0" />
+                                </path>
+                                <path
+                                    d="M12 11c-2.21 0 -4 -1.79 -4 -4c0 -2.21 1.79 -4 4 -4c2.21 0 4 1.79 4 4c0 2.21 -1.79 4 -4 4Z">
+                                    <animate fill="freeze" attributeName="stroke-dashoffset" begin="0.4s"
+                                        dur="0.4s" values="28;0" />
+                                </path>
+                            </g>
+                        </svg>
+                    </div>
+                    <div class="id-content">
+                        <h1>Clientes Registrados</h1>
+                        <p>Listado paginado de clientes en la plataforma</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="dashboard-section">
+                <div class="section-title">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2">
+                        <path d="M3 3h18v18H3z" />
+                        <path d="M3 9h18" />
+                        <path d="M9 9v12" />
+                    </svg>
+                    Tabla de clientes
+                </div>
+
+                <div class="recent-reservations-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Nombre</th>
+                                <th>Email</th>
+                                <th>Cédula</th>
+                                <th>Dirección</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:if="${clientes == null or #lists.isEmpty(clientes)}">
+                                <td colspan="4" style="text-align: center; color: #999; padding: 18px;">
+                                    No hay clientes registrados.
+                                </td>
+                            </tr>
+                            <tr th:each="cliente : ${clientes}">
+                                <td th:text="${cliente.usuario.nombre}"></td>
+                                <td th:text="${cliente.usuario.email}"></td>
+                                <td th:text="${cliente.cedula}"></td>
+                                <td th:text="${cliente.direccion != null ? cliente.direccion : 'Sin direccion'}"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="mt-4 flex items-center gap-3 text-sm">
+                    <a th:if="${currentPage > 0}" th:href="@{/admin/clientes(page=${currentPage - 1})}"
+                        class="rounded-lg border border-slate-300 px-3 py-1.5 text-slate-700 hover:bg-slate-100">
+                        Anterior
+                    </a>
+
+                    <span class="text-slate-600"
+                        th:text="'Pagina ' + ${currentPage + 1} + ' de ' + ${totalPages > 0 ? totalPages : 1}">
+                        Pagina 1 de 1
+                    </span>
+
+                    <a th:if="${currentPage < totalPages - 1}" th:href="@{/admin/clientes(page=${currentPage + 1})}"
+                        class="rounded-lg border border-slate-300 px-3 py-1.5 text-slate-700 hover:bg-slate-100">
+                        Siguiente
+                    </a>
+                </div>
+            </div>
+        </main>
+    </section>
+
+    <script th:src="@{/js/dashboard.js}"></script>
 </body>
+
 </html>

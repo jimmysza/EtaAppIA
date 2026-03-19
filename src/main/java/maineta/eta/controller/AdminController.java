@@ -3,27 +3,44 @@ package maineta.eta.controller;
 import java.math.BigDecimal;
 import java.util.List;
 
-import maineta.eta.entity.Actividad;
-import maineta.eta.entity.Categoria;
-import maineta.eta.entity.Idioma;
-import maineta.eta.entity.Reserva;
-import maineta.eta.service.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import maineta.eta.entity.Actividad;
+import maineta.eta.entity.Admin;
+import maineta.eta.entity.Categoria;
+import maineta.eta.entity.Cliente;
+import maineta.eta.entity.Idioma;
+import maineta.eta.entity.Reserva;
+import maineta.eta.service.ActividadService;
+import maineta.eta.service.AdminService;
+import maineta.eta.service.CategoriaService;
+import maineta.eta.service.ClienteService;
+import maineta.eta.service.ColaboradorService;
+import maineta.eta.service.DisponibilidadService;
+import maineta.eta.service.IUploadFileService;
+import maineta.eta.service.IdiomaService;
+import maineta.eta.service.ReservaService;
+import maineta.eta.service.UsuarioService;
 
 @Controller
 @RequestMapping("/admin")
 public class AdminController {
 
+    private final AdminService adminService;
+    private final IUploadFileService uploadFileService;
     private final CategoriaService categoriaService;
     private final IdiomaService idiomaService;
 
-    private final ComentarioService comentarioService;
     private final ActividadService actividadService;
     private final UsuarioService usuarioService;
     private final ReservaService reservaService;
@@ -32,15 +49,16 @@ public class AdminController {
     private final DisponibilidadService disponibilidadService;
 
     /* @Autowired */
-    public AdminController(CategoriaService categoriaService, IdiomaService idiomaService, ComentarioService comentarioService,
+    public AdminController(AdminService adminService, IUploadFileService uploadFileService, CategoriaService categoriaService, IdiomaService idiomaService,
             ActividadService actividadService,
             UsuarioService usuarioService, ColaboradorService colaboradorService,
             ReservaService reservaService,
             ClienteService clienteService, DisponibilidadService disponibilidadService) {
+        this.adminService = adminService;
+        this.uploadFileService = uploadFileService;
         this.categoriaService = categoriaService;
         this.idiomaService = idiomaService;
         this.disponibilidadService = disponibilidadService;
-        this.comentarioService = comentarioService;
         this.actividadService = actividadService;
         this.clienteService = clienteService;
         this.usuarioService = usuarioService;
@@ -50,6 +68,8 @@ public class AdminController {
 
     @GetMapping("/dashboard")
     public String adminHome(Model model) {
+        Admin admin = adminService.obtenerAdminPrincipal();
+        BigDecimal porcentajeDecimal = admin.getPorcentajeComision().divide(new BigDecimal("100"));
 
         List<Actividad> actividades = actividadService.listarActividades();
 
@@ -66,8 +86,7 @@ public class AdminController {
                     // precioBase * cantidad → total de esa reserva
                     BigDecimal totalReserva = precioBase.multiply(cantidad);
 
-                    // 18% de comisión para el admin
-                    BigDecimal comision = totalReserva.multiply(new BigDecimal("0.18"));
+                    BigDecimal comision = totalReserva.multiply(porcentajeDecimal);
 
                     // acumular la comisión
                     plataGanada = plataGanada.add(comision);
@@ -75,6 +94,7 @@ public class AdminController {
             }
         }
 
+        model.addAttribute("porcentajeComision", admin.getPorcentajeComision());
         model.addAttribute("plataGanada", plataGanada);
         model.addAttribute("CantidadCliente", clienteService.ContadorCliente());
         model.addAttribute("CantidadColaborador", colaboradorService.ContadorColaborador());
@@ -86,6 +106,18 @@ public class AdminController {
         return "admin/dashboard";
     }
 
+    @PostMapping("/comision")
+    public String actualizarComision(@RequestParam BigDecimal porcentajeComision, RedirectAttributes redirectAttrs) {
+        if (porcentajeComision.compareTo(BigDecimal.ZERO) < 0 || porcentajeComision.compareTo(new BigDecimal("100")) > 0) {
+            redirectAttrs.addFlashAttribute("error", "El porcentaje de comision debe estar entre 0 y 100.");
+            return "redirect:/admin/dashboard";
+        }
+
+        adminService.actualizarPorcentajeComision(porcentajeComision);
+        redirectAttrs.addFlashAttribute("mensaje", "Porcentaje de comision actualizado correctamente.");
+        return "redirect:/admin/dashboard";
+    }
+
     @GetMapping("/categorias")
     public String listarCategorias(Model model, Categoria categoria) {
         model.addAttribute("categorias", categoriaService.listarCategorias());
@@ -94,8 +126,20 @@ public class AdminController {
     }
 
     @PostMapping("/categorias/nueva")
-    public String nuevaCategoria(Categoria categoria) {
-        categoriaService.guardarCategoria(categoria);
+    public String nuevaCategoria(Categoria categoria,
+            @RequestParam(value = "imagenFile", required = false) MultipartFile imagenFile,
+            RedirectAttributes redirectAttrs) {
+        try {
+            if (imagenFile != null && !imagenFile.isEmpty()) {
+                categoria.setImagen("/uploads/" + uploadFileService.copy(imagenFile));
+            }
+
+            categoriaService.guardarCategoria(categoria);
+            redirectAttrs.addFlashAttribute("mensaje", "Categoria creada correctamente.");
+        } catch (Exception e) {
+            redirectAttrs.addFlashAttribute("error", e.getMessage());
+        }
+
         return "redirect:/admin/categorias"; // Redirige a la lista de categorías después de guardar
     }
 
@@ -127,9 +171,24 @@ public class AdminController {
         return "redirect:/admin/idiomas"; // Redirige a la lista de categorías después de eliminar
     }
 
+    @GetMapping("/clientes")
+    public String listarClientes(@RequestParam(defaultValue = "0") int page, Model model) {
+        Page<Cliente> clientesPage = clienteService.findAll(PageRequest.of(page, 10));
+
+        model.addAttribute("clientes", clientesPage.getContent());
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", clientesPage.getTotalPages());
+
+        return "admin/clientes";
+    }
+
     @GetMapping("/eliminar/categoria/{id}")
     public String eliminar(@PathVariable Long id, RedirectAttributes redirectAttrs) {
         try {
+            Categoria categoria = categoriaService.getCategoriaPorId(id);
+            if (categoria != null && categoria.getImagen() != null && categoria.getImagen().startsWith("/uploads/")) {
+                uploadFileService.delete(categoria.getImagen().replace("/uploads/", ""));
+            }
             categoriaService.eliminarCategoria(id);
             redirectAttrs.addFlashAttribute("mensaje", "Categoría eliminada correctamente");
         } catch (RuntimeException e) {
