@@ -207,7 +207,7 @@ body {
     }
 
     .register-btn {
-        background: var(--color-blue-600);
+        background: var(--color-main);
         color: #f9fafb;
         box-shadow: 0 12px 28px rgba(17, 24, 39, 0.18);
     }

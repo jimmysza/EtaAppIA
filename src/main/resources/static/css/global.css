@@ -25,9 +25,12 @@
     --color-black-400: hsl(240, 5%, 10%);
 
     --color-blue-100: hsl(215, 97%, 87%);
+
+    --color-main: #23aae2;
     --color-blue-400: #6e98c2;
     --color-sky-blue: #c1e8ff;
     --color-medium-blue: #5483b3;
+
     --color-medium-blur: #5483b395;
     --color-light-blue: #7da0ca;
     --color-blue-600: hsl(215, 82%, 61%);
@@ -168,7 +171,7 @@ button[type="submit"]:focus {
 }
 
 .ColorBlue {
-    color: var(--color-medium-blue);
+    color: var(--color-main);
 }
 
 

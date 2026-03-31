@@ -193,7 +193,7 @@ main.registro {
 
 .login-button {
     font-weight: bold;
-    background: var(--color-medium-blue);
+    background: var(--color-main);
     color: #fff;
     padding: 12px;
     width: 100%;

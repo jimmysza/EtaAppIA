@@ -7,7 +7,7 @@
 
     <title>Eta - Descubre Actividades</title>
 
-    <link rel="icon" th:href="@{/images/logos/Logo.webp}" type="image/x-icon" />
+    <link rel="icon" th:href="@{/images/logos/isotipo.webp}" type="image/x-icon" />
     <link rel="stylesheet" th:href="@{/fonts/fonts.css}">
 
     <!--Lenis -->
@@ -100,9 +100,10 @@
         .hero-shell {
             position: relative;
             overflow: hidden;
+            
         }
 
-       /*  .hero-shell::before {
+        /*  .hero-shell::before {
             content: "";
             position: absolute;
             inset: 0;
@@ -113,11 +114,7 @@
             pointer-events: none;
         }
  */
-        .hero-shell > * {
-            position: relative;
-            z-index: 1;
-        }
-
+       
         .hero-badge {
             display: inline-flex;
             align-items: center;
@@ -215,7 +212,7 @@
             height: 26px;
             padding: 0 8px;
             border-radius: 999px;
-            background: #111827;
+            background: var(--color-main);
             color: #ffffff;
             font-size: 0.75rem;
         }
@@ -225,7 +222,7 @@
             align-items: center;
             gap: 10px;
             border: none;
-            background: #111827;
+            background: var(--color-main);
             color: #ffffff;
             box-shadow: 0 16px 36px rgba(17, 24, 39, 0.22);
         }
@@ -611,37 +608,74 @@
 
 
     <!--hero-->
-    <section class="hero-shell py-16 px-4 sm:px-6 lg:px-8">
-        <div class="max-w-6xl mx-auto lg:pt-14 pt-36 md:pt-28 pb-12">
+    <section class="relative hero-shell flex items-center justify-center sm:py-16 md:py-30 pt-20 lg:py-30 px-4 sm:px-6 lg:px-8 overflow-hidden min-h-[700px] h-[600px]">
+
+        <!-- Foto izquierda arriba — rotada hacia la izquierda -->
+        <div class="absolute top-5 left-4 -rotate-6 z-10  md:block lg:block">
+            <div class="w-[160px] h-[160px] rounded-2xl overflow-hidden shadow-2xl ring-[3px] ring-white">
+                <img th:src="@{/images/shares/share1.webp}" alt="actividad" class="w-full h-full object-cover">
+            </div>
+        </div>
+
+        <!-- Foto izquierda abajo — rotada hacia la derecha -->
+        <div class="absolute bottom-10 left-1 rotate-[5deg] z-10  md:block lg:block">
+            <div class="w-[160px] h-[110px] rounded-2xl overflow- shadow-xl ring-[3px] ring-white">
+                <img th:src="@{/images/shares/share2.webp}" alt="experiencia" class="w-full h-full object-cover rounded-2xl">
+            </div>
+        </div>
+
+        <!-- Foto derecha arriba — rotada hacia la derecha -->
+        <div class="absolute top-4 right-5 rotate-[7deg] z-10  md:block lg:block">
+            <div class="w-[150px] h-[150px] rounded-2xl overflow- shadow-2xl ring-[3px] ring-white">
+                <img th:src="@{/images/shares/share3.webp}" alt="tour" class="w-full h-full object-cover rounded-2xl">
+            </div>
+        </div>
+
+        <!-- Foto derecha abajo — rotada hacia la izquierda -->
+        <div class="absolute bottom-8 right-1 -rotate-[4deg] z-10  md:block lg:block">
+            <div class="w-[140px] h-[140px] rounded-xl overflow- shadow-xl ring-[3px] ring-white">
+                <img th:src="@{/images/shares/share4.webp}" alt="gastronomia" class="w-full h-full object-cover rounded-2xl">
+            </div>
+        </div>
+
+
+        <div class=" max-w-6xl mx-auto lg:pt-8 pt-6 md:pt-10 pb-12">
             <div class="flex justify-center mb-6">
                 <div class="hero-badge">
                     <span class="h-2.5 w-2.5 rounded-full bg-emerald-500"></span>
-                    <span class="text-sm font-semibold text-slate-700">Tu proxima experiencia empieza con una mejor busqueda</span>
+                    <span class="text-sm font-semibold text-slate-700">Tu proxima experiencia empieza con una mejor
+                        busqueda</span>
                 </div>
             </div>
 
             <h1 class="text-5xl md:text-7xl font-black tracking-tight text-center text-slate-950 mb-5">
-                Encuentra planes en Cartagena
+                Encuentra Actividades en Cartagena
                 <br>
                 como si tuvieras un <span class="hero-pill">organizador local</span>
             </h1>
 
             <p class="text-center text-slate-600 text-lg md:text-xl mb-12 max-w-3xl mx-auto leading-relaxed">
-                Busca actividades, compara categorias, filtra por idioma o presupuesto y descubre experiencias listas para reservar sin perder tiempo entre opciones.
+                Busca actividades, compara categorias, filtra por idioma o presupuesto y descubre experiencias listas
+                para reservar sin perder tiempo entre opciones.
             </p>
 
             <form class="search-panel" th:action="@{/actividades/buscar}" method="get" id="heroSearchForm">
                 <div class="search-bar">
                     <label class="search-input-wrap" for="heroSearchInput">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
                             <circle cx="11" cy="11" r="8"></circle>
                             <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
                         </svg>
-                        <input id="heroSearchInput" type="text" name="nombre" placeholder="Buscar por titulo, descripcion o tipo de experiencia..." class="hero-search-input">
+                        <input id="heroSearchInput" type="text" name="nombre"
+                            placeholder="Buscar por titulo, descripcion o tipo de experiencia..."
+                            class="hero-search-input">
                     </label>
 
-                    <button type="button" class="filter-trigger" id="openFiltersBtn" aria-haspopup="dialog" aria-controls="searchFiltersModal">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <button type="button" class="filter-trigger" id="openFiltersBtn" aria-haspopup="dialog"
+                        aria-controls="searchFiltersModal">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
                             <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
                         </svg>
                         <span>Filtros</span>
@@ -649,7 +683,8 @@
                     </button>
 
                     <button type="submit" class="search-submit">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
                             <circle cx="11" cy="11" r="8"></circle>
                             <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
                         </svg>
@@ -667,13 +702,16 @@
                 </div>
 
                 <div class="search-modal" id="searchFiltersModal" aria-hidden="true">
-                    <div class="search-modal__dialog" role="dialog" aria-modal="true" aria-labelledby="searchFiltersTitle">
+                    <div class="search-modal__dialog" role="dialog" aria-modal="true"
+                        aria-labelledby="searchFiltersTitle">
                         <div class="search-modal__header">
                             <div>
                                 <h2 class="search-modal__title" id="searchFiltersTitle">Filtra tu busqueda</h2>
-                                <p class="search-modal__subtitle">Ajusta solo lo importante y aplica los cambios cuando estes listo.</p>
+                                <p class="search-modal__subtitle">Ajusta solo lo importante y aplica los cambios cuando
+                                    estes listo.</p>
                             </div>
-                            <button type="button" class="search-modal__close" id="closeFiltersBtn" aria-label="Cerrar filtros">
+                            <button type="button" class="search-modal__close" id="closeFiltersBtn"
+                                aria-label="Cerrar filtros">
                                 ✕
                             </button>
                         </div>
@@ -681,14 +719,17 @@
                         <div class="search-modal__body">
                             <div class="filter-field filter-field--full">
                                 <label for="modalNombre">Que quieres hacer</label>
-                                <input id="modalNombre" type="text" value="" placeholder="Paseo en barco, tour historico, experiencia gastronomica..." data-sync-target="heroSearchInput">
+                                <input id="modalNombre" type="text" value=""
+                                    placeholder="Paseo en barco, tour historico, experiencia gastronomica..."
+                                    data-sync-target="heroSearchInput">
                             </div>
 
                             <div class="filter-field">
                                 <label for="modalCategoria">Categoria</label>
                                 <select id="modalCategoria" name="categoriaId">
                                     <option value="">Todas las categorias</option>
-                                    <option th:each="cat : ${categorias}" th:value="${cat.idCategoria}" th:text="${cat.nombre}"></option>
+                                    <option th:each="cat : ${categorias}" th:value="${cat.idCategoria}"
+                                        th:text="${cat.nombre}"></option>
                                 </select>
                             </div>
 
@@ -696,7 +737,8 @@
                                 <label for="modalIdioma">Idioma</label>
                                 <select id="modalIdioma" name="idiomaId">
                                     <option value="">Todos los idiomas</option>
-                                    <option th:each="idioma : ${idiomas}" th:value="${idioma.idIdioma}" th:text="${idioma.nombre}"></option>
+                                    <option th:each="idioma : ${idiomas}" th:value="${idioma.idIdioma}"
+                                        th:text="${idioma.nombre}"></option>
                                 </select>
                             </div>
 
@@ -715,13 +757,22 @@
                         <div class="search-modal__footer">
                             <span class="text-sm text-slate-500">Pulsa aplicar para buscar con estos filtros.</span>
                             <div class="search-modal__actions">
-                                <button type="button" class="search-modal__secondary" id="resetFiltersBtn">Limpiar</button>
+                                <button type="button" class="search-modal__secondary"
+                                    id="resetFiltersBtn">Limpiar</button>
                                 <button type="submit" class="search-modal__primary">Aplicar filtros</button>
                             </div>
                         </div>
                     </div>
                 </div>
             </form>
+
+            <!--decoracion-->
+
+            <!--  <p
+                            class="text-shares text-xs/5 font-bold tracking-tight bg-white/20 backdrop-blur-md px-4 py-2 rounded-full border border-white/30">
+                            @jimmysza</p> -->
+
+
         </div>
     </section>
 
@@ -854,8 +905,7 @@
                             <svg class="w-5 h-5 fav-icon"
                                 th:classappend="${favoritosIds != null and favoritosIds.contains(actividad.idActividad)} ? ' text-red-500' : ' text-gray-700'"
                                 th:fill="${favoritosIds != null and favoritosIds.contains(actividad.idActividad)} ? 'currentColor' : 'none'"
-                                stroke="currentColor"
-                                viewBox="0 0 24 24">
+                                stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
                             </svg>
@@ -882,9 +932,9 @@
                                 <g fill="none">
                                     <path
                                         d="m12.593 23.258l-.011.002l-.071.035l-.02.004l-.014-.004l-.071-.035q-.016-.005-.024.005l-.004.01l-.017.428l.005.02l.01.013l.104.074l.015.004l.012-.004l.104-.074l.012-.016l.004-.017l-.017-.427q-.004-.016-.017-.018m.265-.113l-.013.002l-.185.093l-.01.01l-.003.011l.018.43l.005.012l.008.007l.201.093q.019.005.029-.008l.004-.014l-.034-.614q-.005-.018-.02-.022m-.715.002a.02.02 0 0 0-.027.006l-.006.014l-.034.614q.001.018.017.024l.015-.002l.201-.093l.01-.008l.004-.011l.017-.43l-.003-.012l-.01-.01z" />
-                                    <path fill="#23AAE3"
+                                    <path fill="#23aae2"
                                         d="M12 2a9 9 0 0 1 9 9c0 3.074-1.676 5.59-3.442 7.395a20.4 20.4 0 0 1-2.876 2.416l-.426.29l-.2.133l-.377.24l-.336.205l-.416.242a1.87 1.87 0 0 1-1.854 0l-.416-.242l-.52-.32l-.192-.125l-.41-.273a20.6 20.6 0 0 1-3.093-2.566C4.676 16.589 3 14.074 3 11a9 9 0 0 1 9-9m0 6a3 3 0 1 0 0 6a3 3 0 0 0 0-6"
-                                        stroke-width="0.2" stroke="#23AAE3" />
+                                        stroke-width="0.2" stroke="#23aae2" />
                                 </g>
                             </svg>
                             <span class="text-sm font-semibold text-gray-900"
@@ -896,9 +946,16 @@
             </div>
         </div>
 
-        <div class="" th:if="${actividades.size() == 0}">
-            <p class="w-full text-center font-bold text-2xl text-blue-500 p-10 border border-dashed rounded-lg">no hay
-                actividades</p>
+        <div th:if="${actividades.size() == 0}">
+
+            <p
+                class="w-full text-center font-bold text-2xl text-[#23aae2] p-10 border-2 border-dashed border-[23aae2] rounded-lg flex flex-col justify-center items-center gap-6">
+                <svg xmlns=" http://www.w3.org/2000/svg" width="45" height="45" viewBox="0 0 24 24">
+                    <path fill="none" stroke="#23aae2" stroke-linecap="round" stroke-width="1.5"
+                        d="M21.984 10c-.037-1.311-.161-2.147-.581-2.86c-.598-1.015-1.674-1.58-3.825-2.708l-2-1.05C13.822 2.461 12.944 2 12 2s-1.822.46-3.578 1.382l-2 1.05C4.271 5.56 3.195 6.125 2.597 7.14C2 8.154 2 9.417 2 11.942v.117c0 2.524 0 3.787.597 4.801c.598 1.015 1.674 1.58 3.825 2.709l2 1.049C10.178 21.539 11.056 22 12 22s1.822-.46 3.578-1.382l2-1.05c2.151-1.129 3.227-1.693 3.825-2.708c.42-.713.544-1.549.581-2.86M21 7.5l-4 2M12 12L3 7.5m9 4.5v9.5m0-9.5l4.5-2.25l.5-.25m0 0V13m0-3.5l-9.5-5" />
+                </svg>
+                <span>no hay actividades</span>
+            </p>
         </div>
     </div>
 
@@ -915,7 +972,8 @@
                         Colaboradores que más convierten reservas en Cartagena
                     </h2>
                     <p class="text-slate-600 text-base md:text-lg leading-relaxed mb-0">
-                        Este bloque ya no es decorativo: toma a los colaboradores con más reservas y te lleva a un perfil público donde puedes explorar todo su catálogo.
+                        Este bloque ya no es decorativo: toma a los colaboradores con más reservas y te lleva a un
+                        perfil público donde puedes explorar todo su catálogo.
                     </p>
                 </div>
 
@@ -923,7 +981,8 @@
                     th:href="@{/colaboradores/{id}(id=${anfitrionesDestacados[0].idColaborador})}"
                     class="inline-flex items-center gap-2 rounded-full bg-slate-950 text-white px-5 py-3 font-semibold w-fit">
                     Ver anfitrión líder
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <line x1="5" y1="12" x2="19" y2="12"></line>
                         <polyline points="12 5 19 12 12 19"></polyline>
                     </svg>
@@ -932,8 +991,7 @@
 
             <div class="host-grid" th:if="${anfitrionesDestacados != null and !#lists.isEmpty(anfitrionesDestacados)}">
                 <a th:each="anfitrion : ${anfitrionesDestacados}"
-                    th:href="@{/colaboradores/{id}(id=${anfitrion.idColaborador})}"
-                    class="host-card-link group">
+                    th:href="@{/colaboradores/{id}(id=${anfitrion.idColaborador})}" class="host-card-link group">
                     <article class="host-card-public">
                         <div class="host-media">
                             <img th:if="${anfitrion.imagenPrincipal != null and !#strings.isEmpty(anfitrion.imagenPrincipal)}"
@@ -948,7 +1006,8 @@
                             </div>
                         </div>
 
-                        <span class="host-chip" th:if="${anfitrion.actividadDestacada != null and !#strings.isEmpty(anfitrion.actividadDestacada)}"
+                        <span class="host-chip"
+                            th:if="${anfitrion.actividadDestacada != null and !#strings.isEmpty(anfitrion.actividadDestacada)}"
                             th:text="${anfitrion.actividadDestacada}">Actividad destacada</span>
 
                         <p class="host-description">
@@ -965,14 +1024,18 @@
                                 <span>actividades</span>
                             </div>
                             <div class="host-stat">
-                                <strong th:text="${#numbers.formatDecimal(anfitrion.promedioCalificacion, 1, 1)}">0.0</strong>
+                                <strong
+                                    th:text="${#numbers.formatDecimal(anfitrion.promedioCalificacion, 1, 1)}">0.0</strong>
                                 <span>calificación</span>
                             </div>
                         </div>
 
                         <div class="host-footer">
-                            <span th:text="${anfitrion.totalViajeros + ' viajeros atendidos'}">0 viajeros atendidos</span>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <span th:text="${anfitrion.totalViajeros + ' viajeros atendidos'}">0 viajeros
+                                atendidos</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round">
                                 <line x1="5" y1="12" x2="19" y2="12"></line>
                                 <polyline points="12 5 19 12 12 19"></polyline>
                             </svg>
@@ -1003,16 +1066,16 @@
                 <a href=""
                     class="p-2 bg-slate-50 rounded-2xl text-slate-900 hover:bg-blue-50 hover:text-blue-600 transition-all border border-slate-100 shadow-sm">
                     <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" {...props}>
-                        <path fill="currentColor"
+                        <path fill="#23aae2"
                             d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 0 1-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 0 1 7.8 2m-.2 2A3.6 3.6 0 0 0 4 7.6v8.8C4 18.39 5.61 20 7.6 20h8.8a3.6 3.6 0 0 0 3.6-3.6V7.6C20 5.61 18.39 4 16.4 4zm9.65 1.5a1.25 1.25 0 0 1 1.25 1.25A1.25 1.25 0 0 1 17.25 8A1.25 1.25 0 0 1 16 6.75a1.25 1.25 0 0 1 1.25-1.25M12 7a5 5 0 0 1 5 5a5 5 0 0 1-5 5a5 5 0 0 1-5-5a5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3a3 3 0 0 0 3 3a3 3 0 0 0 3-3a3 3 0 0 0-3-3" />
                     </svg>
                 </a>
                 <a href=""
                     class="p-2 bg-slate-50 rounded-2xl text-slate-900 hover:bg-blue-50 hover:text-blue-600 transition-all border border-slate-100 shadow-sm">
                     <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" {...props}>
-                        <g fill="none">
+                        <g fill="#23aae2">
                             <g clip-path="url(#akarIconsFacebookFill0)">
-                                <path fill="currentColor" fill-rule="evenodd"
+                                <path fill="##23aae2" fill-rule="evenodd"
                                     d="M0 12.067C0 18.034 4.333 22.994 10 24v-8.667H7V12h3V9.333c0-3 1.933-4.666 4.667-4.666c.866 0 1.8.133 2.666.266V8H15.8c-1.467 0-1.8.733-1.8 1.667V12h3.2l-.533 3.333H14V24c5.667-1.006 10-5.966 10-11.933C24 5.43 18.6 0 12 0S0 5.43 0 12.067"
                                     clip-rule="evenodd" />
                             </g>
@@ -1095,27 +1158,27 @@
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' }
             })
-            .then(res => {
-                if (res.status === 401 || res.redirected) {
-                    window.location.href = '/login';
-                    return;
-                }
-                return res.json();
-            })
-            .then(data => {
-                if (!data) return;
-                const svg = btn.querySelector('.fav-icon');
-                if (data.favorito) {
-                    svg.setAttribute('fill', 'currentColor');
-                    svg.classList.add('text-red-500');
-                    svg.classList.remove('text-gray-700');
-                } else {
-                    svg.setAttribute('fill', 'none');
-                    svg.classList.remove('text-red-500');
-                    svg.classList.add('text-gray-700');
-                }
-            })
-            .catch(err => console.error('Error toggling favorito:', err));
+                .then(res => {
+                    if (res.status === 401 || res.redirected) {
+                        window.location.href = '/login';
+                        return;
+                    }
+                    return res.json();
+                })
+                .then(data => {
+                    if (!data) return;
+                    const svg = btn.querySelector('.fav-icon');
+                    if (data.favorito) {
+                        svg.setAttribute('fill', 'currentColor');
+                        svg.classList.add('text-red-500');
+                        svg.classList.remove('text-gray-700');
+                    } else {
+                        svg.setAttribute('fill', 'none');
+                        svg.classList.remove('text-red-500');
+                        svg.classList.add('text-gray-700');
+                    }
+                })
+                .catch(err => console.error('Error toggling favorito:', err));
         }
 
         document.addEventListener('DOMContentLoaded', () => {

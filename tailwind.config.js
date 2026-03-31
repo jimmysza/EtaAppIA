@@ -8,6 +8,7 @@ module.exports = {
         extend: {
             colors: {
                 // Colores personalizados de tu proyecto ETA
+                'color-main': 'var(--color-main)',
                 'color-blue': 'var(--color-blue)',
                 'color-medium-blue': 'var(--color-medium-blue)',
                 'color-blur': 'var(--color-blur)',

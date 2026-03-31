@@ -251,7 +251,7 @@ h1 {
 }
 
 .ColorBlue {
-    color: var(--color-medium-blue)
+    color: var(--color-main);
 }
 
 

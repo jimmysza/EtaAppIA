@@ -21,8 +21,8 @@ import maineta.eta.repository.RolRepository;
 import maineta.eta.repository.UsuarioRepository;
 
 /**
- * Esta clase inicializa datos en la base de datos al arrancar la aplicación.
- * En este caso, se asegura de que los roles principales estén creados.
+ * Esta clase inicializa datos en la base de datos al arrancar la aplicación. En
+ * este caso, se asegura de que los roles principales estén creados.
  */
 @Component
 public class DataInitializer implements CommandLineRunner {
@@ -51,13 +51,13 @@ public class DataInitializer implements CommandLineRunner {
     }
 
     /**
-     * Este método se ejecuta automáticamente al iniciar la aplicación
-     * gracias a que implementamos CommandLineRunner.
+     * Este método se ejecuta automáticamente al iniciar la aplicación gracias a
+     * que implementamos CommandLineRunner.
      */
     @Override
     public void run(String... args) throws Exception {
         // Definimos los roles que queremos garantizar que existan en la base de datos
-        String[] roles = { "ROLE_CLIENTE", "ROLE_COLABORADOR", "ROLE_ADMIN" };
+        String[] roles = {"ROLE_CLIENTE", "ROLE_COLABORADOR", "ROLE_ADMIN"};
 
         // Recorremos cada rol de la lista
         for (String nombreRol : roles) {
@@ -74,9 +74,9 @@ public class DataInitializer implements CommandLineRunner {
         }
 
         String[][] idiomas = {
-                { "Español", "es" },
-                { "Inglés", "en" },
-                { "Francés", "fr" }
+            {"Español", "es"},
+            {"Inglés", "en"},
+            {"Francés", "fr"}
         };
 
         for (String[] idioma : idiomas) { // El tipo debe ser String[]
@@ -97,32 +97,38 @@ public class DataInitializer implements CommandLineRunner {
             }
         }
 
-        String[] categorias = { "Playa", "Gastronomía",
-                "Historia", "Entretenimiento","Cultura","Vida Nocturna" };
+        String[][] categorias = {
+            {"Playa", "webp"},
+            {"Gastronomía", "jpg"},
+            {"Historia", "jpg"},
+            {"Entretenimiento", "png"},
+            {"Cultura", "jpg"},
+            {"Vida Nocturna", "jpg"}
+        };
 
-        for (String categoria : categorias) { // El tipo debe ser String[]
+        for (String[] categoria : categorias) {
+            String nombre = categoria[0];
+            String extension = categoria[1];
 
-            // Verificamos si el idioma ya existe en la base de datos
-            Optional<Categoria> categoriaExistente = categoriaRepository.findByNombre(categoria);
+            Optional<Categoria> categoriaExistente = categoriaRepository.findByNombre(nombre);
 
-            // Si el idioma NO existe, lo creamos y lo guardamos
             if (categoriaExistente.isEmpty()) {
                 Categoria nuevoCategoria = new Categoria();
-                nuevoCategoria.setNombre(categoria);
-                // Generar ruta de imagen basada en el nombre (ej.
-                // experiencias_acuaticas_y_playa.jpg)
-                String rutaImagen = categoria.toLowerCase()
+                nuevoCategoria.setNombre(nombre);
+
+                String rutaImagen = nombre.toLowerCase()
                         .replace(" ", "_")
                         .replace("ó", "o")
                         .replace("é", "e")
                         .replace("í", "i")
                         .replace("ú", "u")
                         .replace("á", "a")
-                        .replace("ñ", "n") + ".png";
-                nuevoCategoria.setImagen("/src/main/resources/static/images/categorias/" + rutaImagen);
+                        .replace("ñ", "n") + "." + extension;
+
+                nuevoCategoria.setImagen("/images/categorias/" + rutaImagen);
                 categoriaRepository.save(nuevoCategoria);
 
-                System.out.println("Categoría creada: " + categoria + " con imagen: " + nuevoCategoria.getImagen());
+                System.out.println("Categoría creada: " + nombre + " con imagen: " + nuevoCategoria.getImagen());
             }
         }
 
