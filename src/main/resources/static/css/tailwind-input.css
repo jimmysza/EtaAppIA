@@ -1,0 +1,22 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Variables globales del proyecto ETA */
+:root {
+    --color-main: #23aae2;
+    --color-blue: #1e3a8a;
+    --color-medium-blue: #3b82f6;
+    --color-blur: rgba(35, 170, 226, 0.1);
+    --color-yellow: #fbbf24;
+    --color-orange: #f97316;
+    --color-green: #10b981;
+    --color-red: #ef4444;
+}
+
+/* Capas de componentes personalizados si los necesitas */
+@layer components {
+    .btn-primary {
+        @apply bg-[#23aae2] text-white px-4 py-2 rounded-lg font-semibold hover:bg-blue-600 transition-colors;
+    }
+}

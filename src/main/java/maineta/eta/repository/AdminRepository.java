@@ -9,4 +9,5 @@ import maineta.eta.entity.Admin;
 public interface AdminRepository extends JpaRepository<Admin, Long> {
     Admin findByIdAdmin(long idAdmin);
     Optional<Admin> findTopByOrderByIdAdminAsc();
+    Optional<Admin> findTopByOrderByIdAdminDesc();
 }

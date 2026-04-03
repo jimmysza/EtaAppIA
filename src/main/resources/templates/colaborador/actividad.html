@@ -9,7 +9,7 @@
     <link rel="stylesheet" th:href="@{/css/adminBd.css}">
     <link rel="icon" th:href="@{/images/logos/logo.webp}" type="image/x-icon" />
 
-    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" th:href="@{/css/tailwind.css}">
     <title>ETA | Actividades</title>
 
     <style>
@@ -76,7 +76,7 @@
 
         /* Botones de vista activos */
         .view-btn.active {
-            background: #2563eb;
+            background-color: var(--color-main);
             color: white;
         }
     </style>
@@ -133,22 +133,6 @@
                     </div>
                 </div>
 
-                <!-- Formulario de búsqueda -->
-                <div class="flex-1 max-w-md mx-4">
-                    <form th:action="@{/colaborador/actividades}" method="get" class="relative group">
-                        <input type="text" name="filtroNombre" th:value="${filtroNombre}"
-                            placeholder="Buscar por título..."
-                            class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all">
-                        <div class="inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                            <svg class="h-5 w-5 text-gray-400 group-focus-within:text-blue-500"
-                                xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                            </svg>
-                        </div>
-                    </form>
-                </div>
 
                 <div class="flex gap-2 filtros-btns">
                     <!-- Botones de cambio de vista -->
@@ -169,6 +153,27 @@
                         </button>
                     </div>
 
+                    <!-- Formulario de búsqueda -->
+                    <div class="flex-1 max-w-md mx-4 relative">
+                        <form th:action="@{/colaborador/actividades}" method="get" class="relative group">
+
+                            <input type="text" name="filtroNombre" th:value="${filtroNombre}"
+                                placeholder="Buscar por título..." class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg 
+                   focus:ring-2 focus:ring-blue-500 focus:border-blue-500 
+                   outline-none transition-all">
+
+                            <!-- Icono -->
+                            <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                                <svg class="h-5 w-5 text-gray-400 group-focus-within:text-blue-500"
+                                    xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                    stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                </svg>
+                            </div>
+
+                        </form>
+                    </div>
                     <!-- Botón Agregar -->
                     <a th:href="@{/colaborador/actividades/nueva}" class="button-default text-open-add">
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24">
@@ -187,6 +192,7 @@
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                     <a class="card group cursor-pointer rounded-xl w-full" th:each="actividad : ${actividades}"
                         th:href="@{/colaborador/detalle/{id}(id=${actividad.idActividad})}">
+
                         <div class="relative rounded-xl overflow-hidden mb-3">
                             <img th:if="${actividad.imagen != null}" th:src="@{'/uploads/' + ${actividad.imagen}}"
                                 alt="Imagen de la actividad" class="card-image w-full h-64 object-cover">
@@ -205,11 +211,10 @@
 
                             <div class="flex items-center gap-1">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24">
-                                    <path fill="#23AAE3"
-                                        d="M12 2a9 9 0 0 1 9 9c0 3.074-1.676 5.59-3.442 7.395a20.4 20.4 0 0 1-2.876 2.416l-.426.29l-.2.133l-.377.24l-.336.205l-.416.242a1.87 1.87 0 0 1-1.854 0l-.416-.242l-.52-.32l-.192-.125l-.41-.273a20.6 20.6 0 0 1-3.093-2.566C4.676 16.589 3 14.074 3 11a9 9 0 0 1 9-9m0 6a3 3 0 1 0 0 6a3 3 0 0 0 0-6" />
+                                    <path fill="#23AAE3" d="M21 6v2H3V6zM3 18h9v-2H3zm0-5h18v-2H3z" />
                                 </svg>
                                 <span class="text-sm text-gray-600 line-clamp-1"
-                                    th:text="${actividad.descripcion}">Ubicación</span>
+                                    th:text="${actividad.descripcion}">descripcion</span>
                             </div>
                         </div>
                     </a>
@@ -231,7 +236,8 @@
                             <th>Categoria</th>
                             <th>Ubicación</th>
                             <th>Precio</th>
-
+                            <th>Vistas</th>
+                            <th>Tendencia</th>
                             <th>Acciones</th>
                         </tr>
                     </thead>
@@ -258,6 +264,8 @@
                             <td class="text-gray-600 text-sm" th:text="${actividad.ubicacion}">Ubicación</td>
                             <td class="font-semibold text-blue-600"
                                 th:text="${'$ ' + #numbers.formatDecimal(actividad.precio, 0, 0)}">$0</td>
+                            <td class="text-gray-700 font-medium" th:text="${actividad.totalVistas}">0</td>
+                            <td class="text-gray-700 font-medium" th:text="${actividad.totalTendencia}">0</td>
                             <td>
                                 <a th:href="@{/colaborador/detalle/{id}(id=${actividad.idActividad})}"
                                     class="inline-flex items-center gap-1 px-3 py-1.5 bg-blue-600 text-white text-xs font-medium rounded-lg hover:bg-blue-700 transition-colors">

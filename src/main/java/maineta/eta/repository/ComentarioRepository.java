@@ -47,4 +47,12 @@ public interface ComentarioRepository extends JpaRepository<Comentario, Long> {
             """)
     List<Object[]> distribucionCalificacionPorActividad(@Param("idActividad") Long idActividad);
 
+    // Query para KPIs
+
+    @Query("""
+        SELECT COALESCE(AVG(c.calificacion), 0)
+        FROM Comentario c
+        WHERE c.actividad.colaborador.idColaborador = :idColaborador
+    """)
+    Double calcularCalificacionPromedioColaborador(@Param("idColaborador") Long idColaborador);
 }

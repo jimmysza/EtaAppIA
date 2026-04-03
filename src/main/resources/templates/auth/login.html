@@ -20,45 +20,52 @@
 
 <body>
 
-    <div th:if="${param.registrarse}" class="alert alert-info">
+    <div th:if="${param.registrarse}" class="alert alert-info" >
         Debes registrarte o iniciar sesión para acceder.
     </div>
 
-    <div th:if="${param.pendingVerification}" class="alert alert-info">
-        Revisa tu correo para verificar tu cuenta antes de iniciar sesión.
+    <div th:if="${param.pendingVerification}" class="alert alert-info alert-info-big" >
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0;">
+            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+            <polyline points="22,6 12,13 2,6"></polyline>
+        </svg>
+        <div>
+            <strong>¡Registro exitoso!</strong><br>
+            Hemos enviado un correo de verificación a tu email. Por favor, revisa tu bandeja de entrada (y spam) y haz clic en el enlace para activar tu cuenta.
+        </div>
     </div>
 
-    <div th:if="${param.verified}" class="alert alert-success">
+    <div th:if="${param.verified}" class="alert alert-success" >
         Tu cuenta fue verificada correctamente. Ya puedes iniciar sesión.
     </div>
 
-    <div th:if="${param.notVerified}" class="alert alert-danger">
+    <div th:if="${param.notVerified}" class="alert alert-danger" >
         Tu cuenta aún no está verificada. Revisa tu correo y abre el enlace de verificación.
     </div>
 
-    <div th:if="${param.expiredToken}" class="alert alert-danger">
+    <div th:if="${param.expiredToken}" class="alert alert-danger" >
         El enlace de verificación expiró.
     </div>
 
-    <div th:if="${param.invalidToken}" class="alert alert-danger">
+    <div th:if="${param.invalidToken}" class="alert alert-danger" >
         El enlace de verificación no es válido.
     </div>
 
-    <div th:if="${param.error}" class="alert alert-danger">
+    <div th:if="${param.error}" class="alert alert-danger" >
         Credenciales inválidas.
     </div>
 
     <!-- Mensajes flash -->
-    <div th:if="${exito}" class="alert alert-success">
+    <div th:if="${exito}" class="alert alert-success" >
         <span th:text="${exito}"></span>
     </div>
 
-    <div th:if="${error}" class="alert alert-danger">
+    <div th:if="${error}" class="alert alert-danger" >
         <span th:text="${error}"></span>
     </div>
 
     <div th:if="${param.expired}">
-        <div class="alert alert-info">La Sesion es expiro</div>
+        <div class="alert alert-info" >La Sesión expiró</div>
     </div>
 
     <div class="container-100">

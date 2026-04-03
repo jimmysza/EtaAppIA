@@ -101,4 +101,11 @@ public class Actividad {
     @ToString.Exclude
     private List<ImagenActividad> imagenes = new ArrayList<>();
 
+    // Contadores de vistas para personalización y tendencias
+    @Column(name = "total_vistas", nullable = false)
+    private int totalVistas = 0;
+
+    @Column(name = "total_tendencia", nullable = false)
+    private int totalTendencia = 0;
+
 }

@@ -960,13 +960,9 @@
     height: 360px;
     overflow: hidden;
     position: relative;
-    background-color: #ffffff;
     text-align: left;
     border-radius: 0.5rem;
     max-width: 290px;
-    box-shadow:
-        0 20px 25px -5px rgba(0, 0, 0, 0.1),
-        0 10px 10px -5px rgba(0, 0, 0, 0.04);
 }
 
 
@@ -1932,25 +1928,6 @@ Tablet
     border-color: transparent;
     box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
 }
-
-
-
-
-/* From Uiverse.io by Yaya12085 */
-.card {
-    width: 430px;
-    height: 360px;
-    overflow: hidden;
-    position: relative;
-    background-color: #ffffff;
-    text-align: left;
-    border-radius: 0.5rem;
-    max-width: 290px;
-    box-shadow:
-        0 20px 25px -5px rgba(0, 0, 0, 0.1),
-        0 10px 10px -5px rgba(0, 0, 0, 0.04);
-}
-
 
 
 

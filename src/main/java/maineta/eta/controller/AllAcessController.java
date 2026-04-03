@@ -46,6 +46,7 @@ import maineta.eta.service.IdiomaService;
 import maineta.eta.service.UsuarioService;
 
 // 🔹 Controlador principal que maneja las páginas accesibles para todos los usuarios
+
 @Controller
 public class AllAcessController {
 
@@ -97,9 +98,10 @@ public class AllAcessController {
                         @PathVariable("slug") String slug,
                         @PathVariable("id") Long id,
                         Model model,
+                        Authentication auth,
                         @RequestParam(defaultValue = "0") int page,
-                        @RequestParam(required = false) String nombre,
-                        Authentication auth) {
+                        @RequestParam(required = false) String nombre
+                ) {
                 // 👈 solo necesitas pasar Authentication
 
                 usuarioHelper.agregarInfoUsuarioModel(model, auth);
@@ -108,6 +110,9 @@ public class AllAcessController {
                 if (actividad == null) {
                         return "redirect:/cliente/dashboard";
                 }
+
+                // Incrementar contadores de vistas y tendencia
+                actividadService.incrementarContadores(id);
 
                 BigDecimal precioConsumidor = usuarioHelper.CalcularPrecioConsumidor(actividad.getPrecio());
                 model.addAttribute("precioConsumidor", precioConsumidor);
@@ -310,6 +315,23 @@ public class AllAcessController {
                         }
                 }
                 model.addAttribute("favoritosIds", favoritosIds);
+                model.addAttribute("tendencias", actividadService.obtenerTendencias());
+                                        model.addAttribute("masVistas", actividadService.obtenerMasVistas());
+                                        model.addAttribute("masReservadas", actividadService.obtenerMasReservadas());
+                // Si el usuario es cliente autenticado y completó onboarding, agregar listas personalizadas
+                if (auth != null && auth.isAuthenticated() && !auth.getPrincipal().equals("anonymousUser")) {
+                        try {
+                                Usuario usuario = usuarioService.obtenerPorEmail(auth.getName());
+                                Optional<Cliente> clienteOpt = clienteService.obtenerPorUsuario(usuario);
+                                if (clienteOpt.isPresent() && clienteOpt.get().isOnboardingCompletado()) {
+                                        Cliente cliente = clienteOpt.get();
+                                        
+                                        model.addAttribute("paraTi", actividadService.obtenerParaTi(cliente));
+                                }
+                        } catch (Exception e) {
+                                // No es cliente o no completó onboarding, no mostrar listas personalizadas
+                        }
+                }
 
                 return "main";
         }

@@ -17,6 +17,7 @@
     <link rel="stylesheet" th:href="@{/css/global.css}">
     <link rel="stylesheet" th:href="@{/css/componentes/footer.css}">
     <link rel="stylesheet" th:href="@{/css/componentes/navbar.css}">
+    <link rel="stylesheet" th:href="@{/css/index.css}">
 
     <!-- <link rel="stylesheet" th:href="@{/css/componentes/busqueda.css}"> -->
 
@@ -37,7 +38,7 @@
     <meta name="twitter:image" content="https://tudominio.com/images/og-image.jpg">
 
 
-    <link rel="stylesheet" th:href="@{/css/index.css}">
+
 
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <link rel="stylesheet" th:href="@{/css/app.css}">
@@ -100,7 +101,7 @@
         .hero-shell {
             position: relative;
             overflow: hidden;
-            
+
         }
 
         /*  .hero-shell::before {
@@ -114,7 +115,7 @@
             pointer-events: none;
         }
  */
-       
+
         .hero-badge {
             display: inline-flex;
             align-items: center;
@@ -573,6 +574,11 @@
         }
 
         @media (max-width: 900px) {
+
+            .esconderCell {
+                display: none;
+            }
+
             .search-bar {
                 grid-template-columns: 1fr;
             }
@@ -608,33 +614,36 @@
 
 
     <!--hero-->
-    <section class="relative hero-shell flex items-center justify-center sm:py-16 md:py-30 pt-20 lg:py-30 px-4 sm:px-6 lg:px-8 overflow-hidden min-h-[700px] h-[600px]">
+    <section
+        class="relative hero-shell flex items-center justify-center sm:py-16 md:py-30 pt-20 lg:py-30 px-4 sm:px-6 lg:px-8 overflow-hidden min-h-[700px] h-[600px]">
 
         <!-- Foto izquierda arriba — rotada hacia la izquierda -->
-        <div class="absolute top-5 left-4 -rotate-6 z-10  md:block lg:block">
+        <div class="absolute top-5 left-4 -rotate-6 z-10  md:block lg:block esconderCell">
             <div class="w-[160px] h-[160px] rounded-2xl overflow-hidden shadow-2xl ring-[3px] ring-white">
                 <img th:src="@{/images/shares/share1.webp}" alt="actividad" class="w-full h-full object-cover">
             </div>
         </div>
 
         <!-- Foto izquierda abajo — rotada hacia la derecha -->
-        <div class="absolute bottom-10 left-1 rotate-[5deg] z-10  md:block lg:block">
+        <div class="absolute bottom-10 left-1 rotate-[5deg] z-10 sm:hidden md:block lg:block esconderCell">
             <div class="w-[160px] h-[110px] rounded-2xl overflow- shadow-xl ring-[3px] ring-white">
-                <img th:src="@{/images/shares/share2.webp}" alt="experiencia" class="w-full h-full object-cover rounded-2xl">
+                <img th:src="@{/images/shares/share2.webp}" alt="experiencia"
+                    class="w-full h-full object-cover rounded-2xl">
             </div>
         </div>
 
         <!-- Foto derecha arriba — rotada hacia la derecha -->
-        <div class="absolute top-4 right-5 rotate-[7deg] z-10  md:block lg:block">
+        <div class="absolute top-4 right-5 rotate-[7deg] z-10  md:block lg:block esconderCell">
             <div class="w-[150px] h-[150px] rounded-2xl overflow- shadow-2xl ring-[3px] ring-white">
                 <img th:src="@{/images/shares/share3.webp}" alt="tour" class="w-full h-full object-cover rounded-2xl">
             </div>
         </div>
 
         <!-- Foto derecha abajo — rotada hacia la izquierda -->
-        <div class="absolute bottom-8 right-1 -rotate-[4deg] z-10  md:block lg:block">
+        <div class="absolute bottom-8 right-1 -rotate-[4deg] z-10  md:block lg:block esconderCell">
             <div class="w-[140px] h-[140px] rounded-xl overflow- shadow-xl ring-[3px] ring-white">
-                <img th:src="@{/images/shares/share4.webp}" alt="gastronomia" class="w-full h-full object-cover rounded-2xl">
+                <img th:src="@{/images/shares/share4.webp}" alt="gastronomia"
+                    class="w-full h-full object-cover rounded-2xl">
             </div>
         </div>
 
@@ -837,13 +846,203 @@
 
     </section>
 
+    <!-- SECCIONES PERSONALIZADAS (solo para clientes autenticados con onboarding completado) -->
+    <div th:if="${tendencias != null or masVistas != null or masReservadas != null or paraTi != null}">
+
+        <!-- Más Tendencias -->
+        <div th:if="${tendencias != null and !#lists.isEmpty(tendencias)}" class="max-w-[1350px] mx-auto px-6 py-8">
+            <div class="flex items-center justify-between mb-6">
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-2">
+                    Actividades <span class="ColorBlue">Populares</span> en Cartagena
+                </h2>
+            </div>
+
+            <div class="relative">
+                <div
+                    class="grid auto-cols-[calc(50%-8px)] md:auto-cols-[calc(33.333%-16px)] lg:auto-cols-[calc(25%-12px)] grid-flow-col gap-4 overflow-x-auto hide-scrollbar scroll-container pb-2">
+                    <a class="card group cursor-pointer rounded-xl" th:each="actividad : ${tendencias}"
+                        th:href="@{/actividad/{slug}-{id}(slug=${#strings.replace(#strings.toLowerCase(actividad.titulo),' ', '-')},id=${actividad.idActividad})}">
+
+                        <div class="relative rounded-xl overflow-hidden mb-3">
+                            <img th:if="${actividad.imagen != null}" th:src="@{'/uploads/' + ${actividad.imagen}}"
+                                alt="Imagen de la actividad" class="card-image w-full h-64 object-cover">
+
+                            <span class="card-calificacion">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" viewBox="0 0 24 24">
+                                    <path fill="#F59E0B"
+                                        d="m12 17.275l-4.15 2.5q-.275.175-.575.15t-.525-.2t-.35-.437t-.05-.588l1.1-4.725L3.775 10.8q-.25-.225-.312-.513t.037-.562t.3-.45t.55-.225l4.85-.425l1.875-4.45q.125-.3.388-.45t.537-.15t.537.15t.388.45l1.875 4.45l4.85.425q.35.05.55.225t.3.45t.038.563t-.313.512l-3.675 3.175l1.1 4.725q.075.325-.05.588t-.35.437t-.525.2t-.575-.15z"
+                                        stroke-width="0.2" stroke="#F59E0B" />
+                                </svg>
+                                <span
+                                    th:text="${actividad.calificacion != null ? actividad.calificacion : 'Sin calificacion'}"></span>
+                            </span>
+
+                            <div class="absolute top-3 left-3 bg-white px-3 py-1 rounded-lg text-xs font-semibold"
+                                th:text="${actividad.categoria != null ? actividad.categoria.nombre : 'Sin categoría'}">
+                            </div>
+                        </div>
+
+                        <div class="pb-2 px-2">
+                            <h3 class="font-semibold text-gray-900 mb-1 line-clamp-1" th:text="${actividad.titulo}">
+                            </h3>
+                            <div class="flex items-center gap-1">
+                                <p class="text-sm text-blue-600 mb-1 font-bold"
+                                    th:text="${'$ ' + #numbers.formatDecimal(actividad.precio, 0, 0)}">$544,365</p>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Más Vistas -->
+        <div th:if="${masVistas != null and !#lists.isEmpty(masVistas)}" class="max-w-[1350px] mx-auto px-6 py-8">
+            <div class="flex items-center justify-between mb-6">
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-2">
+                    Actividades Mas <span class="ColorBlue">Visitadas</span> en Cartagena
+                </h2>
+            </div>
+
+            <div class="relative">
+                <div
+                    class="grid auto-cols-[calc(50%-8px)] md:auto-cols-[calc(33.333%-16px)] lg:auto-cols-[calc(25%-12px)] grid-flow-col gap-4 overflow-x-auto hide-scrollbar scroll-container pb-2">
+                    <a class="card group cursor-pointer rounded-xl" th:each="actividad : ${masVistas}"
+                        th:href="@{/actividad/{slug}-{id}(slug=${#strings.replace(#strings.toLowerCase(actividad.titulo),' ', '-')},id=${actividad.idActividad})}">
+
+                        <div class="relative rounded-xl overflow-hidden mb-3">
+                            <img th:if="${actividad.imagen != null}" th:src="@{'/uploads/' + ${actividad.imagen}}"
+                                alt="Imagen de la actividad" class="card-image w-full h-64 object-cover">
+
+                            <span class="card-calificacion">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" viewBox="0 0 24 24">
+                                    <path fill="#F59E0B"
+                                        d="m12 17.275l-4.15 2.5q-.275.175-.575.15t-.525-.2t-.35-.437t-.05-.588l1.1-4.725L3.775 10.8q-.25-.225-.312-.513t.037-.562t.3-.45t.55-.225l4.85-.425l1.875-4.45q.125-.3.388-.45t.537-.15t.537.15t.388.45l1.875 4.45l4.85.425q.35.05.55.225t.3.45t.038.563t-.313.512l-3.675 3.175l1.1 4.725q.075.325-.05.588t-.35.437t-.525.2t-.575-.15z"
+                                        stroke-width="0.2" stroke="#F59E0B" />
+                                </svg>
+                                <span
+                                    th:text="${actividad.calificacion != null ? actividad.calificacion : 'Sin calificacion'}"></span>
+                            </span>
+
+                            <div class="absolute top-3 left-3 bg-white px-3 py-1 rounded-lg text-xs font-semibold"
+                                th:text="${actividad.categoria != null ? actividad.categoria.nombre : 'Sin categoría'}">
+                            </div>
+                        </div>
+
+                        <div class="pb-2 px-2">
+                            <h3 class="font-semibold text-gray-900 mb-1 line-clamp-1" th:text="${actividad.titulo}">
+                            </h3>
+                            <div class="flex items-center gap-1">
+                                <p class="text-sm text-blue-600 mb-1 font-bold"
+                                    th:text="${'$ ' + #numbers.formatDecimal(actividad.precio, 0, 0)}">$544,365</p>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Más Reservadas -->
+        <div th:if="${masReservadas != null and !#lists.isEmpty(masReservadas)}"
+            class="max-w-[1350px] mx-auto px-6 py-8">
+            <div class="flex items-center justify-between mb-6">
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-2 ">
+                    Actividades Mas <span class="ColorBlue">Reservadas</span> en Cartagena
+                </h2>
+            </div>
+
+            <div class="relative">
+                <div
+                    class="grid auto-cols-[calc(50%-8px)] md:auto-cols-[calc(33.333%-16px)] lg:auto-cols-[calc(25%-12px)] grid-flow-col gap-4 overflow-x-auto hide-scrollbar scroll-container pb-2">
+                    <a class="card group cursor-pointer rounded-xl" th:each="actividad : ${masReservadas}"
+                        th:href="@{/actividad/{slug}-{id}(slug=${#strings.replace(#strings.toLowerCase(actividad.titulo),' ', '-')},id=${actividad.idActividad})}">
+
+                        <div class="relative rounded-xl overflow-hidden mb-3">
+                            <img th:if="${actividad.imagen != null}" th:src="@{'/uploads/' + ${actividad.imagen}}"
+                                alt="Imagen de la actividad" class="card-image w-full h-64 object-cover">
+
+                            <span class="card-calificacion">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" viewBox="0 0 24 24">
+                                    <path fill="#F59E0B"
+                                        d="m12 17.275l-4.15 2.5q-.275.175-.575.15t-.525-.2t-.35-.437t-.05-.588l1.1-4.725L3.775 10.8q-.25-.225-.312-.513t.037-.562t.3-.45t.55-.225l4.85-.425l1.875-4.45q.125-.3.388-.45t.537-.15t.537.15t.388.45l1.875 4.45l4.85.425q.35.05.55.225t.3.45t.038.563t-.313.512l-3.675 3.175l1.1 4.725q.075.325-.05.588t-.35.437t-.525.2t-.575-.15z"
+                                        stroke-width="0.2" stroke="#F59E0B" />
+                                </svg>
+                                <span
+                                    th:text="${actividad.calificacion != null ? actividad.calificacion : 'Sin calificacion'}"></span>
+                            </span>
+
+                            <div class="absolute top-3 left-3 bg-white px-3 py-1 rounded-lg text-xs font-semibold"
+                                th:text="${actividad.categoria != null ? actividad.categoria.nombre : 'Sin categoría'}">
+                            </div>
+                        </div>
+
+                        <div class="pb-2 px-2">
+                            <h3 class="font-semibold text-gray-900 mb-1 line-clamp-1" th:text="${actividad.titulo}">
+                            </h3>
+                            <div class="flex items-center gap-1">
+                                <p class="text-sm text-blue-600 mb-1 font-bold"
+                                    th:text="${'$ ' + #numbers.formatDecimal(actividad.precio, 0, 0)}">$544,365</p>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Para Ti -->
+        <div th:if="${paraTi != null and !#lists.isEmpty(paraTi)}" class="max-w-[1350px] mx-auto px-6 py-8">
+            <div class="flex items-center justify-between mb-6">
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-2">
+                    Actividades <span class="ColorBlue">Para Ti</span>
+                </h2>
+            </div>
+
+            <div class="relative">
+                <div
+                    class="grid auto-cols-[calc(50%-8px)] md:auto-cols-[calc(33.333%-16px)] lg:auto-cols-[calc(25%-12px)] grid-flow-col gap-4 overflow-x-auto hide-scrollbar scroll-container pb-2">
+                    <a class="card group cursor-pointer rounded-xl" th:each="actividad : ${paraTi}"
+                        th:href="@{/actividad/{slug}-{id}(slug=${#strings.replace(#strings.toLowerCase(actividad.titulo),' ', '-')},id=${actividad.idActividad})}">
+
+                        <div class="relative rounded-xl overflow-hidden mb-3">
+                            <img th:if="${actividad.imagen != null}" th:src="@{'/uploads/' + ${actividad.imagen}}"
+                                alt="Imagen de la actividad" class="card-image w-full h-64 object-cover">
+
+                            <span class="card-calificacion">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" viewBox="0 0 24 24">
+                                    <path fill="#F59E0B"
+                                        d="m12 17.275l-4.15 2.5q-.275.175-.575.15t-.525-.2t-.35-.437t-.05-.588l1.1-4.725L3.775 10.8q-.25-.225-.312-.513t.037-.562t.3-.45t.55-.225l4.85-.425l1.875-4.45q.125-.3.388-.45t.537-.15t.537.15t.388.45l1.875 4.45l4.85.425q.35.05.55.225t.3.45t.038.563t-.313.512l-3.675 3.175l1.1 4.725q.075.325-.05.588t-.35.437t-.525.2t-.575-.15z"
+                                        stroke-width="0.2" stroke="#F59E0B" />
+                                </svg>
+                                <span
+                                    th:text="${actividad.calificacion != null ? actividad.calificacion : 'Sin calificacion'}"></span>
+                            </span>
+
+                            <div class="absolute top-3 left-3 bg-white px-3 py-1 rounded-lg text-xs font-semibold"
+                                th:text="${actividad.categoria != null ? actividad.categoria.nombre : 'Sin categoría'}">
+                            </div>
+                        </div>
+
+                        <div class="pb-2 px-2">
+                            <h3 class="font-semibold text-gray-900 mb-1 line-clamp-1" th:text="${actividad.titulo}">
+                            </h3>
+                            <div class="flex items-center gap-1">
+                                <p class="text-sm text-blue-600 mb-1 font-bold"
+                                    th:text="${'$ ' + #numbers.formatDecimal(actividad.precio, 0, 0)}">$544,365</p>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
     <!--ACTIVIDADES-->
     <div id="populares" class="max-w-[1350px] mx-auto px-6 py-8">
 
         <!-- Header con título y navegación -->
         <div class="flex items-center justify-between mb-6">
             <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-2">
-                Actividades Populares en Cartagena
+                <span class="ColorBlue">Todas</span>
             </h2>
 
             <!-- Botones de navegación -->

@@ -25,4 +25,21 @@ public interface DisponibilidadRepository extends JpaRepository<Disponibilidad, 
 
     // Verificar si ya existe una disponibilidad generada por un patrón para una fecha
     boolean existsByPatron_IdPatronAndFecha(Long idPatron, LocalDate fecha);
+
+    // Queries para KPIs
+
+    @org.springframework.data.jpa.repository.Query("""
+        SELECT COUNT(d)
+        FROM Disponibilidad d
+        WHERE d.actividad.colaborador.idColaborador = :idColaborador
+        AND d.estado = :estado
+        AND d.fecha >= :inicio
+        AND d.fecha <= :fin
+    """)
+    Long contarDisponibilidadesPorColaboradorYEstado(
+        @org.springframework.data.repository.query.Param("idColaborador") Long idColaborador,
+        @org.springframework.data.repository.query.Param("inicio") LocalDate inicio,
+        @org.springframework.data.repository.query.Param("fin") LocalDate fin,
+        @org.springframework.data.repository.query.Param("estado") String estado
+    );
 }

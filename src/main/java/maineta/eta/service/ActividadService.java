@@ -11,6 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import maineta.eta.dto.ActividadUpdateDto;
 import maineta.eta.entity.Actividad;
+import maineta.eta.entity.Cliente;
 import maineta.eta.entity.ImagenActividad;
 
 /**
@@ -172,5 +173,32 @@ public interface ActividadService {
     void eliminarImagen(Long idImagen);
 
     List<ImagenActividad> obtenerImagenesPorActividad(Long idActividad);
+
+    /**
+     * Incrementa los contadores de vistas y tendencia de una actividad.
+     * 
+     * @param idActividad identificador de la actividad
+     */
+    void incrementarContadores(Long idActividad);
+
+    /**
+     * Obtiene las actividades con más tendencia (vistas recientes)
+     */
+    List<Actividad> obtenerTendencias();
+
+    /**
+     * Obtiene las actividades con más vistas totales
+     */
+    List<Actividad> obtenerMasVistas();
+
+    /**
+     * Obtiene las actividades más reservadas
+     */
+    List<Actividad> obtenerMasReservadas();
+
+    /**
+     * Obtiene actividades personalizadas para el cliente
+     */
+    List<Actividad> obtenerParaTi(Cliente cliente);
 
 }

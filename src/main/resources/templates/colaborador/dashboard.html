@@ -6,113 +6,417 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" th:href="@{/css/global.css}">
     <link rel="stylesheet" th:href="@{/css/adminBd.css}">
-
-
     <link rel="icon" th:href="@{/images/logos/logo.webp}" type="image/x-icon" />
-
-    <link rel="icon" th:href="@{/images/logos/logo.webp}" type="image/x-icon" />
-    <script src="https://cdn.tailwindcss.com"></script>
-    <title>ETA | Actividades</title>
-
+    <link rel="stylesheet" th:href="@{/css/tailwind.css}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <title>ETA | Dashboard KPIs</title>
+    <style>
+        .chart-container {
+            position: relative;
+            height: 300px;
+        }
+        .semaforo-verde { color: #059669; }
+        .semaforo-ambar { color: #d97706; }
+        .semaforo-rojo { color: #dc2626; }
+    </style>
 </head>
 
-<body>
-    <section class="container-manager ">
-
+<body class="bg-gray-50">
+    <section class="container-manager">
         <!-- Sidebar -->
         <div th:replace="~{componentes/sidebar :: sidebar}"></div>
 
         <!-- Main Content -->
-        <main class="main-content">
+        <main class="main-content bg-gray-50 min-h-screen">
 
-            <div class="header_db">
-
-                <div class="flex gap-3">
-                    <svg id="hideBar" class="hidebar-dashboard" xmlns="http://www.w3.org/2000/svg" width="24"
-                        height="24" viewBox="0 0 24 24">
-                        <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                            stroke-width="1.5"
+            <!-- Header -->
+            <div class="header_db border-b border-gray-200">
+                <div class="flex gap-3 items-center">
+                    <svg id="hideBar" class="hidebar-dashboard cursor-pointer" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                        <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
                             d="M15 3.5v17M3 9.4c0-2.24 0-3.36.436-4.216a4 4 0 0 1 1.748-1.748C6.04 3 7.16 3 9.4 3h5.2c2.24 0 3.36 0 4.216.436a4 4 0 0 1 1.748 1.748C21 6.04 21 7.16 21 9.4v5.2c0 2.24 0 3.36-.436 4.216a4 4 0 0 1-1.748 1.748C17.96 21 16.84 21 14.6 21H9.4c-2.24 0-3.36 0-4.216-.436a4 4 0 0 1-1.748-1.748C3 17.96 3 16.84 3 14.6z" />
                     </svg>
                     <nav aria-label="Breadcrumb">
-                        <ol class="breadcrumbs" itemscope itemtype="https://schema.org/BreadcrumbList">
+                        <ol class="breadcrumbs flex items-center gap-2 text-sm" itemscope itemtype="https://schema.org/BreadcrumbList">
                             <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
-                                <a itemprop="item" href="/">
+                                <a itemprop="item" href="/" class="text-blue-600 hover:text-blue-800">
                                     <span itemprop="name">Inicio</span>
                                 </a>
                                 <meta itemprop="position" content="1" />
                             </li>
-
                             <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
-                                <a itemprop="item" href="/actividades">
-                                    <span itemprop="name">Actividades</span>
+                                <!-- <span class="text-gray-400">/</span> -->
+                                <a itemprop="item" class="text-gray-600">
+                                    <span itemprop="name">Dashboard</span>
                                 </a>
                                 <meta itemprop="position" content="2" />
                             </li>
-
                         </ol>
                     </nav>
-
                 </div>
             </div>
 
-            <!-- Filtros y Botones -->
-            <div class="filtro_db">
-
-                <div class="Identifier-Dashboard">
-                    <div class="svg-contain">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24">
-                            <path fill="#000" fill-rule="evenodd"
-                                d="M12 1.25c-.605 0-1.162.15-1.771.402c-.589.244-1.273.603-2.124 1.05L6.037 3.787c-1.045.548-1.88.987-2.527 1.418c-.668.447-1.184.917-1.559 1.554c-.374.635-.542 1.323-.623 2.142c-.078.795-.078 1.772-.078 3.002v.194c0 1.23 0 2.207.078 3.002c.081.82.25 1.507.623 2.142c.375.637.89 1.107 1.56 1.554c.645.431 1.481.87 2.526 1.418l2.068 1.085c.851.447 1.535.806 2.124 1.05c.61.252 1.166.402 1.771.402s1.162-.15 1.771-.402c.589-.244 1.273-.603 2.124-1.05l2.068-1.084c1.045-.549 1.88-.988 2.526-1.419c.67-.447 1.185-.917 1.56-1.554c.374-.635.542-1.323.623-2.142c.078-.795.078-1.772.078-3.001v-.196c0-1.229 0-2.206-.078-3.001c-.081-.82-.25-1.507-.623-2.142c-.375-.637-.89-1.107-1.56-1.554c-.645-.431-1.481-.87-2.526-1.418l-2.068-1.085c-.851-.447-1.535-.806-2.124-1.05c-.61-.252-1.166-.402-1.771-.402M8.77 4.046c.89-.467 1.514-.793 2.032-1.007c.504-.209.859-.289 1.198-.289c.34 0 .694.08 1.198.289c.518.214 1.141.54 2.031 1.007l2 1.05c1.09.571 1.855.974 2.428 1.356c.282.189.503.364.683.54l-3.331 1.665l-8.5-4.474zm-1.825.958l-.174.092c-1.09.571-1.855.974-2.427 1.356a4.7 4.7 0 0 0-.683.54L12 11.162l3.357-1.68l-8.206-4.318a.8.8 0 0 1-.206-.16M2.938 8.307c-.05.214-.089.457-.117.74c-.07.714-.071 1.617-.071 2.894v.117c0 1.278 0 2.181.071 2.894c.069.697.2 1.148.423 1.528c.222.377.543.696 1.1 1.068c.572.382 1.337.785 2.427 1.356l2 1.05c.89.467 1.513.793 2.031 1.007q.244.101.448.165v-8.663zm9.812 12.818q.204-.063.448-.164c.518-.214 1.141-.54 2.031-1.007l2-1.05c1.09-.572 1.855-.974 2.428-1.356c.556-.372.877-.691 1.1-1.068c.223-.38.353-.83.422-1.528c.07-.713.071-1.616.071-2.893v-.117c0-1.278 0-2.181-.071-2.894a6 6 0 0 0-.117-.74L17.75 9.963V13a.75.75 0 0 1-1.5 0v-2.286l-3.5 1.75z"
-                                clip-rule="evenodd" stroke-width="0.5" stroke="#000" />
-                        </svg>
+            <!-- Título y selector de período -->
+            <div class="px-6 py-6">
+                <div class="flex justify-between items-center mb-6">
+                    <div>
+                        <h1 class="text-3xl font-bold text-gray-900">Dashboard de KPIs</h1>
+                        <p class="text-gray-600 mt-1">Bienvenido, <span th:text="${nombreColaborador}">Colaborador</span></p>
                     </div>
-                    <div class="id-content">
-                        <h1>Menu Principal</h1>
-                        <p>Escoga una opcion</p>
+                    <form method="get" action="/colaborador/dashboard" class="flex gap-2 items-center">
+                        <label for="periodo" class="text-sm font-medium text-gray-700">Período:</label>
+                        <input type="month" id="periodo" name="periodo" 
+                               th:value="${periodoSeleccionado}" 
+                               class="border border-gray-300 rounded-md px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                        <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition">
+                            Filtrar
+                        </button>
+                    </form>
+                </div>
+
+                <!-- ========== SECCIÓN 1: RESUMEN GENERAL ========== -->
+                <div class="mb-8">
+                    <div th:replace="~{componentes/kpi-fragments :: section-header('📊 Resumen General', 'Métricas clave del período seleccionado')}"></div>
+                    
+                    <div th:if="${resumen.totalReservas == 0}">
+                        <div th:replace="~{componentes/kpi-fragments :: no-data-message}"></div>
+                    </div>
+
+                    <div th:if="${resumen.totalReservas > 0}" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <!-- Ingresos del mes -->
+                        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="text-sm font-medium text-gray-600 uppercase tracking-wider">Ingresos Brutos</span>
+                                <span th:if="${resumen.variacionIngresos != null}" 
+                                      th:classappend="${resumen.variacionIngresos >= 0 ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}"
+                                      class="px-2 py-1 rounded-full text-xs font-semibold">
+                                    <span th:text="${resumen.variacionIngresos >= 0 ? '↑' : '↓'}"></span>
+                                    <span th:text="${#numbers.formatDecimal(#numbers.abs(resumen.variacionIngresos), 1, 1)}">0.0</span>%
+                                </span>
+                            </div>
+                            <div class="text-3xl font-bold text-gray-900" th:text="'$' + ${#numbers.formatDecimal(resumen.ingresoBruto, 1, 2)}">$0.00</div>
+                            <p class="text-sm text-gray-600 mt-2">Neto: <span class="font-semibold text-green-600" th:text="'$' + ${#numbers.formatDecimal(resumen.ingresoNeto, 1, 2)}">$0.00</span></p>
+                        </div>
+
+                        <!-- Reservas totales -->
+                        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="text-sm font-medium text-gray-600 uppercase tracking-wider">Reservas Totales</span>
+                                <span th:if="${resumen.variacionReservas != null}" 
+                                      th:classappend="${resumen.variacionReservas >= 0 ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}"
+                                      class="px-2 py-1 rounded-full text-xs font-semibold">
+                                    <span th:text="${resumen.variacionReservas >= 0 ? '↑' : '↓'}"></span>
+                                    <span th:text="${#numbers.formatDecimal(#numbers.abs(resumen.variacionReservas), 1, 1)}">0.0</span>%
+                                </span>
+                            </div>
+                            <div class="text-3xl font-bold text-gray-900" th:text="${#numbers.formatInteger(resumen.totalReservas, 1, 'COMMA')}">0</div>
+                        </div>
+
+                        <!-- Tasa de cancelación -->
+                        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                            <span class="text-sm font-medium text-gray-600 uppercase tracking-wider block mb-2">Tasa de Cancelación</span>
+                            <div th:classappend="${resumen.tasaCancelacion > 20 ? 'text-red-600' : resumen.tasaCancelacion > 10 ? 'text-amber-600' : 'text-green-600'}"
+                                 class="text-3xl font-bold" th:text="${#numbers.formatDecimal(resumen.tasaCancelacion, 1, 1)} + '%'">0.0%</div>
+                        </div>
+
+                        <!-- Calificación promedio -->
+                        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                            <span class="text-sm font-medium text-gray-600 uppercase tracking-wider block mb-2">Calificación Promedio</span>
+                            <div class="flex items-center gap-2">
+                                <span class="text-3xl font-bold text-gray-900" th:text="${#numbers.formatDecimal(resumen.calificacionPromedio, 1, 1)}">0.0</span>
+                                <div class="flex text-amber-500">
+                                    <svg th:each="i : ${#numbers.sequence(1, 5)}" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" 
+                                         th:classappend="${i <= resumen.calificacionPromedio ? 'fill-current' : 'fill-none stroke-current'}">
+                                        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Actividades publicadas -->
+                        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                            <span class="text-sm font-medium text-gray-600 uppercase tracking-wider block mb-2">Actividades Publicadas</span>
+                            <div class="text-3xl font-bold text-gray-900" th:text="${#numbers.formatInteger(resumen.actividadesPublicadas, 1, 'COMMA')}">0</div>
+                        </div>
+
+                        <!-- Clientes únicos -->
+                        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                            <span class="text-sm font-medium text-gray-600 uppercase tracking-wider block mb-2">Clientes Únicos</span>
+                            <div class="text-3xl font-bold text-gray-900" th:text="${#numbers.formatInteger(resumen.clientesUnicos, 1, 'COMMA')}">0</div>
+                            <p class="text-sm text-gray-600 mt-2">Recurrentes: <span class="font-semibold" th:text="${resumen.clientesRecurrentes}">0</span></p>
+                        </div>
                     </div>
                 </div>
+
+                <!-- ========== SECCIÓN 2: ACTIVIDADES ========== -->
+                <div th:if="${resumen.totalReservas > 0}" class="mb-8">
+                    <div th:replace="~{componentes/kpi-fragments :: section-header('🎯 Rendimiento por Actividad', 'Ranking de actividades según reservas')}"></div>
+                    
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <!-- Reservas por actividad -->
+                        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                            <h3 class="text-lg font-semibold text-gray-900 mb-4">Reservas</h3>
+                            <div th:if="${#lists.isEmpty(kpisPorActividad)}">
+                                <p class="text-center text-gray-500 py-4">No hay datos</p>
+                            </div>
+                            <div th:if="${!#lists.isEmpty(kpisPorActividad)}">
+                                <div th:each="kpi : ${kpisPorActividad}" class="mb-4">
+                                    <div class="flex justify-between items-center mb-2">
+                                        <span class="text-sm font-medium text-gray-700" th:text="${kpi.titulo}">Actividad</span>
+                                        <span class="text-sm font-bold text-gray-900" th:text="${kpi.reservas}">0</span>
+                                    </div>
+                                    <div class="w-full bg-gray-200 rounded-full h-3">
+                                        <div th:with="maxReservas=${kpisPorActividad[0].reservas}"
+                                             class="bg-blue-600 h-3 rounded-full transition-all duration-300"
+                                             th:style="'width: ' + ${maxReservas > 0 ? (kpi.reservas * 100.0 / maxReservas) : 0} + '%'">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Calificación por actividad -->
+                        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                            <h3 class="text-lg font-semibold text-gray-900 mb-4">Calificación</h3>
+                            <div th:if="${!#lists.isEmpty(kpisPorActividad)}">
+                                <div th:each="kpi : ${kpisPorActividad}" class="mb-4">
+                                    <div class="flex justify-between items-center mb-2">
+                                        <span class="text-sm font-medium text-gray-700" th:text="${kpi.titulo}">Actividad</span>
+                                        <span class="text-sm font-bold" 
+                                              th:classappend="${kpi.calificacion < 3.5 ? 'text-red-600' : 'text-green-600'}"
+                                              th:text="${kpi.calificacion > 0 ? #numbers.formatDecimal(kpi.calificacion, 1, 1) : '—'}">0.0</span>
+                                    </div>
+                                    <div class="w-full bg-gray-200 rounded-full h-3">
+                                        <div th:classappend="${kpi.calificacion < 3.5 ? 'bg-amber-600' : 'bg-green-600'}"
+                                             class="h-3 rounded-full transition-all duration-300"
+                                             th:style="'width: ' + ${kpi.calificacion * 20} + '%'">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Tasa de ocupación -->
+                        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                            <h3 class="text-lg font-semibold text-gray-900 mb-4">Tasa de Ocupación</h3>
+                            <div th:if="${!#lists.isEmpty(kpisPorActividad)}">
+                                <div th:each="kpi : ${kpisPorActividad}" class="mb-4">
+                                    <div class="flex justify-between items-center mb-2">
+                                        <span class="text-sm font-medium text-gray-700" th:text="${kpi.titulo}">Actividad</span>
+                                        <span class="text-sm font-bold" 
+                                              th:classappend="${kpi.tasaOcupacion >= 70 ? 'semaforo-verde' : kpi.tasaOcupacion >= 40 ? 'semaforo-ambar' : 'semaforo-rojo'}"
+                                              th:text="${#numbers.formatDecimal(kpi.tasaOcupacion, 1, 1)} + '%'">0.0%</span>
+                                    </div>
+                                    <div class="w-full bg-gray-200 rounded-full h-3">
+                                        <div th:classappend="${kpi.tasaOcupacion >= 70 ? 'bg-green-600' : kpi.tasaOcupacion >= 40 ? 'bg-amber-600' : 'bg-red-600'}"
+                                             class="h-3 rounded-full transition-all duration-300"
+                                             th:style="'width: ' + ${kpi.tasaOcupacion} + '%'">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Favoritos y conversión -->
+                        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                            <h3 class="text-lg font-semibold text-gray-900 mb-4">Favoritos & Conversión</h3>
+                            <div th:if="${!#lists.isEmpty(kpisPorActividad)}">
+                                <div th:each="kpi : ${kpisPorActividad}" class="mb-3 pb-3 border-b border-gray-100 last:border-0">
+                                    <div class="text-sm font-medium text-gray-700 mb-1" th:text="${kpi.titulo}">Actividad</div>
+                                    <div class="flex justify-between text-xs text-gray-600">
+                                        <span>❤️ Favoritos: <strong th:text="${kpi.vecesEnFavoritos}">0</strong></span>
+                                        <span>👁️ Vistas: <strong th:text="${kpi.totalVistas}">0</strong></span>
+                                        <span>📊 Conversión: <strong th:text="${#numbers.formatDecimal(kpi.conversionVisitaReserva, 1, 1)} + '%'">0.0%</strong></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ========== SECCIÓN 3: DISPONIBILIDAD ========== -->
+                <div th:if="${resumen.totalReservas > 0}" class="mb-8">
+                    <div th:replace="~{componentes/kpi-fragments :: section-header('📅 Disponibilidades', 'Estado de los slots de actividades')}"></div>
+                    
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <!-- Gráfico donut de estados -->
+                        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                            <h3 class="text-lg font-semibold text-gray-900 mb-4">Estados de Disponibilidades</h3>
+                            <div class="chart-container">
+                                <canvas id="chartDonutDisponibilidad"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- Indicadores numéricos -->
+                        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                            <h3 class="text-lg font-semibold text-gray-900 mb-4">Resumen de Slots</h3>
+                            <div class="space-y-4">
+                                <div class="flex justify-between items-center p-3 bg-blue-50 rounded">
+                                    <span class="text-sm font-medium text-gray-700">Disponible</span>
+                                    <span class="text-2xl font-bold text-blue-600" th:text="${ocupacion.disponible}">0</span>
+                                </div>
+                                <div class="flex justify-between items-center p-3 bg-green-50 rounded">
+                                    <span class="text-sm font-medium text-gray-700">Completado</span>
+                                    <span class="text-2xl font-bold text-green-600" th:text="${ocupacion.completado}">0</span>
+                                </div>
+                                <div class="flex justify-between items-center p-3 bg-red-50 rounded">
+                                    <span class="text-sm font-medium text-gray-700">Cancelado</span>
+                                    <span class="text-2xl font-bold text-red-600" th:text="${ocupacion.cancelado}">0</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ========== SECCIÓN 4: INGRESOS ========== -->
+                <div th:if="${resumen.totalReservas > 0}" class="mb-8">
+                    <div th:replace="~{componentes/kpi-fragments :: section-header('💰 Evolución de Ingresos', 'Últimos 6 meses')}"></div>
+                    
+                    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                        <div class="chart-container" style="height: 400px;">
+                            <canvas id="chartBarIngresos"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ========== SECCIÓN 5: RESERVAS ========== -->
+                <div th:if="${resumen.totalReservas > 0}" class="mb-8">
+                    <div th:replace="~{componentes/kpi-fragments :: section-header('📦 Reservas', 'Estados y tendencias')}"></div>
+                    
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <!-- Tabla de estados -->
+                        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                            <h3 class="text-lg font-semibold text-gray-900 mb-4">Desglose por Estado</h3>
+                            <div class="space-y-3">
+                                <div class="flex justify-between items-center pb-2 border-b">
+                                    <span class="text-sm font-medium text-gray-700">Pendiente</span>
+                                    <span class="text-lg font-bold text-amber-600" th:text="${estadosReserva.pendiente}">0</span>
+                                </div>
+                                <div class="flex justify-between items-center pb-2 border-b">
+                                    <span class="text-sm font-medium text-gray-700">Confirmada</span>
+                                    <span class="text-lg font-bold text-blue-600" th:text="${estadosReserva.confirmada}">0</span>
+                                </div>
+                                <div class="flex justify-between items-center pb-2 border-b">
+                                    <span class="text-sm font-medium text-gray-700">Hecho</span>
+                                    <span class="text-lg font-bold text-green-600" th:text="${estadosReserva.hecho}">0</span>
+                                </div>
+                                <div class="flex justify-between items-center pb-2">
+                                    <span class="text-sm font-medium text-gray-700">Cancelada</span>
+                                    <span class="text-lg font-bold text-red-600" th:text="${estadosReserva.cancelada}">0</span>
+                                </div>
+                                <div class="pt-3 mt-3 border-t">
+                                    <span class="text-xs text-gray-600">Conversión Pendiente → Confirmada: </span>
+                                    <span class="text-sm font-bold text-blue-600" th:text="${#numbers.formatDecimal(estadosReserva.tasaConversionPendienteConfirmada, 1, 1)} + '%'">0.0%</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Gráfico de tendencia semanal -->
+                        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                            <h3 class="text-lg font-semibold text-gray-900 mb-4">Tendencia Semanal</h3>
+                            <div class="chart-container">
+                                <canvas id="chartLineReservas"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             </div>
-
-            <a th:href="@{/documentos/subir}">
-                <button>Verificar cuenta</button>
-            </a>
-
-
-
-            <table>
-                <thead>
-                    <tr>
-                        <th>ID Reserva</th>
-                        <th>Cliente</th>
-                        <th>Actividad</th>
-                        <th>Fecha Reserva</th>
-                        <th>Estado</th>
-                        <th>Acciones</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr th:if="${reservasColaborador == null or #lists.isEmpty(reservasColaborador)}">
-                        <td colspan="6" class="text-center">Aun no tienes reservas para chatear</td>
-                    </tr>
-
-                    <tr th:each="reserva : ${reservasColaborador}">
-                        <td th:text="${reserva.idReserva}"></td>
-                        <td th:text="${reserva.cliente.usuario.nombre}"></td>
-                        <td th:text="${reserva.actividad.titulo}"></td>
-                        <td th:text="${#temporals.format(reserva.fechaReserva, 'dd/MM/yyyy HH:mm')}"></td>
-                        <td th:text="${reserva.estado}"></td>
-                        <td>
-                            <a class="button-default" th:href="@{/colaborador/chats/{idReserva}(idReserva=${reserva.idReserva})}">
-                                Abrir chat
-                            </a>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-
         </main>
     </section>
+
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        // Datos del servidor
+        const ocupacionData = /*[[${ocupacion}]]*/ {};
+        const ingresosMensualesData = /*[[${ingresosMensuales}]]*/ [];
+        const tendenciaData = /*[[${tendenciaReservas}]]*/ [];
+
+        // Gráfico Donut - Disponibilidades
+        const ctxDonut = document.getElementById('chartDonutDisponibilidad');
+        if (ctxDonut) {
+            new Chart(ctxDonut, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Disponible', 'Completado', 'Cancelado'],
+                    datasets: [{
+                        data: [ocupacionData.disponible, ocupacionData.completado, ocupacionData.cancelado],
+                        backgroundColor: ['#3b82f6', '#10b981', '#ef4444']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom' }
+                    }
+                }
+            });
+        }
+
+        // Gráfico Barras - Ingresos
+        const ctxBar = document.getElementById('chartBarIngresos');
+        if (ctxBar) {
+            new Chart(ctxBar, {
+                type: 'bar',
+                data: {
+                    labels: ingresosMensualesData.map(d => d.mes),
+                    datasets: [
+                        {
+                            label: 'Ingreso Bruto',
+                            data: ingresosMensualesData.map(d => d.ingresoBruto),
+                            backgroundColor: '#3b82f6'
+                        },
+                        {
+                            label: 'Ingreso Neto',
+                            data: ingresosMensualesData.map(d => d.ingresoNeto),
+                            backgroundColor: '#10b981'
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'top' }
+                    },
+                    scales: {
+                        y: { beginAtZero: true }
+                    }
+                }
+            });
+        }
+
+        // Gráfico Línea - Tendencia Reservas
+        const ctxLine = document.getElementById('chartLineReservas');
+        if (ctxLine) {
+            new Chart(ctxLine, {
+                type: 'line',
+                data: {
+                    labels: tendenciaData.map(d => d.etiqueta),
+                    datasets: [{
+                        label: 'Reservas',
+                        data: tendenciaData.map(d => d.reservas),
+                        borderColor: '#3b82f6',
+                        backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                        fill: true,
+                        tension: 0.3
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        y: { beginAtZero: true }
+                    }
+                }
+            });
+        }
+        /*]]>*/
+    </script>
     <script th:src="@{/js/dashboard.js}"></script>
 </body>
 

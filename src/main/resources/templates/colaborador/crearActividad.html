@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" th:href="@{/css/global.css}">
     <link rel="stylesheet" th:href="@{/css/actividad/crearActividad.css}">
-    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" th:href="@{/css/tailwind.css}">
     <!-- Leaflet CSS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <!-- Leaflet JS -->
@@ -202,55 +202,27 @@
                 <!-- Categorías -->
                 <div class="mb-6">
                     <label class="block text-gray-900 font-bold mb-2">
-                        Categorías <span class="text-red-500">*</span>
+                        Categoría <span class="text-red-500">*</span>
                     </label>
-                    <div class="relative">
-                        <select id="categoriaSelect"
-                            class="w-full px-4 py-3 bg-gray-50 border-0 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 pr-12">
-                            <option value="" disabled selected>Selecciona una categoría</option>
-                            <option th:each="cat : ${categorias}" th:value="${cat.idCategoria}" th:text="${cat.nombre}">
-                            </option>
-                        </select>
-                        <button type="button" id="addCategoriaBtn"
-                            class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-700 hover:text-gray-900">
-                            <!--  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M12 4v16m8-8H4"></path>
-                            </svg> -->
-                        </button>
-                    </div>
-                    <div id="categoriasContainer" class="flex flex-wrap gap-2 mt-3">
-                        <!-- Las categorías seleccionadas aparecerán aquí -->
-                    </div>
-                    <!-- Input oculto para enviar las categorías al backend -->
-                    <input type="hidden" id="categoria" th:field="*{categoria}">
+                    <select id="categoria" th:field="*{categoria}" data-required="true"
+                        class="w-full px-4 py-3 bg-gray-50 border-0 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <option value="" disabled selected>Selecciona una categoría</option>
+                        <option th:each="cat : ${categorias}" th:value="${cat.idCategoria}" th:text="${cat.nombre}">
+                        </option>
+                    </select>
                 </div>
 
                 <!-- Idiomas -->
                 <div class="mb-6">
                     <label class="block text-gray-900 font-bold mb-2">
-                        Idiomas <span class="text-red-500">*</span>
+                        Idioma <span class="text-red-500">*</span>
                     </label>
-                    <div class="relative">
-                        <select id="idiomaSelect"
-                            class="w-full px-4 py-3 bg-gray-50 border-0 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 pr-12">
-                            <option value="" disabled selected>Selecciona un idioma</option>
-                            <option th:each="idio : ${idiomas}" th:value="${idio.idIdioma}" th:text="${idio.nombre}">
-                            </option>
-                        </select>
-                        <button type="button" id="addIdiomaBtn"
-                            class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-700 hover:text-gray-900">
-                            <!-- <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M12 4v16m8-8H4"></path>
-                            </svg> -->
-                        </button>
-                    </div>
-                    <div id="idiomasContainer" class="flex flex-wrap gap-2 mt-3">
-                        <!-- Los idiomas seleccionados aparecerán aquí -->
-                    </div>
-                    <!-- Input oculto para enviar los idiomas al backend -->
-                    <input type="hidden" id="idioma" th:field="*{idioma}">
+                    <select id="idioma" th:field="*{idioma}" data-required="true"
+                        class="w-full px-4 py-3 bg-gray-50 border-0 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <option value="" disabled selected>Selecciona un idioma</option>
+                        <option th:each="idio : ${idiomas}" th:value="${idio.idIdioma}" th:text="${idio.nombre}">
+                        </option>
+                    </select>
                 </div>
 
                 <!-- Incluye -->
@@ -284,7 +256,7 @@
                         class="w-full px-4 py-3 bg-gray-50 border-0 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"></textarea>
                 </div>
 
-                <!-- Imágenes Adicionales (opcional) -->
+                <!-- 
                 <div class="mb-6">
                     <label class="block text-gray-900 font-bold mb-2">
                         Imágenes Adicionales
@@ -306,7 +278,7 @@
                             Puedes seleccionar varias imágenes a la vez (opcional)
                         </p>
                     </label>
-                </div>
+                </div> -->
 
                 <!-- Buttons -->
                 <div class="flex justify-end gap-3">
@@ -380,102 +352,6 @@
 
 
 
-        // Categorías handling
-        const categoriaSelect = document.getElementById('categoriaSelect');
-        const addCategoriaBtn = document.getElementById('addCategoriaBtn');
-        const categoriasContainer = document.getElementById('categoriasContainer');
-        const categoriaInput = document.getElementById('categoria');
-        let selectedCategorias = [];
-
-        function addCategoria() {
-            const selectedOption = categoriaSelect.options[categoriaSelect.selectedIndex];
-            if (categoriaSelect.value && !selectedCategorias.includes(categoriaSelect.value)) {
-                const categoriaId = categoriaSelect.value;
-                const categoriaText = selectedOption.text;
-
-                selectedCategorias.push(categoriaId);
-                categoriaInput.value = selectedCategorias.join(',');
-
-                const tagElement = createTagElement(categoriaText, categoriaId, 'categoria');
-                categoriasContainer.appendChild(tagElement);
-                categoriaSelect.value = '';
-            }
-        }
-
-        addCategoriaBtn.addEventListener('click', addCategoria);
-
-        categoriaSelect.addEventListener('change', () => {
-            addCategoria();
-        });
-
-        // Idiomas handling
-        const idiomaSelect = document.getElementById('idiomaSelect');
-        const addIdiomaBtn = document.getElementById('addIdiomaBtn');
-        const idiomasContainer = document.getElementById('idiomasContainer');
-        const idiomaInput = document.getElementById('idioma');
-        let selectedIdiomas = [];
-
-        function addIdioma() {
-            const selectedOption = idiomaSelect.options[idiomaSelect.selectedIndex];
-            if (idiomaSelect.value && !selectedIdiomas.includes(idiomaSelect.value)) {
-                const idiomaId = idiomaSelect.value;
-                const idiomaText = selectedOption.text;
-
-                selectedIdiomas.push(idiomaId);
-                idiomaInput.value = selectedIdiomas.join(',');
-
-                const tagElement = createTagElement(idiomaText, idiomaId, 'idioma');
-                idiomasContainer.appendChild(tagElement);
-                idiomaSelect.value = '';
-            }
-        }
-
-        addIdiomaBtn.addEventListener('click', addIdioma);
-
-        idiomaSelect.addEventListener('change', () => {
-            addIdioma();
-        });
-
-        // Create tag element
-        function createTagElement(text, id, type) {
-            const span = document.createElement('span');
-            span.className = 'inline-flex items-center gap-2 px-3 py-1.5 bg-gray-100 text-gray-700 rounded-lg text-sm';
-            span.dataset.id = id;
-            span.dataset.type = type;
-            span.innerHTML = `
-                ${text}
-                <button type="button" class="hover:text-gray-900 remove-tag">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                    </svg>
-                </button>
-            `;
-            return span;
-        }
-
-        // Remove tags
-        categoriasContainer.addEventListener('click', (e) => {
-            if (e.target.closest('.remove-tag')) {
-                const tag = e.target.closest('[data-id]');
-                const id = tag.dataset.id;
-                selectedCategorias = selectedCategorias.filter(catId => catId !== id);
-                categoriaInput.value = selectedCategorias.join(',');
-                tag.remove();
-            }
-        });
-
-        idiomasContainer.addEventListener('click', (e) => {
-            if (e.target.closest('.remove-tag')) {
-                const tag = e.target.closest('[data-id]');
-                const id = tag.dataset.id;
-                selectedIdiomas = selectedIdiomas.filter(idioId => idioId !== id);
-                idiomaInput.value = selectedIdiomas.join(',');
-                tag.remove();
-            }
-        });
-
-
-
         function showAlert(alertElement, text) {
             if (!alertElement) return; // Si no existe, no hace nada
             alertElement.classList.add('showAnimationAppearFromTop');
@@ -492,8 +368,10 @@
             const descripcion = document.getElementById('descripcion').value.trim();
             const precio = document.getElementById('precio').value;
             const ubicacion = document.getElementById('ubicacion').value.trim();
+            const categoria = document.getElementById('categoria').value;
+            const idioma = document.getElementById('idioma').value;
 
-            if (!titulo || !descripcion || !precio || !ubicacion || selectedCategorias.length === 0 || selectedIdiomas.length === 0) {
+            if (!titulo || !descripcion || !precio || !ubicacion || !categoria || !idioma) {
                 e.preventDefault();
                 showAlert(alertDanger, 'Por favor completa todos los campos obligatorios (*)');
                 return false;

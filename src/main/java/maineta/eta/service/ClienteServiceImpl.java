@@ -2,6 +2,8 @@ package maineta.eta.service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -11,8 +13,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import maineta.eta.dto.OnboardingForm;
+import maineta.eta.entity.Categoria;
 import maineta.eta.entity.Cliente;
 import maineta.eta.entity.Usuario;
+import maineta.eta.repository.CategoriaRepository;
 import maineta.eta.repository.ClienteRepository;
 import maineta.eta.repository.ColaboradorRepository;
 import maineta.eta.repository.RolRepository;
@@ -42,6 +47,7 @@ public class ClienteServiceImpl implements ClienteService {
     private final ColaboradorRepository colaboradorRepository;
     private final UsuarioManagerService usuarioManagerService;
     private final VerificacionCorreoService verificacionCorreoService;
+    private final CategoriaRepository categoriaRepository;
 
     @Autowired
     public ClienteServiceImpl(
@@ -51,7 +57,8 @@ public class ClienteServiceImpl implements ClienteService {
             PasswordEncoder passwordEncoder,
             ClienteRepository clienteRepository,
             UsuarioManagerService usuarioManagerService,
-            VerificacionCorreoService verificacionCorreoService
+            VerificacionCorreoService verificacionCorreoService,
+            CategoriaRepository categoriaRepository
     ) {
         this.usuarioRepository = usuarioRepository;
         this.rolRepository = rolRepository;
@@ -60,6 +67,7 @@ public class ClienteServiceImpl implements ClienteService {
         this.clienteRepository = clienteRepository;
         this.usuarioManagerService = usuarioManagerService;
         this.verificacionCorreoService = verificacionCorreoService;
+        this.categoriaRepository = categoriaRepository;
     }
 
     @Override
@@ -156,5 +164,62 @@ public class ClienteServiceImpl implements ClienteService {
     @Override
     public Optional<Cliente> obtenerPorUsuario(Usuario usuario) {
         return clienteRepository.findByUsuario(usuario);
+    }
+
+    @Override
+    @Transactional
+    public Cliente guardarPreferencias(Cliente cliente, OnboardingForm form) {
+        // Guardar las preferencias ENUMs
+        cliente.setGrupoViaje(form.getGrupoViaje());
+        cliente.setRangoPrecio(form.getRangoPrecio());
+        cliente.setDisponibilidadSemana(form.getDisponibilidadSemana());
+        
+        // Obtener y guardar las categorías preferidas
+        Set<Categoria> categorias = form.getCategoriasIds().stream()
+            .map(id -> categoriaRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Categoría no encontrada: " + id)))
+            .collect(Collectors.toSet());
+        
+        cliente.setCategoriasPreferidas(categorias);
+        cliente.setOnboardingCompletado(true);
+        
+        return clienteRepository.save(cliente);
+    }
+
+    @Override
+    @Transactional
+    public Cliente registrarClienteConPreferencias(Cliente cliente, OnboardingForm form) {
+        // Validar cédula
+        if (clienteRepository.findByCedula(cliente.getCedula()).isPresent()) {
+            throw new RuntimeException("La cédula ya está registrada");
+        }
+
+        // Guardar las preferencias en el cliente ANTES de registrar
+        cliente.setGrupoViaje(form.getGrupoViaje());
+        cliente.setRangoPrecio(form.getRangoPrecio());
+        cliente.setDisponibilidadSemana(form.getDisponibilidadSemana());
+        
+        // Obtener y guardar las categorías preferidas
+        Set<Categoria> categorias = form.getCategoriasIds().stream()
+            .map(id -> categoriaRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Categoría no encontrada: " + id)))
+            .collect(Collectors.toSet());
+        
+        cliente.setCategoriasPreferidas(categorias);
+        cliente.setOnboardingCompletado(true);
+
+        // Crear el usuario y guardar el cliente
+        var usuarioGuardado = usuarioManagerService.prepararYGuardarUsuario(
+                cliente.getUsuario(),
+                "ROLE_CLIENTE"
+        );
+
+        cliente.setUsuario(usuarioGuardado);
+        Cliente clienteGuardado = clienteRepository.save(cliente);
+        
+        // Enviar email de verificación
+        verificacionCorreoService.enviarCorreoVerificacion(usuarioGuardado);
+        
+        return clienteGuardado;
     }
 }

@@ -7,6 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.lang.NonNull;
 
+import maineta.eta.dto.OnboardingForm;
 import maineta.eta.entity.Cliente;
 import maineta.eta.entity.Usuario;
 
@@ -43,5 +44,24 @@ public interface ClienteService {
     Page<Cliente> findAll(@NonNull Pageable pageable);
     Cliente actualizarCliente(Long id, Cliente cliente);
     Optional<Cliente> obtenerPorUsuario(Usuario usuario);
+    
+    /**
+     * 🔹 Guardar las preferencias del onboarding del cliente.
+     * 
+     * @param cliente Cliente al que se le guardarán las preferencias
+     * @param form Formulario con las respuestas del onboarding
+     * @return Cliente actualizado con las preferencias guardadas
+     */
+    Cliente guardarPreferencias(Cliente cliente, OnboardingForm form);
+    
+    /**
+     * 🔹 Registrar un nuevo cliente con sus preferencias de onboarding.
+     * Este método combina el registro del cliente con las preferencias del onboarding.
+     * 
+     * @param cliente Cliente a registrar
+     * @param form Formulario con las respuestas del onboarding
+     * @return Cliente registrado con preferencias guardadas
+     */
+    Cliente registrarClienteConPreferencias(Cliente cliente, OnboardingForm form);
 }
 

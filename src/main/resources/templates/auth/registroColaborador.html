@@ -10,7 +10,7 @@
   <link rel="icon" th:href="@{/images/logos/etawhitervg.webp}" type="image/x-icon" />
 
 
-  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" th:href="@{/css/tailwind.css}">
 
   <link rel="stylesheet" th:href="@{/css/global.css}">
   <link rel="stylesheet" th:href="@{/css/auth/register.css}">
@@ -23,6 +23,9 @@
 
 <main class="registro">
 
+  <div th:if="${error}" class="alert alert-danger">
+    <span th:text="${error}"></span>
+  </div>
 
   
     <div class=" hidden md:flex md:w-[40%] lg:w-[45%] bg-[#23aae2] relative items-center justify-center p-12 overflow-hidden">
@@ -190,6 +193,7 @@
   </div>
 </main>
 <script th:src="@{/js/contraseñaMostrar.js}"></script>
+<script th:src="@{/js/alert.js}"></script>
 </body>
 
 </html>

@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personaliza tu Experiencia - ETA</title>
+    
+    <link rel="stylesheet" th:href="@{/css/global.css}">
+    <link rel="stylesheet" th:href="@{/css/cliente/dahsboard-cliente.css}">
+    <link rel="stylesheet" th:href="@{/css/tailwind.css}">
+    <link rel="icon" th:href="@{/images/logos/logo.webp}" type="image/x-icon" />
+
+    <style>
+        .onboarding-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 2rem;
+        }
+
+        .onboarding-card {
+            background: white;
+            border-radius: 1rem;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 600px;
+            width: 100%;
+            padding: 3rem;
+        }
+
+        .paso {
+            display: none;
+        }
+
+        .paso.activo {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .categoria-option {
+            display: inline-block;
+            margin: 0.5rem;
+        }
+
+        .categoria-checkbox {
+            display: none;
+        }
+
+        .categoria-label {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            background: #f3f4f6;
+            border: 2px solid #e5e7eb;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .categoria-checkbox:checked + .categoria-label {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .radio-option {
+            display: block;
+            margin: 1rem 0;
+        }
+
+        .radio-input {
+            display: none;
+        }
+
+        .radio-label {
+            display: block;
+            padding: 1rem;
+            background: #f3f4f6;
+            border: 2px solid #e5e7eb;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .radio-input:checked + .radio-label {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .progress-bar {
+            height: 4px;
+            background: #e5e7eb;
+            border-radius: 2px;
+            margin-bottom: 2rem;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: #667eea;
+            transition: width 0.5s;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="onboarding-container">
+        <div class="onboarding-card">
+            <div class="text-center mb-8">
+                <h1 class="text-3xl font-bold text-gray-800 mb-2">¡Bienvenido a ETA!</h1>
+                <p class="text-gray-600">Personaliza tu experiencia respondiendo unas breves preguntas</p>
+            </div>
+
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressBar" style="width: 25%"></div>
+            </div>
+
+            <form th:action="@{/cliente/onboarding}" method="post" th:object="${form}">
+                
+                <!-- Paso 1: Categorías favoritas -->
+                <div class="paso activo" data-paso="1">
+                    <h2 class="text-xl font-semibold mb-4">¿Qué tipo de actividades te gustan?</h2>
+                    <p class="text-gray-600 mb-6">Selecciona una o más categorías</p>
+                    
+                    <div class="text-center">
+                        <div th:each="cat, iterStat : ${categorias}" class="categoria-option">
+                            <input type="checkbox" 
+                                   th:id="'categoriasIds' + ${iterStat.index}" 
+                                   th:value="${cat.idCategoria}" 
+                                   name="categoriasIds"
+                                   class="categoria-checkbox">
+                            <label th:for="'categoriasIds' + ${iterStat.index}" 
+                                   th:text="${cat.nombre}"
+                                   class="categoria-label"></label>
+                        </div>
+                    </div>
+                    
+                    <div th:if="${#fields.hasErrors('categoriasIds')}" class="text-red-500 mt-4">
+                        <p th:errors="*{categoriasIds}"></p>
+                    </div>
+                </div>
+
+                <!-- Paso 2: Grupo de viaje -->
+                <div class="paso" data-paso="2">
+                    <h2 class="text-xl font-semibold mb-4">¿Con quién sueles salir?</h2>
+                    <p class="text-gray-600 mb-6">Selecciona una opción</p>
+                    
+                    <div class="radio-option">
+                        <input type="radio" id="solo" value="SOLO" th:field="*{grupoViaje}" class="radio-input">
+                        <label for="solo" class="radio-label">Solo</label>
+                    </div>
+                    
+                    <div class="radio-option">
+                        <input type="radio" id="pareja" value="PAREJA" th:field="*{grupoViaje}" class="radio-input">
+                        <label for="pareja" class="radio-label">En pareja</label>
+                    </div>
+                    
+                    <div class="radio-option">
+                        <input type="radio" id="familia" value="FAMILIA" th:field="*{grupoViaje}" class="radio-input">
+                        <label for="familia" class="radio-label">Con familia</label>
+                    </div>
+                    
+                    <div class="radio-option">
+                        <input type="radio" id="amigos" value="AMIGOS" th:field="*{grupoViaje}" class="radio-input">
+                        <label for="amigos" class="radio-label">Con amigos</label>
+                    </div>
+                    
+                    <div class="radio-option">
+                        <input type="radio" id="varios" value="VARIOS" th:field="*{grupoViaje}" class="radio-input">
+                        <label for="varios" class="radio-label">Varía</label>
+                    </div>
+                    
+                    <div th:if="${#fields.hasErrors('grupoViaje')}" class="text-red-500 mt-4">
+                        <p th:errors="*{grupoViaje}"></p>
+                    </div>
+                </div>
+
+                <!-- Paso 3: Rango de precio -->
+                <div class="paso" data-paso="3">
+                    <h2 class="text-xl font-semibold mb-4">¿Qué presupuesto manejas por actividad?</h2>
+                    <p class="text-gray-600 mb-6">Selecciona una opción</p>
+                    
+                    <div class="radio-option">
+                        <input type="radio" id="economico" value="ECONOMICO" th:field="*{rangoPrecio}" class="radio-input">
+                        <label for="economico" class="radio-label">Económico (< $50k)</label>
+                    </div>
+                    
+                    <div class="radio-option">
+                        <input type="radio" id="moderado" value="MODERADO" th:field="*{rangoPrecio}" class="radio-input">
+                        <label for="moderado" class="radio-label">Moderado ($50k–$150k)</label>
+                    </div>
+                    
+                    <div class="radio-option">
+                        <input type="radio" id="premium" value="PREMIUM" th:field="*{rangoPrecio}" class="radio-input">
+                        <label for="premium" class="radio-label">Premium (> $150k)</label>
+                    </div>
+                    
+                    <div th:if="${#fields.hasErrors('rangoPrecio')}" class="text-red-500 mt-4">
+                        <p th:errors="*{rangoPrecio}"></p>
+                    </div>
+                </div>
+
+                <!-- Paso 4: Disponibilidad -->
+                <div class="paso" data-paso="4">
+                    <h2 class="text-xl font-semibold mb-4">¿Cuándo haces más actividades?</h2>
+                    <p class="text-gray-600 mb-6">Selecciona una opción</p>
+                    
+                    <div class="radio-option">
+                        <input type="radio" id="finde" value="FINDE" th:field="*{disponibilidadSemana}" class="radio-input">
+                        <label for="finde" class="radio-label">Fines de semana</label>
+                    </div>
+                    
+                    <div class="radio-option">
+                        <input type="radio" id="entreSemana" value="ENTRE_SEMANA" th:field="*{disponibilidadSemana}" class="radio-input">
+                        <label for="entreSemana" class="radio-label">Entre semana</label>
+                    </div>
+                    
+                    <div class="radio-option">
+                        <input type="radio" id="ambos" value="AMBOS" th:field="*{disponibilidadSemana}" class="radio-input">
+                        <label for="ambos" class="radio-label">Ambos</label>
+                    </div>
+                    
+                    <div th:if="${#fields.hasErrors('disponibilidadSemana')}" class="text-red-500 mt-4">
+                        <p th:errors="*{disponibilidadSemana}"></p>
+                    </div>
+                </div>
+
+                <div class="flex justify-between mt-8">
+                    <button type="button" id="btnAnterior" class="px-6 py-2 bg-gray-200 rounded-lg hover:bg-gray-300 transition"
+                            style="display: none;">Anterior</button>
+                    <button type="button" id="btnSiguiente" class="px-6 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition ml-auto">
+                        Siguiente
+                    </button>
+                    <button type="submit" id="btnFinalizar" class="px-6 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition ml-auto"
+                            style="display: none;">Finalizar</button>
+                </div>
+            </form>
+
+            <div th:if="${error}" class="mt-4 p-4 bg-red-100 text-red-700 rounded-lg">
+                <p th:text="${error}"></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const pasos = document.querySelectorAll('.paso');
+        const btnSiguiente = document.getElementById('btnSiguiente');
+        const btnAnterior = document.getElementById('btnAnterior');
+        const btnFinalizar = document.getElementById('btnFinalizar');
+        const progressBar = document.getElementById('progressBar');
+        let pasoActual = 0;
+
+        function mostrarPaso(n) {
+            pasos.forEach((paso, index) => {
+                paso.classList.remove('activo');
+                if (index === n) {
+                    paso.classList.add('activo');
+                }
+            });
+
+            // Actualizar barra de progreso
+            const progreso = ((n + 1) / pasos.length) * 100;
+            progressBar.style.width = progreso + '%';
+
+            // Mostrar/ocultar botones
+            btnAnterior.style.display = n > 0 ? 'block' : 'none';
+            btnSiguiente.style.display = n < pasos.length - 1 ? 'block' : 'none';
+            btnFinalizar.style.display = n === pasos.length - 1 ? 'block' : 'none';
+        }
+
+        btnSiguiente.addEventListener('click', () => {
+            if (validarPasoActual()) {
+                if (pasoActual < pasos.length - 1) {
+                    pasoActual++;
+                    mostrarPaso(pasoActual);
+                }
+            }
+        });
+
+        btnAnterior.addEventListener('click', () => {
+            if (pasoActual > 0) {
+                pasoActual--;
+                mostrarPaso(pasoActual);
+            }
+        });
+
+        function validarPasoActual() {
+            const pasoElement = pasos[pasoActual];
+            
+            if (pasoActual === 0) {
+                // Validar que al menos una categoría esté seleccionada
+                const checkboxes = pasoElement.querySelectorAll('input[type="checkbox"]');
+                const algunoMarcado = Array.from(checkboxes).some(cb => cb.checked);
+                if (!algunoMarcado) {
+                    alert('Por favor, selecciona al menos una categoría');
+                    return false;
+                }
+            } else {
+                // Validar que un radio esté seleccionado
+                const radios = pasoElement.querySelectorAll('input[type="radio"]');
+                const algunoMarcado = Array.from(radios).some(r => r.checked);
+                if (!algunoMarcado) {
+                    alert('Por favor, selecciona una opción');
+                    return false;
+                }
+            }
+            
+            return true;
+        }
+
+        // Inicializar
+        mostrarPaso(0);
+    </script>
+</body>
+
+</html>

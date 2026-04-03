@@ -1,6 +1,8 @@
 package maineta.eta.config;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -10,6 +12,9 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
  */
 @Configuration
 public class MvcConfig implements WebMvcConfigurer {
+
+    @Autowired
+    private ClienteInterceptor clienteInterceptor;
 
     /**
      * Este método permite registrar "manejadores de recursos estáticos".
@@ -25,6 +30,13 @@ public class MvcConfig implements WebMvcConfigurer {
         registry.addResourceHandler("/uploads/**")
                 .addResourceLocations("file:uploads/"); 
                 // "file:" indica que la ruta es del sistema de archivos local
+    }
+
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        // Registrar el interceptor solo para rutas de cliente
+        registry.addInterceptor(clienteInterceptor)
+                .addPathPatterns("/cliente/**");
     }
 }
 

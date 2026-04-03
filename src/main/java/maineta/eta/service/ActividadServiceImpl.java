@@ -20,6 +20,7 @@ import jakarta.persistence.EntityNotFoundException;
 import maineta.eta.dto.ActividadUpdateDto;
 import maineta.eta.entity.Actividad;
 import maineta.eta.entity.Categoria;
+import maineta.eta.entity.Cliente;
 import maineta.eta.entity.Idioma;
 import maineta.eta.entity.ImagenActividad;
 import maineta.eta.repository.ActividadRepository;
@@ -428,6 +429,51 @@ public class ActividadServiceImpl implements ActividadService {
     @Override
     public List<ImagenActividad> obtenerImagenesPorActividad(Long idActividad) {
         return imagenActividadRepository.findByActividad_IdActividad(idActividad);
+    }
+
+    @Override
+    @Transactional
+    public void incrementarContadores(Long idActividad) {
+        Actividad actividad = actividadRepository.findById(idActividad)
+            .orElseThrow(() -> new RuntimeException("Actividad no encontrada: " + idActividad));
+        
+        actividad.setTotalVistas(actividad.getTotalVistas() + 1);
+        actividad.setTotalTendencia(actividad.getTotalTendencia() + 1);
+        
+        actividadRepository.save(actividad);
+    }
+
+    @Override
+    public List<Actividad> obtenerTendencias() {
+        return actividadRepository.findTop10ByOrderByTotalTendenciaDesc();
+    }
+
+    @Override
+    public List<Actividad> obtenerMasVistas() {
+        return actividadRepository.findTop10ByOrderByTotalVistasDesc();
+    }
+
+    @Override
+    public List<Actividad> obtenerMasReservadas() {
+        return actividadRepository.findTop10MasReservadas(
+            org.springframework.data.domain.PageRequest.of(0, 10)
+        );
+    }
+
+    @Override
+    public List<Actividad> obtenerParaTi(Cliente cliente) {
+        if (cliente.getCategoriasPreferidas() == null || cliente.getCategoriasPreferidas().isEmpty()) {
+            // Si no tiene categorías preferidas, devolver las mejor calificadas
+            return actividadRepository.findAll(
+                org.springframework.data.domain.PageRequest.of(0, 10, 
+                    org.springframework.data.domain.Sort.by("calificacion").descending())
+            ).getContent();
+        }
+        
+        return actividadRepository.findByCategoriaInOrderByCalificacionDesc(
+            cliente.getCategoriasPreferidas(),
+            org.springframework.data.domain.PageRequest.of(0, 10)
+        );
     }
 
 }

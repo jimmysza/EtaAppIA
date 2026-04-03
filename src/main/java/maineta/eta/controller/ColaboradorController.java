@@ -44,6 +44,7 @@ import maineta.eta.service.ColaboradorService;
 import maineta.eta.service.DisponibilidadService;
 import maineta.eta.service.IUploadFileService;
 import maineta.eta.service.IdiomaService;
+import maineta.eta.service.KpiColaboradorService;
 import maineta.eta.service.PatronDisponibilidadService;
 import maineta.eta.service.ReservaService;
 import maineta.eta.service.UsuarioService;
@@ -64,12 +65,13 @@ public class ColaboradorController {
     private final ReservaService reservaService;
     private final PatronDisponibilidadService patronDisponibilidadService;
     private final ChatService chatService;
+    private final KpiColaboradorService kpiColaboradorService;
 
     public ColaboradorController(ActividadService actividadService, UsuarioService usuarioService,
             ColaboradorService colaboradorService, IUploadFileService uploadFileService,
             CategoriaService categoriaService, IdiomaService idiomaService, DisponibilidadService disponibilidadService,
             ReservaService reservaService, PatronDisponibilidadService patronDisponibilidadService,
-            ChatService chatService) {
+            ChatService chatService, KpiColaboradorService kpiColaboradorService) {
         this.actividadService = actividadService;
         this.usuarioService = usuarioService;
         this.colaboradorService = colaboradorService;
@@ -80,6 +82,7 @@ public class ColaboradorController {
         this.reservaService = reservaService;
         this.patronDisponibilidadService = patronDisponibilidadService;
         this.chatService = chatService;
+        this.kpiColaboradorService = kpiColaboradorService;
     }
 
     // 🔹 Vista para cambiar cliente (ejemplo de plantilla simple)
@@ -90,14 +93,45 @@ public class ColaboradorController {
 
     // 🔹 Dashboard principal del colaborador
     @GetMapping("/dashboard")
-    public String dashboard(Authentication authentication, Model model) {
+    public String dashboard(
+            @RequestParam(required = false) String periodo,
+            Authentication authentication, 
+            Model model) {
 
         String email = authentication.getName();
         Usuario usuario = usuarioService.obtenerPorEmail(email);
         Colaborador colaborador = colaboradorService.obtenerPorUsuario(usuario)
                 .orElseThrow(() -> new RuntimeException("Colaborador no encontrado"));
 
-        model.addAttribute("reservasColaborador", reservaService.getReservasColaborador(colaborador.getIdColaborador()));
+        // Parsear período o usar mes actual
+        YearMonth periodoSeleccionado;
+        if (periodo != null && !periodo.isEmpty()) {
+            try {
+                periodoSeleccionado = YearMonth.parse(periodo);
+            } catch (Exception e) {
+                periodoSeleccionado = YearMonth.now();
+            }
+        } else {
+            periodoSeleccionado = YearMonth.now();
+        }
+
+        // Obtener KPIs
+        var resumen = kpiColaboradorService.obtenerResumen(colaborador.getIdColaborador(), periodoSeleccionado);
+        var kpisPorActividad = kpiColaboradorService.obtenerKpiPorActividad(colaborador.getIdColaborador(), periodoSeleccionado);
+        var tendenciaReservas = kpiColaboradorService.obtenerTendenciaReservas(colaborador.getIdColaborador(), 4);
+        var estadosReserva = kpiColaboradorService.obtenerEstadosReserva(colaborador.getIdColaborador(), periodoSeleccionado);
+        var ocupacion = kpiColaboradorService.obtenerOcupacion(colaborador.getIdColaborador(), periodoSeleccionado);
+        var ingresosMensuales = kpiColaboradorService.obtenerIngresosMensuales(colaborador.getIdColaborador(), 6);
+
+        // Pasar al modelo
+        model.addAttribute("resumen", resumen);
+        model.addAttribute("kpisPorActividad", kpisPorActividad);
+        model.addAttribute("tendenciaReservas", tendenciaReservas);
+        model.addAttribute("estadosReserva", estadosReserva);
+        model.addAttribute("ocupacion", ocupacion);
+        model.addAttribute("ingresosMensuales", ingresosMensuales);
+        model.addAttribute("periodoSeleccionado", periodoSeleccionado);
+        model.addAttribute("nombreColaborador", usuario.getNombre());
 
         return "colaborador/dashboard";
     }

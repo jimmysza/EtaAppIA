@@ -77,7 +77,7 @@ public class ClienteController {
     }
 
     @GetMapping("/dashboard")
-    public String dashboard(Authentication authentication, Model model,Authentication auth, @RequestParam(required = false) String exito) {
+    public String dashboard(Authentication authentication, Model model, Authentication auth, @RequestParam(required = false) String exito) {
         usuarioHelper.agregarInfoUsuarioModel(model, auth);
         // Obtener el cliente autenticado
         String email = authentication.getName();
@@ -101,18 +101,18 @@ public class ClienteController {
 
     @PostMapping("/checkout")
     public String checkout(@ModelAttribute ReservaDTO reservaDTO,
-                           RedirectAttributes redirectAttributes) {
-
+            RedirectAttributes redirectAttributes,
+        Model model,
+                        Authentication auth) {
+        usuarioHelper.agregarInfoUsuarioModel(model, auth);
         Long idDispo = reservaDTO.getIdDisponibilidad();
         return "redirect:/cliente/checkout/" + idDispo;
     }
 
-
     @GetMapping("/checkout/{idDispo}")
     public String mostrarCheckout(@PathVariable Long idDispo,
-                                  Authentication auth,
-                                  Model model) {
-
+            Authentication auth,
+            Model model) {
 
         Disponibilidad disponibilidad = disponibilidadService.obtenerPorId(idDispo)
                 .orElseThrow(() -> new RuntimeException("Disponibilidad no encontrada"));
@@ -123,8 +123,6 @@ public class ClienteController {
 
         return "cliente/checkout";
     }
-
-
 
     @GetMapping("/informacion")
     public String mostrarInformacionCliente(Authentication auth, Model model) {
@@ -248,10 +246,9 @@ public class ClienteController {
     // ========================
     // FAVORITOS
     // ========================
-
     /**
-     * Toggle favorito vía AJAX (POST).
-     * Retorna JSON con { "favorito": true/false }
+     * Toggle favorito vía AJAX (POST). Retorna JSON con { "favorito":
+     * true/false }
      */
     @PostMapping("/favorito/toggle/{idActividad}")
     @ResponseBody
@@ -360,8 +357,8 @@ public class ClienteController {
 
         ConversacionChat conversacion = chatService.obtenerOCrearConversacionDesdeReservaCliente(idReserva, email);
         List<MensajeChat> mensajes = chatService.listarMensajes(
-            Objects.requireNonNull(conversacion.getIdConversacion()),
-            email);
+                Objects.requireNonNull(conversacion.getIdConversacion()),
+                email);
 
         model.addAttribute("emailUsuario", email);
         model.addAttribute("reservas", reservaService.getReservasCliente(cliente));
@@ -371,6 +368,5 @@ public class ClienteController {
 
         return "cliente/chats";
     }
-
 
 }

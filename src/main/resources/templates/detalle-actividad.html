@@ -91,11 +91,13 @@
                     </svg>
                 </button>
                 
-                <a href=""><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24">
+                <a href="#" onclick="compartirPagina(event)"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24">
                         <path fill="#fff" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="m20 12l-6.4-7v3.5C10.4 8.5 4 10.6 4 19c0-1.167 1.92-3.5 9.6-3.5V19z" />
                     </svg></a>
-                <a href=""><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24">
+                <a href="#"
+                   th:attr="data-lat=${actividad.latitud}, data-lon=${actividad.longitud}"
+                   onclick="irAMaps(event)"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24">
                         <path fill="#fff"
                             d="M18.9 6c-.2-.6-.8-1-1.4-1h-11c-.7 0-1.2.4-1.4 1L3 12v8c0 .5.5 1 1 1h1c.6 0 1-.5 1-1v-1h12v1c0 .5.5 1 1 1h1c.5 0 1-.5 1-1v-8zM6.8 7h10.3l1.1 3H5.8zM19 17H5v-5h14zM7.5 13c.8 0 1.5.7 1.5 1.5S8.3 16 7.5 16S6 15.3 6 14.5S6.7 13 7.5 13m9 0c.8 0 1.5.7 1.5 1.5s-.7 1.5-1.5 1.5s-1.5-.7-1.5-1.5s.7-1.5 1.5-1.5" />
                     </svg></a>
@@ -619,6 +621,38 @@
                 .bindPopup('<b>' + titulo + '</b><br>' + ubicacion)
                 .openPopup();
         });
+    </script>
+
+    <script>
+    function compartirPagina(e) {
+        e.preventDefault();
+        if (navigator.share) {
+            navigator.share({ url: window.location.href });
+        } else {
+            navigator.clipboard.writeText(window.location.href).then(function() {
+                alert('Enlace copiado al portapapeles');
+            });
+        }
+    }
+
+    function irAMaps(e) {
+        e.preventDefault();
+        var btn = e.currentTarget;
+        var lat = btn.getAttribute('data-lat');
+        var lon = btn.getAttribute('data-lon');
+
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(function(pos) {
+                var origen = pos.coords.latitude + ',' + pos.coords.longitude;
+                var destino = lat + ',' + lon;
+                window.open('https://www.google.com/maps/dir/' + origen + '/' + destino, '_blank');
+            }, function() {
+                window.open('https://www.google.com/maps/search/?api=1&query=' + lat + ',' + lon, '_blank');
+            });
+        } else {
+            window.open('https://www.google.com/maps/search/?api=1&query=' + lat + ',' + lon, '_blank');
+        }
+    }
     </script>
 
 </body>
