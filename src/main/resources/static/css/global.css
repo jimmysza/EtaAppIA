@@ -173,10 +173,13 @@ button[type="submit"]:focus {
 
 .red {
     color: #ff2200
-}
+}d
 
 .ColorBlue {
     color: var(--color-main);
+}
+.bgBlueMain {
+    background-color: var(--color-main);
 }
 
 

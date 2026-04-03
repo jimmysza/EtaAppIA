@@ -7,7 +7,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // --- Efecto de sombra y mostrar/ocultar enlaces ---
     window.addEventListener("scroll", () => {
-        if (window.scrollY > 205) {
+        if (window.scrollY > 195) {
             sticky?.classList.add("shadow");
             navbar.classList.add("border-none");
             navbar.classList.add("bg-white");
