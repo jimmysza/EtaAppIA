@@ -1,11 +1,13 @@
 package maineta.eta.controller;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -19,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.server.ResponseStatusException;
 
 import maineta.eta.config.UsuarioHelper;
 import maineta.eta.dto.ActividadDTO;
@@ -77,7 +80,7 @@ public class ClienteController {
     }
 
     @GetMapping("/dashboard")
-    public String dashboard(Authentication authentication, Model model, Authentication auth, @RequestParam(required = false) String exito) {
+    public String dashboard(Authentication authentication, Model model, Authentication auth) {
         usuarioHelper.agregarInfoUsuarioModel(model, auth);
         // Obtener el cliente autenticado
         String email = authentication.getName();
@@ -91,10 +94,6 @@ public class ClienteController {
 
         // Pasarlas al modelo
         model.addAttribute("reservas", reservas);
-
-        if (exito != null) {
-            model.addAttribute("exito", true);
-        }
 
         return "cliente/dashboard";
     }
@@ -192,33 +191,43 @@ public class ClienteController {
                     .orElseThrow(() -> new RuntimeException("Disponibilidad no encontrada"));
 
             // ✅ Crear la reserva y guardarla
-            reservaService.hacerReserva(cliente, actividad, disponibilidad, cantidad);
+            Reserva reservaGuardada = reservaService.hacerReserva(cliente, actividad, disponibilidad, cantidad);
 
-            // ✅ Mensaje de éxito
-            model.addAttribute("mensaje", "🎉 ¡Reserva realizada con éxito!");
-            model.addAttribute("actividad", actividad);
-            model.addAttribute("pagina", "checkout");
-
-            // 🔁 También mostrar disponibilidades en caso de querer reservar otro cupo
-            List<Disponibilidad> disponibilidades = disponibilidadService.obtenerPorActividad(idActividad);
-            model.addAttribute("disponibilidades", disponibilidades);
-
-            return "redirect:/cliente/dashboard?exito";
+            return "redirect:/cliente/reservas/" + reservaGuardada.getIdReserva() + "/recibo?nuevaReserva=true";
 
         } catch (Exception e) {
             // ⚠️ Error: recargar checkout con mensaje visible
             Actividad actividad = actividadService.listarById(idActividad);
-            List<Disponibilidad> disponibilidades = disponibilidadService.obtenerPorActividad(idActividad);
+            Disponibilidad disponibilidad = disponibilidadService.obtenerPorId(disponibilidadId)
+                    .orElse(null);
 
             model.addAttribute("actividad", actividad);
-            model.addAttribute("disponibilidades", disponibilidades);
-            model.addAttribute("reserva", new Reserva());
+            model.addAttribute("disponibilidad", disponibilidad);
+            ReservaDTO reservaDTO = new ReservaDTO();
+            reservaDTO.setIdDisponibilidad(disponibilidadId);
+            reservaDTO.setCantidad(cantidad);
+            model.addAttribute("reservaDTO", reservaDTO);
             model.addAttribute("pagina", "checkout");
             model.addAttribute("error", "❌ Error al realizar la reserva: " + e.getMessage());
 
             return "cliente/checkout";
         }
 
+    }
+
+    @GetMapping("/reservas/{idReserva}/recibo")
+    public String verReciboReserva(
+            @PathVariable Long idReserva,
+            @RequestParam(defaultValue = "false") boolean nuevaReserva,
+            Authentication authentication,
+            Authentication auth,
+            Model model) {
+        usuarioHelper.agregarInfoUsuarioModel(model, auth);
+
+        Reserva reserva = obtenerReservaDelCliente(idReserva, authentication);
+        cargarModeloRecibo(model, reserva, nuevaReserva);
+
+        return "cliente/recibo";
     }
 
     @GetMapping("/cancelar/reserva/{id}")
@@ -367,6 +376,43 @@ public class ClienteController {
         model.addAttribute("mensajes", mensajes);
 
         return "cliente/chats";
+    }
+
+    private Cliente obtenerClienteAutenticado(Authentication authentication) {
+        String email = authentication.getName();
+        Usuario usuario = usuarioService.obtenerPorEmail(email);
+        return clienteService.obtenerPorUsuario(usuario)
+                .orElseThrow(() -> new RuntimeException("Cliente no encontrado"));
+    }
+
+    private Reserva obtenerReservaDelCliente(Long idReserva, Authentication authentication) {
+        Cliente cliente = obtenerClienteAutenticado(authentication);
+        Reserva reserva = reservaService.ObtenerReservaPorId(idReserva)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Reserva no encontrada"));
+
+        if (reserva.getCliente() == null || reserva.getCliente().getId() == null
+                || !reserva.getCliente().getId().equals(cliente.getId())) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "No tienes permisos para ver esta reserva");
+        }
+
+        return reserva;
+    }
+
+    private void cargarModeloRecibo(Model model, Reserva reserva, boolean nuevaReserva) {
+        BigDecimal precioUnitario = reserva.getActividad() != null && reserva.getActividad().getPrecio() != null
+                ? reserva.getActividad().getPrecio()
+                : BigDecimal.ZERO;
+        BigDecimal totalReserva = precioUnitario.multiply(BigDecimal.valueOf(reserva.getCantidad()));
+
+        model.addAttribute("reserva", reserva);
+        model.addAttribute("precioUnitario", precioUnitario);
+        model.addAttribute("totalReserva", totalReserva);
+        model.addAttribute("nuevaReserva", nuevaReserva);
+        model.addAttribute("tituloRecibo", nuevaReserva ? "Thank you!" : "Detalle de tu reserva");
+        model.addAttribute("subtituloRecibo",
+                nuevaReserva
+                        ? "Tu reserva fue emitida correctamente y ya tienes tu recibo digital."
+                        : "Aqui tienes el recibo de la reserva que seleccionaste desde tu dashboard.");
     }
 
 }

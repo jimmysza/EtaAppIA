@@ -438,7 +438,32 @@
             min-height: 220px;
             border-radius: 24px;
             overflow: hidden;
-            background: linear-gradient(135deg, #0f172a 0%, #1d4ed8 50%, #14b8a6 100%);
+        }
+
+        .host-media::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg, rgba(15, 23, 42, 0.02), rgba(15, 23, 42, 0.72));
+            z-index: 1;
+            /* <- esto faltaba */
+        }
+
+        .host-media-copy {
+            position: absolute;
+            left: 16px;
+            right: 16px;
+            bottom: 16px;
+            z-index: 2;
+            /* <- encima del overlay */
+        }
+
+        .host-avatar {
+            position: absolute;
+            left: 16px;
+            top: 16px;
+            z-index: 2;
+            /* <- encima del overlay también */
         }
 
         .host-media img {
@@ -447,37 +472,13 @@
             object-fit: cover;
         }
 
-        .host-media::after {
-            content: "";
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(180deg, rgba(15, 23, 42, 0.02), rgba(15, 23, 42, 0.72));
-        }
-
-        .host-avatar {
-            position: absolute;
-            left: 16px;
-            top: 16px;
-            z-index: 1;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 52px;
-            height: 52px;
-            border-radius: 18px;
-            background: rgba(255, 255, 255, 0.92);
-            color: #0f172a;
-            font-weight: 800;
-            font-size: 1rem;
-            box-shadow: 0 12px 30px rgba(15, 23, 42, 0.18);
-        }
 
         .host-media-copy {
             position: absolute;
             left: 16px;
             right: 16px;
             bottom: 16px;
-            z-index: 1;
+            z-index: 1001;
             color: #ffffff;
         }
 
@@ -1193,16 +1194,15 @@
                     th:href="@{/colaboradores/{id}(id=${anfitrion.idColaborador})}" class="host-card-link group">
                     <article class="host-card-public">
                         <div class="host-media">
-                            <img th:if="${anfitrion.imagenPrincipal != null and !#strings.isEmpty(anfitrion.imagenPrincipal)}"
-                                th:src="@{|/uploads/${anfitrion.imagenPrincipal}|}"
-                                th:alt="${'Portada de ' + anfitrion.nombre}">
-
-                            <span class="host-avatar" th:if="${anfitrion.fotoPerfil == null or #strings.isEmpty(anfitrion.fotoPerfil)}"
+                            <!-- Iniciales (solo si no hay foto) -->
+                            <span class="host-avatar"
+                                th:if="${anfitrion.fotoPerfil == null or #strings.isEmpty(anfitrion.fotoPerfil)}"
                                 th:text="${anfitrion.iniciales}">ET</span>
-                            <img class="host-avatar object-cover"
-                                th:if="${anfitrion.fotoPerfil != null and !#strings.isEmpty(anfitrion.fotoPerfil)}"
-                                th:src="@{|/uploads/${anfitrion.fotoPerfil}|}"
-                                th:alt="${'Foto de perfil de ' + anfitrion.nombre}">
+
+                            <!-- Foto (sin clase host-avatar) -->
+                            <img th:if="${anfitrion.fotoPerfil != null and !#strings.isEmpty(anfitrion.fotoPerfil)}"
+                                th:src="@{|/uploads/${anfitrion.fotoPerfil}|}" th:alt="${'Foto de ' + anfitrion.nombre}"
+                                style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block;">
 
                             <div class="host-media-copy">
                                 <p>Perfil público</p>
@@ -1210,9 +1210,9 @@
                             </div>
                         </div>
 
-                        <span class="host-chip"
+                        <!--      <span class="host-chip"
                             th:if="${anfitrion.actividadDestacada != null and !#strings.isEmpty(anfitrion.actividadDestacada)}"
-                            th:text="${anfitrion.actividadDestacada}">Actividad destacada</span>
+                            th:text="${anfitrion.actividadDestacada}">Actividad destacada</span> -->
 
                         <p class="host-description">
                             Descripcion

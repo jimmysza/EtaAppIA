@@ -19,13 +19,6 @@
         style="background-color:#f8d7da;color:#842029;padding:12px;border-radius:8px;text-align:center;margin:20px 0;font-weight:bold;">
         <span th:text="${error}"></span>
     </div>
-
-    <div th:if="${mensaje}"
-        style="background-color:#d1e7dd;color:#0f5132;padding:12px;border-radius:8px;text-align:center;margin:20px 0;font-weight:bold;">
-        <span th:text="${mensaje}"></span>
-    </div>
-
-
     <main class="checkout-page">
 
         <form th:action="@{/cliente/reservar}" method="post">
@@ -42,7 +35,7 @@
 
                 <div class="form-group">
                 <label>Cantidad de cupos:</label>
-                <input type="number" name="cantidad" min="1" th:max="${disponibilidad.cuposDisponibles}" required />
+                <input type="number" name="cantidad" min="1" th:max="${disponibilidad.cuposDisponibles}" th:value="${reservaDTO != null ? reservaDTO.cantidad : null}" required />
                 <p>Cupos disponibles: <strong th:text="${disponibilidad.cuposDisponibles}"></strong></p>
             </div>
 

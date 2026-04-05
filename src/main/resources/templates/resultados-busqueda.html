@@ -728,7 +728,7 @@
                 <div class="flex gap-3 pb-2 px-1">
                     <a th:href="@{/actividades/buscar}" th:classappend="${filtroCategoriaId == null} ? 'active' : ''"
                         class="badge-filter flex-none px-6 py-3 rounded-full font-semibold text-sm whitespace-nowrap transition-all select-none">
-                        All
+                        Todos
                     </a>
                     <a th:each="categoria : ${categorias}"
                         th:href="@{/actividades/buscar(categoriaId=${categoria.idCategoria}, nombre=${filtroNombre}, idiomaId=${filtroIdiomaId}, precioMin=${filtroPrecioMin}, precioMax=${filtroPrecioMax})}"
