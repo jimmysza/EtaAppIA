@@ -14,6 +14,7 @@ public class ColaboradorPublicoDTO {
     private long totalViajeros;
     private double promedioCalificacion;
     private String imagenPrincipal;
+    private String fotoPerfil;
     private String actividadDestacada;
     private String iniciales;
 

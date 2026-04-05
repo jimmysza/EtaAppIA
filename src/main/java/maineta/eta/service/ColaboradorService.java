@@ -3,6 +3,7 @@ package maineta.eta.service;
 import java.util.List;
 import java.util.Optional;
 
+import maineta.eta.dto.ColaboradorPerfilForm;
 import maineta.eta.dto.ColaboradorPublicoDTO;
 import maineta.eta.entity.Colaborador;
 import maineta.eta.entity.Usuario;
@@ -38,6 +39,8 @@ public interface ColaboradorService {
     List<ColaboradorPublicoDTO> obtenerDestacadosPorReservas(int limite);
 
     Optional<ColaboradorPublicoDTO> obtenerResumenPublico(Long idColaborador);
+
+    Colaborador actualizarPerfil(Long idColaborador, ColaboradorPerfilForm form, String fotoPerfil);
 
     /**
      * 🔹 Buscar un colaborador a partir de su Usuario.

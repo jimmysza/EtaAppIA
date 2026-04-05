@@ -32,5 +32,8 @@ public class Colaborador {
     @Column(length = 150)
     private String correoSeguridad;
 
+    @Column(name = "foto_perfil", length = 255)
+    private String fotoPerfil;
+
     // getters y setters
 }

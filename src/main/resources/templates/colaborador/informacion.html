@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" th:href="@{/css/global.css}">
+    <link rel="stylesheet" th:href="@{/css/adminBd.css}">
+    <link rel="stylesheet" th:href="@{/css/tailwind.css}">
+    <link rel="icon" th:href="@{/images/logos/logo.webp}" type="image/x-icon" />
+    <title>ETA | Informacion personal</title>
+    <style>
+        .profile-shell {
+            background:
+                radial-gradient(circle at top left, rgba(14, 165, 233, 0.12), transparent 26%),
+                radial-gradient(circle at top right, rgba(16, 185, 129, 0.12), transparent 24%),
+                linear-gradient(180deg, #f8fafc 0%, #eef2ff 100%);
+        }
+
+        .profile-card {
+            border: 1px solid rgba(148, 163, 184, 0.18);
+            box-shadow: 0 30px 70px rgba(15, 23, 42, 0.08);
+        }
+
+        .profile-avatar {
+            width: 148px;
+            height: 148px;
+            border-radius: 32px;
+            object-fit: cover;
+            border: 4px solid #ffffff;
+            box-shadow: 0 20px 45px rgba(15, 23, 42, 0.14);
+        }
+
+        .profile-avatar-placeholder {
+            width: 148px;
+            height: 148px;
+            border-radius: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #0f172a 0%, #2563eb 55%, #14b8a6 100%);
+            color: #ffffff;
+            font-size: 2.5rem;
+            font-weight: 800;
+            box-shadow: 0 20px 45px rgba(15, 23, 42, 0.14);
+        }
+    </style>
+</head>
+
+<body class="bg-slate-50">
+    <div th:if="${exito}" class="alert alert-success" role="alert">
+        <p th:text="${exito}">Tus cambios se guardaron correctamente.</p>
+    </div>
+    <div th:if="${error}" class="alert alert-danger" role="alert">
+        <p th:text="${error}">Ocurrio un error al actualizar tu informacion.</p>
+    </div>
+
+    <section class="container-manager">
+        <div th:replace="~{componentes/sidebar :: sidebar}"></div>
+
+        <main class="main-content min-h-screen profile-shell">
+            <div class="header_db border-b border-slate-200">
+                <div class="flex gap-3 items-center">
+                    <svg id="hideBar" class="hidebar-dashboard cursor-pointer" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                        <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                            d="M15 3.5v17M3 9.4c0-2.24 0-3.36.436-4.216a4 4 0 0 1 1.748-1.748C6.04 3 7.16 3 9.4 3h5.2c2.24 0 3.36 0 4.216.436a4 4 0 0 1 1.748 1.748C21 6.04 21 7.16 21 9.4v5.2c0 2.24 0 3.36-.436 4.216a4 4 0 0 1-1.748 1.748C17.96 21 16.84 21 14.6 21H9.4c-2.24 0-3.36 0-4.216-.436a4 4 0 0 1-1.748-1.748C3 17.96 3 16.84 3 14.6z" />
+                    </svg>
+                    <nav aria-label="Breadcrumb">
+                        <ol class="breadcrumbs flex items-center gap-2 text-sm" itemscope itemtype="https://schema.org/BreadcrumbList">
+                            <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+                                <a itemprop="item" href="/" class="text-blue-600 hover:text-blue-800">
+                                    <span itemprop="name">Inicio</span>
+                                </a>
+                                <meta itemprop="position" content="1" />
+                            </li>
+                            <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+                                <a itemprop="item" th:href="@{/colaborador/dashboard}" class="text-slate-600 hover:text-slate-900">
+                                    <span itemprop="name">Dashboard</span>
+                                </a>
+                                <meta itemprop="position" content="2" />
+                            </li>
+                            <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+                                <a itemprop="item" class="text-slate-600">
+                                    <span itemprop="name">Informacion personal</span>
+                                </a>
+                                <meta itemprop="position" content="3" />
+                            </li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+
+            <div class="px-6 py-8">
+                <div class="max-w-6xl mx-auto">
+                    <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-5 mb-6">
+                        <div>
+                            <p class="text-sm font-semibold uppercase tracking-wider text-sky-700 mb-2">Perfil del colaborador</p>
+                            <h1 class="text-3xl md:text-4xl font-black text-slate-950">Informacion personal</h1>
+                            <p class="text-slate-600 mt-2 max-w-2xl">
+                                Actualiza tus datos principales y sube una foto para personalizar tu espacio de trabajo dentro del dashboard.
+                            </p>
+                        </div>
+
+                        <a th:href="@{/colaborador/dashboard}"
+                            class="inline-flex items-center justify-center rounded-2xl border border-slate-200 bg-white px-5 py-3 text-sm font-semibold text-slate-700 shadow-sm hover:border-slate-300 hover:text-slate-950 transition">
+                            Volver al dashboard
+                        </a>
+                    </div>
+
+                    <form th:action="@{/colaborador/settings}" th:object="${perfilForm}" method="post" enctype="multipart/form-data"
+                        class="grid grid-cols-1 xl:grid-cols-3 gap-6">
+
+                        <section class="profile-card rounded-3xl bg-white p-6">
+                            <p class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3">Foto de perfil</p>
+                            <div class="flex flex-col items-center text-center">
+                                <img id="previewFoto"
+                                    th:if="${fotoPerfilActual != null and !#strings.isEmpty(fotoPerfilActual)}"
+                                    th:src="@{|/uploads/${fotoPerfilActual}|}"
+                                    alt="Foto de perfil del colaborador"
+                                    class="profile-avatar mb-4">
+
+                                <div id="placeholderFoto"
+                                    th:if="${fotoPerfilActual == null or #strings.isEmpty(fotoPerfilActual)}"
+                                    class="profile-avatar-placeholder mb-4"
+                                    th:text="${#strings.substring(nombreColaboradorSidebar != null ? nombreColaboradorSidebar : 'ET', 0, 1)}">
+                                    E
+                                </div>
+
+                                <p class="text-lg font-bold text-slate-950" th:text="${nombreColaboradorSidebar}">Colaborador</p>
+                                <p class="text-sm text-slate-500 mb-5" sec:authentication="name">correo@ejemplo.com</p>
+
+                                <label for="fotoPerfil"
+                                    class="w-full rounded-2xl border border-dashed border-slate-300 bg-slate-50 px-4 py-4 text-sm font-medium text-slate-600 hover:border-sky-400 hover:bg-sky-50 hover:text-sky-700 transition cursor-pointer">
+                                    Seleccionar nueva foto
+                                </label>
+                                <input id="fotoPerfil" name="fotoPerfil" type="file" accept="image/*" class="hidden">
+
+                                <p class="text-xs text-slate-500 mt-4">
+                                    La imagen se guarda en el backend y se mostrara en tu sidebar y perfil interno.
+                                </p>
+                            </div>
+                        </section>
+
+                        <section class="profile-card rounded-3xl bg-white p-6 md:p-8 xl:col-span-2">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                                <div>
+                                    <label for="nombre" class="block text-sm font-semibold text-slate-700 mb-2">Nombre completo</label>
+                                    <input id="nombre" th:field="*{nombre}" type="text" required
+                                        class="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-900 outline-none transition focus:border-sky-500 focus:bg-white focus:ring-4 focus:ring-sky-100">
+                                </div>
+
+                                <div>
+                                    <label for="telefono" class="block text-sm font-semibold text-slate-700 mb-2">Telefono</label>
+                                    <input id="telefono" th:field="*{telefono}" type="text" required
+                                        class="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-900 outline-none transition focus:border-sky-500 focus:bg-white focus:ring-4 focus:ring-sky-100">
+                                </div>
+
+                                <div>
+                                    <label for="email" class="block text-sm font-semibold text-slate-700 mb-2">Correo principal</label>
+                                    <input id="email" th:field="*{email}" type="email" required
+                                        class="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-900 outline-none transition focus:border-sky-500 focus:bg-white focus:ring-4 focus:ring-sky-100">
+                                </div>
+
+                                <div>
+                                    <label for="correoSeguridad" class="block text-sm font-semibold text-slate-700 mb-2">Correo de seguridad</label>
+                                    <input id="correoSeguridad" th:field="*{correoSeguridad}" type="email" required
+                                        class="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-900 outline-none transition focus:border-sky-500 focus:bg-white focus:ring-4 focus:ring-sky-100">
+                                </div>
+
+                                <div class="md:col-span-2">
+                                    <label for="nit" class="block text-sm font-semibold text-slate-700 mb-2">NIT</label>
+                                    <input id="nit" th:field="*{nit}" type="text" required
+                                        class="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-900 outline-none transition focus:border-sky-500 focus:bg-white focus:ring-4 focus:ring-sky-100">
+                                </div>
+                            </div>
+
+                            <div class="mt-8 rounded-3xl bg-slate-950 px-5 py-5 text-white">
+                                <p class="text-xs font-bold uppercase tracking-wider text-sky-200 mb-2">Tip</p>
+                                <p class="text-sm text-slate-200">
+                                    Si cambias el correo principal, la sesion se mantiene actualizada internamente para que sigas navegando sin volver a iniciar sesion.
+                                </p>
+                            </div>
+
+                            <div class="mt-8 flex flex-col sm:flex-row sm:items-center gap-3">
+                                <button type="submit"
+                                    class="inline-flex items-center justify-center rounded-2xl bg-blue-600 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-sky-200 transition hover:bg-sky-700">
+                                    Guardar informacion
+                                </button>
+
+                                <a th:href="@{/colaborador/dashboard}"
+                                    class="inline-flex items-center justify-center rounded-2xl border border-slate-200 bg-white px-6 py-3 text-sm font-semibold text-slate-700 transition hover:border-slate-300 hover:text-slate-950">
+                                    Cancelar
+                                </a>
+                            </div>
+                        </section>
+                    </form>
+                </div>
+            </div>
+        </main>
+    </section>
+
+    <script>
+        const fotoInput = document.getElementById('fotoPerfil');
+        let previewFoto = document.getElementById('previewFoto');
+        let placeholderFoto = document.getElementById('placeholderFoto');
+
+        if (fotoInput) {
+            fotoInput.addEventListener('change', function (event) {
+                const archivo = event.target.files && event.target.files[0];
+                if (!archivo) {
+                    return;
+                }
+
+                const url = URL.createObjectURL(archivo);
+
+                if (previewFoto) {
+                    previewFoto.src = url;
+                } else {
+                    const nuevaImagen = document.createElement('img');
+                    nuevaImagen.id = 'previewFoto';
+                    nuevaImagen.className = 'profile-avatar mb-4';
+                    nuevaImagen.alt = 'Vista previa de la foto seleccionada';
+                    nuevaImagen.src = url;
+                    if (placeholderFoto && placeholderFoto.parentNode) {
+                        placeholderFoto.parentNode.insertBefore(nuevaImagen, placeholderFoto);
+                        placeholderFoto.remove();
+                    }
+                    previewFoto = nuevaImagen;
+                    placeholderFoto = null;
+                }
+            });
+        }
+    </script>
+    <script th:src="@{/js/alert.js}"></script>
+    <script th:src="@{/js/dashboard.js}"></script>
+</body>
+
+</html>

@@ -1197,7 +1197,12 @@
                                 th:src="@{|/uploads/${anfitrion.imagenPrincipal}|}"
                                 th:alt="${'Portada de ' + anfitrion.nombre}">
 
-                            <span class="host-avatar" th:text="${anfitrion.iniciales}">ET</span>
+                            <span class="host-avatar" th:if="${anfitrion.fotoPerfil == null or #strings.isEmpty(anfitrion.fotoPerfil)}"
+                                th:text="${anfitrion.iniciales}">ET</span>
+                            <img class="host-avatar object-cover"
+                                th:if="${anfitrion.fotoPerfil != null and !#strings.isEmpty(anfitrion.fotoPerfil)}"
+                                th:src="@{|/uploads/${anfitrion.fotoPerfil}|}"
+                                th:alt="${'Foto de perfil de ' + anfitrion.nombre}">
 
                             <div class="host-media-copy">
                                 <p>Perfil público</p>

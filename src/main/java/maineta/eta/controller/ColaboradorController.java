@@ -12,7 +12,9 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,6 +29,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import jakarta.persistence.EntityNotFoundException;
 import maineta.eta.dto.ActividadUpdateDto;
 import maineta.eta.dto.CalendarioDiaDTO;
+import maineta.eta.dto.ColaboradorPerfilForm;
 import maineta.eta.dto.DisponibilidadDetalleDTO;
 import maineta.eta.dto.PatronDisponibilidadDTO;
 import maineta.eta.entity.Actividad;
@@ -85,6 +88,23 @@ public class ColaboradorController {
         this.kpiColaboradorService = kpiColaboradorService;
     }
 
+    @ModelAttribute
+    public void agregarDatosSidebar(Authentication authentication, Model model) {
+        if (authentication == null || authentication.getName() == null) {
+            return;
+        }
+
+        try {
+            Usuario usuario = usuarioService.obtenerPorEmail(authentication.getName());
+            colaboradorService.obtenerPorUsuario(usuario).ifPresent(colaborador -> {
+                model.addAttribute("nombreColaboradorSidebar", usuario.getNombre());
+                model.addAttribute("fotoPerfilColaborador", colaborador.getFotoPerfil());
+            });
+        } catch (RuntimeException ignored) {
+            // Evita romper otras respuestas si el contexto autenticado cambia.
+        }
+    }
+
     // 🔹 Vista para cambiar cliente (ejemplo de plantilla simple)
     @GetMapping("/cambiar")
     public String CambiarCliente() {
@@ -132,8 +152,65 @@ public class ColaboradorController {
         model.addAttribute("ingresosMensuales", ingresosMensuales);
         model.addAttribute("periodoSeleccionado", periodoSeleccionado);
         model.addAttribute("nombreColaborador", usuario.getNombre());
+        model.addAttribute("colaboradorPerfil", colaborador);
+        model.addAttribute("usuarioPerfil", usuario);
 
         return "colaborador/dashboard";
+    }
+
+    @GetMapping({"/settings", "/informacion"})
+    public String mostrarInformacionPersonal(Authentication authentication, Model model) {
+        Colaborador colaborador = obtenerColaboradorAutenticado(authentication);
+        model.addAttribute("perfilForm", construirPerfilForm(colaborador));
+        model.addAttribute("fotoPerfilActual", colaborador.getFotoPerfil());
+        return "colaborador/informacion";
+    }
+
+    @PostMapping("/settings")
+    public String actualizarInformacionPersonal(
+            @ModelAttribute("perfilForm") ColaboradorPerfilForm perfilForm,
+            @RequestParam(value = "fotoPerfil", required = false) MultipartFile fotoPerfil,
+            Authentication authentication,
+            RedirectAttributes redirectAttributes) {
+
+        Colaborador colaborador = obtenerColaboradorAutenticado(authentication);
+        String fotoAnterior = colaborador.getFotoPerfil();
+        String nuevaFoto = null;
+
+        try {
+            if (fotoPerfil != null && !fotoPerfil.isEmpty()) {
+                nuevaFoto = uploadFileService.copy(fotoPerfil);
+            }
+
+            Colaborador actualizado = colaboradorService.actualizarPerfil(
+                    colaborador.getIdColaborador(),
+                    perfilForm,
+                    nuevaFoto);
+
+            if (nuevaFoto != null && fotoAnterior != null && !fotoAnterior.isBlank()) {
+                uploadFileService.delete(fotoAnterior);
+            }
+
+            Authentication nuevaAutenticacion = new UsernamePasswordAuthenticationToken(
+                    actualizado.getUsuario().getEmail(),
+                    authentication.getCredentials(),
+                    authentication.getAuthorities());
+            SecurityContextHolder.getContext().setAuthentication(nuevaAutenticacion);
+
+            redirectAttributes.addFlashAttribute("exito", "Tu informacion personal se actualizo correctamente.");
+        } catch (IOException e) {
+            if (nuevaFoto != null) {
+                uploadFileService.delete(nuevaFoto);
+            }
+            redirectAttributes.addFlashAttribute("error", "No se pudo guardar la foto seleccionada.");
+        } catch (RuntimeException e) {
+            if (nuevaFoto != null) {
+                uploadFileService.delete(nuevaFoto);
+            }
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
+        }
+
+        return "redirect:/colaborador/settings";
     }
 
     @GetMapping("/chats")
@@ -616,6 +693,23 @@ public class ColaboradorController {
             redirectAttributes.addFlashAttribute("type", "danger");
         }
         return "redirect:/colaborador/detalle/" + idActividad;
+    }
+
+    private Colaborador obtenerColaboradorAutenticado(Authentication authentication) {
+        String email = authentication.getName();
+        Usuario usuario = usuarioService.obtenerPorEmail(email);
+        return colaboradorService.obtenerPorUsuario(usuario)
+                .orElseThrow(() -> new RuntimeException("Colaborador no encontrado"));
+    }
+
+    private ColaboradorPerfilForm construirPerfilForm(Colaborador colaborador) {
+        Usuario usuario = colaborador.getUsuario();
+        return new ColaboradorPerfilForm(
+                usuario.getNombre(),
+                usuario.getEmail(),
+                usuario.getTelefono(),
+                colaborador.getNit(),
+                colaborador.getCorreoSeguridad());
     }
 
 }
