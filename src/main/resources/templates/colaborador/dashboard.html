@@ -74,6 +74,57 @@
                     </form>
                 </div>
 
+                <div class="mb-8">
+                    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-4">
+                        <div>
+                            <h2 class="text-2xl font-bold text-gray-900">Ultimas reservas</h2>
+                            <p class="text-gray-600 mt-1">Tus 3 movimientos mas recientes para reaccionar rapido.</p>
+                        </div>
+                        <a th:href="@{/colaborador/notificaciones-reservas}"
+                            class="inline-flex items-center justify-center rounded-xl bg-slate-900 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-800 transition">
+                            Ver todas las notificaciones
+                        </a>
+                    </div>
+
+                    <div th:if="${#lists.isEmpty(ultimasReservas)}"
+                        class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 text-center text-gray-500">
+                        Aun no tienes reservas recientes.
+                    </div>
+
+                    <div th:if="${!#lists.isEmpty(ultimasReservas)}" class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                        <article th:each="reserva : ${ultimasReservas}"
+                            class="bg-white rounded-2xl shadow-sm border border-gray-200 p-5">
+                            <div class="flex items-start justify-between gap-4">
+                                <div>
+                                    <p class="text-xs uppercase tracking-wider font-semibold text-sky-600 mb-2">Reserva reciente</p>
+                                    <h3 class="text-lg font-bold text-gray-900" th:text="${reserva.actividad != null ? reserva.actividad.titulo : 'Actividad'}">Actividad</h3>
+                                </div>
+                                <span class="px-3 py-1 rounded-full text-xs font-semibold bg-slate-100 text-slate-700"
+                                    th:text="${reserva.estado}">Pendiente</span>
+                            </div>
+
+                            <div class="mt-4 space-y-2 text-sm text-gray-600">
+                                <p>
+                                    <strong class="text-gray-900">Cliente:</strong>
+                                    <span th:text="${reserva.cliente != null and reserva.cliente.usuario != null ? reserva.cliente.usuario.nombre : 'Cliente'}">Cliente</span>
+                                </p>
+                                <p>
+                                    <strong class="text-gray-900">Cupos:</strong>
+                                    <span th:text="${reserva.cantidad}">1</span>
+                                </p>
+                                <p th:if="${reserva.disponibilidad != null and reserva.disponibilidad.fecha != null}">
+                                    <strong class="text-gray-900">Disponibilidad:</strong>
+                                    <span th:text="${#temporals.format(reserva.disponibilidad.fecha, 'dd/MM/yyyy') + (reserva.disponibilidad.horaInicio != null ? ' • ' + #temporals.format(reserva.disponibilidad.horaInicio, 'HH:mm') : '')}">Fecha</span>
+                                </p>
+                                <p>
+                                    <strong class="text-gray-900">Reservado:</strong>
+                                    <span th:text="${#temporals.format(reserva.fechaReserva, 'dd/MM/yyyy HH:mm')}">Ahora</span>
+                                </p>
+                            </div>
+                        </article>
+                    </div>
+                </div>
+
 
                 <!-- ========== SECCIÓN 1: RESUMEN GENERAL ========== -->
                 <div class="mb-8">

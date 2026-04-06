@@ -1,6 +1,7 @@
 package maineta.eta.controller;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -101,25 +102,56 @@ public class ClienteController {
     @PostMapping("/checkout")
     public String checkout(@ModelAttribute ReservaDTO reservaDTO,
             RedirectAttributes redirectAttributes,
-        Model model,
-                        Authentication auth) {
+            @RequestParam("idActividad") Long idActividad,
+            @RequestParam("fechaSeleccionada") String fechaSeleccionada,
+            Model model,
+            Authentication auth) {
         usuarioHelper.agregarInfoUsuarioModel(model, auth);
-        Long idDispo = reservaDTO.getIdDisponibilidad();
-        return "redirect:/cliente/checkout/" + idDispo;
+        Actividad actividad = actividadService.listarById(idActividad);
+        if (actividad == null) {
+            redirectAttributes.addFlashAttribute("error", "Debes seleccionar una disponibilidad valida.");
+            return "redirect:/";
+        }
+
+        if (fechaSeleccionada == null || fechaSeleccionada.isBlank()) {
+            redirectAttributes.addFlashAttribute("error", "Selecciona un dia disponible antes de continuar.");
+            return "redirect:/actividad/" + usuarioHelper.generarTituloUrl(actividad.getTitulo()) + "-" + idActividad;
+        }
+
+        return "redirect:/cliente/checkout/actividad/" + idActividad + "?fecha=" + fechaSeleccionada;
     }
 
     @GetMapping("/checkout/{idDispo}")
     public String mostrarCheckout(@PathVariable Long idDispo,
             Authentication auth,
             Model model) {
+        usuarioHelper.agregarInfoUsuarioModel(model, auth);
 
         Disponibilidad disponibilidad = disponibilidadService.obtenerPorId(idDispo)
                 .orElseThrow(() -> new RuntimeException("Disponibilidad no encontrada"));
 
-        model.addAttribute("disponibilidad", disponibilidad);
-        model.addAttribute("reservaDTO", new ReservaDTO());
-        model.addAttribute("actividad", disponibilidad.getActividad());
+        ReservaDTO reservaDTO = new ReservaDTO();
+        reservaDTO.setIdDisponibilidad(disponibilidad.getIdDisponibilidad());
+        cargarModeloCheckout(model, disponibilidad.getActividad(), disponibilidad.getFecha(), disponibilidad, reservaDTO, null);
 
+        return "cliente/checkout";
+    }
+
+    @GetMapping("/checkout/actividad/{idActividad}")
+    public String mostrarCheckoutPorDia(
+            @PathVariable Long idActividad,
+            @RequestParam("fecha") String fecha,
+            Authentication auth,
+            Model model) {
+        usuarioHelper.agregarInfoUsuarioModel(model, auth);
+
+        LocalDate fechaSeleccionada = LocalDate.parse(fecha);
+        Actividad actividad = actividadService.listarById(idActividad);
+        if (actividad == null) {
+            throw new RuntimeException("Actividad no encontrada");
+        }
+
+        cargarModeloCheckout(model, actividad, fechaSeleccionada, null, new ReservaDTO(), null);
         return "cliente/checkout";
     }
 
@@ -208,6 +240,9 @@ public class ClienteController {
             reservaDTO.setCantidad(cantidad);
             model.addAttribute("reservaDTO", reservaDTO);
             model.addAttribute("pagina", "checkout");
+            if (disponibilidad != null) {
+                cargarModeloCheckout(model, actividad, disponibilidad.getFecha(), disponibilidad, reservaDTO, null);
+            }
             model.addAttribute("error", "❌ Error al realizar la reserva: " + e.getMessage());
 
             return "cliente/checkout";
@@ -413,6 +448,32 @@ public class ClienteController {
                 nuevaReserva
                         ? "Tu reserva fue emitida correctamente y ya tienes tu recibo digital."
                         : "Aqui tienes el recibo de la reserva que seleccionaste desde tu dashboard.");
+    }
+
+    private void cargarModeloCheckout(Model model, Actividad actividad, LocalDate fechaSeleccionada,
+            Disponibilidad disponibilidadSeleccionada, ReservaDTO reservaDTO, String error) {
+        List<Disponibilidad> disponibilidadesDelDia = disponibilidadService.obtenerPorActividad(actividad.getIdActividad())
+                .stream()
+                .filter(disponibilidad -> "DISPONIBLE".equalsIgnoreCase(disponibilidad.getEstado()))
+                .filter(disponibilidad -> disponibilidad.getCuposDisponibles() > 0)
+                .filter(disponibilidad -> fechaSeleccionada != null && fechaSeleccionada.equals(disponibilidad.getFecha()))
+                .toList();
+
+        Disponibilidad disponibilidadActiva = disponibilidadSeleccionada;
+        if (disponibilidadActiva == null && !disponibilidadesDelDia.isEmpty()) {
+            disponibilidadActiva = disponibilidadesDelDia.get(0);
+            reservaDTO.setIdDisponibilidad(disponibilidadActiva.getIdDisponibilidad());
+        }
+
+        model.addAttribute("actividad", actividad);
+        model.addAttribute("fechaSeleccionada", fechaSeleccionada);
+        model.addAttribute("disponibilidadesDelDia", disponibilidadesDelDia);
+        model.addAttribute("disponibilidad", disponibilidadActiva);
+        model.addAttribute("reservaDTO", reservaDTO);
+        model.addAttribute("pagina", "checkout");
+        if (error != null) {
+            model.addAttribute("error", error);
+        }
     }
 
 }

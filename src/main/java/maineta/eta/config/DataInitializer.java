@@ -132,13 +132,19 @@ public class DataInitializer implements CommandLineRunner {
             }
         }
 
-        // --- Crear usuario ADMIN por defecto ---
-        String emailAdmin = "admin@gmail";
+        // --- Crear usuario equipodeeta@gmail.com
+        
+
+
+
+        // ADMIN por defecto ---
+        String emailAdmin = "equipodeeta@gmail.com";
 
         if (usuarioRepository.findByEmail(emailAdmin).isEmpty()) {
             Usuario usuario = new Usuario();
             usuario.setNombre("Administrador");
             usuario.setTelefono("3052135329");
+            usuario.setEmailVerificado(true);
             usuario.setEmail(emailAdmin);
             usuario.setPassword(passwordEncoder.encode("admin123"));
 

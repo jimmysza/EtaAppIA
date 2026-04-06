@@ -1,11 +1,17 @@
 package maineta.eta.controller;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.YearMonth;
+import java.time.format.DateTimeFormatter;
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Locale;
 import java.util.Optional;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -99,7 +105,10 @@ public class AllAcessController {
                         @PathVariable("id") Long id,
                         Model model,
                         Authentication auth,
-                        @RequestParam(defaultValue = "0") int page,
+                        @RequestParam(name = "comentariosPage", defaultValue = "0") int comentariosPage,
+                        @RequestParam(required = false) Integer anioReserva,
+                        @RequestParam(required = false) Integer mesReserva,
+                        @RequestParam(required = false) String fechaReserva,
                         @RequestParam(required = false) String nombre
                 ) {
                 // 👈 solo necesitas pasar Authentication
@@ -120,18 +129,74 @@ public class AllAcessController {
                 model.addAttribute("actividad", actividad);
 
                 int pageSize = 3;
-                Page<Actividad> actividadesPage = actividadService.getActividadesWithPaginationMain(page, pageSize,
+                Page<Actividad> actividadesPage = actividadService.getActividadesWithPaginationMain(0, pageSize,
                                 nombre);
-                Page<Comentario> comentarioPage = comentarioService.listarComentarioPorIdYPaginacion(id, page,
+                Page<Comentario> comentarioPage = comentarioService.listarComentarioPorIdYPaginacion(id, comentariosPage,
                                 pageSize);
                 List<Disponibilidad> disponibilidads = disponibilidadService.obtenerPorActividad(id);
+                List<Disponibilidad> disponibilidadesDisponibles = disponibilidads.stream()
+                                .filter(disponibilidad -> "DISPONIBLE".equalsIgnoreCase(disponibilidad.getEstado())
+                                                && disponibilidad.getCuposDisponibles() > 0)
+                                .toList();
+                TreeSet<LocalDate> fechasDisponibles = disponibilidadesDisponibles.stream()
+                                .map(Disponibilidad::getFecha)
+                                .filter(java.util.Objects::nonNull)
+                                .collect(Collectors.toCollection(TreeSet::new));
+
+                LocalDate fechaReservaSeleccionada = null;
+                if (fechaReserva != null && !fechaReserva.isBlank()) {
+                        fechaReservaSeleccionada = LocalDate.parse(fechaReserva);
+                }
+
+                YearMonth calendarioReserva;
+                if (anioReserva != null && mesReserva != null) {
+                        calendarioReserva = YearMonth.of(anioReserva, mesReserva);
+                } else if (fechaReservaSeleccionada != null) {
+                        calendarioReserva = YearMonth.from(fechaReservaSeleccionada);
+                } else if (!fechasDisponibles.isEmpty()) {
+                        calendarioReserva = YearMonth.from(fechasDisponibles.first());
+                } else {
+                        calendarioReserva = YearMonth.now();
+                }
+
+                Locale localeEs = Locale.forLanguageTag("es-CO");
+                Map<Integer, String> diasDisponiblesMap = fechasDisponibles.stream()
+                                .filter(fechaDisponible -> YearMonth.from(fechaDisponible).equals(calendarioReserva))
+                                .collect(Collectors.toMap(
+                                                LocalDate::getDayOfMonth,
+                                                LocalDate::toString,
+                                                (actual, ignored) -> actual,
+                                                LinkedHashMap::new));
+
+                if (fechaReservaSeleccionada == null
+                                || !YearMonth.from(fechaReservaSeleccionada).equals(calendarioReserva)
+                                || !diasDisponiblesMap.containsValue(fechaReservaSeleccionada.toString())) {
+                        fechaReservaSeleccionada = !diasDisponiblesMap.isEmpty()
+                                        ? LocalDate.parse(diasDisponiblesMap.values().iterator().next())
+                                        : null;
+                }
 
                 model.addAttribute("reservaDTO", new ReservaDTO());
                 model.addAttribute("actividades", actividadesPage);
                 model.addAttribute("comentarios", comentarioPage);
-                model.addAttribute("currentPage", page);
+                model.addAttribute("currentPage", comentariosPage);
+                model.addAttribute("comentariosCurrentPage", comentariosPage);
                 model.addAttribute("disponibilidades", disponibilidads);
+                model.addAttribute("disponibilidadesDisponibles", disponibilidadesDisponibles);
+                model.addAttribute("diasDisponiblesMap", diasDisponiblesMap);
+                model.addAttribute("fechaReservaSeleccionada", fechaReservaSeleccionada);
+                model.addAttribute("mesReserva", calendarioReserva.getMonthValue());
+                model.addAttribute("anioReserva", calendarioReserva.getYear());
+                model.addAttribute("primerDiaReservaSemana", calendarioReserva.atDay(1).getDayOfWeek().getValue());
+                model.addAttribute("diasEnMesReserva", calendarioReserva.lengthOfMonth());
+                model.addAttribute("mesReservaNombre", calendarioReserva.getMonth()
+                                .getDisplayName(java.time.format.TextStyle.FULL, localeEs));
+                model.addAttribute("prevMesReserva", calendarioReserva.minusMonths(1).getMonthValue());
+                model.addAttribute("prevAnioReserva", calendarioReserva.minusMonths(1).getYear());
+                model.addAttribute("nextMesReserva", calendarioReserva.plusMonths(1).getMonthValue());
+                model.addAttribute("nextAnioReserva", calendarioReserva.plusMonths(1).getYear());
                 model.addAttribute("totalPages", comentarioPage.getTotalPages());
+                model.addAttribute("comentariosTotalPages", comentarioPage.getTotalPages());
                 model.addAttribute("filtroNombre", nombre);
                 model.addAttribute("id", id);
 
@@ -139,6 +204,9 @@ public class AllAcessController {
                                 .boxed()
                                 .collect(Collectors.toList());
                 model.addAttribute("pageNumbers", pageNumbers);
+                model.addAttribute("comentariosPageNumbers", IntStream.range(0, comentarioPage.getTotalPages())
+                                .boxed()
+                                .collect(Collectors.toList()));
                 model.addAttribute("pagina", "detalle");
                 model.addAttribute("imagenes", actividadService.obtenerImagenesPorActividad(id));
 
@@ -185,6 +253,13 @@ public class AllAcessController {
                                 nombre);
 
                 Page<Categoria> categoriaPage = categoriaService.buscarTodasPorPaginacion(page, pageSizeCategorias);
+                List<Categoria> categoriasVisibles = categoriaPage.getContent();
+                Set<Long> categoriasVisiblesIds = categoriasVisibles.stream()
+                                .map(Categoria::getIdCategoria)
+                                .collect(Collectors.toSet());
+                List<Categoria> categoriasModal = categoriaService.listarCategorias().stream()
+                                .filter(categoria -> !categoriasVisiblesIds.contains(categoria.getIdCategoria()))
+                                .toList();
                 /*
                  * =========================
                  * IDs necesarios
@@ -539,6 +614,13 @@ public class AllAcessController {
                 }).getContent();
 
                 Page<Categoria> categoriaPage = categoriaService.buscarTodasPorPaginacion(page, pageSizeCategorias);
+                List<Categoria> categoriasVisiblesBusqueda = categoriaPage.getContent();
+                Set<Long> categoriasVisiblesBusquedaIds = categoriasVisiblesBusqueda.stream()
+                                .map(Categoria::getIdCategoria)
+                                .collect(Collectors.toSet());
+                List<Categoria> categoriasModal = categoriaService.listarCategorias().stream()
+                                .filter(categoria -> !categoriasVisiblesBusquedaIds.contains(categoria.getIdCategoria()))
+                                .toList();
 
                 /*
                  * ===============================
@@ -548,6 +630,7 @@ public class AllAcessController {
                 model.addAttribute("busqueda", new BusquedaForm());
                 model.addAttribute("actividades", actividadesDTO);
                 model.addAttribute("categorias", categoriaPage);
+                model.addAttribute("categoriasModal", categoriasModal);
                 model.addAttribute("idiomas", idiomaService.listarIdiomas());
                 model.addAttribute("currentPage", page);
                 model.addAttribute("totalPages", actividadesPage.getTotalPages());

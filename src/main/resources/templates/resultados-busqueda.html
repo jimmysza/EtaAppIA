@@ -731,9 +731,9 @@
                         Todos
                     </a>
                     <a th:each="categoria : ${categorias}"
-                        th:href="@{/actividades/buscar(categoriaId=${categoria.idCategoria}, nombre=${filtroNombre}, idiomaId=${filtroIdiomaId}, precioMin=${filtroPrecioMin}, precioMax=${filtroPrecioMax})}"
+                        th:href="@{/actividades/buscar(categoriaId=${categoria.idCategoria}, idiomaId=${filtroIdiomaId}, precioMin=${filtroPrecioMin}, precioMax=${filtroPrecioMax})}"
                         th:classappend="${filtroCategoriaId != null && filtroCategoriaId == categoria.idCategoria} ? 'active' : ''"
-                        class="badge-filter flex-none px-6 py-3 rounded-full font-semibold text-sm whitespace-nowrap transition-all select-none">
+                        class="badge-filter category-badge-link flex-none px-6 py-3 rounded-full font-semibold text-sm whitespace-nowrap transition-all select-none">
                         <span th:text="${categoria.nombre}"></span>
                     </a>
                     <button id="moreCategories"
@@ -780,17 +780,25 @@
             <!-- Modal Content -->
             <div class="p-6 overflow-y-auto max-h-[calc(80vh-120px)] z-10">
                 <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                    <button
-                        class="modal-category-btn p-4 rounded-xl border-2 border-gray-200 hover:border-blue-500 hover:bg-blue-50 transition-all text-left">
+                    <a th:each="categoria : ${categoriasModal}"
+                        th:href="@{/actividades/buscar(categoriaId=${categoria.idCategoria}, idiomaId=${filtroIdiomaId}, precioMin=${filtroPrecioMin}, precioMax=${filtroPrecioMax})}"
+                        class="modal-category-btn category-badge-link p-4 rounded-xl border-2 border-gray-200 hover:border-blue-500 hover:bg-blue-50 transition-all text-left">
                         <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center text-2xl">
-                                🏔️</div>
+                            <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center text-sm font-black text-blue-700"
+                                th:text="${#strings.substring(categoria.nombre, 0, 1)}">
+                                C
+                            </div>
                             <div>
-                                <p class="font-semibold text-gray-900">Adventure</p>
-                                <p class="text-xs text-gray-500">234 activities</p>
+                                <p class="font-semibold text-gray-900" th:text="${categoria.nombre}">Categoria</p>
+                                <p class="text-xs text-gray-500">Explorar categoria</p>
                             </div>
                         </div>
-                    </button>
+                    </a>
+
+                    <div th:if="${#lists.isEmpty(categoriasModal)}"
+                        class="col-span-2 sm:col-span-3 rounded-2xl border border-dashed border-slate-200 bg-slate-50 px-4 py-10 text-center text-sm font-medium text-slate-500">
+                        Ya estas viendo todas las categorias disponibles.
+                    </div>
 
                 </div>
             </div>
@@ -1138,29 +1146,18 @@
             }
         });
 
-        // Modal category selection
-        document.querySelectorAll('.modal-category-btn').forEach(btn => {
-            btn.addEventListener('click', function () {
-                const categoryName = this.querySelector('.font-semibold').textContent;
+        const resultSearchInput = document.getElementById('resultSearchInput');
 
-                // Remove active from all badges
-                document.querySelectorAll('.badge-filter').forEach(b => b.classList.remove('active'));
-
-                // Find and activate the corresponding badge (if exists)
-                const matchingBadge = Array.from(document.querySelectorAll('.badge-filter:not(.more-btn)')).find(
-                    badge => badge.textContent.trim() === categoryName
-                );
-
-                if (matchingBadge) {
-                    matchingBadge.classList.add('active');
+        document.querySelectorAll('.category-badge-link').forEach(link => {
+            link.addEventListener('click', function () {
+                if (resultSearchInput) {
+                    resultSearchInput.value = '';
                 }
 
-                // Close modal
-                modal.classList.remove('show');
-                document.body.style.overflow = 'auto';
-
-                // Filter content
-                console.log('Filter by:', categoryName);
+                if (modal.classList.contains('show')) {
+                    modal.classList.remove('show');
+                    document.body.style.overflow = 'auto';
+                }
             });
         });
 

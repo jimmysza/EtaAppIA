@@ -5,8 +5,10 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.YearMonth;
+import java.time.format.DateTimeFormatter;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -142,6 +144,10 @@ public class ColaboradorController {
         var estadosReserva = kpiColaboradorService.obtenerEstadosReserva(colaborador.getIdColaborador(), periodoSeleccionado);
         var ocupacion = kpiColaboradorService.obtenerOcupacion(colaborador.getIdColaborador(), periodoSeleccionado);
         var ingresosMensuales = kpiColaboradorService.obtenerIngresosMensuales(colaborador.getIdColaborador(), 6);
+        List<Reserva> ultimasReservas = reservaService.getReservasColaborador(colaborador.getIdColaborador())
+                .stream()
+                .limit(3)
+                .toList();
 
         // Pasar al modelo
         model.addAttribute("resumen", resumen);
@@ -154,8 +160,29 @@ public class ColaboradorController {
         model.addAttribute("nombreColaborador", usuario.getNombre());
         model.addAttribute("colaboradorPerfil", colaborador);
         model.addAttribute("usuarioPerfil", usuario);
+        model.addAttribute("ultimasReservas", ultimasReservas);
 
         return "colaborador/dashboard";
+    }
+
+    @GetMapping("/notificaciones-reservas")
+    public String verNotificacionesReservas(Authentication authentication, Model model) {
+        Colaborador colaborador = obtenerColaboradorAutenticado(authentication);
+        List<Reserva> reservasPendientes = reservaService.getReservasColaborador(colaborador.getIdColaborador())
+                .stream()
+                .filter(reserva -> reserva.getEstado() != null && "pendiente".equalsIgnoreCase(reserva.getEstado()))
+                .toList();
+
+        Map<String, List<Reserva>> reservasPorActividad = reservasPendientes.stream()
+                .collect(Collectors.groupingBy(
+                        reserva -> reserva.getActividad() != null ? reserva.getActividad().getTitulo() : "Actividad sin titulo",
+                        LinkedHashMap::new,
+                        Collectors.toList()));
+
+        model.addAttribute("reservasRecientes", reservasPendientes.stream().limit(3).toList());
+        model.addAttribute("reservasPorActividad", reservasPorActividad);
+
+        return "colaborador/notificaciones-reservas";
     }
 
     @GetMapping({"/settings", "/informacion"})
@@ -412,16 +439,22 @@ public class ColaboradorController {
 
         // Patrones existentes
         List<PatronDisponibilidad> patrones = patronDisponibilidadService.obtenerPorActividad(idActividad);
+        Locale localeEs = Locale.forLanguageTag("es-CO");
+        String mesNombre = capitalizarTexto(ym.atDay(1).format(DateTimeFormatter.ofPattern("MMMM", localeEs)));
+        String fechaSeleccionadaTexto = fechaSeleccionada != null
+                ? capitalizarTexto(fechaSeleccionada.format(DateTimeFormatter.ofPattern("EEEE dd 'de' MMMM yyyy", localeEs)))
+                : null;
 
         model.addAttribute("actividad", actividad);
         model.addAttribute("calendarioMap", calendarioMap);
         model.addAttribute("anio", ym.getYear());
         model.addAttribute("mes", ym.getMonthValue());
-        model.addAttribute("mesNombre", ym.getMonth().toString());
+        model.addAttribute("mesNombre", mesNombre);
         model.addAttribute("primerDiaSemana", ym.atDay(1).getDayOfWeek().getValue()); // 1=Lun ... 7=Dom
         model.addAttribute("diasEnMes", ym.lengthOfMonth());
         model.addAttribute("detalleDia", detalleDia);
         model.addAttribute("fechaSeleccionada", fechaSeleccionada);
+        model.addAttribute("fechaSeleccionadaTexto", fechaSeleccionadaTexto);
         model.addAttribute("patrones", patrones);
         model.addAttribute("disponibilidad", new Disponibilidad());
         model.addAttribute("patronDTO", new PatronDisponibilidadDTO());
@@ -712,4 +745,28 @@ public class ColaboradorController {
                 colaborador.getCorreoSeguridad());
     }
 
+    private String construirEtiquetaDisponibilidad(Reserva reserva) {
+        if (reserva.getDisponibilidad() == null) {
+            return "Reserva sin disponibilidad asignada";
+        }
+
+        String fecha = reserva.getDisponibilidad().getFecha() != null
+                ? reserva.getDisponibilidad().getFecha().toString()
+                : "Fecha pendiente";
+        String horaInicio = reserva.getDisponibilidad().getHoraInicio() != null
+                ? reserva.getDisponibilidad().getHoraInicio().toString()
+                : "--:--";
+        String horaFin = reserva.getDisponibilidad().getHoraFin() != null
+                ? reserva.getDisponibilidad().getHoraFin().toString()
+                : "--:--";
+
+        return fecha + " • " + horaInicio + " - " + horaFin;
+    }
+
+    private String capitalizarTexto(String texto) {
+        if (texto == null || texto.isBlank()) {
+            return texto;
+        }
+        return texto.substring(0, 1).toUpperCase() + texto.substring(1);
+    }
 }

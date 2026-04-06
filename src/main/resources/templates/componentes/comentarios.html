@@ -258,17 +258,26 @@
                 </div>
 
                 <!-- Pagination -->
-                <div class="flex items-center justify-between mt-8">
-                    <a th:if="${currentPage > 0}"
-                        th:href="@{/actividad/{slug}-{id}(slug=${actividad.titulo.toLowerCase().replaceAll('[^a-z0-9\\s-]', '').replaceAll('\\s+', '-').replaceAll('-+', '-')}, id=${id}, page=${currentPage - 1})} + '#reseñas'"
+                <div th:if="${comentariosTotalPages > 1}" class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mt-8">
+                    <a th:if="${comentariosCurrentPage > 0}"
+                        th:href="@{/actividad/{slug}-{id}(slug=${actividad.titulo.toLowerCase().replaceAll('[^a-z0-9\\s-]', '').replaceAll('\\s+', '-').replaceAll('-+', '-')}, id=${id}, comentariosPage=${comentariosCurrentPage - 1})} + '#reseñas'"
                         class="px-6 py-3 border border-border-color rounded-lg hover:bg-gray-50 font-semibold transition-colors duration-200">
                         ← Anterior
                     </a>
                     <span class="text-sm text-text-secondary">
-                        Página <span th:text="${currentPage + 1}">1</span> de <span th:text="${totalPages}">10</span>
+                        Página <span th:text="${comentariosCurrentPage + 1}">1</span> de <span th:text="${comentariosTotalPages}">10</span>
                     </span>
-                    <a th:if="${currentPage < totalPages - 1}"
-                        th:href="@{/actividad/{slug}-{id}(slug=${actividad.titulo.toLowerCase().replaceAll('[^a-z0-9\\s-]', '').replaceAll('\\s+', '-').replaceAll('-+', '-')}, id=${id}, page=${currentPage + 1})} + '#reseñas'"
+                    <div class="flex flex-wrap items-center justify-center gap-2">
+                        <a th:each="numeroPagina : ${comentariosPageNumbers}"
+                            th:href="@{/actividad/{slug}-{id}(slug=${actividad.titulo.toLowerCase().replaceAll('[^a-z0-9\\s-]', '').replaceAll('\\s+', '-').replaceAll('-+', '-')}, id=${id}, comentariosPage=${numeroPagina})} + '#reseñas'"
+                            th:text="${numeroPagina + 1}"
+                            class="min-w-11 px-4 py-3 border rounded-lg font-semibold transition-colors duration-200 text-center"
+                            th:classappend="${numeroPagina == comentariosCurrentPage} ? ' bg-text-primary text-white border-text-primary' : ' border-border-color hover:bg-gray-50 text-text-primary'">
+                            1
+                        </a>
+                    </div>
+                    <a th:if="${comentariosCurrentPage < comentariosTotalPages - 1}"
+                        th:href="@{/actividad/{slug}-{id}(slug=${actividad.titulo.toLowerCase().replaceAll('[^a-z0-9\\s-]', '').replaceAll('\\s+', '-').replaceAll('-+', '-')}, id=${id}, comentariosPage=${comentariosCurrentPage + 1})} + '#reseñas'"
                         class="px-6 py-3 border border-border-color rounded-lg hover:bg-gray-50 font-semibold transition-colors duration-200">
                         Siguiente →
                     </a>
