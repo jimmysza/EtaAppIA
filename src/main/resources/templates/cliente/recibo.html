@@ -8,6 +8,8 @@
     <link rel="stylesheet" th:href="@{/css/global.css}">
     <link rel="stylesheet" th:href="@{/css/componentes/navbar.css}">
     <link rel="stylesheet" th:href="@{/css/tailwind.css}">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <link rel="icon" th:href="@{/images/logos/logo.webp}" type="image/x-icon" />
     <style>
         .receipt-shell {
@@ -24,7 +26,7 @@
             border-radius: 38px;
             margin: 0 auto;
             background: rgba(255, 255, 255, 0.94);
-            border: 1px solid rgba(255, 255, 255, 0.75);
+            /* border: 1px solid rgba(255, 255, 255, 0.75); */
             box-shadow: 0 35px 80px rgba(15, 23, 42, 0.10);
             overflow: hidden;
             backdrop-filter: blur(18px);
@@ -35,19 +37,19 @@
             content: "";
             position: absolute;
             top: 43%;
-            width: 42px;
-            height: 42px;
+            width: 45px;
+            height: 45px;
             border-radius: 999px;
             background: #eef2ff;
             z-index: 2;
         }
 
         .receipt-ticket::before {
-            left: -21px;
+            left: -20px;
         }
 
         .receipt-ticket::after {
-            right: -21px;
+            right: -20px;
         }
 
         .receipt-divider {
@@ -107,10 +109,10 @@
 <body class="receipt-shell">
     <div th:replace="~{componentes/navbar :: navbar}"></div>
 
-    <main class="px-4 pb-28 ">
-        <section class="receipt-ticket">
+    <main class="px-4  ">
+        <section class="receipt-ticket mb-4">
             <div class="px-6 py-8 md:px-10 md:py-10 text-center">
-                <div class="text-5xl mb-4">🎉</div>
+                <img th:src="@{/images/logos/etabluerrvg.png}" class="mx-auto w-[170px] h-[170px]" alt="logo" loading="lazy" />
                 <h1 class="text-3xl md:text-4xl font-black text-slate-950 mb-3" th:text="${tituloRecibo}">Thank you!
                 </h1>
                 <p class="text-lg text-slate-500 max-w-xl mx-auto" th:text="${subtituloRecibo}">
@@ -191,7 +193,7 @@
                 </div>
             </div>
 
-            <div class="px-6 py-8 md:px-10 md:py-10">
+            <div class="px-6 pt-8 md:px-10 md:pt-10">
 
                <!--  <div class="flex justify-center gap-8 text-sm tracking-[0.35em] text-slate-500 mt-4">
                     <p>
@@ -224,6 +226,7 @@
             </div>
         </section>
     </main>
+    <div class="h-10"></div>
 
     <script th:src="@{/js/componentes/navbar.js}"></script>
 </body>

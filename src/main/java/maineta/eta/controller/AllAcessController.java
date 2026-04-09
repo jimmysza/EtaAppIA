@@ -3,12 +3,11 @@ package maineta.eta.controller;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.YearMonth;
-import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
@@ -766,6 +765,373 @@ public class AllAcessController {
                 model.addAttribute("pageNumbers", pageNumbers);
 
                 return "resultados-busqueda";
+        }
+
+        @GetMapping("/actividades/tendencias")
+        public String verTodasTendencias(
+                        @RequestParam(defaultValue = "0") int page,
+                        Model model,
+                        Authentication auth) {
+
+                usuarioHelper.agregarInfoUsuarioModel(model, auth);
+
+                int pageSize = 12;
+                int pageSizeCategorias = 8;
+
+                Page<Actividad> actividadesPage = actividadService.obtenerTodasTendencias(page, pageSize);
+
+                List<Long> actividadIds = actividadesPage.stream()
+                                .map(Actividad::getIdActividad)
+                                .toList();
+
+                Map<Long, Integer> comentariosPorActividad = comentarioService
+                                .contarComentariosPorActividades(actividadIds);
+
+                List<ActividadDTO> actividadesDTO = actividadesPage.stream()
+                                .map(actividad -> {
+                                        ActividadDTO dto = new ActividadDTO();
+                                        dto.setIdActividad(actividad.getIdActividad());
+                                        dto.setTitulo(actividad.getTitulo());
+                                        dto.setDescripcion(actividad.getDescripcion());
+                                        dto.setCalificacion(actividad.getCalificacion());
+                                        dto.setUbicacion(actividad.getUbicacion());
+                                        dto.setImagen(actividad.getImagen());
+                                        dto.setCreatedAt(actividad.getCreatedAt());
+
+                                        dto.setIdIdioma(actividad.getIdioma().getIdIdioma());
+                                        dto.setNombreIdioma(actividad.getIdioma().getNombre());
+                                        dto.setCodigoIdioma(actividad.getIdioma().getCodigo());
+
+                                        if (actividad.getCategoria() != null) {
+                                                dto.setIdCategoria(actividad.getCategoria().getIdCategoria());
+                                                dto.setNombreCategoria(actividad.getCategoria().getNombre());
+                                        } else {
+                                                dto.setNombreCategoria("Sin categoría");
+                                        }
+
+                                        if (actividad.getColaborador() != null) {
+                                                dto.setIdColaborador(actividad.getColaborador().getIdColaborador());
+                                        }
+
+                                        dto.setCantidadComentario(
+                                                        comentariosPorActividad.getOrDefault(actividad.getIdActividad(), 0));
+
+                                        dto.setPrecio(actividad.getPrecio());
+                                        dto.setPrecioConsumidor(usuarioHelper.CalcularPrecioConsumidor(actividad.getPrecio()));
+
+                                        return dto;
+                                })
+                                .toList();
+
+                Page<Categoria> categoriaPage = categoriaService.buscarTodasPorPaginacion(page, pageSizeCategorias);
+
+                model.addAttribute("busqueda", new BusquedaForm());
+                model.addAttribute("actividades", actividadesDTO);
+                model.addAttribute("categorias", categoriaPage);
+                model.addAttribute("idiomas", idiomaService.listarIdiomas());
+                model.addAttribute("currentPage", page);
+                model.addAttribute("totalPages", actividadesPage.getTotalPages());
+                model.addAttribute("filtroNombre", "Actividades Populares");
+                model.addAttribute("favoritosIds", obtenerFavoritosIds(auth));
+
+                List<Integer> pageNumbers = IntStream.range(0, actividadesPage.getTotalPages()).boxed().toList();
+                model.addAttribute("pageNumbers", pageNumbers);
+
+                return "resultados-busqueda";
+        }
+
+        @GetMapping("/actividades/mas-vistas")
+        public String verTodasMasVistas(
+                        @RequestParam(defaultValue = "0") int page,
+                        Model model,
+                        Authentication auth) {
+
+                usuarioHelper.agregarInfoUsuarioModel(model, auth);
+
+                int pageSize = 12;
+                int pageSizeCategorias = 8;
+
+                Page<Actividad> actividadesPage = actividadService.obtenerTodasMasVistas(page, pageSize);
+
+                List<Long> actividadIds = actividadesPage.stream()
+                                .map(Actividad::getIdActividad)
+                                .toList();
+
+                Map<Long, Integer> comentariosPorActividad = comentarioService
+                                .contarComentariosPorActividades(actividadIds);
+
+                List<ActividadDTO> actividadesDTO = actividadesPage.stream()
+                                .map(actividad -> {
+                                        ActividadDTO dto = new ActividadDTO();
+                                        dto.setIdActividad(actividad.getIdActividad());
+                                        dto.setTitulo(actividad.getTitulo());
+                                        dto.setDescripcion(actividad.getDescripcion());
+                                        dto.setCalificacion(actividad.getCalificacion());
+                                        dto.setUbicacion(actividad.getUbicacion());
+                                        dto.setImagen(actividad.getImagen());
+                                        dto.setCreatedAt(actividad.getCreatedAt());
+
+                                        dto.setIdIdioma(actividad.getIdioma().getIdIdioma());
+                                        dto.setNombreIdioma(actividad.getIdioma().getNombre());
+                                        dto.setCodigoIdioma(actividad.getIdioma().getCodigo());
+
+                                        if (actividad.getCategoria() != null) {
+                                                dto.setIdCategoria(actividad.getCategoria().getIdCategoria());
+                                                dto.setNombreCategoria(actividad.getCategoria().getNombre());
+                                        } else {
+                                                dto.setNombreCategoria("Sin categoría");
+                                        }
+
+                                        if (actividad.getColaborador() != null) {
+                                                dto.setIdColaborador(actividad.getColaborador().getIdColaborador());
+                                        }
+
+                                        dto.setCantidadComentario(
+                                                        comentariosPorActividad.getOrDefault(actividad.getIdActividad(), 0));
+
+                                        dto.setPrecio(actividad.getPrecio());
+                                        dto.setPrecioConsumidor(usuarioHelper.CalcularPrecioConsumidor(actividad.getPrecio()));
+
+                                        return dto;
+                                })
+                                .toList();
+
+                Page<Categoria> categoriaPage = categoriaService.buscarTodasPorPaginacion(page, pageSizeCategorias);
+
+                model.addAttribute("busqueda", new BusquedaForm());
+                model.addAttribute("actividades", actividadesDTO);
+                model.addAttribute("categorias", categoriaPage);
+                model.addAttribute("idiomas", idiomaService.listarIdiomas());
+                model.addAttribute("currentPage", page);
+                model.addAttribute("totalPages", actividadesPage.getTotalPages());
+                model.addAttribute("filtroNombre", "Actividades Más Vistas");
+                model.addAttribute("favoritosIds", obtenerFavoritosIds(auth));
+
+                List<Integer> pageNumbers = IntStream.range(0, actividadesPage.getTotalPages()).boxed().toList();
+                model.addAttribute("pageNumbers", pageNumbers);
+
+                return "resultados-busqueda";
+        }
+
+        @GetMapping("/actividades/mas-reservadas")
+        public String verTodasMasReservadas(
+                        @RequestParam(defaultValue = "0") int page,
+                        Model model,
+                        Authentication auth) {
+
+                usuarioHelper.agregarInfoUsuarioModel(model, auth);
+
+                int pageSize = 12;
+                int pageSizeCategorias = 8;
+
+                Page<Actividad> actividadesPage = actividadService.obtenerTodasMasReservadas(page, pageSize);
+
+                List<Long> actividadIds = actividadesPage.stream()
+                                .map(Actividad::getIdActividad)
+                                .toList();
+
+                Map<Long, Integer> comentariosPorActividad = comentarioService
+                                .contarComentariosPorActividades(actividadIds);
+
+                List<ActividadDTO> actividadesDTO = actividadesPage.stream()
+                                .map(actividad -> {
+                                        ActividadDTO dto = new ActividadDTO();
+                                        dto.setIdActividad(actividad.getIdActividad());
+                                        dto.setTitulo(actividad.getTitulo());
+                                        dto.setDescripcion(actividad.getDescripcion());
+                                        dto.setCalificacion(actividad.getCalificacion());
+                                        dto.setUbicacion(actividad.getUbicacion());
+                                        dto.setImagen(actividad.getImagen());
+                                        dto.setCreatedAt(actividad.getCreatedAt());
+
+                                        dto.setIdIdioma(actividad.getIdioma().getIdIdioma());
+                                        dto.setNombreIdioma(actividad.getIdioma().getNombre());
+                                        dto.setCodigoIdioma(actividad.getIdioma().getCodigo());
+
+                                        if (actividad.getCategoria() != null) {
+                                                dto.setIdCategoria(actividad.getCategoria().getIdCategoria());
+                                                dto.setNombreCategoria(actividad.getCategoria().getNombre());
+                                        } else {
+                                                dto.setNombreCategoria("Sin categoría");
+                                        }
+
+                                        if (actividad.getColaborador() != null) {
+                                                dto.setIdColaborador(actividad.getColaborador().getIdColaborador());
+                                        }
+
+                                        dto.setCantidadComentario(
+                                                        comentariosPorActividad.getOrDefault(actividad.getIdActividad(), 0));
+
+                                        dto.setPrecio(actividad.getPrecio());
+                                        dto.setPrecioConsumidor(usuarioHelper.CalcularPrecioConsumidor(actividad.getPrecio()));
+
+                                        return dto;
+                                })
+                                .toList();
+
+                Page<Categoria> categoriaPage = categoriaService.buscarTodasPorPaginacion(page, pageSizeCategorias);
+
+                model.addAttribute("busqueda", new BusquedaForm());
+                model.addAttribute("actividades", actividadesDTO);
+                model.addAttribute("categorias", categoriaPage);
+                model.addAttribute("idiomas", idiomaService.listarIdiomas());
+                model.addAttribute("currentPage", page);
+                model.addAttribute("totalPages", actividadesPage.getTotalPages());
+                model.addAttribute("filtroNombre", "Actividades Más Reservadas");
+                model.addAttribute("favoritosIds", obtenerFavoritosIds(auth));
+
+                List<Integer> pageNumbers = IntStream.range(0, actividadesPage.getTotalPages()).boxed().toList();
+                model.addAttribute("pageNumbers", pageNumbers);
+
+                return "resultados-busqueda";
+        }
+
+        @GetMapping("/actividades/para-ti")
+        public String verTodasParaTi(
+                        @RequestParam(defaultValue = "0") int page,
+                        Model model,
+                        Authentication auth) {
+
+                usuarioHelper.agregarInfoUsuarioModel(model, auth);
+
+                // Verificar autenticación
+                if (auth == null || !auth.isAuthenticated() || auth.getPrincipal().equals("anonymousUser")) {
+                        return "redirect:/login";
+                }
+
+                Usuario usuario = usuarioService.obtenerPorEmail(auth.getName());
+                Optional<Cliente> clienteOpt = clienteService.obtenerPorUsuario(usuario);
+
+                if (clienteOpt.isEmpty()) {
+                        return "redirect:/login";
+                }
+
+                Cliente cliente = clienteOpt.get();
+                // Usar el id del cliente para obtener el objeto actualizado (por si acaso)
+                Cliente clienteActual = clienteService.obtenerPorId(cliente.getId());
+                int pageSize = 12;
+                int pageSizeCategorias = 8;
+
+                Page<Actividad> actividadesPage = actividadService.obtenerTodasParaTi(clienteActual.getId(), page, pageSize);
+
+                List<Long> actividadIds = actividadesPage.stream()
+                                .map(Actividad::getIdActividad)
+                                .toList();
+
+                Map<Long, Integer> comentariosPorActividad = comentarioService
+                                .contarComentariosPorActividades(actividadIds);
+
+                List<ActividadDTO> actividadesDTO = actividadesPage.stream()
+                                .map(actividad -> {
+                                        ActividadDTO dto = new ActividadDTO();
+                                        dto.setIdActividad(actividad.getIdActividad());
+                                        dto.setTitulo(actividad.getTitulo());
+                                        dto.setDescripcion(actividad.getDescripcion());
+                                        dto.setCalificacion(actividad.getCalificacion());
+                                        dto.setUbicacion(actividad.getUbicacion());
+                                        dto.setImagen(actividad.getImagen());
+                                        dto.setCreatedAt(actividad.getCreatedAt());
+
+                                        dto.setIdIdioma(actividad.getIdioma().getIdIdioma());
+                                        dto.setNombreIdioma(actividad.getIdioma().getNombre());
+                                        dto.setCodigoIdioma(actividad.getIdioma().getCodigo());
+
+                                        if (actividad.getCategoria() != null) {
+                                                dto.setIdCategoria(actividad.getCategoria().getIdCategoria());
+                                                dto.setNombreCategoria(actividad.getCategoria().getNombre());
+                                        } else {
+                                                dto.setNombreCategoria("Sin categoría");
+                                        }
+
+                                        if (actividad.getColaborador() != null) {
+                                                dto.setIdColaborador(actividad.getColaborador().getIdColaborador());
+                                        }
+
+                                        dto.setCantidadComentario(
+                                                        comentariosPorActividad.getOrDefault(actividad.getIdActividad(), 0));
+
+                                        dto.setPrecio(actividad.getPrecio());
+                                        dto.setPrecioConsumidor(usuarioHelper.CalcularPrecioConsumidor(actividad.getPrecio()));
+
+                                        return dto;
+                                })
+                                .toList();
+
+                Page<Categoria> categoriaPage = categoriaService.buscarTodasPorPaginacion(page, pageSizeCategorias);
+
+                model.addAttribute("busqueda", new BusquedaForm());
+                model.addAttribute("actividades", actividadesDTO);
+                model.addAttribute("categorias", categoriaPage);
+                model.addAttribute("idiomas", idiomaService.listarIdiomas());
+                model.addAttribute("currentPage", page);
+                model.addAttribute("totalPages", actividadesPage.getTotalPages());
+                model.addAttribute("filtroNombre", "Actividades Para Ti");
+                model.addAttribute("favoritosIds", obtenerFavoritosIds(auth));
+
+                List<Integer> pageNumbers = IntStream.range(0, actividadesPage.getTotalPages()).boxed().toList();
+                model.addAttribute("pageNumbers", pageNumbers);
+
+                return "resultados-busqueda";
+        }
+
+        @GetMapping("/top-colaboradores")
+        public String verTopColaboradores(
+                        Model model,
+                        Authentication auth) {
+
+                usuarioHelper.agregarInfoUsuarioModel(model, auth);
+
+                List<ColaboradorPublicoDTO> topColaboradores = colaboradorService.obtenerDestacadosPorReservas(10);
+
+                model.addAttribute("topColaboradores", topColaboradores);
+                model.addAttribute("pagina", "top-colaboradores");
+
+                return "top-colaboradores";
+        }
+
+        /**
+         * Endpoint JSON para búsqueda de actividades (usado en crear planes)
+         */
+        @GetMapping("/api/actividades/buscar")
+        @org.springframework.web.bind.annotation.ResponseBody
+        public List<ActividadDTO> buscarActividadesJson(
+                        @RequestParam(required = false) String nombre,
+                        @RequestParam(required = false) Long categoriaId,
+                        @RequestParam(required = false) Long idiomaId,
+                        @RequestParam(defaultValue = "0") int page,
+                        @RequestParam(defaultValue = "10") int size) {
+
+                Page<Actividad> actividadesPage = actividadService.buscarConFiltros(
+                                nombre, categoriaId, idiomaId, null, null, page, size);
+
+                // IDs de actividades para batch query de comentarios
+                List<Long> actividadIds = actividadesPage.getContent().stream()
+                                .map(Actividad::getIdActividad)
+                                .collect(Collectors.toList());
+
+                // Batch query para evitar N+1
+                Map<Long, Integer> comentariosPorActividad = comentarioService
+                                .contarComentariosPorActividades(actividadIds);
+
+                return actividadesPage.getContent().stream()
+                                .map(actividad -> {
+                                        ActividadDTO dto = new ActividadDTO();
+                                        dto.setIdActividad(actividad.getIdActividad());
+                                        dto.setTitulo(actividad.getTitulo());
+                                        dto.setDescripcion(actividad.getDescripcion());
+                                        dto.setImagen(actividad.getImagen());
+                                        dto.setUbicacion(actividad.getUbicacion());
+                                        dto.setPrecio(actividad.getPrecio());
+                                        dto.setPrecioConsumidor(
+                                                        usuarioHelper.CalcularPrecioConsumidor(actividad.getPrecio()));
+                                        dto.setNombreCategoria(actividad.getCategoria().getNombre());
+                                        dto.setIdCategoria(actividad.getCategoria().getIdCategoria());
+                                        dto.setCantidadComentario(
+                                                        comentariosPorActividad.getOrDefault(actividad.getIdActividad(),
+                                                                        0));
+                                        return dto;
+                                })
+                                .collect(Collectors.toList());
         }
 
         private Set<Long> obtenerFavoritosIds(Authentication auth) {

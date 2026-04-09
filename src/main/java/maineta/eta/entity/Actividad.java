@@ -15,6 +15,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OrderBy;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -100,6 +101,11 @@ public class Actividad {
     @OneToMany(mappedBy = "actividad", cascade = CascadeType.ALL, orphanRemoval = true)
     @ToString.Exclude
     private List<ImagenActividad> imagenes = new ArrayList<>();
+
+    @OneToMany(mappedBy = "actividad", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OrderBy("ordenVisual ASC")
+    @ToString.Exclude
+    private List<PreguntaFrecuenteActividad> preguntasFrecuentes = new ArrayList<>();
 
     // Contadores de vistas para personalización y tendencias
     @Column(name = "total_vistas", nullable = false)

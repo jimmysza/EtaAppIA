@@ -23,8 +23,10 @@ import maineta.eta.entity.Categoria;
 import maineta.eta.entity.Cliente;
 import maineta.eta.entity.Idioma;
 import maineta.eta.entity.ImagenActividad;
+import maineta.eta.entity.PreguntaFrecuenteActividad;
 import maineta.eta.repository.ActividadRepository;
 import maineta.eta.repository.CategoriaRepository;
+import maineta.eta.repository.ClienteRepository;
 import maineta.eta.repository.ComentarioRepository;
 import maineta.eta.repository.DisponibilidadRepository;
 import maineta.eta.repository.IdiomaRepository;
@@ -49,6 +51,7 @@ public class ActividadServiceImpl implements ActividadService {
     private final CategoriaRepository categoriaRepository;
     private final DisponibilidadRepository disponibilidadRepository;
     private final ImagenActividadRepository imagenActividadRepository;
+    private final ClienteRepository clienteRepository;
 
     /**
      * Constructor con @Autowired para inyectar el repositorio automáticamente.
@@ -59,7 +62,8 @@ public class ActividadServiceImpl implements ActividadService {
             ActividadRepository actividadRepository,
             ComentarioRepository comentarioRepository,
             DisponibilidadRepository disponibilidadRepository,
-            ImagenActividadRepository imagenActividadRepository) {
+            ImagenActividadRepository imagenActividadRepository,
+            ClienteRepository clienteRepository) {
         this.actividadRepository = actividadRepository;
         this.categoriaRepository = categoriaRepository;
         this.comentarioRepository = comentarioRepository;
@@ -67,6 +71,7 @@ public class ActividadServiceImpl implements ActividadService {
         this.imagenActividadRepository = imagenActividadRepository;
         this.idiomaRepository = idiomaRepository;
         this.disponibilidadRepository = disponibilidadRepository;
+        this.clienteRepository = clienteRepository;
     }
 
     public Map<Long, Long> contarActividadesPorCategorias(List<Long> categoriaIds) {
@@ -329,6 +334,35 @@ public class ActividadServiceImpl implements ActividadService {
             actividad.setNormas(dto.getNormas());
         }
 
+        if (Boolean.TRUE.equals(dto.getActualizarPreguntasFrecuentes())) {
+            actividad.getPreguntasFrecuentes().clear();
+
+            List<String> preguntas = dto.getPreguntasFrecuentesPreguntas();
+            List<String> respuestas = dto.getPreguntasFrecuentesRespuestas();
+            int totalFilas = Math.max(
+                    preguntas != null ? preguntas.size() : 0,
+                    respuestas != null ? respuestas.size() : 0);
+
+            for (int i = 0; i < totalFilas; i++) {
+                String pregunta = preguntas != null && i < preguntas.size() ? preguntas.get(i) : null;
+                String respuesta = respuestas != null && i < respuestas.size() ? respuestas.get(i) : null;
+
+                String preguntaLimpia = pregunta != null ? pregunta.trim() : "";
+                String respuestaLimpia = respuesta != null ? respuesta.trim() : "";
+
+                if (preguntaLimpia.isBlank() || respuestaLimpia.isBlank()) {
+                    continue;
+                }
+
+                PreguntaFrecuenteActividad faq = new PreguntaFrecuenteActividad();
+                faq.setPregunta(preguntaLimpia);
+                faq.setRespuesta(respuestaLimpia);
+                faq.setOrdenVisual(actividad.getPreguntasFrecuentes().size());
+                faq.setActividad(actividad);
+                actividad.getPreguntasFrecuentes().add(faq);
+            }
+        }
+
         // -------- imagen --------
         if (imagenFile != null && !imagenFile.isEmpty()) {
 
@@ -341,6 +375,7 @@ public class ActividadServiceImpl implements ActividadService {
             actividad.setImagen(nombreImagen);
         }
 
+        actividadRepository.save(actividad);
     }
 
     @Transactional
@@ -473,6 +508,49 @@ public class ActividadServiceImpl implements ActividadService {
         return actividadRepository.findByCategoriaInOrderByCalificacionDesc(
             cliente.getCategoriasPreferidas(),
             org.springframework.data.domain.PageRequest.of(0, 10)
+        );
+    }
+
+    @Override
+    public Page<Actividad> obtenerTodasTendencias(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("totalTendencia").descending());
+        return actividadRepository.findAll(pageable);
+    }
+
+    @Override
+    public Page<Actividad> obtenerTodasMasVistas(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("totalVistas").descending());
+        return actividadRepository.findAll(pageable);
+    }
+
+    @Override
+    public Page<Actividad> obtenerTodasMasReservadas(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return actividadRepository.findAllMasReservadas(pageable);
+    }
+
+    @Override
+    public Page<Actividad> obtenerTodasParaTi(Long idCliente, int page, int size) {
+        Optional<Cliente> clienteOpt = clienteRepository.findById(idCliente);
+        
+        if (clienteOpt.isEmpty()) {
+            // Si no existe el cliente, devolver las mejor calificadas
+            Pageable pageable = PageRequest.of(page, size, Sort.by("calificacion").descending());
+            return actividadRepository.findAll(pageable);
+        }
+        
+        Cliente cliente = clienteOpt.get();
+        
+        if (cliente.getCategoriasPreferidas() == null || cliente.getCategoriasPreferidas().isEmpty()) {
+            // Si no tiene categorías preferidas, devolver las mejor calificadas
+            Pageable pageable = PageRequest.of(page, size, Sort.by("calificacion").descending());
+            return actividadRepository.findAll(pageable);
+        }
+        
+        Pageable pageable = PageRequest.of(page, size);
+        return actividadRepository.findByCategoriaInOrderByCalificacionDescPaged(
+            cliente.getCategoriasPreferidas(),
+            pageable
         );
     }
 

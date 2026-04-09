@@ -5,7 +5,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.lang.NonNull;
@@ -49,7 +48,7 @@ public class ClienteServiceImpl implements ClienteService {
     private final VerificacionCorreoService verificacionCorreoService;
     private final CategoriaRepository categoriaRepository;
 
-    @Autowired
+    
     public ClienteServiceImpl(
             ColaboradorRepository colaboradorRepository,
             UsuarioRepository usuarioRepository,

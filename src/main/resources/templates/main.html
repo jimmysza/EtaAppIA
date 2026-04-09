@@ -92,11 +92,6 @@
             cursor: not-allowed;
         }
 
-        @media (min-width: 1024px) {
-            .nav-button {
-                display: none;
-            }
-        }
 
         .hero-shell {
             position: relative;
@@ -574,7 +569,17 @@
             color: #64748b;
         }
 
+
+        @media (min-width: 1024px) {
+            .nav-button {
+                display: none;
+            }
+        }
+
+
         @media (max-width: 900px) {
+
+         
 
             .esconderCell {
                 display: none;
@@ -616,7 +621,7 @@
 
     <!--hero-->
     <section
-        class="relative hero-shell flex items-center justify-center sm:py-16 md:py-30 pt-20 lg:py-30 px-4 sm:px-6 lg:px-8 overflow-hidden min-h-[700px] h-[600px]">
+        class="relative hero-shell h-[210vh]  flex items-center justify-center sm:py-16 md:py-30 pt-20 lg:py-30 px-4 sm:px-6 lg:px-8 overflow-hidden min-h-[700px] md:h-[600px]">
 
         <!-- Foto izquierda arriba — rotada hacia la izquierda -->
         <div class="absolute top-5 left-4 -rotate-6 z-10  md:block lg:block esconderCell">
@@ -649,7 +654,7 @@
         </div>
 
 
-        <div class=" max-w-6xl mx-auto lg:pt-8 pt-6 md:pt-10 pb-12">
+        <div class=" max-w-6xl mx-auto lg:pt-8 pt-6 md:pt-10 pb-12  ">
             <div class="flex justify-center mb-6">
                 <div class="hero-badge">
                     <span class="h-2.5 w-2.5 rounded-full bg-emerald-500"></span>
@@ -811,7 +816,7 @@
 
             <!-- Carrusel de categorías -->
             <div id="scrollContainerCat"
-                class="grid auto-cols-[calc(50%-8px)] md:auto-cols-[calc(33.333%-10px)] lg:auto-cols-[calc(25%-12px)] grid-flow-col gap-4 overflow-x-auto hide-scrollbar scroll-container px-1 py-2">
+                class="grid auto-cols-[100%] sm:auto-cols-[calc(50%-8px)] md:auto-cols-[calc(33.333%-10px)] lg:auto-cols-[calc(25%-12px)] grid-flow-col gap-4 overflow-x-auto hide-scrollbar scroll-container px-1 py-2">
 
                 <!-- Categorías -->
                 <a th:each="categoria : ${categorias}"
@@ -853,20 +858,37 @@
         <!-- Más Tendencias -->
         <div th:if="${tendencias != null and !#lists.isEmpty(tendencias)}" class="max-w-[1350px] mx-auto px-6 py-8">
             <div class="flex items-center justify-between mb-6">
-                <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-2">
+                <a th:href="@{/actividades/tendencias}" class="text-3xl md:text-4xl font-bold text-gray-900 mb-2 hover:text-blue-600 transition-colors cursor-pointer">
                     Actividades <span class="ColorBlue">Populares</span> en Cartagena
-                </h2>
+                </a>
+                <div class="flex gap-3">
+                    <button
+                        class="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center hover:border-gray-900 hover:shadow-md transition-all disabled:opacity-30 disabled:cursor-not-allowed bg-white"
+                        aria-label="Desplazar a la izquierda" data-carousel-prev>
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                        </svg>
+                    </button>
+                    <button
+                        class="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center hover:border-gray-900 hover:shadow-md transition-all disabled:opacity-30 disabled:cursor-not-allowed bg-white"
+                        aria-label="Desplazar a la derecha" data-carousel-next>
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                        </svg>
+                    </button>
+                </div>
             </div>
 
-            <div class="relative">
-                <div
-                    class="grid auto-cols-[calc(50%-8px)] md:auto-cols-[calc(33.333%-16px)] lg:auto-cols-[calc(25%-12px)] grid-flow-col gap-4 overflow-x-auto hide-scrollbar scroll-container pb-2">
+            <div class="relative" data-carousel>
+                <div data-carousel-track
+                    class="grid auto-cols-[100%] sm:auto-cols-[calc(50%-8px)] md:auto-cols-[calc(33.333%-16px)] lg:auto-cols-[calc(25%-12px)] grid-flow-col gap-4 overflow-x-auto hide-scrollbar scroll-container pb-2">
                     <a class="card group cursor-pointer rounded-xl" th:each="actividad : ${tendencias}"
                         th:href="@{/actividad/{slug}-{id}(slug=${#strings.replace(#strings.toLowerCase(actividad.titulo),' ', '-')},id=${actividad.idActividad})}">
 
                         <div class="relative rounded-xl overflow-hidden mb-3">
                             <img th:if="${actividad.imagen != null}" th:src="@{'/uploads/' + ${actividad.imagen}}"
-                                alt="Imagen de la actividad" class="card-image w-full h-64 object-cover">
+                                alt="Imagenactividad.categoria.nombre de la actividad"
+                                class="card-image w-full h-64 object-cover">
 
                             <span class="card-calificacion">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" viewBox="0 0 24 24">
@@ -878,7 +900,8 @@
                                     th:text="${actividad.calificacion != null ? actividad.calificacion : 'Sin calificacion'}"></span>
                             </span>
 
-                            <div class="absolute top-3 left-3 bg-white px-3 py-1 rounded-lg text-xs font-semibold"
+                            <div class="absolute top-3 left-3 px-3 py-1 rounded-lg text-xs font-semibold text-white"
+                                th:classappend="' bg-' + ${actividad.categoria.nombre}"
                                 th:text="${actividad.categoria != null ? actividad.categoria.nombre : 'Sin categoría'}">
                             </div>
                         </div>
@@ -899,14 +922,30 @@
         <!-- Más Vistas -->
         <div th:if="${masVistas != null and !#lists.isEmpty(masVistas)}" class="max-w-[1350px] mx-auto px-6 py-8">
             <div class="flex items-center justify-between mb-6">
-                <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-2">
+                <a th:href="@{/actividades/mas-vistas}" class="text-3xl md:text-4xl font-bold text-gray-900 mb-2 hover:text-blue-600 transition-colors cursor-pointer">
                     Actividades Mas <span class="ColorBlue">Visitadas</span> en Cartagena
-                </h2>
+                </a>
+                <div class="flex gap-3">
+                    <button
+                        class="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center hover:border-gray-900 hover:shadow-md transition-all disabled:opacity-30 disabled:cursor-not-allowed bg-white"
+                        aria-label="Desplazar a la izquierda" data-carousel-prev>
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                        </svg>
+                    </button>
+                    <button
+                        class="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center hover:border-gray-900 hover:shadow-md transition-all disabled:opacity-30 disabled:cursor-not-allowed bg-white"
+                        aria-label="Desplazar a la derecha" data-carousel-next>
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                        </svg>
+                    </button>
+                </div>
             </div>
 
-            <div class="relative">
-                <div
-                    class="grid auto-cols-[calc(50%-8px)] md:auto-cols-[calc(33.333%-16px)] lg:auto-cols-[calc(25%-12px)] grid-flow-col gap-4 overflow-x-auto hide-scrollbar scroll-container pb-2">
+            <div class="relative" data-carousel>
+                <div data-carousel-track
+                    class="grid auto-cols-[100%] sm:auto-cols-[calc(50%-8px)] md:auto-cols-[calc(33.333%-16px)] lg:auto-cols-[calc(25%-12px)] grid-flow-col gap-4 overflow-x-auto hide-scrollbar scroll-container pb-2">
                     <a class="card group cursor-pointer rounded-xl" th:each="actividad : ${masVistas}"
                         th:href="@{/actividad/{slug}-{id}(slug=${#strings.replace(#strings.toLowerCase(actividad.titulo),' ', '-')},id=${actividad.idActividad})}">
 
@@ -924,7 +963,8 @@
                                     th:text="${actividad.calificacion != null ? actividad.calificacion : 'Sin calificacion'}"></span>
                             </span>
 
-                            <div class="absolute top-3 left-3 bg-white px-3 py-1 rounded-lg text-xs font-semibold"
+                            <div class="absolute top-3 left-3  px-3 py-1 rounded-lg text-xs font-semibold text-white"
+                                th:classappend="' bg-' + ${actividad.categoria.nombre}"
                                 th:text="${actividad.categoria != null ? actividad.categoria.nombre : 'Sin categoría'}">
                             </div>
                         </div>
@@ -946,14 +986,30 @@
         <div th:if="${masReservadas != null and !#lists.isEmpty(masReservadas)}"
             class="max-w-[1350px] mx-auto px-6 py-8">
             <div class="flex items-center justify-between mb-6">
-                <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-2 ">
+                <a th:href="@{/actividades/mas-reservadas}" class="text-3xl md:text-4xl font-bold text-gray-900 mb-2 hover:text-blue-600 transition-colors cursor-pointer">
                     Actividades Mas <span class="ColorBlue">Reservadas</span> en Cartagena
-                </h2>
+                </a>
+                <div class="flex gap-3">
+                    <button
+                        class="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center hover:border-gray-900 hover:shadow-md transition-all disabled:opacity-30 disabled:cursor-not-allowed bg-white"
+                        aria-label="Desplazar a la izquierda" data-carousel-prev>
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                        </svg>
+                    </button>
+                    <button
+                        class="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center hover:border-gray-900 hover:shadow-md transition-all disabled:opacity-30 disabled:cursor-not-allowed bg-white"
+                        aria-label="Desplazar a la derecha" data-carousel-next>
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                        </svg>
+                    </button>
+                </div>
             </div>
 
-            <div class="relative">
-                <div
-                    class="grid auto-cols-[calc(50%-8px)] md:auto-cols-[calc(33.333%-16px)] lg:auto-cols-[calc(25%-12px)] grid-flow-col gap-4 overflow-x-auto hide-scrollbar scroll-container pb-2">
+            <div class="relative" data-carousel>
+                <div data-carousel-track
+                    class="grid auto-cols-[100%] sm:auto-cols-[calc(50%-8px)] md:auto-cols-[calc(33.333%-16px)] lg:auto-cols-[calc(25%-12px)] grid-flow-col gap-4 overflow-x-auto hide-scrollbar scroll-container pb-2">
                     <a class="card group cursor-pointer rounded-xl" th:each="actividad : ${masReservadas}"
                         th:href="@{/actividad/{slug}-{id}(slug=${#strings.replace(#strings.toLowerCase(actividad.titulo),' ', '-')},id=${actividad.idActividad})}">
 
@@ -971,7 +1027,8 @@
                                     th:text="${actividad.calificacion != null ? actividad.calificacion : 'Sin calificacion'}"></span>
                             </span>
 
-                            <div class="absolute top-3 left-3 bg-white px-3 py-1 rounded-lg text-xs font-semibold"
+                            <div class="absolute top-3 left-3  px-3 py-1 rounded-lg text-xs font-semibold text-white"
+                                th:classappend="' bg-' + ${actividad.categoria.nombre}"
                                 th:text="${actividad.categoria != null ? actividad.categoria.nombre : 'Sin categoría'}">
                             </div>
                         </div>
@@ -992,14 +1049,32 @@
         <!-- Para Ti -->
         <div th:if="${paraTi != null and !#lists.isEmpty(paraTi)}" class="max-w-[1350px] mx-auto px-6 py-8">
             <div class="flex items-center justify-between mb-6">
-                <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-2">
+                <a th:href="@{/actividades/para-ti}" class="text-3xl md:text-4xl font-bold text-gray-900 mb-2 hover:text-blue-600 transition-colors cursor-pointer">
                     Actividades <span class="ColorBlue">Para Ti</span>
-                </h2>
+                </a>
+
+                <div class="flex gap-3">
+                    <button
+                        class="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center hover:border-gray-900 hover:shadow-md transition-all disabled:opacity-30 disabled:cursor-not-allowed bg-white"
+                        aria-label="Desplazar a la izquierda" data-carousel-prev>
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                        </svg>
+                    </button>
+                    <button
+                        class="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center hover:border-gray-900 hover:shadow-md transition-all disabled:opacity-30 disabled:cursor-not-allowed bg-white"
+                        aria-label="Desplazar a la derecha" data-carousel-next>
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                        </svg>
+                    </button>
+                </div>
             </div>
 
-            <div class="relative">
-                <div
-                    class="grid auto-cols-[calc(50%-8px)] md:auto-cols-[calc(33.333%-16px)] lg:auto-cols-[calc(25%-12px)] grid-flow-col gap-4 overflow-x-auto hide-scrollbar scroll-container pb-2">
+            <div class="relative" data-carousel>
+                <div data-carousel-track
+                    class="grid auto-cols-[100%] sm:auto-cols-[calc(50%-8px)] md:auto-cols-[calc(33.333%-16px)] lg:auto-cols-[calc(25%-12px)] grid-flow-col gap-4 overflow-x-auto hide-scrollbar scroll-container pb-2">
+
                     <a class="card group cursor-pointer rounded-xl" th:each="actividad : ${paraTi}"
                         th:href="@{/actividad/{slug}-{id}(slug=${#strings.replace(#strings.toLowerCase(actividad.titulo),' ', '-')},id=${actividad.idActividad})}">
 
@@ -1017,7 +1092,8 @@
                                     th:text="${actividad.calificacion != null ? actividad.calificacion : 'Sin calificacion'}"></span>
                             </span>
 
-                            <div class="absolute top-3 left-3 bg-white px-3 py-1 rounded-lg text-xs font-semibold"
+                            <div class="absolute top-3 left-3 px-3 py-1 rounded-lg text-xs font-semibold text-white"
+                                th:classappend="' bg-' + ${actividad.categoria.nombre}"
                                 th:text="${actividad.categoria != null ? actividad.categoria.nombre : 'Sin categoría'}">
                             </div>
                         </div>
@@ -1050,14 +1126,14 @@
             <div class="flex gap-3">
                 <button id="scrollLeft"
                     class="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center hover:border-gray-900 hover:shadow-md transition-all disabled:opacity-30 disabled:cursor-not-allowed bg-white"
-                    aria-label="Desplazar a la izquierda">
+                    aria-label="Desplazar a la izquierda" data-carousel-prev>
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
                     </svg>
                 </button>
                 <button id="scrollRight"
                     class="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center hover:border-gray-900 hover:shadow-md transition-all disabled:opacity-30 disabled:cursor-not-allowed bg-white"
-                    aria-label="Desplazar a la derecha">
+                    aria-label="Desplazar a la derecha" data-carousel-next>
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
                     </svg>
@@ -1066,9 +1142,9 @@
         </div>
 
         <!-- Grid de Cards con Scroll Horizontal -->
-        <div class="relative">
-            <div id="scrollContainer"
-                class="grid auto-cols-[calc(50%-8px)] md:auto-cols-[calc(33.333%-16px)] lg:auto-cols-[calc(25%-12px)] grid-flow-col gap-4 overflow-x-auto hide-scrollbar scroll-container pb-2 ">
+        <div class="relative" data-carousel>
+            <div id="scrollContainer" data-carousel-track
+                class="grid auto-cols-[100%] sm:auto-cols-[calc(50%-8px)] md:auto-cols-[calc(33.333%-16px)] lg:auto-cols-[calc(25%-12px)] grid-flow-col gap-4 overflow-x-auto hide-scrollbar scroll-container pb-2">
 
                 <!-- Card 1 -->
                 <a class="card group cursor-pointer rounded-xl" th:each="actividad : ${actividades}"
@@ -1111,7 +1187,8 @@
                             </svg>
                         </button>
                         <!--CATEGORIAS-->
-                        <div class="absolute top-3 left-3 bg-white px-3 py-1 rounded-lg text-xs font-semibold"
+                        <div class="absolute top-3 left-3  px-3 py-1 rounded-lg text-xs font-semibold text-white"
+                            th:classappend="' bg-' + ${actividad.nombreCategoria}"
                             th:text="${actividad.nombreCategoria}">
                             Favorito entre huéspedes
                         </div>
@@ -1177,13 +1254,28 @@
                     </p>
                 </div>
 
-                <a th:if="${anfitrionesDestacados != null and !#lists.isEmpty(anfitrionesDestacados)}"
-                    th:href="@{/colaboradores/{id}(id=${anfitrionesDestacados[0].idColaborador})}"
-                    class="inline-flex items-center gap-2 rounded-full bg-slate-950 text-white px-5 py-3 font-semibold w-fit">
-                    Ver anfitrión líder
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
-                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                <div class="flex flex-col sm:flex-row gap-3">
+                    <a th:href="@{/top-colaboradores}"
+                        class="inline-flex items-center gap-2 rounded-full bg-white border-2 border-slate-200 text-slate-900 px-5 py-3 font-semibold hover:border-slate-900 transition-colors">
+                        Ver Top 10 Colaboradores
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2">
+                            <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path>
+                            <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path>
+                            <path d="M4 22h16"></path>
+                            <path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"></path>
+                            <path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"></path>
+                            <path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"></path>
+                        </svg>
+                    </a>
+
+                    <a th:if="${anfitrionesDestacados != null and !#lists.isEmpty(anfitrionesDestacados)}"
+                        th:href="@{/colaboradores/{id}(id=${anfitrionesDestacados[0].idColaborador})}"
+                        class="inline-flex items-center gap-2 rounded-full bg-slate-950 text-white px-5 py-3 font-semibold w-fit">
+                        Ver anfitrión líder
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
                         <polyline points="12 5 19 12 12 19"></polyline>
                     </svg>
                 </a>
@@ -1205,7 +1297,6 @@
                                 style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block;">
 
                             <div class="host-media-copy">
-                                <p>Perfil público</p>
                                 <h3 th:text="${anfitrion.nombre}">Nombre anfitrión</h3>
                             </div>
                         </div>
@@ -1218,12 +1309,12 @@
                             Descripcion
                         </p>
 
-                        <div class="host-stat-grid">
-                            <div class="host-stat">
+                        <div class="host-stat-grid ">
+                            <div class="host-stat hidden md:flex">
                                 <strong th:text="${anfitrion.totalReservas}">0</strong>
                                 <span>reservas</span>
                             </div>
-                            <div class="host-stat">
+                            <div class="host-stat hidden md:flex">
                                 <strong th:text="${anfitrion.totalActividades}">0</strong>
                                 <span>actividades</span>
                             </div>

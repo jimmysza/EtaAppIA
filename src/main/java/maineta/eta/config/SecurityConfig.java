@@ -113,6 +113,8 @@ public class SecurityConfig {
                                         "/terminos-condiciones",
                                         "/403",
                                         "/actividades/**",
+                                        "/api/**",
+                                        "/top-colaboradores",
                                         "/js/**",
                                         "/registro/**",
                                         "/assets/**",
@@ -131,8 +133,10 @@ public class SecurityConfig {
                                 .requestMatchers(HttpMethod.POST, "/actividades")
                                 .hasAuthority("ROLE_COLABORADOR")
 
-                                
-                                
+                                // Rutas de Planes del Día
+                                .requestMatchers("/cliente/planes/**").hasAuthority("ROLE_CLIENTE")
+                                .requestMatchers("/colaborador/planes/**").hasAuthority("ROLE_COLABORADOR")
+                                .requestMatchers("/planes/**").permitAll()
 
                                 // Secciones exclusivas para clientes
                                 .requestMatchers("/cliente/chats/**").hasAuthority("ROLE_CLIENTE")

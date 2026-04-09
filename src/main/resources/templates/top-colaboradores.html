@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Top 10 Colaboradores - Eta</title>
+
+    <link rel="icon" th:href="@{/images/logos/isotipo.webp}" type="image/x-icon" />
+    <link rel="stylesheet" th:href="@{/fonts/fonts.css}">
+    <link rel="stylesheet" th:href="@{/css/global.css}">
+    <link rel="stylesheet" th:href="@{/css/componentes/navbar.css}">
+    <link rel="stylesheet" th:href="@{/css/componentes/footer.css}">
+
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+
+    <style>
+        .ranking-card {
+            transition: all 0.3s ease;
+        }
+
+        .ranking-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .ranking-badge {
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+        }
+
+        .ranking-badge.gold {
+            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+        }
+
+        .ranking-badge.silver {
+            background: linear-gradient(135deg, #94a3b8 0%, #64748b 100%);
+        }
+
+        .ranking-badge.bronze {
+            background: linear-gradient(135deg, #fb923c 0%, #f97316 100%);
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50">
+    <div th:replace="~{componentes/navbar :: navbar}"></div>
+
+    <main class="max-w-5xl mx-auto px-4 py-12 mb-10">
+        <!-- Header Section -->
+        <div class="text-center mb-12">
+            <div
+                class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-100 text-blue-700 font-semibold text-sm mb-4">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2">
+                    <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path>
+                    <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path>
+                    <path d="M4 22h16"></path>
+                    <path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"></path>
+                    <path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"></path>
+                    <path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"></path>
+                </svg>
+                Ranking de Excelencia
+            </div>
+
+            <h1 class="text-4xl md:text-5xl font-black text-gray-900 mb-4">
+                Top 10 <span class="text-blue-600">Colaboradores</span>
+            </h1>
+            <p class="text-lg text-gray-600 max-w-2xl mx-auto">
+                Descubre a los colaboradores con mejor rendimiento basado en reservas, calificaciones y actividades
+                publicadas.
+            </p>
+        </div>
+
+        <!-- Colaboradores List -->
+        <div class="grid gap-6 mb-10">
+            <a th:each="colaborador, iterStat : ${topColaboradores}"
+                th:href="@{/colaboradores/{id}(id=${colaborador.idColaborador})}"
+                class="ranking-card block bg-white rounded-2xl border-2 border-gray-200 hover:border-blue-500 p-6 transition-all">
+
+                <div class="flex items-center gap-6">
+                    <!-- Ranking Badge -->
+                    <div th:classappend="${iterStat.index == 0} ? 'gold' : (${iterStat.index == 1} ? 'silver' : (${iterStat.index == 2} ? 'bronze' : ''))"
+                        class="ranking-badge flex-shrink-0 w-14 h-14 rounded-full flex items-center justify-center text-white font-black text-xl shadow-lg">
+                        <span th:text="${iterStat.index + 1}">1</span>
+                    </div>
+
+                    <!-- Avatar -->
+                    <div class="flex-shrink-0">
+                        <div
+                            class="w-20 h-20 rounded-full overflow-hidden bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center shadow-md">
+                            <img th:if="${colaborador.fotoPerfil != null}"
+                                th:src="@{'/uploads/' + ${colaborador.fotoPerfil}}" alt="Foto de perfil"
+                                class="w-full h-full object-cover">
+                            <span th:if="${colaborador.fotoPerfil == null}" class="text-2xl font-bold text-white"
+                                th:text="${colaborador.iniciales}">AB</span>
+                        </div>
+                    </div>
+
+                    <!-- Info -->
+                    <div class="flex-1 min-w-0">
+                        <h2 class="text-2xl font-bold text-gray-900 mb-2" th:text="${colaborador.nombre}">Nombre del
+                            Colaborador</h2>
+
+                        <!-- Stats Grid -->
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mt-3">
+                            <div class="bg-blue-50 rounded-lg px-3 py-2">
+                                <div class="text-xs text-blue-600 font-semibold uppercase mb-1">Actividades</div>
+                                <div class="text-lg font-black text-blue-700" th:text="${colaborador.totalActividades}">
+                                    0</div>
+                            </div>
+
+                            <div class="bg-green-50 rounded-lg px-3 py-2">
+                                <div class="text-xs text-green-600 font-semibold uppercase mb-1">Reservas</div>
+                                <div class="text-lg font-black text-green-700" th:text="${colaborador.totalReservas}">0
+                                </div>
+                            </div>
+
+                            <div class="bg-purple-50 rounded-lg px-3 py-2">
+                                <div class="text-xs text-purple-600 font-semibold uppercase mb-1">Personas</div>
+                                <div class="text-lg font-black text-purple-700" th:text="${colaborador.totalViajeros}">0
+                                </div>
+                            </div>
+
+                            <div class="bg-amber-50 rounded-lg px-3 py-2">
+                                <div class="text-xs text-amber-600 font-semibold uppercase mb-1">Calificación</div>
+                                <div class="flex items-center gap-1">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                        fill="#f59e0b">
+                                        <path
+                                            d="m12 17.275l-4.15 2.5q-.275.175-.575.15t-.525-.2t-.35-.437t-.05-.588l1.1-4.725L3.775 10.8q-.25-.225-.312-.513t.037-.562t.3-.45t.55-.225l4.85-.425l1.875-4.45q.125-.3.388-.45t.537-.15t.537.15t.388.45l1.875 4.45l4.85.425q.35.05.55.225t.3.45t.038.563t-.313.512l-3.675 3.175l1.1 4.725q.075.325-.05.588t-.35.437t-.525.2t-.575-.15z" />
+                                    </svg>
+                                    <span class="text-lg font-black text-amber-700"
+                                        th:text="${#numbers.formatDecimal(colaborador.promedioCalificacion, 1, 1)}">0.0</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Arrow Icon -->
+                    <div class="flex-shrink-0 hidden md:block">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" class="text-gray-400">
+                            <polyline points="9 18 15 12 9 6"></polyline>
+                        </svg>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <!-- Empty State -->
+        <div th:if="${#lists.isEmpty(topColaboradores)}"
+            class="text-center py-16 bg-white rounded-2xl border-2 border-dashed border-gray-300">
+            <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="1.5" class="mx-auto mb-4 text-gray-400">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                <circle cx="9" cy="7" r="4"></circle>
+                <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+            </svg>
+            <p class="text-xl font-semibold text-gray-500">No hay colaboradores destacados para mostrar</p>
+            <p class="text-gray-400 mt-2">Vuelve más tarde para ver el ranking</p>
+        </div>
+    </main>
+
+    <div th:replace="~{componentes/footer :: footer}"></div>
+
+    <script th:src="@{/js/componentes/navbar.js}"></script>
+</body>
+
+</html>

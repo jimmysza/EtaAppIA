@@ -201,4 +201,37 @@ public interface ActividadService {
      */
     List<Actividad> obtenerParaTi(Cliente cliente);
 
+    /**
+     * Obtiene todas las actividades con más tendencia (paginado)
+     * @param page número de página
+     * @param size tamaño de página
+     * @return página de actividades
+     */
+    Page<Actividad> obtenerTodasTendencias(int page, int size);
+
+    /**
+     * Obtiene todas las actividades con más vistas (paginado)
+     * @param page número de página
+     * @param size tamaño de página
+     * @return página de actividades
+     */
+    Page<Actividad> obtenerTodasMasVistas(int page, int size);
+
+    /**
+     * Obtiene todas las actividades más reservadas (paginado)
+     * @param page número de página
+     * @param size tamaño de página
+     * @return página de actividades
+     */
+    Page<Actividad> obtenerTodasMasReservadas(int page, int size);
+
+    /**
+     * Obtiene todas las actividades personalizadas para el cliente (paginado)
+     * @param idCliente identificador del cliente
+     * @param page número de página
+     * @param size tamaño de página
+     * @return página de actividades
+     */
+    Page<Actividad> obtenerTodasParaTi(Long idCliente, int page, int size);
+
 }

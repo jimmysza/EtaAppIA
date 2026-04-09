@@ -156,8 +156,28 @@ body {
 }
 
 
+.bg-Playa{
+    background: #edb600;
+}
+.bg-Gastronomía{
+    background: #33ed00;
+}
+.bg-cultura{
+    background: #9014a3;
+}
+.bg-Historia{
+    background: #a32e14;
+}
+.bg-Entretenimiento{
+    background: #1416a3;
+}
+.bg-Vida{
+    background: #000000;
+}
+
+
 /* =====================
-   PC / Laptop
+PC / Laptop
    ===================== */
 @media screen and (min-width: 1024px) {}
 

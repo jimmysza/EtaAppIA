@@ -79,6 +79,33 @@ public interface ActividadRepository extends JpaRepository<Actividad, Long>, Jpa
         Pageable pageable
     );
 
+    // Queries paginadas para vistas completas de colecciones
+
+    /**
+     * Obtiene todas las actividades ordenadas por tendencia (versión paginada)
+     */
+    Page<Actividad> findAllByOrderByTotalTendenciaDesc(Pageable pageable);
+
+    /**
+     * Obtiene todas las actividades ordenadas por vistas totales (versión paginada)
+     */
+    Page<Actividad> findAllByOrderByTotalVistasDesc(Pageable pageable);
+
+    /**
+     * Obtiene todas las actividades más reservadas (versión paginada)
+     */
+    @Query("SELECT a FROM Actividad a LEFT JOIN a.reservas r GROUP BY a ORDER BY COUNT(r) DESC")
+    Page<Actividad> findAllMasReservadas(Pageable pageable);
+
+    /**
+     * Obtiene actividades personalizadas para el cliente basadas en sus categorías preferidas (versión paginada)
+     */
+    @Query("SELECT a FROM Actividad a WHERE a.categoria IN :categorias ORDER BY a.calificacion DESC, a.createdAt DESC")
+    Page<Actividad> findByCategoriaInOrderByCalificacionDescPaged(
+        @Param("categorias") Set<Categoria> categorias, 
+        Pageable pageable
+    );
+
     // Queries para KPIs
 
     @Query("SELECT COUNT(a) FROM Actividad a WHERE a.colaborador.idColaborador = :idColaborador")

@@ -1,24 +1,26 @@
 body {
     position: relative;
-    background: #1ab6d9;
-    background: linear-gradient(39deg, rgba(26, 182, 217, 1) 0%, rgba(56, 149, 199, 1) 44%, rgba(79, 158, 207, 1) 59%, rgba(141, 181, 227, 1) 100%);
+    background-image: linear-gradient(to right bottom, #08b6aa, #10a4a3, #24aeb5, #39b6c7, #4ebfd7, #57c6de, #60cce4, #69d3eb, #6bdaea, #6fe0e9, #76e6e6, #7fece3);
+    
+
+    /* background: linear-gradient(39deg, rgba(26, 182, 217, 1) 0%, rgba(56, 149, 199, 1) 44%, rgba(79, 158, 207, 1) 59%, rgba(141, 181, 227, 1) 100%); */
     min-height: 100vh;
 
-    overflow-y: scroll;
 }
 
 
 main {
     position: relative;
     background: #1ab6d9;
-    background: linear-gradient(39deg, rgba(26, 182, 217, 1) 0%, rgba(56, 149, 199, 1) 44%, rgba(79, 158, 207, 1) 59%, rgba(141, 181, 227, 1) 100%);
+    /* background: linear-gradient(39deg, rgba(26, 182, 217, 1) 0%, rgba(56, 149, 199, 1) 44%, rgba(79, 158, 207, 1) 59%, rgba(141, 181, 227, 1) 100%); */
+    
     background-color: #ffffff;
     min-height: 100vh;
     overflow: hidden;
 }
 
 
-
+s
 .container-100 {
     position: absolute;
     display: block;
@@ -91,8 +93,8 @@ h1 a {
     height: fit-content;
     background-color: #ffffff;
     padding: 45px 40px;
-    margin: 0 auto;
-    margin-top: 30px;
+    margin: 30px auto;
+    
     backdrop-filter: blur(10px);
     border-radius: 20px;
     display: flex;
@@ -370,6 +372,7 @@ input {
         z-index: 1;
         padding-top: 100px;
         border-radius: 0px;
+        padding: 0px 20px;
         height: 100vh;
         min-width: 320px;
     }

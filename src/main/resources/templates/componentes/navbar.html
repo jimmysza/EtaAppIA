@@ -9,7 +9,7 @@
                     <img th:src="@{/images/logos/isotipoM.webp}" alt="etaApp" class="brand-mark" />
                     <span class="brand-copy">
                         <span class="brand-name">etaApp</span>
-                        <span class="brand-tag">Cartagena curated</span>
+                        <span class="brand-tag">Cartagena de Indias</span>
                     </span>
                 </a>
 
@@ -27,6 +27,7 @@
                             <li th:if="${pagina == 'detalle'}"><a href="#reserva" class="menu-link">Reserva</a></li>
                             <li th:if="${pagina == 'indice'}"><a href="#populares" class="menu-link">Tendencias</a></li>
                             <li th:if="${pagina == 'indice'}"><a href="#populares" class="menu-link">Actividades</a></li>
+                            <li><a th:href="@{/planes}" class="menu-link">Planes del Día</a></li>
                         </ul>
 
                         <div class="menu-actions" th:if="${nombreUsuario == null}">

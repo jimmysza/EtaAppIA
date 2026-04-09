@@ -14,7 +14,7 @@
 /* ====== ESTILOS GENERALES DE LA PÁGINA DETALLE ====== */
 
 .detalle .register-btn {
-    background-color: var(--color-light-blue);
+    background-color: var(--color-main);
 }
 
 .detalle .register-btn svg {
@@ -61,7 +61,7 @@ h1 {
     font-size: 1.1rem;
     display: block;
     margin-bottom: 8px;
-    border-bottom: 2px solid var(--color-light-blue);
+    border-bottom: 2px solid var(--color-main);
     padding-bottom: 5px;
     text-transform: uppercase;
     letter-spacing: 0.5px;
@@ -97,7 +97,8 @@ h1 {
     font-size: 1.5rem;
     color: var(--color-deep-navy);
     margin-bottom: 10px;
-    border-bottom: 2px solid var(--color-light-blue);
+    border-bottom: 2px solid var(--color-main);
+    
     padding-bottom: 5px;
 }
 
@@ -191,8 +192,8 @@ h1 {
 
 .nav-link {
     text-decoration: none;
-    color: black;
-    padding: 14px;
+    
+    padding: 8px 14px;
     transition: all 0.2s ease;
 
     opacity: 1;
@@ -211,8 +212,8 @@ h1 {
 
 /*animacion*/
 .nav-link.active {
-    border-bottom: 3px solid var(--color-medium-blue);
-    color: var(--color-medium-blue);
+    border-bottom: 3px solid var(--color-main);
+    color: var(--color-main);
 }
 
 .social-nav {
@@ -220,7 +221,7 @@ h1 {
 }
 
 .social-nav a{
-    background: var(--color-medium-blue);
+    background-color: var(--color-main);
     border-radius: 100%;
     padding: 10px;
     display: inline-flex;

@@ -10,6 +10,7 @@
     <link rel="stylesheet" th:href="@{/css/componentes/modales.css}">
     <link rel="stylesheet" th:href="@{/css/colaborador/detallesColab.css}">
     <link rel="stylesheet" th:href="@{/css/tailwind.css}">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <!-- Leaflet CSS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <!-- Leaflet JS -->
@@ -278,6 +279,49 @@
                         <label for="condiciones">Condiciones</label>
                         <textarea id="condiciones" th:field="*{condiciones}" rows="6"
                             style="width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 0.5rem;"></textarea>
+
+                        <input type="hidden" name="actualizarPreguntasFrecuentes" value="true">
+
+                        <div style="margin-top: 1.75rem;">
+                            <div
+                                style="display: flex; justify-content: space-between; align-items: center; gap: 1rem; margin-bottom: 0.75rem; flex-wrap: wrap;">
+                                <div>
+                                    <label style="margin-bottom: 0.25rem; display: block;">Preguntas frecuentes</label>
+                                    <p class="text-sm text-gray-500">Puedes agregarlas si quieres mostrarlas en la vista publica</p>
+                                </div>
+                                <button type="button" id="agregarFaqBtn"
+                                    style="border: 1px solid #2563eb; color: #2563eb; background: white; border-radius: 999px; padding: 0.6rem 1rem; font-weight: 600;">
+                                    Agregar pregunta
+                                </button>
+                            </div>
+
+                            <div id="faqRows" style="display: grid; gap: 1rem;">
+                                <div th:each="pregunta, stat : *{preguntasFrecuentesPreguntas}" class="faq-editor-row"
+                                    style="border: 1px solid #e5e7eb; border-radius: 1rem; padding: 1rem; background: #f9fafb;">
+                                    <div
+                                        style="display: flex; justify-content: space-between; align-items: center; gap: 1rem; margin-bottom: 0.75rem;">
+                                        <strong style="color: #111827;">FAQ <span th:text="${stat.count}">1</span></strong>
+                                        <button type="button" class="remove-faq-btn"
+                                            style="border: none; background: transparent; color: #dc2626; font-weight: 600;">
+                                            Eliminar
+                                        </button>
+                                    </div>
+
+                                    <label th:for="${'faqPregunta' + stat.index}">Pregunta</label>
+                                    <input th:id="${'faqPregunta' + stat.index}"
+                                        th:name="${'preguntasFrecuentesPreguntas[' + stat.index + ']'}" th:value="${pregunta}"
+                                        type="text" placeholder="Ej: Que debo llevar?"
+                                        style="width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 0.75rem; margin-bottom: 0.75rem;">
+
+                                    <label th:for="${'faqRespuesta' + stat.index}">Respuesta</label>
+                                    <textarea th:id="${'faqRespuesta' + stat.index}"
+                                        th:name="${'preguntasFrecuentesRespuestas[' + stat.index + ']'}" rows="4"
+                                        placeholder="Escribe la respuesta que vera el cliente"
+                                        style="width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 0.75rem;"
+                                        th:text="${actividadUpdateDto.preguntasFrecuentesRespuestas[stat.index]}"></textarea>
+                                </div>
+                            </div>
+                        </div>
 
 
                         <button type="submit" class="button-default">
@@ -617,6 +661,100 @@
             const dropZone = document.getElementById('dropZone');
             const fileInput = document.getElementById('imagenFile');
             const fileName = document.getElementById('fileName');
+            const faqRows = document.getElementById('faqRows');
+            const agregarFaqBtn = document.getElementById('agregarFaqBtn');
+
+            function crearFaqRow(index, pregunta, respuesta) {
+                const row = document.createElement('div');
+                row.className = 'faq-editor-row';
+                row.style.border = '1px solid #e5e7eb';
+                row.style.borderRadius = '1rem';
+                row.style.padding = '1rem';
+                row.style.background = '#f9fafb';
+                row.innerHTML = `
+                    <div style="display: flex; justify-content: space-between; align-items: center; gap: 1rem; margin-bottom: 0.75rem;">
+                        <strong style="color: #111827;">FAQ ${index + 1}</strong>
+                        <button type="button" class="remove-faq-btn" style="border: none; background: transparent; color: #dc2626; font-weight: 600;">Eliminar</button>
+                    </div>
+                    <label for="faqPregunta${index}">Pregunta</label>
+                    <input id="faqPregunta${index}" name="preguntasFrecuentesPreguntas[${index}]" type="text" placeholder="Ej: Que debo llevar?"
+                        value="${pregunta || ''}"
+                        style="width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 0.75rem; margin-bottom: 0.75rem;">
+                    <label for="faqRespuesta${index}">Respuesta</label>
+                    <textarea id="faqRespuesta${index}" name="preguntasFrecuentesRespuestas[${index}]" rows="4" placeholder="Escribe la respuesta que vera el cliente"
+                        style="width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 0.75rem;">${respuesta || ''}</textarea>
+                `;
+                return row;
+            }
+
+            function reindexFaqRows() {
+                if (!faqRows) {
+                    return;
+                }
+
+                faqRows.querySelectorAll('.faq-editor-row').forEach(function (row, index) {
+                    const title = row.querySelector('strong');
+                    const preguntaInput = row.querySelector('input');
+                    const respuestaInput = row.querySelector('textarea');
+                    const labels = row.querySelectorAll('label');
+
+                    if (title) {
+                        title.textContent = 'FAQ ' + (index + 1);
+                    }
+
+                    if (preguntaInput) {
+                        preguntaInput.name = 'preguntasFrecuentesPreguntas[' + index + ']';
+                        preguntaInput.id = 'faqPregunta' + index;
+                    }
+
+                    if (respuestaInput) {
+                        respuestaInput.name = 'preguntasFrecuentesRespuestas[' + index + ']';
+                        respuestaInput.id = 'faqRespuesta' + index;
+                    }
+
+                    if (labels.length > 0) {
+                        labels[0].setAttribute('for', 'faqPregunta' + index);
+                    }
+
+                    if (labels.length > 1) {
+                        labels[1].setAttribute('for', 'faqRespuesta' + index);
+                    }
+                });
+            }
+
+            if (faqRows) {
+                faqRows.addEventListener('click', function (event) {
+                    if (!event.target.classList.contains('remove-faq-btn')) {
+                        return;
+                    }
+
+                    const rows = faqRows.querySelectorAll('.faq-editor-row');
+                    if (rows.length === 1) {
+                        const preguntaInput = rows[0].querySelector('input');
+                        const respuestaInput = rows[0].querySelector('textarea');
+                        if (preguntaInput) {
+                            preguntaInput.value = '';
+                        }
+                        if (respuestaInput) {
+                            respuestaInput.value = '';
+                        }
+                        return;
+                    }
+
+                    const row = event.target.closest('.faq-editor-row');
+                    if (row) {
+                        row.remove();
+                        reindexFaqRows();
+                    }
+                });
+            }
+
+            if (agregarFaqBtn && faqRows) {
+                agregarFaqBtn.addEventListener('click', function () {
+                    faqRows.appendChild(crearFaqRow(faqRows.querySelectorAll('.faq-editor-row').length, '', ''));
+                    reindexFaqRows();
+                });
+            }
 
             // Click en la zona de drop
             dropZone.addEventListener('click', function (e) {

@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        /* ================== Google Fonts ================== */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Playfair+Display:wght@400..900&family=Sora:wght@100..800&display=swap');
+
+        /* ================== Reset Básico ================== */
+
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            word-wrap: break-word;
+        }
+
+        /* ================== Variables ========= ========= */
+        :root {
+            /* Colores */
+            --color-black: #1C1C1C;
+            --color-dark-blue: #021024;
+
+
+
+
+            --color-black-100: hsl(240, 5%, 35%);
+            --color-black-200: hsl(240, 5%, 25%);
+            --color-black-300: hsl(240, 5%, 15%);
+            --color-black-400: hsl(240, 5%, 10%);
+
+            --color-blue-100: hsl(215, 97%, 87%);
+
+            --color-main: #23aae2;
+            --color-blue-400: #6e98c2;
+            --color-sky-blue: #c1e8ff;
+            --color-medium-blue: #5483b3;
+
+            --color-medium-blur: #5483b395;
+            --color-light-blue: #7da0ca;
+            --color-blue-600: hsl(215, 82%, 61%);
+            --color-deep-navy: #052659;
+
+            --color-white: hsl(206, 0%, 100%);
+            --color-blanco: #fafafa;
+
+            --color-subtitulo: hsl(225, 8%, 42%);
+            --color-white-500: hsl(206, 0%, 50%);
+
+
+
+            --color-blur: #9abadc96;
+            --color-border: #E5E5E5;
+
+            /* Tipografías */
+            --font-inter: "Inter", sans-serif;
+            --font-work-sans: "Work Sans", sans-serif;
+            --font-Sora: "Sora", sans-serif;
+
+
+            /* Tamaños */
+            --max-width: 1302px;
+            --border-radius: 8px;
+
+
+
+
+            --shadow-small: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+            --shadow-medium: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-large: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        /* ================== Estilos Globales ================== */
+        html {
+            font-size: 16px;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: var(--font-Sora);
+            background-color: var(--color-white);
+            color: var(--color-black);
+            line-height: 1.5;
+        }
+
+        span {
+            font-family: var(--font-Sora);
+        }
+
+        /* ================== Links ================== */
+        a {
+            text-decoration: none;
+        }
+
+
+
+
+        /* ================== Listas ================== */
+        ul,
+        ol {
+            list-style: none;
+        }
+
+        /* ================== Formularios ================== */
+
+        button {
+            cursor: pointer;
+        }
+
+        /* ================== Utilidades ================== */
+        section,
+        main {
+            max-width: var(--max-width);
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        button[type="submit"]:focus {
+            outline: 1px solid var(--color-medium-blue);
+            outline-offset: 2px;
+        }
+
+
+        /*Alertas*/
+        .alert {
+            position: fixed;
+            top: -5%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-size: 16px;
+            z-index: 1000;
+            display: none;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert-danger {
+            background-color: #FFF0F0;
+            color: #EB3636;
+            border: 1px solid #FFF0F0;
+        }
+
+        .alert-info {
+            background-color: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+
+        .alert-info-big {
+            top: -200%;
+            transform: translate(-50%, -10%);
+        }
+
+        .showAnimationAppearFromTop {
+            display: block;
+            animation: AppearFromTop 0.6s ease-out forwards;
+        }
+
+        @keyframes AppearFromTop {
+            0% {
+                opacity: 0;
+                top: -10%;
+            }
+
+            100% {
+                opacity: 1;
+                top: 6%;
+            }
+        }
+
+        .red {
+            color: #ff2200
+        }
+
+        d .ColorBlue {
+            color: var(--color-main);
+        }
+
+        .bgBlueMain {
+            background-color: var(--color-main);
+        }
+
+
+        .button-default {
+            gap: 6px;
+            justify-content: center;
+            display: flex;
+            align-items: center;
+            width: fit-content;
+            border: 1px solid #e5e2e2;
+            border-radius: 8px;
+            font-weight: 700;
+            color: #fff;
+            cursor: pointer;
+            padding: 6px 8px;
+            /* background-color: var(--color-main); */
+        }
+    </style>
+    <style>
+        .onboarding-section {
+            grid-column: 1 / -1;
+            background: #f9fafb;
+            padding: 2rem;
+            border-radius: 1rem;
+            margin-top: 1rem;
+        }
+
+        .paso-onboarding {
+            
+            display: none;
+        }
+
+        .paso-onboarding.activo {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .categoria-option {
+            display: inline-block;
+            margin: 0.5rem;
+        }
+
+        .categoria-checkbox {
+            display: none;
+        }
+
+        .categoria-label {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            background: white;
+            border: 2px solid #e5e7eb;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+
+        .categoria-checkbox:checked+.categoria-label {
+            background: #23aae2;
+            color: white;
+            border-color: #23aae2;
+        }
+
+        .radio-option-onboard {
+            margin: 0.75rem 0;
+        }
+
+        .radio-input-onboard {
+            display: none;
+        }
+
+        .radio-label-onboard {
+            display: block;
+            padding: 1rem;
+            background: white;
+            border: 2px solid #e5e7eb;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+
+        .radio-input-onboard:checked+.radio-label-onboard {
+            background: #23aae2;
+            color: white;
+            border-color: #23aae2;
+        }
+
+        .progress-bar-onboard {
+            height: 6px;
+            background: #e5e7eb;
+            border-radius: 3px;
+            margin-bottom: 1.5rem;
+            overflow: hidden;
+        }
+
+        .progress-fill-onboard {
+            height: 100%;
+            background: #23aae2;
+            transition: width 0.5s;
+        }
+
+        .btn-onboard {
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none;
+        }
+
+        .btn-anterior {
+            background: #e5e7eb;
+            color: #374151;
+        }
+
+        .btn-anterior:hover {
+            background: #d1d5db;
+        }
+
+        .btn-siguiente {
+            background: #23aae2;
+            color: white;
+        }
+
+        .btn-siguiente:hover {
+            background: #1e96c8;
+        }
+    </style>
+
+
+</head>
+
+<body>
+    <!-- style="display:none;" -->
+    <div class="onboarding-section">
+        <h3 class="text-2xl font-bold text-gray-800 mb-2">Personaliza tu experiencia</h3>
+        <p class="text-gray-600 mb-4">Ayúdanos a conocer tus preferencias</p>
+
+        <div class="progress-bar-onboard">
+            <div class="progress-fill-onboard" id="progressBarOnboard" style="width: 25%"></div>
+        </div>
+
+        <!-- Paso 1: Categorías favoritas -->
+        <div class="paso-onboarding activo" data-paso="1">
+            <h4 class="text-lg font-semibold mb-3">¿Qué tipo de actividades te gustan?</h4>
+            <p class="text-gray-600 mb-4 text-sm">Selecciona una o más categorías</p>
+
+            <div class="text-center">
+                <div th:each="cat, iterStat : ${categorias}" class="categoria-option">
+                    <input type="checkbox" th:id="'categoriasIds' + ${iterStat.index}" th:value="${cat.idCategoria}"
+                        name="categoriasIds" class="categoria-checkbox">
+                    <label th:for="'categoriasIds' + ${iterStat.index}" th:text="${cat.nombre}"
+                        class="categoria-label"></label>
+                </div>
+            </div>
+        </div>
+
+        <!-- Paso 2: Grupo de viaje -->
+        <div class="paso-onboarding" data-paso="2">
+            <h4 class="text-lg font-semibold mb-3">¿Con quién sueles salir?</h4>
+            <p class="text-gray-600 mb-4 text-sm">Selecciona una opción</p>
+            <div class=" grid grid-cols-2 gap-4">
+                <div class="radio-option-onboard">
+                    <input type="radio" id="solo" value="SOLO" name="grupoViaje" class="radio-input-onboard">
+                    <label for="solo" class="radio-label-onboard">🧍 Solo</label>
+                </div>
+
+                <div class="radio-option-onboard">
+                    <input type="radio" id="pareja" value="PAREJA" name="grupoViaje" class="radio-input-onboard">
+                    <label for="pareja" class="radio-label-onboard">💑 En pareja</label>
+                </div>
+
+                <div class="radio-option-onboard">
+                    <input type="radio" id="familia" value="FAMILIA" name="grupoViaje" class="radio-input-onboard">
+                    <label for="familia" class="radio-label-onboard">👨‍👩‍👧‍👦 Con familia</label>
+                </div>
+
+                <div class="radio-option-onboard">
+                    <input type="radio" id="amigos" value="AMIGOS" name="grupoViaje" class="radio-input-onboard">
+                    <label for="amigos" class="radio-label-onboard">👥 Con amigos</label>
+                </div>
+
+                <div class="radio-option-onboard">
+                    <input type="radio" id="varios" value="VARIOS" name="grupoViaje" class="radio-input-onboard">
+                    <label for="varios" class="radio-label-onboard">🔄 Varía</label>
+                </div>
+            </div>
+        </div>
+
+        <!-- Paso 3: Rango de precio -->
+        <div class="paso-onboarding" data-paso="3">
+            <h4 class="text-lg font-semibold mb-3">¿Qué presupuesto manejas por actividad?</h4>
+            <p class="text-gray-600 mb-4 text-sm">Selecciona una opción</p>
+
+            <div class="radio-option-onboard">
+                <input type="radio" id="economico" value="ECONOMICO" name="rangoPrecio" class="radio-input-onboard">
+                <label for="economico" class="radio-label-onboard">💰 Económico (< $50k)</label>
+            </div>
+
+            <div class="radio-option-onboard">
+                <input type="radio" id="moderado" value="MODERADO" name="rangoPrecio" class="radio-input-onboard">
+                <label for="moderado" class="radio-label-onboard">💵 Moderado ($50k–$150k)</label>
+            </div>
+
+            <div class="radio-option-onboard">
+                <input type="radio" id="premium" value="PREMIUM" name="rangoPrecio" class="radio-input-onboard">
+                <label for="premium" class="radio-label-onboard">💎 Premium (> $150k)</label>
+            </div>
+        </div>
+
+        <!-- Paso 4: Disponibilidad -->
+        <div class="paso-onboarding" data-paso="4">
+            <h4 class="text-lg font-semibold mb-3">¿Cuándo haces más actividades?</h4>
+            <p class="text-gray-600 mb-4 text-sm">Selecciona una opción</p>
+
+            <div class="radio-option-onboard">
+                <input type="radio" id="finde" value="FINDE" name="disponibilidadSemana" class="radio-input-onboard">
+                <label for="finde" class="radio-label-onboard">🎉 Fines de semana</label>
+            </div>
+
+            <div class="radio-option-onboard">
+                <input type="radio" id="entreSemana" value="ENTRE_SEMANA" name="disponibilidadSemana"
+                    class="radio-input-onboard">
+                <label for="entreSemana" class="radio-label-onboard">📅 Entre semana</label>
+            </div>
+
+            <div class="radio-option-onboard">
+                <input type="radio" id="ambos" value="AMBOS" name="disponibilidadSemana" class="radio-input-onboard">
+                <label for="ambos" class="radio-label-onboard">⭐ Ambos</label>
+            </div>
+        </div>
+
+        <!-- Botones de navegación -->
+        <div class="flex justify-between mt-6">
+            <button type="button" id="btnAnteriorOnboard" class="btn-onboard btn-anterior" style="display: none;">
+                Anterior
+            </button>
+            <button type="button" id="btnSiguienteOnboard" class="btn-onboard btn-siguiente ml-auto">
+                Siguiente
+            </button>
+        </div>
+    </div>
+    <script>
+        // Script para modal de onboarding
+        const pasosData = [
+            { titulo: '¿Qué actividades te gustan?', subtitulo: 'Selecciona una o más', tipo: 'checkbox', nombre: 'categoriasIds' },
+            {
+                titulo: '¿Con quién sueles salir?', subtitulo: 'Selecciona una opción', tipo: 'radio', nombre: 'grupoViaje',
+                opciones: [{ v: 'SOLO', l: '🧍 Solo', emoji: '🧍' }, { v: 'PAREJA', l: '💑 En pareja', emoji: '💑' }, { v: 'FAMILIA', l: '👨‍👩‍👧‍👦 Con familia', emoji: '👨‍👩‍👧‍👦' }, { v: 'AMIGOS', l: '👥 Con amigos', emoji: '👥' }, { v: 'VARIOS', l: '🔄 Varía', emoji: '🔄' }]
+            },
+            {
+                titulo: '¿Qué presupuesto manejas?', subtitulo: 'Por actividad', tipo: 'radio', nombre: 'rangoPrecio',
+                opciones: [{ v: 'ECONOMICO', l: '💰 Económico', desc: '< $50k' }, { v: 'MODERADO', l: '💵 Moderado', desc: '$50k–$150k' }, { v: 'PREMIUM', l: '💎 Premium', desc: '> $150k' }]
+            },
+            {
+                titulo: '¿Cuándo haces más actividades?', subtitulo: 'Selecciona una opción', tipo: 'radio', nombre: 'disponibilidadSemana',
+                opciones: [{ v: 'FINDE', l: '🎉 Fines de semana' }, { v: 'ENTRE_SEMANA', l: '📅 Entre semana' }, { v: 'AMBOS', l: '⭐ Ambos' }]
+            }
+        ];
+
+        let pasoActual = 0;
+
+        function abrirModalOnboarding() {
+            // Validar que el form principal esté completo
+            const form = document.querySelector('form');
+            const inputs = form.querySelectorAll('input[required]:not([type="checkbox"]):not([type="radio"])');
+            for (const inp of inputs) {
+                if (!inp.value.trim()) {
+                    inp.focus();
+                    alert('Por favor completa todos los campos requeridos');
+                    return;
+                }
+            }
+            pasoActual = 0;
+            document.getElementById('modalOnboarding').style.display = 'flex';
+            renderPaso();
+        }
+
+        function cerrarModal() {
+            document.getElementById('modalOnboarding').style.display = 'none';
+        }
+
+        function renderPaso() {
+            const paso = pasosData[pasoActual];
+            document.getElementById('stepLabel').textContent = `Paso ${pasoActual + 1} de ${pasosData.length}`;
+            document.getElementById('progressFill').style.width = `${((pasoActual + 1) / pasosData.length) * 100}%`;
+
+            let html = `<h3 style="font-size:22px;font-weight:600;margin-bottom:6px;color:#111827;">${paso.titulo}</h3>
+                  <p style="font-size:14px;color:#6b7280;margin-bottom:1.5rem;">${paso.subtitulo}</p>`;
+
+            if (paso.tipo === 'checkbox') {
+                html += `<div style="display:flex;flex-wrap:wrap;gap:10px;justify-content:center;">`;
+                const checkboxes = document.querySelectorAll('input[name="categoriasIds"]');
+                checkboxes.forEach(cb => {
+                    const label = cb.nextElementSibling?.textContent || cb.value;
+                    const checked = cb.checked;
+                    const bgColor = checked ? '#23aae2' : 'white';
+                    const textColor = checked ? 'white' : '#374151';
+                    const borderColor = checked ? '#23aae2' : '#e5e7eb';
+                    html += `<div onclick="toggleCat('${cb.id}')" id="pill_${cb.id}"
+            style="padding:10px 18px;border:2px solid ${borderColor};border-radius:999px;cursor:pointer;
+            font-weight:500;font-size:14px;transition:all 0.2s;background:${bgColor};color:${textColor};
+            user-select:none;">${label}</div>`;
+                });
+                html += `</div>`;
+            } else {
+                html += `<div style="display:flex;flex-direction:column;gap:10px;">`;
+                paso.opciones.forEach(op => {
+                    const existing = document.querySelector(`input[name="${paso.nombre}"][value="${op.v}"]`);
+                    const checked = existing?.checked;
+                    const bgColor = checked ? '#23aae2' : 'white';
+                    const textColor = checked ? 'white' : '#374151';
+                    const borderColor = checked ? '#23aae2' : '#e5e7eb';
+                    const descHtml = op.desc ? `<span style="font-size:12px;opacity:0.85;">${op.desc}</span>` : '';
+                    html += `<button type="button" onclick="selectOpcion('${paso.nombre}','${op.v}',this)"
+            style="padding:14px 18px;text-align:left;border:2px solid ${borderColor};
+            border-radius:10px;font-size:15px;font-weight:500;cursor:pointer;
+            background:${bgColor};color:${textColor};transition:all 0.2s;
+            display:flex;align-items:center;justify-content:space-between;">
+            <span>${op.l}</span>${descHtml}</button>`;
+                });
+                html += `</div>`;
+            }
+
+            document.getElementById('modalStepContent').innerHTML = html;
+            document.getElementById('btnAnteriorModal').style.display = pasoActual > 0 ? 'inline-block' : 'none';
+            document.getElementById('btnSiguienteModal').style.display = pasoActual < pasosData.length - 1 ? 'inline-block' : 'none';
+            document.getElementById('btnUneteFinal').style.display = pasoActual === pasosData.length - 1 ? 'inline-block' : 'none';
+        }
+
+        function toggleCat(id) {
+            const cb = document.getElementById(id);
+            cb.checked = !cb.checked;
+            const pill = document.getElementById('pill_' + id);
+            if (cb.checked) {
+                pill.style.background = '#23aae2';
+                pill.style.color = 'white';
+                pill.style.borderColor = '#23aae2';
+            } else {
+                pill.style.background = 'white';
+                pill.style.color = '#374151';
+                pill.style.borderColor = '#e5e7eb';
+            }
+        }
+
+        function selectOpcion(nombre, valor, btn) {
+            const radio = document.querySelector(`input[name="${nombre}"][value="${valor}"]`);
+            if (radio) radio.checked = true;
+
+            // Actualizar visual
+            btn.parentElement.querySelectorAll('button').forEach(b => {
+                b.style.background = 'white';
+                b.style.color = '#374151';
+                b.style.borderColor = '#e5e7eb';
+            });
+            btn.style.background = '#23aae2';
+            btn.style.color = 'white';
+            btn.style.borderColor = '#23aae2';
+        }
+
+        function validarPasoModal() {
+            if (pasoActual === 0) {
+                const alguno = Array.from(document.querySelectorAll('input[name="categoriasIds"]')).some(c => c.checked);
+                if (!alguno) {
+                    alert('Por favor selecciona al menos una categoría');
+                    return false;
+                }
+            } else {
+                const nombre = pasosData[pasoActual].nombre;
+                const alguno = document.querySelector(`input[name="${nombre}"]:checked`);
+                if (!alguno) {
+                    alert('Por favor selecciona una opción');
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        function pasoSiguiente() {
+            if (validarPasoModal() && pasoActual < pasosData.length - 1) {
+                pasoActual++;
+                renderPaso();
+            }
+        }
+
+        function pasoAnterior() {
+            if (pasoActual > 0) {
+                pasoActual--;
+                renderPaso();
+            }
+        }
+
+        function submitFormFinal() {
+            if (!validarPasoModal()) return;
+            cerrarModal();
+            // Hacer clic en el botón submit real del form
+            document.getElementById('btnSubmitReal').click();
+        }
+
+        // Permitir cerrar modal con ESC
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                const modal = document.getElementById('modalOnboarding');
+                if (modal.style.display === 'flex') cerrarModal();
+            }
+        });
+
+        // Cerrar modal si se hace clic fuera
+        document.getElementById('modalOnboarding')?.addEventListener('click', (e) => {
+            if (e.target.id === 'modalOnboarding') cerrarModal();
+        });
+    </script>
+</body>
+
+</html>

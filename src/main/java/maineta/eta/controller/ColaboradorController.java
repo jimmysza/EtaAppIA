@@ -6,6 +6,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
+import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
@@ -40,6 +41,7 @@ import maineta.eta.entity.ConversacionChat;
 import maineta.eta.entity.Disponibilidad;
 import maineta.eta.entity.MensajeChat;
 import maineta.eta.entity.PatronDisponibilidad;
+import maineta.eta.entity.PreguntaFrecuenteActividad;
 import maineta.eta.entity.Reserva;
 import maineta.eta.entity.Usuario;
 import maineta.eta.service.ActividadService;
@@ -680,6 +682,18 @@ public class ColaboradorController {
         dto.setCondiciones(actividad.getCondiciones());
         dto.setNormas(actividad.getNormas());
         dto.setIncluye(actividad.getIncluye());
+        List<PreguntaFrecuenteActividad> preguntasFrecuentes = actividad.getPreguntasFrecuentes();
+        if (preguntasFrecuentes != null && !preguntasFrecuentes.isEmpty()) {
+            preguntasFrecuentes.stream()
+                    .sorted(Comparator.comparingInt(PreguntaFrecuenteActividad::getOrdenVisual))
+                    .forEach(faq -> {
+                        dto.getPreguntasFrecuentesPreguntas().add(faq.getPregunta());
+                        dto.getPreguntasFrecuentesRespuestas().add(faq.getRespuesta());
+                    });
+        } else {
+            dto.getPreguntasFrecuentesPreguntas().add("");
+            dto.getPreguntasFrecuentesRespuestas().add("");
+        }
         if (actividad.getCategoria() != null)
             dto.setIdCategoria(actividad.getCategoria().getIdCategoria());
         if (actividad.getIdioma() != null)

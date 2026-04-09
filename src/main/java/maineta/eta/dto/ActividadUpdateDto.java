@@ -1,6 +1,8 @@
 package maineta.eta.dto;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 import lombok.Data;
 
@@ -22,6 +24,9 @@ public class ActividadUpdateDto {
     private String condiciones;
     private String normas;
     private String incluye;
+    private List<String> preguntasFrecuentesPreguntas = new ArrayList<>();
+    private List<String> preguntasFrecuentesRespuestas = new ArrayList<>();
+    private Boolean actualizarPreguntasFrecuentes;
 
     private Long idCategoria;
     private Long idIdioma;

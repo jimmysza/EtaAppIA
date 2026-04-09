@@ -273,9 +273,9 @@
                         <div class="max-w-3xl">
                             <h1 class="text-4xl md:text-6xl font-black tracking-tight mb-3"
                                 th:text="${perfilColaborador.nombre}">Nombre colaborador</h1>
-                            <p class="text-white/85 text-lg leading-relaxed mb-0">
+                           <!--  <p class="text-white/85 text-lg leading-relaxed mb-0">
                                 Explora todas las actividades publicadas por este colaborador y filtra rápido desde sus fichas para encontrar el plan que mejor encaja con lo que buscas.
-                            </p>
+                            </p> -->
                         </div>
                     </div>
 
@@ -308,7 +308,7 @@
             </div>
         </section>
 
-        <section class="max-w-6xl mx-auto my-10 py-20">
+        <section class="max-w-6xl mx-auto my-10 py-20 mb-10">
             <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-8">
                 <div>
                     <p class="text-sm font-bold uppercase tracking-[0.22em] text-sky-700 mb-2">Catálogo público</p>
@@ -387,6 +387,7 @@
                 Este colaborador todavía no tiene actividades publicadas.
             </div>
         </section>
+
     </main>
 
     <div th:replace="~{componentes/footer :: footer}"></div>

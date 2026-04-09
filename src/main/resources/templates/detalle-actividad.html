@@ -164,23 +164,27 @@
         }
 
         .reservation-calendar-title {
+            padding-bottom: 20px;
             text-align: center;
             flex: 1;
+
         }
 
         .reservation-calendar-title strong {
             display: block;
-            font-size: 1rem;
-            color: #0f172a;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #ffffff;
         }
 
         .reservation-calendar-title span {
             font-size: .83rem;
-            color: #64748b;
+            color: #ffffff;
         }
 
         .reservation-calendar-grid {
             display: grid;
+            margin-top: 5px;
             grid-template-columns: repeat(7, minmax(0, 1fr));
             gap: 8px;
         }
@@ -189,7 +193,7 @@
             text-align: center;
             font-size: .78rem;
             font-weight: 700;
-            color: #64748b;
+            color: #f8f8f8;
             text-transform: uppercase;
         }
 
@@ -284,7 +288,7 @@
                 <li><a href="#info" class="nav-link nav-hidden">Informacion</a></li>
                 <!-- <li><a href="#map" class="nav-link">Mapa</a></li> -->
                 <li><a href="#reseñas" class="nav-link nav-hidden">Reseñas</a></li>
-                <li><a href="#footer" class="nav-link nav-hidden">Contactos</a></li>
+                <li><a href="#reserva" class="nav-link nav-hidden text-white font-bold bgBlueMain rounded-md py-1">reserva ya</a></li>
             </ul>
             <div class="social-nav flex center gap-2 ">
                 <!-- Botón Favorito -->
@@ -299,14 +303,15 @@
                             d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
                     </svg>
                 </button>
-                
-                <a href="#" onclick="compartirPagina(event)"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24">
+
+                <a href="#" onclick="compartirPagina(event)"><svg xmlns="http://www.w3.org/2000/svg" width="20"
+                        height="20" viewBox="0 0 24 24">
                         <path fill="#fff" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="m20 12l-6.4-7v3.5C10.4 8.5 4 10.6 4 19c0-1.167 1.92-3.5 9.6-3.5V19z" />
                     </svg></a>
-                <a href="#"
-                   th:attr="data-lat=${actividad.latitud}, data-lon=${actividad.longitud}"
-                   onclick="irAMaps(event)"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24">
+                <a href="#" th:attr="data-lat=${actividad.latitud}, data-lon=${actividad.longitud}"
+                    onclick="irAMaps(event)"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+                        viewBox="0 0 24 24">
                         <path fill="#fff"
                             d="M18.9 6c-.2-.6-.8-1-1.4-1h-11c-.7 0-1.2.4-1.4 1L3 12v8c0 .5.5 1 1 1h1c.6 0 1-.5 1-1v-1h12v1c0 .5.5 1 1 1h1c.5 0 1-.5 1-1v-8zM6.8 7h10.3l1.1 3H5.8zM19 17H5v-5h14zM7.5 13c.8 0 1.5.7 1.5 1.5S8.3 16 7.5 16S6 15.3 6 14.5S6.7 13 7.5 13m9 0c.8 0 1.5.7 1.5 1.5s-.7 1.5-1.5 1.5s-1.5-.7-1.5-1.5s.7-1.5 1.5-1.5" />
                     </svg></a>
@@ -647,112 +652,153 @@
             </div>
 
         </div>
+
         <div class="activity-detail-container" id="reserva">
-            <div class="reserva-container">
-                <h3 class="title-time price-tag">$
-                    <span th:text="${#numbers.formatDecimal(precioConsumidor, 0, 0)}"></span>
 
-                    <span class="title-time reserva">/reserva</span>
+            <!-- Precio + botón disparador -->
+            <div class="p-4">
+                <h3 class="text-2xl font-bold text-gray-900 min-w-[338px]">
+                    $<span th:text="${#numbers.formatDecimal(precioConsumidor, 0, 0)}">118,000</span>
+                    <span class="text-base font-normal text-gray-500">/reserva</span>
                 </h3>
-                <form th:action="@{/cliente/checkout}" method="post" th:object="${reservaDTO}" class="card-reservas">
 
-                    <input type="hidden" name="idActividad" th:value="${actividad.idActividad}" />
-                    <input type="hidden" name="fechaSeleccionada"
-                        th:value="${fechaReservaSeleccionada != null ? fechaReservaSeleccionada.toString() : ''}" />
+                <button onclick="document.getElementById('panelReserva').classList.toggle('hidden')"
+                    class="min-w-[338px] mt-3 w-full bg-gray-900 hover:bg-gray-700 text-white text-sm font-semibold py-3 px-4 rounded-xl transition-colors cursor-pointer">
+                    Selecciona una fecha para reservar
+                </button>
 
-                    <p style="font-weight:600; margin-bottom:10px;">Primero escoge un día disponible</p>
+                <!-- Panel inline estilo Airbnb -->
+                <div id="panelReserva"
+                    class="hidden mt-3 border border-gray-200 rounded-2xl overflow-hidden bg-white shadow-sm">
 
-                    <div class="availability-empty" th:if="${#maps.isEmpty(diasDisponiblesMap)}">
-                        En este mes no hay días disponibles. Cambia de mes para seguir explorando horarios.
+                    <!-- Fecha seleccionada banner (visible si hay fecha) -->
+                    <div th:if="${fechaReservaSeleccionada != null}" class="flex items-center gap-3 px-5 pt-4 pb-0">
+                        <div class="flex-1 border border-gray-900 rounded-xl px-3 py-2">
+                            <p class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Fecha</p>
+                            <p class="text-sm font-medium text-gray-900"
+                                th:text="${#temporals.format(fechaReservaSeleccionada, 'dd/MM/yyyy')}">10/04/2026</p>
+                        </div>
+                        <button onclick="document.getElementById('panelReserva').classList.add('hidden')"
+                            class="ml-auto text-gray-400 hover:text-gray-700 text-2xl leading-none cursor-pointer">&times;</button>
                     </div>
 
-                    <div class="reservation-calendar">
-                        <div class="reservation-calendar-head">
-                            <a class="reservation-calendar-nav"
-                                th:href="@{/actividad/{slug}-{id}(slug=${actividad.titulo.toLowerCase().replaceAll('[^a-z0-9\\s-]', '').replaceAll('\\s+', '-').replaceAll('-+', '-')}, id=${actividad.idActividad}, anioReserva=${prevAnioReserva}, mesReserva=${prevMesReserva})} + '#reserva'">
-                                &#8249;
-                            </a>
-                            <div class="reservation-calendar-title">
-                                <strong th:text="${#strings.capitalize(mesReservaNombre) + ' ' + anioReserva}">Abril 2026</strong>
-                                <span>Solo puedes pulsar los días que sí tienen disponibilidad</span>
-                            </div>
-                            <a class="reservation-calendar-nav"
-                                th:href="@{/actividad/{slug}-{id}(slug=${actividad.titulo.toLowerCase().replaceAll('[^a-z0-9\\s-]', '').replaceAll('\\s+', '-').replaceAll('-+', '-')}, id=${actividad.idActividad}, anioReserva=${nextAnioReserva}, mesReserva=${nextMesReserva})} + '#reserva'">
-                                &#8250;
-                            </a>
+                    <!-- Cabecera cuando no hay fecha -->
+                    <div th:if="${fechaReservaSeleccionada == null}"
+                        class="flex items-center justify-between px-5 pt-4">
+                        <span class="text-sm font-semibold text-gray-900">Elige una fecha</span>
+                        <button onclick="document.getElementById('panelReserva').classList.add('hidden')"
+                            class="text-gray-400 hover:text-gray-700 text-2xl leading-none cursor-pointer">&times;</button>
+                    </div>
+
+                    <form th:action="@{/cliente/checkout}" method="post" th:object="${reservaDTO}">
+                        <input type="hidden" name="idActividad" th:value="${actividad.idActividad}" />
+                        <input type="hidden" name="fechaSeleccionada"
+                            th:value="${fechaReservaSeleccionada != null ? fechaReservaSeleccionada.toString() : ''}" />
+
+                        <!-- Sin disponibilidad -->
+                        <div th:if="${#maps.isEmpty(diasDisponiblesMap)}"
+                            class="px-5 py-6 text-sm text-gray-500 text-center">
+                            En este mes no hay días disponibles. Cambia de mes para seguir explorando.
                         </div>
 
-                        <div class="reservation-calendar-grid">
-                            <div class="reservation-calendar-label">Lun</div>
-                            <div class="reservation-calendar-label">Mar</div>
-                            <div class="reservation-calendar-label">Mié</div>
-                            <div class="reservation-calendar-label">Jue</div>
-                            <div class="reservation-calendar-label">Vie</div>
-                            <div class="reservation-calendar-label">Sáb</div>
-                            <div class="reservation-calendar-label">Dom</div>
+                        <!-- Calendario -->
+                        <div class="px-5 pt-3 pb-4">
 
-                            <th:block th:with="offset=${primerDiaReservaSemana - 1}" th:if="${offset > 0}">
-                                <span th:each="i : ${#numbers.sequence(1, offset)}"
-                                    class="reservation-day reservation-day--empty">0</span>
-                            </th:block>
-
-                            <th:block th:each="dia : ${#numbers.sequence(1, diasEnMesReserva)}">
-                                <a th:if="${diasDisponiblesMap.containsKey(dia)}"
-                                    th:href="@{/actividad/{slug}-{id}(slug=${actividad.titulo.toLowerCase().replaceAll('[^a-z0-9\\s-]', '').replaceAll('\\s+', '-').replaceAll('-+', '-')}, id=${actividad.idActividad}, anioReserva=${anioReserva}, mesReserva=${mesReserva}, fechaReserva=${diasDisponiblesMap.get(dia)})} + '#reserva'"
-                                    class="reservation-day reservation-day--available"
-                                    th:classappend="${fechaReservaSeleccionada != null and fechaReservaSeleccionada.dayOfMonth == dia} ? ' reservation-day--active' : ''"
-                                    th:text="${dia}">
-                                    1
+                            <!-- Nav mes -->
+                            <div class="flex items-center justify-between mb-4">
+                                <a th:href="@{/actividad/{slug}-{id}(slug=${actividad.titulo.toLowerCase().replaceAll('[^a-z0-9\\s-]', '').replaceAll('\\s+', '-').replaceAll('-+', '-')}, id=${actividad.idActividad}, anioReserva=${prevAnioReserva}, mesReserva=${prevMesReserva})} + '#reserva'"
+                                    class="w-8 h-8 flex items-center justify-center rounded-full border border-gray-200 hover:border-gray-400 text-gray-600 hover:text-gray-900 transition-colors text-lg leading-none">
+                                    &#8249;
                                 </a>
-                                <span th:if="${!diasDisponiblesMap.containsKey(dia)}"
-                                    class="reservation-day reservation-day--disabled"
-                                    th:text="${dia}">
-                                    2
-                                </span>
-                            </th:block>
+
+                                <div class="text-center">
+                                    <p class="text-sm font-semibold text-gray-900"
+                                        th:text="${#strings.capitalize(mesReservaNombre) + ' ' + anioReserva}">Abril
+                                        2026</p>
+                                    <p class="text-xs text-gray-400 mt-0.5">Solo puedes pulsar los días con
+                                        disponibilidad</p>
+                                </div>
+
+                                <a th:href="@{/actividad/{slug}-{id}(slug=${actividad.titulo.toLowerCase().replaceAll('[^a-z0-9\\s-]', '').replaceAll('\\s+', '-').replaceAll('-+', '-')}, id=${actividad.idActividad}, anioReserva=${nextAnioReserva}, mesReserva=${nextMesReserva})} + '#reserva'"
+                                    class="w-8 h-8 flex items-center justify-center rounded-full border border-gray-200 hover:border-gray-400 text-gray-600 hover:text-gray-900 transition-colors text-lg leading-none">
+                                    &#8250;
+                                </a>
+                            </div>
+
+                            <!-- Labels días -->
+                            <div class="grid grid-cols-7 mb-1">
+                                <div th:each="dia : ${ {'L','M','X','J','V','S','D'} }"
+                                    class="text-center text-xs font-medium text-gray-400 py-1" th:text="${dia}">L</div>
+                            </div>
+
+                            <!-- Días del mes -->
+                            <div class="grid grid-cols-7 gap-y-1">
+
+                                <!-- Offset primer día -->
+                                <th:block th:with="offset=${primerDiaReservaSemana - 1}" th:if="${offset > 0}">
+                                    <span th:each="i : ${#numbers.sequence(1, offset)}" class="aspect-square"></span>
+                                </th:block>
+
+                                <!-- Días disponibles -->
+                                <th:block th:each="dia : ${#numbers.sequence(1, diasEnMesReserva)}">
+
+                                    <!-- Disponible -->
+                                    <a th:if="${diasDisponiblesMap.containsKey(dia)}"
+                                        th:href="@{/actividad/{slug}-{id}(slug=${actividad.titulo.toLowerCase().replaceAll('[^a-z0-9\\s-]', '').replaceAll('\\s+', '-').replaceAll('-+', '-')}, id=${actividad.idActividad}, anioReserva=${anioReserva}, mesReserva=${mesReserva}, fechaReserva=${diasDisponiblesMap.get(dia)})} + '#reserva'"
+                                        class="aspect-square flex items-center justify-center rounded-full text-sm font-medium transition-colors hover:bg-gray-100 text-gray-900 cursor-pointer"
+                                        th:classappend="${fechaReservaSeleccionada != null and fechaReservaSeleccionada.dayOfMonth == dia} ? ' bg-gray-900 text-white hover:bg-gray-700' : ''"
+                                        th:text="${dia}">1</a>
+
+                                    <!-- No disponible -->
+                                    <span th:if="${!diasDisponiblesMap.containsKey(dia)}"
+                                        class="aspect-square flex items-center justify-center rounded-full text-sm text-gray-300 line-through cursor-not-allowed"
+                                        th:text="${dia}">2</span>
+
+                                </th:block>
+                            </div>
                         </div>
-                    </div>
 
-                    <div class="reservation-selected-day" th:if="${fechaReservaSeleccionada != null}">
-                        <small>Día seleccionado</small>
-                        <div class="availability-selected-value"
-                            th:text="${#temporals.format(fechaReservaSeleccionada, 'dd/MM/yyyy')}">12/04/2026</div>
-                    </div>
+                        <!-- Footer: fecha seleccionada + botón -->
+                        <div class="border-t border-gray-100 px-5 py-4 flex items-center justify-between gap-3">
+                            <div th:if="${fechaReservaSeleccionada != null}" class="text-sm text-gray-700">
+                                <span class="font-semibold"
+                                    th:text="${#temporals.format(fechaReservaSeleccionada, 'dd MMM yyyy')}">10 abr
+                                    2026</span>
+                            </div>
+                            <div th:if="${fechaReservaSeleccionada == null}" class="text-sm text-gray-400">
+                                Ninguna fecha seleccionada
+                            </div>
 
-                    <button type="submit" class="btn btn-secondary"
-                        th:disabled="${fechaReservaSeleccionada == null}"
-                        id="btnContinuarReserva">Continuar al checkout</button>
+                            <button type="submit" th:disabled="${fechaReservaSeleccionada == null}"
+                                class="bg-gray-900 text-white text-sm font-semibold px-5 py-2.5 rounded-xl hover:bg-gray-700 transition-colors disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+                                id="btnContinuarReserva">
+                                Continuar al checkout
+                            </button>
+                        </div>
 
-                </form>
-
-                <script>
-                    function seleccionarDisponibilidad(card) {
-                        var hidden = document.getElementById('idDisponibilidadHidden');
-                        var info = document.getElementById('availabilitySelected');
-                        var infoText = document.getElementById('availabilitySelectedText');
-
-                        document.querySelectorAll('.availability-option').forEach(function (option) {
-                            option.classList.remove('active');
-                            option.setAttribute('aria-pressed', 'false');
-                        });
-
-                        card.classList.add('active');
-                        card.setAttribute('aria-pressed', 'true');
-                        hidden.value = card.getAttribute('data-id');
-                        infoText.textContent = card.getAttribute('data-fecha') + ' • ' + card.getAttribute('data-hora') + ' • ' + card.getAttribute('data-cupos') + ' cupos disponibles';
-                        info.style.display = 'block';
-                    }
-
-                    document.addEventListener('DOMContentLoaded', function () {
-                        var activeCard = document.querySelector('.availability-option.active') || document.querySelector('.availability-option');
-                        if (activeCard) {
-                            seleccionarDisponibilidad(activeCard);
-                        }
-                    });
-                </script>
-
+                    </form>
+                </div>
             </div>
         </div>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                var fechaInput = document.querySelector('input[name="fechaSeleccionada"]');
+                if (fechaInput && fechaInput.value) {
+                    document.getElementById('panelReserva').classList.remove('hidden');
+                }
+                document.querySelectorAll('a[href*="mesReserva"]').forEach(function (link) {
+                    link.addEventListener('click', function () {
+                        sessionStorage.setItem('panelReservaAbierto', '1');
+                    });
+                });
+                if (sessionStorage.getItem('panelReservaAbierto')) {
+                    document.getElementById('panelReserva').classList.remove('hidden');
+                    sessionStorage.removeItem('panelReservaAbierto');
+                }
+            });
+        </script>
+
         </div>
     </section>
 
@@ -857,7 +903,7 @@
 
     <!-- Script del mapa de ubicación para cliente -->
     <script th:if="${actividad.latitud != null and actividad.longitud != null}" th:inline="javascript">
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             const lat = /*[[${actividad.latitud}]]*/ 10.3910;
             const lng = /*[[${actividad.longitud}]]*/ -75.4794;
             const titulo = /*[[${actividad.titulo}]]*/ 'Actividad';
@@ -877,35 +923,35 @@
     </script>
     <!--Compartir pagina-->
     <script>
-    function compartirPagina(e) {
-        e.preventDefault();
-        if (navigator.share) {
-            navigator.share({ url: window.location.href });
-        } else {
-            navigator.clipboard.writeText(window.location.href).then(function() {
-                alert('Enlace copiado al portapapeles');
-            });
+        function compartirPagina(e) {
+            e.preventDefault();
+            if (navigator.share) {
+                navigator.share({ url: window.location.href });
+            } else {
+                navigator.clipboard.writeText(window.location.href).then(function () {
+                    alert('Enlace copiado al portapapeles');
+                });
+            }
         }
-    }
 
-    function irAMaps(e) {
-        e.preventDefault();
-        var btn = e.currentTarget;
-        var lat = btn.getAttribute('data-lat');
-        var lon = btn.getAttribute('data-lon');
+        function irAMaps(e) {
+            e.preventDefault();
+            var btn = e.currentTarget;
+            var lat = btn.getAttribute('data-lat');
+            var lon = btn.getAttribute('data-lon');
 
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(function(pos) {
-                var origen = pos.coords.latitude + ',' + pos.coords.longitude;
-                var destino = lat + ',' + lon;
-                window.open('https://www.google.com/maps/dir/' + origen + '/' + destino, '_blank');
-            }, function() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function (pos) {
+                    var origen = pos.coords.latitude + ',' + pos.coords.longitude;
+                    var destino = lat + ',' + lon;
+                    window.open('https://www.google.com/maps/dir/' + origen + '/' + destino, '_blank');
+                }, function () {
+                    window.open('https://www.google.com/maps/search/?api=1&query=' + lat + ',' + lon, '_blank');
+                });
+            } else {
                 window.open('https://www.google.com/maps/search/?api=1&query=' + lat + ',' + lon, '_blank');
-            });
-        } else {
-            window.open('https://www.google.com/maps/search/?api=1&query=' + lat + ',' + lon, '_blank');
+            }
         }
-    }
     </script>
 
 </body>

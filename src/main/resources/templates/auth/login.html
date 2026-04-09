@@ -16,62 +16,78 @@
     <title>Eta - Inicio Sesion - Cliente - Eventos Toures Actividades</title>
 
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <style>
+        @media screen and (max-width: 767px) {
+            .disapear {
+                display: none;
+            }
+        }
+    </style>
 </head>
 
-<body>
+<body class="relative md:overflow-y-hidden">
 
-    <div th:if="${param.registrarse}" class="alert alert-info" >
+    <div th:if="${param.registrarse}" class="alert alert-info">
         Debes registrarte o iniciar sesión para acceder.
     </div>
 
-    <div th:if="${param.pendingVerification}" class="alert alert-info alert-info-big" >
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0;">
+    <div th:if="${param.pendingVerification}" class="alert alert-info alert-info-big">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" style="flex-shrink:0;">
             <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
             <polyline points="22,6 12,13 2,6"></polyline>
         </svg>
         <div>
             <strong>¡Registro exitoso!</strong><br>
-            Hemos enviado un correo de verificación a tu email. Por favor, revisa tu bandeja de entrada (y spam) y haz clic en el enlace para activar tu cuenta.
+            Hemos enviado un correo de verificación a tu email. Por favor, revisa tu bandeja de entrada (y spam) y haz
+            clic en el enlace para activar tu cuenta.
         </div>
     </div>
 
-    <div th:if="${param.verified}" class="alert alert-success" >
+    <div th:if="${param.verified}" class="alert alert-success">
         Tu cuenta fue verificada correctamente. Ya puedes iniciar sesión.
     </div>
 
-    <div th:if="${param.notVerified}" class="alert alert-danger" >
+    <div th:if="${param.notVerified}" class="alert alert-danger">
         Tu cuenta aún no está verificada. Revisa tu correo y abre el enlace de verificación.
     </div>
 
-    <div th:if="${param.expiredToken}" class="alert alert-danger" >
+    <div th:if="${param.expiredToken}" class="alert alert-danger">
         El enlace de verificación expiró.
     </div>
 
-    <div th:if="${param.invalidToken}" class="alert alert-danger" >
+    <div th:if="${param.invalidToken}" class="alert alert-danger">
         El enlace de verificación no es válido.
     </div>
 
-    <div th:if="${param.error}" class="alert alert-danger" >
+    <div th:if="${param.error}" class="alert alert-danger">
         Credenciales inválidas.
     </div>
 
     <!-- Mensajes flash -->
-    <div th:if="${exito}" class="alert alert-success" >
+    <div th:if="${exito}" class="alert alert-success">
         <span th:text="${exito}"></span>
     </div>
 
-    <div th:if="${error}" class="alert alert-danger" >
+    <div th:if="${error}" class="alert alert-danger">
         <span th:text="${error}"></span>
     </div>
 
     <div th:if="${param.expired}">
-        <div class="alert alert-info" >La Sesión expiró</div>
+        <div class="alert alert-info">La Sesión expiró</div>
     </div>
+    <a th:href="@{/}"
+        class="hidden md:flex absolute top-[-16px] left-5 items-center gap-2 bg-white/20 border border-white/30 text-white px-3 py-3 rounded-2xl font-bold hover:bg-white/30 z-[1000]">
+        <svg class="back-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24">
+            <path fill="currentColor"
+                d="m4 10l-.707.707L2.586 10l.707-.707zm17 8a1 1 0 1 1-2 0zM8.293 15.707l-5-5l1.414-1.414l5 5zm-5-6.414l5-5l1.414 1.414l-5 5zM4 9h10v2H4zm17 7v2h-2v-2zm-7-7a7 7 0 0 1 7 7h-2a5 5 0 0 0-5-5z" />
+        </svg>
+    </a>
 
-    <div class="container-100">
+    <div class="container-100 sm:hidden">
         <nav>
             <a th:href="@{/}"
-                class=" absolute top-50% left-5 flex items-center gap-2 bg-white/20  border border-white/30 text-white px-3 py-3 rounded-2xl font-bold hover:bg-white/30 z-1000">
+                class=" md:hidden lg:hidden absolute top-50% left-5 flex items-center gap-2 bg-white/20  border border-white/30 text-white px-3 py-3 rounded-2xl font-bold hover:bg-white/30 z-1000">
                 <svg class="back-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24">
                     <path fill="currentColor"
                         d="m4 10l-.707.707L2.586 10l.707-.707zm17 8a1 1 0 1 1-2 0zM8.293 15.707l-5-5l1.414-1.414l5 5zm-5-6.414l5-5l1.414 1.414l-5 5zM4 9h10v2H4zm17 7v2h-2v-2zm-7-7a7 7 0 0 1 7 7h-2a5 5 0 0 0-5-5z" />
@@ -79,7 +95,7 @@
             </a>
 
             <a class="flex justify-center items-center cursor-pointer" th:href="@{/}">
-                <img th:src="@{/images/logos/etabluerrvg.webp}" class="logo" alt="logo" loading="lazy" />
+                <img th:src="@{/images/logos/etabluerrvg.png}" class="logo" alt="logo" loading="lazy" />
             </a>
         </nav>
     </div>
@@ -138,10 +154,10 @@
             </p>
             <div class="relative mt-8">
                 <div class="absolute inset-0 flex items-center">
-                    <div class="w-full border-t border-slate-100"></div>
+                    <div class="w-full h-1 border-t border-slate-400"></div>
                 </div>
                 <div
-                    class="relative flex justify-center text-[10px] uppercase tracking-[0.2em] font-black text-slate-300">
+                    class="relative flex justify-center text-[10px] uppercase tracking-[0.4em] font-black text-slate-500">
                     <span class="bg-white px-6">O utiliza Google</span>
                 </div>
             </div>
@@ -161,6 +177,36 @@
             </div>
         </form>
     </div>
+
+    <div class="absolute disapear top-12 left-30 -rotate-6 z-10  md:block lg:block esconderCell">
+        <div class="w-[130px] h-[130px] rounded-2xl overflow-hidden shadow-2xl ring-[3px] ring-white">
+            <img th:src="@{/images/shares/share1.webp}" alt="actividad" class="w-full h-full object-cover">
+        </div>
+    </div>
+
+    <!-- Foto izquierda abajo — rotada hacia la derecha -->
+    <div class="absolute disapear bottom-14 left-23 rotate-[5deg] z-10 sm:hidden md:block lg:block esconderCell">
+        <div class="w-[140px] h-[140px] rounded-2xl overflow- shadow-xl ring-[3px] ring-white">
+            <img th:src="@{/images/shares/share2.webp}" alt="experiencia"
+                class="w-full h-full object-cover rounded-2xl">
+        </div>
+    </div>
+
+    <!-- Foto derecha arriba — rotada hacia la derecha -->
+    <div class="absolute disapear top-8 right-18 rotate-[7deg] z-10  md:block lg:block esconderCell">
+        <div class="w-[160px] h-[160px] rounded-2xl overflow- shadow-2xl ring-[3px] ring-white">
+            <img th:src="@{/images/shares/share3.webp}" alt="tour" class="w-full h-full object-cover rounded-2xl">
+        </div>
+    </div>
+
+    <!-- Foto derecha abajo — rotada hacia la izquierda -->
+    <div class="absolute disapear bottom-18 right-17 -rotate-[4deg] z-10  md:block lg:block esconderCell">
+        <div class="w-[120px] h-[120px] rounded-xl overflow- shadow-xl  ">
+            <img th:src="@{/images/shares/share4.webp}" alt="gastronomia"
+                class="w-full h-full object-cover rounded-2xl">
+        </div>
+    </div>
+
 
     <script th:src="@{/js/ingreso.js}"></script>
     <script th:src="@{/js/contraseñaMostrar.js}"></script>
