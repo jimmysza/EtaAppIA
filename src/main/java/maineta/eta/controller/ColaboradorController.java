@@ -35,6 +35,7 @@ import maineta.eta.dto.CalendarioDiaDTO;
 import maineta.eta.dto.ColaboradorPerfilForm;
 import maineta.eta.dto.DisponibilidadDetalleDTO;
 import maineta.eta.dto.PatronDisponibilidadDTO;
+import maineta.eta.dto.PrediccionOcupacionDTO;
 import maineta.eta.entity.Actividad;
 import maineta.eta.entity.Colaborador;
 import maineta.eta.entity.ConversacionChat;
@@ -53,6 +54,7 @@ import maineta.eta.service.IUploadFileService;
 import maineta.eta.service.IdiomaService;
 import maineta.eta.service.KpiColaboradorService;
 import maineta.eta.service.PatronDisponibilidadService;
+import maineta.eta.service.PrediccionService;
 import maineta.eta.service.ReservaService;
 import maineta.eta.service.UsuarioService;
 
@@ -73,12 +75,14 @@ public class ColaboradorController {
     private final PatronDisponibilidadService patronDisponibilidadService;
     private final ChatService chatService;
     private final KpiColaboradorService kpiColaboradorService;
+    private final PrediccionService prediccionService;
 
     public ColaboradorController(ActividadService actividadService, UsuarioService usuarioService,
             ColaboradorService colaboradorService, IUploadFileService uploadFileService,
             CategoriaService categoriaService, IdiomaService idiomaService, DisponibilidadService disponibilidadService,
             ReservaService reservaService, PatronDisponibilidadService patronDisponibilidadService,
-            ChatService chatService, KpiColaboradorService kpiColaboradorService) {
+            ChatService chatService, KpiColaboradorService kpiColaboradorService,
+            PrediccionService prediccionService) {
         this.actividadService = actividadService;
         this.usuarioService = usuarioService;
         this.colaboradorService = colaboradorService;
@@ -90,6 +94,7 @@ public class ColaboradorController {
         this.patronDisponibilidadService = patronDisponibilidadService;
         this.chatService = chatService;
         this.kpiColaboradorService = kpiColaboradorService;
+        this.prediccionService = prediccionService;
     }
 
     @ModelAttribute
@@ -437,6 +442,20 @@ public class ColaboradorController {
         if (fecha != null && !fecha.isEmpty()) {
             fechaSeleccionada = LocalDate.parse(fecha);
             detalleDia = disponibilidadService.obtenerDetallePorFecha(idActividad, fechaSeleccionada);
+            
+            // Agregar predicciones para cada disponibilidad del día
+            if (detalleDia != null && !detalleDia.isEmpty()) {
+                for (DisponibilidadDetalleDTO detalle : detalleDia) {
+                    try {
+                        PrediccionOcupacionDTO prediccion = prediccionService.predecirOcupacion(detalle.getIdDisponibilidad());
+                        detalle.setPrediccion(prediccion);
+                    } catch (Exception e) {
+                        System.err.println("Error al predecir ocupación para disponibilidad " + 
+                            detalle.getIdDisponibilidad() + ": " + e.getMessage());
+                        // Continuar con las demás predicciones aunque falle una
+                    }
+                }
+            }
         }
 
         // Patrones existentes

@@ -77,7 +77,8 @@ public class DisponibilidadServiceImpl implements DisponibilidadService {
                 d.getHoraFin(),
                 d.getCuposDisponibles(),
                 d.getCuposTotales(),
-                d.getEstado()
+                d.getEstado(),
+                null // La predicción se calcula en el controlador
         )).collect(Collectors.toList());
     }
 

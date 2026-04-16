@@ -55,25 +55,26 @@ El documento cubre:
 │Colaborador  │──────►│  Actividad   │◄──────│  Categoría  │
 │             │       │              │       │             │
 │ (Proveedor) │       │   (Oferta)   │       │  (Catalog)  │
-└─────────────┘       └──────┬───────┘       └─────────────┘
-                             │
-                ┌────────────┼────────────┐
-                │            │            │
-                ▼            ▼            ▼
-         ┌──────────┐ ┌──────────┐ ┌──────────┐
-         │Disponib. │ │Comentario│ │ImagenAct.│
-         └─────┬────┘ └──────────┘ └──────────┘
-               │
-               ▼
-         ┌──────────┐       ┌──────────────┐
-         │  Reserva │──────►│Conversación  │
-         │          │       │    Chat      │
-         └──────────┘       └──────┬───────┘
-                                   │
-                                   ▼
-                            ┌──────────────┐
-                            │ MensajeChat  │
-                            └──────────────┘
+└──────┬──────┘       └──────┬───────┘       └─────────────┘
+       │                     │
+       │        ┌────────────┼────────────┬───────────┐
+       │        │            │            │           │
+       │        ▼            ▼            ▼           ▼
+       │  ┌──────────┐ ┌──────────┐ ┌──────────┐ ┌──────────┐
+       │  │Disponib. │ │Comentario│ │ImagenAct.│ │PlanAct.  │
+       │  └─────┬────┘ └──────────┘ └──────────┘ └────┬─────┘
+       │        │                                      │
+       │        ▼                                      ▼
+       │  ┌──────────┐       ┌──────────────┐   ┌──────────┐
+       │  │  Reserva │──────►│Conversación  │   │   Plan   │
+       │  │          │       │    Chat      │   │(Ruta)    │
+       └──┼──────────┘       └──────┬───────┘   └────┬─────┘
+          │                         │                │
+          │                         ▼                │
+          │                  ┌──────────────┐        │
+          │                  │ MensajeChat  │        │
+          │                  └──────────────┘        │
+          └──────────────────────────────────────────┘
 ```
 
 ---
@@ -413,9 +414,56 @@ El documento cubre:
 
 ---
 
-### 4.7 Entidades de Documentos
+### 4.7 Entidades de Planes del Día
 
-#### 4.7.1 **Documento** (Tabla: `documento`)
+#### 4.7.1 **Plan** (Tabla: `planes`)
+**Propósito**: Representa una ruta turística temática que agrupa múltiples actividades en un itinerario sugerido.
+
+| Campo | Tipo | Restricciones | Descripción |
+|-------|------|---------------|-------------|
+| `id` | Long | PK, AUTO_INCREMENT | Identificador único |
+| `titulo` | String(200) | NOT NULL | Título del plan |
+| `descripcion` | TEXT | NULL | Descripción del itinerario |
+| `imagenPortada` | String(255) | NULL | Imagen principal del plan |
+| `duracionEstimada` | String(50) | NULL | Duración estimada (ej: "8 horas", "1 día completo") |
+| `tipo` | String(50) | NULL | Tipo de plan (ej: "Cultural", "Aventura", "Gastronómico") |
+| `id_cliente_creador` | Long | FK → Cliente, NULL | Cliente que creó el plan (si aplica) |
+| `id_colaborador_creador` | Long | FK → Colaborador, NULL | Colaborador que creó el plan (si aplica) |
+| `fechaCreacion` | LocalDateTime | NOT NULL, DEFAULT NOW | Fecha de creación |
+| `publico` | Boolean | NOT NULL, DEFAULT TRUE | Si es visible en vista pública |
+| `vistas` | Integer | DEFAULT 0 | Contador de vistas (para popularidad) |
+
+**Restricciones**:
+- Solo uno de `id_cliente_creador` o `id_colaborador_creador` puede ser no-null (creador polimórfico)
+
+**Relaciones**:
+- `ManyToOne` → `Cliente`: Cliente creador (opcional)
+- `ManyToOne` → `Colaborador`: Colaborador creador (opcional)
+- `OneToMany` → `PlanActividad`: Actividades incluidas en el plan
+
+---
+
+#### 4.7.2 **PlanActividad** (Tabla: `plan_actividades`)
+**Propósito**: Relación entre un plan y las actividades que lo componen, con orden y detalles personalizados.
+
+| Campo | Tipo | Restricciones | Descripción |
+|-------|------|---------------|-------------|
+| `id` | Long | PK, AUTO_INCREMENT | Identificador único |
+| `id_plan` | Long | FK → Plan, NOT NULL | Plan al que pertenece |
+| `id_actividad` | Long | FK → Actividad, NOT NULL | Actividad incluida |
+| `orden` | Integer | NOT NULL | Orden en el itinerario (1, 2, 3...) |
+| `horaSugerida` | String(20) | NULL | Hora sugerida para esta actividad (ej: "9:00 AM") |
+| `notaPersonalizada` | TEXT | NULL | Nota o tip del creador para esta parada |
+
+**Relaciones**:
+- `ManyToOne` → `Plan`: Plan contenedor
+- `ManyToOne` → `Actividad`: Actividad incluida en el plan
+
+---
+
+### 4.8 Entidades de Documentos
+
+#### 4.8.1 **Documento** (Tabla: `documento`)
 **Propósito**: Almacenamiento de archivos adjuntos asociados a usuarios.
 
 | Campo | Tipo | Restricciones | Descripción |
@@ -460,6 +508,13 @@ Cliente (1) ─── (N) Favorito ─── (1) Actividad
 Reserva (1) ─── (1) ConversacionChat
 ConversacionChat (1) ─── (N) MensajeChat
 Usuario (1) ─── (N) MensajeChat
+```
+
+### 5.5 Relaciones de Planes del Día
+```
+Cliente (1) ─── (N) Plan
+Colaborador (1) ─── (N) Plan
+Plan (1) ─── (N) PlanActividad ─── (1) Actividad
 ```
 
 ---
@@ -547,6 +602,29 @@ Usuario (1) ─── (N) MensajeChat
 - Historial de reservas
 
 **Entidades Involucradas**: `Cliente`, `Favorito`, `Actividad`, `Reserva`
+
+---
+
+### 6.8 Creación y Gestión de Planes del Día
+**Datos Almacenados**:
+- Plan con título, descripción y tipo temático
+- Imagen de portada del plan
+- Creador polimórfico (Cliente o Colaborador)
+- Lista ordenada de actividades con:
+  - Orden en el itinerario
+  - Hora sugerida para cada actividad
+  - Notas personalizadas por el creador
+- Contador de vistas para popularidad
+- Estado de visibilidad (público/privado)
+
+**Consultas Realizadas**:
+- Planes públicos más recientes (Top 5)
+- Planes creados por un cliente específico
+- Planes creados por un colaborador específico
+- Detalle de plan con todas sus actividades ordenadas
+- Incremento de contador de vistas
+
+**Entidades Involucradas**: `Plan`, `PlanActividad`, `Actividad`, `Cliente`, `Colaborador`
 
 ---
 

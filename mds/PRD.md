@@ -48,6 +48,9 @@ Usuario final que consume las actividades.
 - Escriturar comentarios y calificaciones (1-5 estrellas) solo si tiene una reserva completada en esa actividad.
 - Guardar actividades como favoritas y acceder a la lista desde su perfil.
 - Editar su información personal (nombre, cedula, dirección, teléfono, preferencias).
+- **Crear planes del día**: Agrupar múltiples actividades en una ruta temática con orden, horarios sugeridos y notas personalizadas.
+- **Ver sus planes creados** y compartirlos públicamente.
+- **Explorar planes públicos** de otros clientes y colaboradores en vista de mapa.
 
 ### 4.2 Colaborador
 Proveedor/empresa que ofrece actividades.
@@ -60,6 +63,9 @@ Proveedor/empresa que ofrece actividades.
 - Ver listado paginado de sus actividades.
 - Consultar las reservas recibidas en cada actividad/disponibilidad.
 - Tener un perfil público visible para los clientes.
+- **Crear planes del día**: Agrupar múltiples actividades (propias o de otros) en una ruta temática con orden, horarios sugeridos y notas personalizadas.
+- **Ver sus planes creados** y compartirlos públicamente.
+- **Explorar planes públicos** en vista de mapa.
 
 ### 4.3 Administrador
 Operador de la plataforma.
@@ -177,8 +183,24 @@ Sin registro.
 |----|--------------|-----------|
 | FILE-01 | Subida de imágenes para actividades almacenadas en el servidor (`/uploads`) | Alta |
 | FILE-02 | Subida de imágenes para categorías | Media |
-| FILE-03 | Las imágenes son accesibles públicamente vía URL | Alta |
+| FILE-03 | Las imágenes son accesibles públicamente vía URL | Alta || FILE-04 | Subida de imágenes para portadas de planes | Media |
 
+---
+
+### 5.10 Planes del Día (Rutas Turísticas)
+
+| ID | Requerimiento | Prioridad |
+|----|--------------|-----------||
+| PLAN-01 | Clientes y colaboradores pueden crear planes temáticos agrupando múltiples actividades | Alta |
+| PLAN-02 | Cada plan tiene: título, descripción, tipo, duración estimada e imagen de portada | Alta |
+| PLAN-03 | Las actividades dentro de un plan tienen orden secuencial (1, 2, 3...) | Alta |
+| PLAN-04 | Cada actividad en el plan puede tener hora sugerida y nota personalizada del creador | Media |
+| PLAN-05 | Los planes pueden ser públicos (visibles en /planes) o privados | Alta |
+| PLAN-06 | Vista pública de planes con mapa interactivo mostrando todas las actividades del plan | Alta |
+| PLAN-07 | Detalle de plan muestra itinerario completo con actividades ordenadas | Alta |
+| PLAN-08 | Contador de vistas para medir popularidad de planes | Media |
+| PLAN-09 | Los creadores pueden ver sus planes en /cliente/planes/mis-planes o /colaborador/planes/mis-planes | Alta |
+| PLAN-10 | Top 5 planes más recientes en la vista principal de /planes | Media |
 ---
 
 ## 6. Requerimientos No Funcionales
@@ -209,14 +231,18 @@ Usuario ────────────── Rol
    ├─── Cliente ───── Reserva ──── Disponibilidad ──── Actividad
    │       │                                               │
    │       ├─── Comentario ──────────────────────────── Actividad
-   │       └─── Favorito  ──────────────────────────── Actividad
-   │
+   │       ├─── Favorito  ────────────────────────── Actividad
+   │       └─── Plan
+   │               │
    ├─── Colaborador ── Actividad ── Categoria
-   │                       │
-   │                       ├──── Idioma
-   │                       ├──── Disponibilidad
-   │                       ├──── PatronDisponibilidad
-   │                       └──── ImagenActividad
+   │       │           │
+   │       └── Plan    ├──── Idioma
+   │               │   ├──── Disponibilidad
+   │               │   ├──── PatronDisponibilidad
+   │               │   ├──── ImagenActividad
+   │               │   └──── PlanActividad
+   │               │           │
+   │               └───────────┘
    │
    └─── Admin
 ```
@@ -239,6 +265,8 @@ Usuario ────────────── Rol
 | `categoria` | id, nombre (UNIQUE), imagen |
 | `idioma` | id, codigo (ej: 'es'), nombre (ej: 'Español') |
 | `imagen_actividad` | id, nombre → FK actividad |
+| `planes` | id, titulo, descripcion, imagenPortada, duracionEstimada, tipo, idClienteCreador, idColaboradorCreador, fechaCreacion, publico, vistas |
+| `plan_actividades` | id, idPlan, idActividad, orden, horaSugerida, notaPersonalizada |
 
 ---
 
@@ -285,7 +313,7 @@ Aplicación web **monolítica** con patrón **MVC**, renderizado del lado del se
                                              │         │
 ┌────────────────────────────────────────────▼─────────┐
 │                    MySQL 8                            │
-│                  (13 tablas)                          │
+│                  (15 tablas)                          │
 └──────────────────────────────────────────────────────┘
 ```
 
@@ -385,6 +413,31 @@ Cliente con reserva en estado "Hecho"
   ──→ Recalcula calificación promedio de la actividad
 ```
 
+### 9.5 Flujo de Creación de Plan del Día
+```
+Cliente o Colaborador autenticado
+  ──→ GET /{rol}/planes/crear
+  ──→ Completa formulario (título, descripción, tipo, duración, imagen)
+  ──→ Selecciona múltiples actividades en orden
+  ──→ Para cada actividad: define hora sugerida y nota personalizada
+  ──→ POST /{rol}/planes/crear
+  ──→ Sistema crea Plan + PlanActividad (con campo orden)
+  ──→ Redirige a /planes/{id} (detalle del plan creado)
+```
+
+### 9.6 Flujo de Exploración de Planes
+```
+Usuario (autenticado o anónimo)
+  ──→ GET /planes
+  ──→ Ve mapa interactivo con marcadores de todos los planes públicos
+  ──→ Ve top 5 planes más recientes
+  ──→ Selecciona un plan
+  ──→ GET /planes/{id}
+  ──→ Ve itinerario completo con actividades ordenadas
+  ──→ Incrementa contador de vistas del plan
+  ──→ Puede hacer clic en cada actividad para ver detalle (/actividad/{slug}-{id})
+```
+
 ---
 
 ## 10. Reglas de Negocio
@@ -401,6 +454,9 @@ Cliente con reserva en estado "Hecho"
 | RN-08 | Un colaborador solo puede editar sus propias actividades, nunca las de otro |
 | RN-09 | El porcentaje de comisión es global y configurable únicamente por el administrador |
 | RN-10 | Los patrones de disponibilidad generan instancias de `Disponibilidad` automáticamente para cada día del rango que coincida con los días configurados |
+| RN-11 | Un plan puede incluir actividades de diferentes colaboradores (no solo del creador del plan) |
+| RN-12 | Solo el creador de un plan puede editarlo o eliminarlo |
+| RN-13 | Los planes privados (`publico = false`) no aparecen en la vista /planes ni son accesibles por otros usuarios |
 
 ---
 
@@ -430,6 +486,12 @@ Cliente con reserva en estado "Hecho"
 | Admin | Lista de Clientes | ROLE_ADMIN |
 | Error | 403 Acceso Denegado | Todos |
 | Error | 404 No Encontrado | Todos |
+| Planes | Vista Principal de Planes (/planes) | Todos |
+| Planes | Detalle de Plan | Todos |
+| Cliente | Crear Plan | ROLE_CLIENTE |
+| Cliente | Mis Planes | ROLE_CLIENTE |
+| Colaborador | Crear Plan | ROLE_COLABORADOR |
+| Colaborador | Mis Planes | ROLE_COLABORADOR |
 
 ---
 
@@ -483,6 +545,14 @@ El sistema se levanta mediante `docker-compose up` con dos servicios:
 - [x] El dashboard muestra el total de ingresos por comisiones
 - [x] El administrador puede crear y eliminar categorías e idiomas
 
+### Planes del Día
+- [x] Clientes y colaboradores pueden crear planes agrupando múltiples actividades
+- [x] Los planes tienen título, descripción, tipo, duración estimada e imagen
+- [x] Las actividades dentro de un plan tienen orden, hora sugerida y notas personalizadas
+- [x] Vista pública /planes muestra mapa interactivo con todos los planes
+- [x] Detalle de plan muestra itinerario completo ordenado
+- [x] Los creadores pueden ver sus planes en /mis-planes
+
 ---
 
 ## 14. Fuera del Alcance (Out of Scope) — v1.0
@@ -496,6 +566,12 @@ Los siguientes elementos no están contemplados en la versión actual:
 - Multi-idioma de la interfaz (el sistema maneja idiomas de actividades, no de la UI).
 - Panel de analítica avanzada para colaboradores (estadísticas de sus actividades).
 - Sistema de mensajería interna entre clientes y colaboradores.
+- Edición de planes ya creados (solo creación y visualización).
+- Compartir planes en redes sociales (funcionalidad social futura).
+- Sistema de valoración/comentarios para planes (solo para actividades).
+- Edición de planes ya creados (solo creación y visualización).
+- Compartir planes en redes sociales (funcionalidad social futura).
+- Sistema de valoración/comentarios para planes (solo para actividades).
 
 ---
 

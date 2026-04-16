@@ -333,6 +333,46 @@
                                 </div>
                             </div>
 
+                            <!-- Predicción de Ocupación -->
+                            <div th:if="${slot.prediccion != null}" class="border-t pt-3">
+                                <div class="flex items-center justify-between mb-2">
+                                    <span class="text-xs font-medium text-gray-600">Predicción de Demanda</span>
+                                    <span class="text-xs text-gray-500" 
+                                        th:text="'Confianza: ' + ${#numbers.formatDecimal(slot.prediccion.confianza * 100, 0, 0)} + '%'"></span>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <div class="flex-1 px-3 py-2 rounded-lg text-center font-semibold text-sm"
+                                        th:classappend="${slot.prediccion.nivelOcupacion == 'baja' ? 'bg-green-100 text-green-800 border border-green-300' : 
+                                                         slot.prediccion.nivelOcupacion == 'media' ? 'bg-yellow-100 text-yellow-800 border border-yellow-300' : 
+                                                         slot.prediccion.nivelOcupacion == 'alta' ? 'bg-orange-100 text-orange-800 border border-orange-300' : 
+                                                         'bg-red-100 text-red-800 border border-red-300'}">
+                                        <span th:if="${slot.prediccion.nivelOcupacion == 'baja'}">🟢 Baja demanda</span>
+                                        <span th:if="${slot.prediccion.nivelOcupacion == 'media'}">🟡 Demanda moderada</span>
+                                        <span th:if="${slot.prediccion.nivelOcupacion == 'alta'}">🟠 Alta demanda</span>
+                                        <span th:if="${slot.prediccion.nivelOcupacion == 'agotado'}">🔴 Se agotará</span>
+                                    </div>
+                                </div>
+                                <div class="mt-2 text-xs text-gray-500 space-y-1">
+                                    <div class="flex justify-between">
+                                        <span>Categoría:</span>
+                                        <span class="font-medium" th:text="${slot.prediccion.categoria}"></span>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <span>Rango precio:</span>
+                                        <span class="font-medium" th:text="${slot.prediccion.rangoPrecio}"></span>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <span>Horario:</span>
+                                        <span class="font-medium" th:text="${slot.prediccion.rangoHora}"></span>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <span>Tipo día:</span>
+                                        <span class="font-medium" 
+                                            th:text="${slot.prediccion.tipoDia == 'fin_semana' ? 'Fin de semana' : 'Entre semana'}"></span>
+                                    </div>
+                                </div>
+                            </div>
+
                             <!-- Acciones -->
                             <div class="flex gap-2">
                                 <!-- Editar cupos -->

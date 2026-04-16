@@ -15,4 +15,7 @@ public class DisponibilidadDetalleDTO {
     private int cuposDisponibles;
     private int cuposTotales;
     private String estado;
+    
+    // Predicción de ocupación
+    private PrediccionOcupacionDTO prediccion;
 }
