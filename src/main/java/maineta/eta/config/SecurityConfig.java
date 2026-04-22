@@ -121,7 +121,8 @@ public class SecurityConfig {
                                         "/fonts/**",
                                         "/colaboradores/**",
                                         "/images/**",
-                                        "/uploads/**")
+                                        "/uploads/**",
+                                        "/chat/**")
                                 .permitAll() // Rutas públicas (login, recursos estáticos, páginas de error, etc.)
                                 .requestMatchers("/").permitAll() // La raíz es pública, pero puede controlarse desde el controller
 

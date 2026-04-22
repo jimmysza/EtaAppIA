@@ -1,0 +1,285 @@
+/* ========================================
+   Estilos para Vista de Mapa de Actividades Cercanas
+   ======================================== */
+
+/* Contenedor del mapa — altura fija para que Leaflet lo tome */
+#mapaLeaflet {
+    height: 520px;
+    border-radius: 12px;
+    z-index: 1;
+}
+
+/* Panel lateral de tarjetas — scroll interno */
+#panelResultados {
+    max-height: 520px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #cbd5e0 #f7fafc;
+}
+
+#panelResultados::-webkit-scrollbar {
+    width: 6px;
+}
+
+#panelResultados::-webkit-scrollbar-track {
+    background: #f7fafc;
+    border-radius: 3px;
+}
+
+#panelResultados::-webkit-scrollbar-thumb {
+    background: #cbd5e0;
+    border-radius: 3px;
+}
+
+#panelResultados::-webkit-scrollbar-thumb:hover {
+    background: #a0aec0;
+}
+
+/* ========================================
+   Tarjetas de Actividad
+   ======================================== */
+
+.tarjeta-cercana {
+    padding: 16px;
+    border: 2px solid transparent;
+    border-radius: 12px;
+    background: #f9fafb;
+    transition: all 0.2s ease;
+}
+
+.tarjeta-cercana:hover {
+    background: #f3f4f6;
+    border-color: #e5e7eb;
+}
+
+.tarjeta-cercana.activa {
+    background: #ecfdf5;
+    border-color: #1D9E75;
+    box-shadow: 0 2px 8px rgba(29, 158, 117, 0.2);
+}
+
+.tarjeta-cercana img {
+    transition: transform 0.2s ease;
+}
+
+.tarjeta-cercana:hover img {
+    transform: scale(1.05);
+}
+
+/* ========================================
+   Marcadores del Mapa
+   ======================================== */
+
+/* Icono de marcador numerado (div icon de Leaflet) */
+.marker-numero {
+    background: #1D9E75;
+    color: white;
+    border-radius: 50%;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 600;
+    border: 2px solid white;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    font-family: system-ui, -apple-system, sans-serif;
+}
+
+/* Icono del usuario */
+.marker-usuario {
+    background: #178CF2;
+    color: white;
+    border-radius: 50%;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 3px solid white;
+    box-shadow: 0 2px 6px rgba(23, 140, 242, 0.4);
+}
+
+/* Número en la tarjeta (coincide con marcador) */
+.marker-numero-tarjeta {
+    background: #1D9E75;
+    color: white;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 600;
+    border: 2px solid white;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+    flex-shrink: 0;
+}
+
+/* ========================================
+   Slider de Radio
+   ======================================== */
+
+#sliderRadio {
+    -webkit-appearance: none;
+    appearance: none;
+    height: 6px;
+    background: #e5e7eb;
+    border-radius: 3px;
+    outline: none;
+}
+
+#sliderRadio::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    background: #1D9E75;
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    transition: all 0.2s ease;
+}
+
+#sliderRadio::-webkit-slider-thumb:hover {
+    background: #178a66;
+    transform: scale(1.1);
+}
+
+#sliderRadio::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    background: #1D9E75;
+    border-radius: 50%;
+    cursor: pointer;
+    border: none;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    transition: all 0.2s ease;
+}
+
+#sliderRadio::-moz-range-thumb:hover {
+    background: #178a66;
+    transform: scale(1.1);
+}
+
+#sliderRadio:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+#sliderRadio:disabled::-webkit-slider-thumb {
+    cursor: not-allowed;
+    background: #9ca3af;
+}
+
+#sliderRadio:disabled::-moz-range-thumb {
+    cursor: not-allowed;
+    background: #9ca3af;
+}
+
+/* ========================================
+   Botón de Ubicación
+   ======================================== */
+
+#btnUbicacion {
+    position: relative;
+    overflow: hidden;
+}
+
+#btnUbicacion:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+#btnUbicacion:active {
+    transform: translateY(0);
+}
+
+/* ========================================
+   Popups de Leaflet (personalización)
+   ======================================== */
+
+.leaflet-popup-content-wrapper {
+    border-radius: 8px;
+    padding: 4px;
+}
+
+.leaflet-popup-content {
+    margin: 8px 12px;
+    font-size: 14px;
+}
+
+/* ========================================
+   Responsive
+   ======================================== */
+
+@media (max-width: 1024px) {
+    /* En móvil/tablet, el mapa y el panel se apilan */
+    #mapaLeaflet {
+        height: 400px;
+    }
+    
+    #panelResultados {
+        max-height: 400px;
+    }
+}
+
+@media (max-width: 640px) {
+    #mapaLeaflet {
+        height: 350px;
+    }
+    
+    .tarjeta-cercana {
+        padding: 12px;
+    }
+    
+    .marker-numero-tarjeta {
+        width: 28px;
+        height: 28px;
+        font-size: 12px;
+    }
+}
+
+/* ========================================
+   Animaciones
+   ======================================== */
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.tarjeta-cercana {
+    animation: fadeIn 0.3s ease;
+}
+
+/* ========================================
+   Variables de color (usando variables globales si existen)
+   ======================================== */
+
+:root {
+    --color-primary: #1D9E75;
+    --color-primary-dark: #178a66;
+    --color-secondary: #178CF2;
+}
+
+/* Fallback si las variables globales no están definidas */
+.bg-primary {
+    background-color: var(--color-primary, #1D9E75);
+}
+
+.bg-primary-dark {
+    background-color: var(--color-primary-dark, #178a66);
+}
+
+.text-primary {
+    color: var(--color-primary, #1D9E75);
+}

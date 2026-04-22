@@ -1,11 +1,13 @@
 package maineta.eta.service;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -17,6 +19,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import jakarta.persistence.EntityNotFoundException;
+import maineta.eta.config.UsuarioHelper;
+import maineta.eta.dto.ActividadCercanaDTO;
 import maineta.eta.dto.ActividadUpdateDto;
 import maineta.eta.entity.Actividad;
 import maineta.eta.entity.Categoria;
@@ -52,6 +56,8 @@ public class ActividadServiceImpl implements ActividadService {
     private final DisponibilidadRepository disponibilidadRepository;
     private final ImagenActividadRepository imagenActividadRepository;
     private final ClienteRepository clienteRepository;
+    private final UsuarioHelper usuarioHelper;
+    private final ComentarioService comentarioService;
 
     /**
      * Constructor con @Autowired para inyectar el repositorio automáticamente.
@@ -63,7 +69,9 @@ public class ActividadServiceImpl implements ActividadService {
             ComentarioRepository comentarioRepository,
             DisponibilidadRepository disponibilidadRepository,
             ImagenActividadRepository imagenActividadRepository,
-            ClienteRepository clienteRepository) {
+            ClienteRepository clienteRepository,
+            UsuarioHelper usuarioHelper,
+            ComentarioService comentarioService) {
         this.actividadRepository = actividadRepository;
         this.categoriaRepository = categoriaRepository;
         this.comentarioRepository = comentarioRepository;
@@ -72,6 +80,8 @@ public class ActividadServiceImpl implements ActividadService {
         this.idiomaRepository = idiomaRepository;
         this.disponibilidadRepository = disponibilidadRepository;
         this.clienteRepository = clienteRepository;
+        this.usuarioHelper = usuarioHelper;
+        this.comentarioService = comentarioService;
     }
 
     public Map<Long, Long> contarActividadesPorCategorias(List<Long> categoriaIds) {
@@ -552,6 +562,112 @@ public class ActividadServiceImpl implements ActividadService {
             cliente.getCategoriasPreferidas(),
             pageable
         );
+    }
+
+    @Override
+    public List<ActividadCercanaDTO> buscarCercanas(double latUser, double lonUser, int radioKm, int limite) {
+        // 1. Calcular bounding box (delta = radioKm / 111.0)
+        double delta = radioKm / 111.0;
+        double latMin = latUser - delta;
+        double latMax = latUser + delta;
+        double lonMin = lonUser - delta;
+        double lonMax = lonUser + delta;
+
+        // 2. Obtener candidatas desde el bounding box (excluye null automáticamente)
+        List<Actividad> candidatas = actividadRepository.findByLatitudBetweenAndLongitudBetween(
+            latMin, latMax, lonMin, lonMax
+        );
+
+        // 3. Calcular distancia real con Haversine y filtrar por radio
+        List<ActividadConDistancia> actividadesConDistancia = candidatas.stream()
+            .map(actividad -> {
+                double distanciaKm = haversine(latUser, lonUser, actividad.getLatitud(), actividad.getLongitud());
+                return new ActividadConDistancia(actividad, distanciaKm);
+            })
+            .filter(acd -> acd.distanciaKm <= radioKm)
+            .sorted((a, b) -> Double.compare(a.distanciaKm, b.distanciaKm))
+            .limit(limite)
+            .collect(Collectors.toList());
+
+        if (actividadesConDistancia.isEmpty()) {
+            return new ArrayList<>();
+        }
+
+        // 4. Extraer IDs y obtener conteo de comentarios batch
+        List<Long> ids = actividadesConDistancia.stream()
+            .map(acd -> acd.actividad.getIdActividad())
+            .collect(Collectors.toList());
+        
+        Map<Long, Integer> comentariosPorActividad = comentarioService.contarComentariosPorActividades(ids);
+
+        // 5. Mapear a ActividadCercanaDTO
+        return actividadesConDistancia.stream()
+            .map(acd -> {
+                Actividad a = acd.actividad;
+                ActividadCercanaDTO dto = new ActividadCercanaDTO();
+                
+                dto.setIdActividad(a.getIdActividad());
+                dto.setTitulo(a.getTitulo());
+                
+                // Generar slug a partir del título (mismo patrón que Thymeleaf)
+                String slug = a.getTitulo().toLowerCase()
+                    .replaceAll("[^a-z0-9\\s-]", "")
+                    .replaceAll("\\s+", "-")
+                    .replaceAll("-+", "-");
+                dto.setSlug(slug);
+                
+                dto.setImagen(a.getImagen());
+                
+                // Calcular precio consumidor con UsuarioHelper
+                BigDecimal precioConsumidor = usuarioHelper.CalcularPrecioConsumidor(a.getPrecio());
+                dto.setPrecioConsumidor(precioConsumidor);
+                
+                dto.setCalificacion(a.getCalificacion());
+                dto.setCategoriaNombre(a.getCategoria() != null ? a.getCategoria().getNombre() : null);
+                dto.setIdiomaNombre(a.getIdioma() != null ? a.getIdioma().getNombre() : null);
+                dto.setLatitud(a.getLatitud());
+                dto.setLongitud(a.getLongitud());
+                
+                // Redondear distancia a 2 decimales
+                dto.setDistanciaKm(Math.round(acd.distanciaKm * 100.0) / 100.0);
+                
+                dto.setTotalComentarios(comentariosPorActividad.getOrDefault(a.getIdActividad(), 0));
+                
+                return dto;
+            })
+            .collect(Collectors.toList());
+    }
+
+    /**
+     * Calcula la distancia entre dos puntos geográficos usando la fórmula de Haversine.
+     * 
+     * @param lat1 latitud del punto 1
+     * @param lon1 longitud del punto 1
+     * @param lat2 latitud del punto 2
+     * @param lon2 longitud del punto 2
+     * @return distancia en kilómetros
+     */
+    private double haversine(double lat1, double lon1, double lat2, double lon2) {
+        final double R = 6371; // radio de la Tierra en km
+        double dLat = Math.toRadians(lat2 - lat1);
+        double dLon = Math.toRadians(lon2 - lon1);
+        double a = Math.sin(dLat / 2) * Math.sin(dLat / 2)
+                 + Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2))
+                 * Math.sin(dLon / 2) * Math.sin(dLon / 2);
+        return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    }
+
+    /**
+     * Clase auxiliar interna para asociar una actividad con su distancia calculada.
+     */
+    private static class ActividadConDistancia {
+        final Actividad actividad;
+        final double distanciaKm;
+
+        ActividadConDistancia(Actividad actividad, double distanciaKm) {
+            this.actividad = actividad;
+            this.distanciaKm = distanciaKm;
+        }
     }
 
 }

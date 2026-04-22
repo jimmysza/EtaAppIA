@@ -40,6 +40,7 @@ import maineta.eta.service.ChatService;
 import maineta.eta.service.ClienteService;
 import maineta.eta.service.ComentarioService;
 import maineta.eta.service.DisponibilidadService;
+import maineta.eta.service.EmailReservaService;
 import maineta.eta.service.FavoritoService;
 import maineta.eta.service.ReservaService;
 import maineta.eta.service.UsuarioService;
@@ -57,6 +58,7 @@ public class ClienteController {
     private final FavoritoService favoritoService;
     private final ComentarioService comentarioService;
     private final ChatService chatService;
+    private final EmailReservaService emailReservaService;
 
     public ClienteController(
             ActividadService actividadService,
@@ -67,7 +69,8 @@ public class ClienteController {
             UsuarioService usuarioService,
             FavoritoService favoritoService,
             ComentarioService comentarioService,
-            ChatService chatService) {
+            ChatService chatService,
+            EmailReservaService emailReservaService) {
 
         this.actividadService = actividadService;
         this.reservaService = reservaService;
@@ -78,6 +81,7 @@ public class ClienteController {
         this.favoritoService = favoritoService;
         this.comentarioService = comentarioService;
         this.chatService = chatService;
+        this.emailReservaService = emailReservaService;
     }
 
     @GetMapping("/dashboard")
@@ -224,6 +228,14 @@ public class ClienteController {
 
             // ✅ Crear la reserva y guardarla
             Reserva reservaGuardada = reservaService.hacerReserva(cliente, actividad, disponibilidad, cantidad);
+
+            // ✅ Enviar email de confirmación
+            try {
+                emailReservaService.enviarEmailConfirmacionReserva(reservaGuardada);
+            } catch (Exception e) {
+                // Log error pero no interrumpir flujo
+                System.err.println("Error al enviar email de confirmación: " + e.getMessage());
+            }
 
             return "redirect:/cliente/reservas/" + reservaGuardada.getIdReserva() + "/recibo?nuevaReserva=true";
 

@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<!--
+  Fragmento del widget de chat ETA Assistant.
+  Uso: <div th:replace="~{componentes/chat-widget :: chatWidget}"></div>
+  Con contexto de actividad: <div th:replace="~{componentes/chat-widget :: chatWidget(actividadId=${actividad.idActividad})}"></div>
+-->
+<div th:fragment="chatWidget(actividadId)"
+     id="eta-chat-widget"
+     th:attr="data-actividad-id=${actividadId != null ? actividadId : ''}">
+
+    <!-- Botón de apertura/cierre -->
+    <button id="chat-toggle-btn" aria-label="Abrir asistente ETA" title="ETA Assistant">
+        <svg id="chat-icon-open" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+             fill="none" stroke="currentColor" stroke-width="2"
+             stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+        </svg>
+        <svg id="chat-icon-close" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+             fill="none" stroke="currentColor" stroke-width="2.5"
+             stroke-linecap="round" stroke-linejoin="round" style="display:none">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+    </button>
+
+    <!-- Panel principal del chat -->
+    <div id="chat-panel" role="dialog" aria-label="ETA Assistant" style="display:none">
+
+        <!-- Header -->
+        <div id="chat-header">
+            <div id="chat-header-info">
+                <div id="chat-avatar">🌴</div>
+                <div>
+                    <p id="chat-header-name">ETA Assistant</p>
+                    <p id="chat-header-subtitle">Tu guía en Cartagena</p>
+                </div>
+            </div>
+            <button id="chat-close-btn" aria-label="Cerrar chat">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                     fill="none" stroke="currentColor" stroke-width="2.5"
+                     stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </button>
+        </div>
+
+        <!-- Área de mensajes -->
+        <div id="chat-messages" aria-live="polite">
+            <!-- Mensaje de bienvenida del bot -->
+            <div class="chat-msg bot">
+                <div class="chat-bubble">
+                    ¡Hola! Soy ETA Assistant 🌴 Tu guía en Cartagena.
+                    ¿Buscas una actividad o tienes preguntas sobre la ciudad?
+                </div>
+            </div>
+        </div>
+
+        <!-- Área de input -->
+        <div id="chat-input-area">
+            <input type="text"
+                   id="chat-input"
+                   placeholder="Pregúntame sobre actividades..."
+                   maxlength="500"
+                   autocomplete="off"
+                   aria-label="Escribe tu mensaje" />
+            <button id="chat-send-btn" aria-label="Enviar mensaje">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                     fill="none" stroke="currentColor" stroke-width="2"
+                     stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="22" y1="2" x2="11" y2="13"></line>
+                    <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                </svg>
+            </button>
+        </div>
+
+        <!-- Disclaimer -->
+        <p id="chat-disclaimer">Solo respondo sobre Cartagena y actividades ETA.</p>
+    </div>
+
+    <!-- Estilos y script del widget (dentro del fragmento para que th:replace los incluya) -->
+    <link th:href="@{/css/chat-widget.css}" rel="stylesheet" />
+    <script th:src="@{/js/chat-widget.js}"></script>
+
+</div>
+
+</html>

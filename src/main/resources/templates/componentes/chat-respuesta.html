@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<!--
+  Fragmentos Thymeleaf para las burbujas de respuesta del ChatBot ETA Assistant.
+  Son renderizados por ChatBotController y devueltos como HTML parcial al widget.
+
+  Fragmentos:
+    - mensajeBot   → burbuja normal del asistente (respuesta exitosa)
+    - mensajeError → burbuja de error (fallo de IA, validación, etc.)
+-->
+
+<!-- ── Burbuja de respuesta exitosa del bot ──────────────────────────────── -->
+<div th:fragment="mensajeBot" class="chat-msg bot">
+    <div class="chat-bubble" th:text="${respuesta}"></div>
+</div>
+
+<!-- ── Burbuja de error ──────────────────────────────────────────────────── -->
+<div th:fragment="mensajeError" class="chat-msg bot-error">
+    <div class="chat-bubble" th:text="${error}"></div>
+</div>
+
+</html>

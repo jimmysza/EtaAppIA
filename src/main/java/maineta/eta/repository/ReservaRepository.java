@@ -113,4 +113,17 @@ public interface ReservaRepository extends JpaRepository<Reserva, Long> {
     Long contarClientesRecurrentesPorColaborador(
         @Param("idColaborador") Long idColaborador
     );
+
+    /**
+     * Busca reservas cuya disponibilidad sea en la fecha especificada
+     * y que estén en estado PENDIENTE o CONFIRMADA.
+     * Usado para enviar recordatorios 24 horas antes.
+     */
+    @Query("""
+        SELECT r
+        FROM Reserva r
+        WHERE r.disponibilidad.fecha = :fecha
+        AND (r.estado = 'PENDIENTE' OR r.estado = 'CONFIRMADA' OR r.estado = 'Confirmada' OR r.estado = 'Pendiente')
+    """)
+    List<Reserva> findReservasPorFechaDisponibilidad(@Param("fecha") java.time.LocalDate fecha);
 }

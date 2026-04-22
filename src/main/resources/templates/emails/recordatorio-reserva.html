@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recordatorio de Reserva</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 600px;
+            margin: 20px auto;
+            background-color: #ffffff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .header {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 28px;
+            font-weight: 600;
+        }
+        .reminder-icon {
+            font-size: 48px;
+            margin-bottom: 10px;
+        }
+        .content {
+            padding: 40px 30px;
+            color: #333;
+        }
+        .greeting {
+            font-size: 18px;
+            color: #f59e0b;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+        .message {
+            font-size: 16px;
+            line-height: 1.6;
+            margin-bottom: 30px;
+            color: #555;
+        }
+        .highlight-box {
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            border: 2px solid #f59e0b;
+            padding: 25px;
+            margin: 25px 0;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .highlight-box h2 {
+            margin: 0 0 10px 0;
+            color: #92400e;
+            font-size: 22px;
+        }
+        .highlight-date {
+            font-size: 32px;
+            font-weight: 700;
+            color: #b45309;
+            margin: 15px 0;
+        }
+        .details-box {
+            background-color: #f9fafb;
+            border-left: 4px solid #f59e0b;
+            padding: 20px;
+            margin: 25px 0;
+            border-radius: 4px;
+        }
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+        .detail-label {
+            font-weight: 600;
+            color: #374151;
+        }
+        .detail-value {
+            color: #6b7280;
+            text-align: right;
+        }
+        .checklist {
+            background-color: #ecfdf5;
+            border-left: 4px solid #10b981;
+            padding: 20px;
+            margin: 25px 0;
+            border-radius: 4px;
+        }
+        .checklist h3 {
+            margin-top: 0;
+            color: #065f46;
+            font-size: 18px;
+        }
+        .checklist ul {
+            margin: 10px 0;
+            padding-left: 20px;
+        }
+        .checklist li {
+            color: #047857;
+            margin: 8px 0;
+            font-size: 15px;
+        }
+        .button {
+            display: inline-block;
+            background-color: #f59e0b;
+            color: white;
+            text-decoration: none;
+            padding: 14px 32px;
+            border-radius: 6px;
+            font-weight: 600;
+            margin: 20px 0;
+            text-align: center;
+        }
+        .button:hover {
+            background-color: #d97706;
+        }
+        .footer {
+            background-color: #f9fafb;
+            padding: 30px;
+            text-align: center;
+            color: #6b7280;
+            font-size: 14px;
+        }
+        .footer a {
+            color: #f59e0b;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div class="reminder-icon">⏰</div>
+            <h1>¡Tu actividad es mañana!</h1>
+        </div>
+
+        <!-- Content -->
+        <div class="content">
+            <p class="greeting">Hola <span th:text="${nombreCliente}">Cliente</span>,</p>
+            
+            <p class="message">
+                Te recordamos que mañana tienes una experiencia increíble esperándote. 
+                ¡Prepárate para disfrutarla al máximo!
+            </p>
+
+            <!-- Fecha destacada -->
+            <div class="highlight-box">
+                <h2>📅 Fecha de tu actividad</h2>
+                <div class="highlight-date" th:text="${fechaActividad}">Mañana, 16 de abril de 2026</div>
+            </div>
+
+            <!-- Detalles de la Actividad -->
+            <div class="details-box">
+                <h2 style="margin-top: 0; color: #f59e0b; font-size: 20px;">Detalles de tu Reserva</h2>
+                
+                <div class="detail-row">
+                    <span class="detail-label">Actividad:</span>
+                    <span class="detail-value" th:text="${actividad.titulo}">Tour Histórico</span>
+                </div>
+                
+                <div class="detail-row">
+                    <span class="detail-label">Hora:</span>
+                    <span class="detail-value" th:text="${disponibilidad.horaInicio + ' - ' + disponibilidad.horaFin}">10:00 AM - 2:00 PM</span>
+                </div>
+                
+                <div class="detail-row">
+                    <span class="detail-label">Punto de encuentro:</span>
+                    <span class="detail-value" th:text="${actividad.ubicacion}">Centro Histórico, Cartagena</span>
+                </div>
+                
+                <div class="detail-row">
+                    <span class="detail-label">Personas:</span>
+                    <span class="detail-value" th:text="${reserva.cantidad}">2</span>
+                </div>
+                
+                <div class="detail-row">
+                    <span class="detail-label">Número de reserva:</span>
+                    <span class="detail-value" th:text="'#' + ${reserva.idReserva}">#1234</span>
+                </div>
+            </div>
+
+            <!-- Checklist de preparación -->
+            <div class="checklist">
+                <h3>✅ Checklist de preparación:</h3>
+                <ul>
+                    <li>Llega 15 minutos antes del horario de inicio</li>
+                    <li>Lleva tu confirmación de reserva (este email)</li>
+                    <li>Revisa las condiciones climáticas</li>
+                    <li>Usa ropa y calzado cómodo</li>
+                    <li>Si tienes dudas, contacta al colaborador vía chat</li>
+                </ul>
+            </div>
+
+            <!-- Botones CTA -->
+            <div style="text-align: center;">
+                <a th:href="${appBaseUrl + '/cliente/reservas/' + reserva.idReserva + '/recibo'}" class="button">
+                    Ver detalles de reserva
+                </a>
+            </div>
+
+            <p style="margin-top: 30px; color: #6b7280; font-size: 14px; text-align: center;">
+                ¿Necesitas cancelar o modificar tu reserva?<br>
+                Visita tu <a th:href="${appBaseUrl + '/cliente/dashboard'}" style="color: #f59e0b;">panel de reservas</a>
+            </p>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <p><strong>ETA - Experiencias Turísticas Auténticas</strong></p>
+            <p>Cartagena de Indias, Colombia</p>
+            <p>
+                <a th:href="${appBaseUrl}">Visitar ETA</a> | 
+                <a th:href="${appBaseUrl + '/terminos-condiciones'}">Términos y Condiciones</a>
+            </p>
+            <p style="margin-top: 15px; font-size: 12px; color: #9ca3af;">
+                Este es un correo automático, por favor no responder.
+            </p>
+        </div>
+    </div>
+</body>
+</html>

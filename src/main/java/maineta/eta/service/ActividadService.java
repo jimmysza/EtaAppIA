@@ -234,4 +234,20 @@ public interface ActividadService {
      */
     Page<Actividad> obtenerTodasParaTi(Long idCliente, int page, int size);
 
+    /**
+     * Busca actividades cercanas a una ubicación geográfica.
+     * 
+     * @param latUser latitud del usuario
+     * @param lonUser longitud del usuario
+     * @param radioKm radio de búsqueda en kilómetros (1-5)
+     * @param limite máximo de resultados a retornar
+     * @return lista de ActividadCercanaDTO ordenadas por distancia
+     */
+    List<maineta.eta.dto.ActividadCercanaDTO> buscarCercanas(
+        double latUser,
+        double lonUser,
+        int radioKm,
+        int limite
+    );
+
 }

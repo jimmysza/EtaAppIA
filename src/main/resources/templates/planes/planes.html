@@ -249,5 +249,11 @@
     </script>
     
     <script th:src="@{/js/planes/planes.js}"></script>
+    <script th:src="@{/js/alert.js}"></script>
+    <script th:src="@{/js/componentes/navbar.js}"></script>
+
+    <!-- ETA Assistant Chatbot Widget -->
+    <div th:replace="~{componentes/chat-widget :: chatWidget(actividadId=${null})}"></div>
+
 </body>
 </html>

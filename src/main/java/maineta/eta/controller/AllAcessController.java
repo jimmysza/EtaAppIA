@@ -24,10 +24,12 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import maineta.eta.config.UsuarioHelper;
+import maineta.eta.dto.ActividadCercanaDTO;
 import maineta.eta.dto.ActividadDTO;
 import maineta.eta.dto.CategoriaDTO;
 import maineta.eta.dto.ColaboradorPublicoDTO;
@@ -1150,6 +1152,35 @@ public class AllAcessController {
                 }
 
                 return Collections.emptySet();
+        }
+
+        /**
+         * Vista principal del mapa de actividades cercanas.
+         * El navegador obtiene la geolocalización en el cliente y luego llama al endpoint JSON via AJAX.
+         */
+        @GetMapping("/actividades/cercanas")
+        public String vistaMapa(Model model, Authentication auth) {
+                usuarioHelper.agregarInfoUsuarioModel(model, auth);
+                return "actividades-cercanas";
+        }
+
+        /**
+         * Endpoint AJAX que devuelve las actividades cercanas en formato JSON.
+         * 
+         * @param lat latitud del usuario
+         * @param lon longitud del usuario
+         * @param radio radio de búsqueda en kilómetros (1-5)
+         * @return lista de ActividadCercanaDTO ordenadas por distancia
+         */
+        @GetMapping("/actividades/cercanas/json")
+        @ResponseBody
+        public List<ActividadCercanaDTO> cercanasJson(
+                        @RequestParam double lat,
+                        @RequestParam double lon,
+                        @RequestParam(defaultValue = "3") int radio) {
+                // Clampear el radio entre 1 y 5 km
+                int radioClamped = Math.max(1, Math.min(5, radio));
+                return actividadService.buscarCercanas(lat, lon, radioClamped, 10);
         }
 
 }

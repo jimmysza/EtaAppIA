@@ -132,4 +132,15 @@ public interface ActividadRepository extends JpaRepository<Actividad, Long>, Jpa
         @Param("inicioDisp") LocalDate inicioDisp,
         @Param("finDisp") LocalDate finDisp
     );
+
+    /**
+     * Busca actividades dentro de un bounding box geográfico.
+     * Excluye automáticamente actividades con latitud o longitud null.
+     */
+    List<Actividad> findByLatitudBetweenAndLongitudBetween(
+        Double latMin, 
+        Double latMax,
+        Double lonMin, 
+        Double lonMax
+    );
 }

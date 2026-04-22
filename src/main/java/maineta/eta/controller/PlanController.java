@@ -9,13 +9,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import maineta.eta.config.UsuarioHelper;
 import maineta.eta.dto.PlanDTO;
 import maineta.eta.entity.Cliente;
 import maineta.eta.entity.Usuario;
 import maineta.eta.service.ClienteService;
 import maineta.eta.service.PlanService;
 import maineta.eta.service.UsuarioService;
-
 /**
  * Controlador para rutas públicas de Planes del Día.
  * 
@@ -30,11 +30,13 @@ public class PlanController {
     private final PlanService planService;
     private final UsuarioService usuarioService;
     private final ClienteService clienteService;
+    private final UsuarioHelper usuarioHelper;
 
-    public PlanController(PlanService planService, UsuarioService usuarioService, ClienteService clienteService) {
+    public PlanController(PlanService planService, UsuarioService usuarioService, ClienteService clienteService, UsuarioHelper usuarioHelper) {
         this.planService = planService;
         this.usuarioService = usuarioService;
         this.clienteService = clienteService;
+        this.usuarioHelper = usuarioHelper;
     }
 
     /**
@@ -45,6 +47,8 @@ public class PlanController {
         // Obtener top 5 planes recientes
         List<PlanDTO> topPlanes = planService.obtenerTop5Recientes();
         model.addAttribute("topPlanes", topPlanes);
+        
+        usuarioHelper.agregarInfoUsuarioModel(model, authentication);
 
         // Verificar si el usuario está autenticado para mostrar botón crear
         if (authentication != null && authentication.isAuthenticated()) {

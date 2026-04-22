@@ -22,12 +22,13 @@
                 <div class="menu" id="menu">
                     <div class="menu-shell">
                         <ul class="menu-inner menu-links">
-                            <li th:if="${pagina == 'detalle'}"><a href="#imagenes" class="menu-link">Imagenes</a></li>
+                            <!-- <li th:if="${pagina == 'detalle'}"><a href="#imagenes" class="menu-link">Imagenes</a></li>
                             <li th:if="${pagina == 'detalle'}"><a href="#informacion" class="menu-link">Informacion</a></li>
-                            <li th:if="${pagina == 'detalle'}"><a href="#reserva" class="menu-link">Reserva</a></li>
-                            <li th:if="${pagina == 'indice'}"><a href="#populares" class="menu-link">Tendencias</a></li>
-                            <li th:if="${pagina == 'indice'}"><a href="#populares" class="menu-link">Actividades</a></li>
+                            <li th:if="${pagina == 'detalle'}"><a href="#reserva" class="menu-link">Reserva</a></li> -->
+                            <!-- <li th:if="${pagina == 'indice'}"><a href="#populares" class="menu-link">Tendencias</a></li> -->
+                            <li ><a th:href="@{/#populares}" class="menu-link">Actividades</a></li>
                             <li><a th:href="@{/planes}" class="menu-link">Planes del Día</a></li>
+                            <li><a th:href="@{/actividades/cercanas}" class="menu-link">Cerca de Ti</a></li>
                         </ul>
 
                         <div class="menu-actions" th:if="${nombreUsuario == null}">
