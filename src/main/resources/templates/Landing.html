@@ -210,7 +210,7 @@
                                 <p>Por Persona</p>
                                 <div class="TotalPorPersona">
                                     <span class="precio"
-                                        th:text="${ '$' + #numbers.formatDecimal(actividad.precioConsumidor, 0, 0)}"></span>
+                                        th:text="${#numbers.formatDecimal(precioConsumidor, 0, 'POINT', 0, 'COMMA')}"></span>
                                     <p>total</p>
                                 </div>
                             </div>

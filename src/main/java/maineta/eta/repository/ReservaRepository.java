@@ -23,6 +23,7 @@ public interface ReservaRepository extends JpaRepository<Reserva, Long> {
     Optional<Reserva> findByIdReservaAndCliente_Usuario_Email(Long idReserva, String email);
     Optional<Reserva> findByIdReservaAndActividad_Colaborador_Usuario_Email(Long idReserva, String email);
     Optional<Reserva> findByidReserva(Long idReserva);
+    Optional<Reserva> findByRefPayco(String refPayco);
 
     // Queries para KPIs
 

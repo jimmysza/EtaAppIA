@@ -21,9 +21,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import maineta.eta.config.EpaycoConfig;
 import maineta.eta.config.UsuarioHelper;
 import maineta.eta.dto.ActividadDTO;
 import maineta.eta.dto.ReservaDTO;
@@ -59,6 +60,7 @@ public class ClienteController {
     private final ComentarioService comentarioService;
     private final ChatService chatService;
     private final EmailReservaService emailReservaService;
+    private final EpaycoConfig epaycoConfig;
 
     public ClienteController(
             ActividadService actividadService,
@@ -70,7 +72,8 @@ public class ClienteController {
             FavoritoService favoritoService,
             ComentarioService comentarioService,
             ChatService chatService,
-            EmailReservaService emailReservaService) {
+            EmailReservaService emailReservaService,
+            EpaycoConfig epaycoConfig) {
 
         this.actividadService = actividadService;
         this.reservaService = reservaService;
@@ -82,6 +85,7 @@ public class ClienteController {
         this.comentarioService = comentarioService;
         this.chatService = chatService;
         this.emailReservaService = emailReservaService;
+        this.epaycoConfig = epaycoConfig;
     }
 
     @GetMapping("/dashboard")
@@ -131,12 +135,18 @@ public class ClienteController {
             Model model) {
         usuarioHelper.agregarInfoUsuarioModel(model, auth);
 
+        // Obtener datos del cliente autenticado
+        String email = auth.getName();
+        Usuario usuario = usuarioService.obtenerPorEmail(email);
+        Cliente cliente = clienteService.obtenerPorUsuario(usuario)
+                .orElseThrow(() -> new RuntimeException("Cliente no encontrado"));
+
         Disponibilidad disponibilidad = disponibilidadService.obtenerPorId(idDispo)
                 .orElseThrow(() -> new RuntimeException("Disponibilidad no encontrada"));
 
         ReservaDTO reservaDTO = new ReservaDTO();
         reservaDTO.setIdDisponibilidad(disponibilidad.getIdDisponibilidad());
-        cargarModeloCheckout(model, disponibilidad.getActividad(), disponibilidad.getFecha(), disponibilidad, reservaDTO, null);
+        cargarModeloCheckout(model, disponibilidad.getActividad(), disponibilidad.getFecha(), disponibilidad, reservaDTO, null, cliente);
 
         return "cliente/checkout";
     }
@@ -149,13 +159,19 @@ public class ClienteController {
             Model model) {
         usuarioHelper.agregarInfoUsuarioModel(model, auth);
 
+        // Obtener datos del cliente autenticado para ePayco
+        String email = auth.getName();
+        Usuario usuario = usuarioService.obtenerPorEmail(email);
+        Cliente cliente = clienteService.obtenerPorUsuario(usuario)
+                .orElseThrow(() -> new RuntimeException("Cliente no encontrado"));
+
         LocalDate fechaSeleccionada = LocalDate.parse(fecha);
         Actividad actividad = actividadService.listarById(idActividad);
         if (actividad == null) {
             throw new RuntimeException("Actividad no encontrada");
         }
 
-        cargarModeloCheckout(model, actividad, fechaSeleccionada, null, new ReservaDTO(), null);
+        cargarModeloCheckout(model, actividad, fechaSeleccionada, null, new ReservaDTO(), null, cliente);
         return "cliente/checkout";
     }
 
@@ -209,13 +225,13 @@ public class ClienteController {
             Authentication authentication,
             Model model) {
 
-        try {
-            // ✅ Obtener el cliente autenticado
-            String email = authentication.getName();
-            Usuario usuario = usuarioService.obtenerPorEmail(email);
-            Cliente cliente = clienteService.obtenerPorUsuario(usuario)
-                    .orElseThrow(() -> new RuntimeException("Cliente no encontrado"));
+        // ✅ Obtener el cliente autenticado (fuera del try para disponibilidad en catch)
+        String email = authentication.getName();
+        Usuario usuario = usuarioService.obtenerPorEmail(email);
+        Cliente cliente = clienteService.obtenerPorUsuario(usuario)
+                .orElseThrow(() -> new RuntimeException("Cliente no encontrado"));
 
+        try {
             // ✅ Obtener la actividad
             Actividad actividad = actividadService.listarById(idActividad);
             if (actividad == null) {
@@ -253,7 +269,7 @@ public class ClienteController {
             model.addAttribute("reservaDTO", reservaDTO);
             model.addAttribute("pagina", "checkout");
             if (disponibilidad != null) {
-                cargarModeloCheckout(model, actividad, disponibilidad.getFecha(), disponibilidad, reservaDTO, null);
+                cargarModeloCheckout(model, actividad, disponibilidad.getFecha(), disponibilidad, reservaDTO, null, cliente);
             }
             model.addAttribute("error", "❌ Error al realizar la reserva: " + e.getMessage());
 
@@ -463,7 +479,7 @@ public class ClienteController {
     }
 
     private void cargarModeloCheckout(Model model, Actividad actividad, LocalDate fechaSeleccionada,
-            Disponibilidad disponibilidadSeleccionada, ReservaDTO reservaDTO, String error) {
+            Disponibilidad disponibilidadSeleccionada, ReservaDTO reservaDTO, String error, Cliente cliente) {
         List<Disponibilidad> disponibilidadesDelDia = disponibilidadService.obtenerPorActividad(actividad.getIdActividad())
                 .stream()
                 .filter(disponibilidad -> "DISPONIBLE".equalsIgnoreCase(disponibilidad.getEstado()))
@@ -477,12 +493,29 @@ public class ClienteController {
             reservaDTO.setIdDisponibilidad(disponibilidadActiva.getIdDisponibilidad());
         }
 
+        // Calcular precio consumidor (con comisión)
+        BigDecimal precioUnitario = usuarioHelper.CalcularPrecioConsumidor(actividad.getPrecio());
+
         model.addAttribute("actividad", actividad);
         model.addAttribute("fechaSeleccionada", fechaSeleccionada);
         model.addAttribute("disponibilidadesDelDia", disponibilidadesDelDia);
         model.addAttribute("disponibilidad", disponibilidadActiva);
         model.addAttribute("reservaDTO", reservaDTO);
+        model.addAttribute("precioUnitario", precioUnitario);
         model.addAttribute("pagina", "checkout");
+        
+        // ✅ Datos de ePayco
+        model.addAttribute("epaycoPublicKey", epaycoConfig.getPublicKey());
+        model.addAttribute("epaycoTest", epaycoConfig.isTest());
+        
+        // ✅ Datos del cliente para pre-llenar ePayco
+        if (cliente != null) {
+            model.addAttribute("clienteNombre", cliente.getUsuario().getNombre());
+            model.addAttribute("clienteEmail", cliente.getUsuario().getEmail());
+            model.addAttribute("clienteTelefono", cliente.getUsuario().getTelefono());
+            model.addAttribute("clienteId", cliente.getId());
+        }
+        
         if (error != null) {
             model.addAttribute("error", error);
         }

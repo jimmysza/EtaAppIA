@@ -50,6 +50,7 @@ import maineta.eta.service.ComentarioService;
 import maineta.eta.service.DisponibilidadService;
 import maineta.eta.service.FavoritoService;
 import maineta.eta.service.IdiomaService;
+import maineta.eta.service.ReservaService;
 import maineta.eta.service.UsuarioService;
 
 // 🔹 Controlador principal que maneja las páginas accesibles para todos los usuarios
@@ -68,13 +69,15 @@ public class AllAcessController {
         private final ClienteService clienteService;
         private final UsuarioService usuarioService;
         private final ColaboradorService colaboradorService;
+        private final ReservaService reservaService;
 
         // 🔹 Constructor con inyección de dependencias
         public AllAcessController(DisponibilidadService disponibilidadService, UsuarioHelper usuarioHelper,
                         ComentarioService comentarioService, ActividadService actividadService,
                         CategoriaService categoriaService, IdiomaService idiomaService,
                         FavoritoService favoritoService, ClienteService clienteService,
-                        UsuarioService usuarioService, ColaboradorService colaboradorService) {
+                        UsuarioService usuarioService, ColaboradorService colaboradorService,
+                        ReservaService reservaService) {
                 this.categoriaService = categoriaService;
                 this.actividadService = actividadService;
                 this.usuarioHelper = usuarioHelper;
@@ -85,6 +88,7 @@ public class AllAcessController {
                 this.clienteService = clienteService;
                 this.usuarioService = usuarioService;
                 this.colaboradorService = colaboradorService;
+                this.reservaService = reservaService;
         }
 
         // 🔹 Endpoint para mostrar la página de login
@@ -220,20 +224,25 @@ public class AllAcessController {
                 model.addAttribute("distribucionEstrellas", distribucionEstrellas);
                 model.addAttribute("totalComentarios", totalComentarios);
 
-                // Verificar si la actividad es favorita del cliente logueado
+                // Verificar si la actividad es favorita del cliente logueado y si puede comentar
                 boolean esFavorito = false;
+                boolean puedeCommentar = false;
                 if (auth != null && auth.isAuthenticated() && !auth.getPrincipal().equals("anonymousUser")) {
                         try {
                                 Usuario usuario = usuarioService.obtenerPorEmail(auth.getName());
                                 Optional<Cliente> clienteOpt = clienteService.obtenerPorUsuario(usuario);
                                 if (clienteOpt.isPresent()) {
-                                        esFavorito = favoritoService.esFavorito(clienteOpt.get(), actividad);
+                                        Cliente clienteLogueado = clienteOpt.get();
+                                        esFavorito = favoritoService.esFavorito(clienteLogueado, actividad);
+                                        puedeCommentar = reservaService.existeReservaRealizada(
+                                                        clienteLogueado.getId(), id);
                                 }
                         } catch (Exception e) {
                                 // No es cliente, ignorar
                         }
                 }
                 model.addAttribute("esFavorito", esFavorito);
+                model.addAttribute("puedeCommentar", puedeCommentar);
 
                 return "detalle-actividad";
         }

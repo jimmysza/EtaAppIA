@@ -263,7 +263,7 @@
                             </td>
                             <td class="text-gray-600 text-sm" th:text="${actividad.ubicacion}">Ubicación</td>
                             <td class="font-semibold text-blue-600"
-                                th:text="${'$ ' + #numbers.formatDecimal(actividad.precio, 0, 0)}">$0</td>
+                                th:text="${'$' + #numbers.formatDecimal(actividad.precio, 0, 'POINT', 0, 'COMMA')}">$0</td>
                             <td class="text-gray-700 font-medium" th:text="${actividad.totalVistas}">0</td>
                             <td class="text-gray-700 font-medium" th:text="${actividad.totalTendencia}">0</td>
                             <td>

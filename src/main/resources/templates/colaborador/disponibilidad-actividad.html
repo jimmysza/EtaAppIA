@@ -217,11 +217,17 @@
                     <div class="cal-header">Dom</div>
                 </div>
 
+                <!-- DEBUG: Descomentar para ver valores -->
+                <!-- <div class="text-xs text-gray-500 mb-2">
+                    DEBUG: primerDiaSemana=<span th:text="${primerDiaSemana}"></span>, 
+                    offset=<span th:text="${primerDiaSemana - 1}"></span>
+                </div> -->
+
                 <!-- Celdas del calendario -->
                 <div class="cal-grid" id="calendarGrid">
                     <!-- Celdas vacías antes del primer día -->
-                    <th:block th:with="offset=${primerDiaSemana - 1}" th:if="${offset > 0}">
-                        <div th:each="i : ${#numbers.sequence(1, offset)}" class="cal-cell empty"></div>
+                    <th:block th:with="offset=${primerDiaSemana - 1}">
+                        <div th:if="${offset > 0}" th:each="i : ${#numbers.sequence(1, offset)}" class="cal-cell empty"></div>
                     </th:block>
 
                     <!-- Días del mes -->

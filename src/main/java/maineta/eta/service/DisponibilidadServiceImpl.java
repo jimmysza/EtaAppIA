@@ -35,6 +35,11 @@ public class DisponibilidadServiceImpl implements DisponibilidadService {
     }
 
     @Override
+    public Optional<Disponibilidad> obtenerDisponibilidadPorId(Long id) {
+        return disponibilidadRepository.findById(id);
+    }
+
+    @Override
     public Long ContadorDisponibilidades() {
         return disponibilidadRepository.count();
     }

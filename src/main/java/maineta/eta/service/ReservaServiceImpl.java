@@ -18,10 +18,17 @@ public class ReservaServiceImpl implements ReservaService {
 
     private final ReservaRepository reservaRepository;
     private final ActividadService actividadService;
+    private final ClienteService clienteService;
+    private final DisponibilidadService disponibilidadService;
 
-    public ReservaServiceImpl(ReservaRepository reservaRepository, ActividadService actividadService) {
+    public ReservaServiceImpl(ReservaRepository reservaRepository, 
+                             ActividadService actividadService,
+                             ClienteService clienteService,
+                             DisponibilidadService disponibilidadService) {
         this.reservaRepository = reservaRepository;
         this.actividadService = actividadService;
+        this.clienteService = clienteService;
+        this.disponibilidadService = disponibilidadService;
     }
 
     @Override
@@ -101,5 +108,49 @@ public class ReservaServiceImpl implements ReservaService {
     @Override
     public List<Reserva> getReservasPorIdActividad(Long idActividad){
         return reservaRepository.findByActividad_IdActividad(idActividad);
+    }
+
+    @Override
+    @Transactional
+    public Reserva crearReservaDesdeEpayco(Long idDisponibilidad, Long idCliente, 
+                                           Long idActividad, int cantidad, String refPayco) throws Exception {
+        
+        // Obtener actividad
+        Actividad actividad = actividadService.listarById(idActividad);
+        if (actividad == null) {
+            throw new Exception("Actividad no encontrada");
+        }
+                
+        // Obtener disponibilidad usando el servicio
+        Disponibilidad disponibilidad = disponibilidadService.obtenerPorId(idDisponibilidad)
+                .orElseThrow(() -> new Exception("Disponibilidad no encontrada"));
+
+        // Verificar cupos
+        if (disponibilidad.getCuposDisponibles() < cantidad) {
+            throw new Exception("No hay suficientes cupos disponibles. Solo quedan: " + disponibilidad.getCuposDisponibles());
+        }
+
+        // Obtener cliente
+        Cliente cliente = clienteService.obtenerPorId(idCliente);
+        if (cliente == null) {
+            throw new Exception("Cliente no encontrado");
+        }
+
+        // Crear reserva
+        Reserva reserva = new Reserva();
+        reserva.setActividad(actividad);
+        reserva.setDisponibilidad(disponibilidad);
+        reserva.setCliente(cliente);
+        reserva.setCantidad(cantidad);
+        reserva.setFechaReserva(LocalDateTime.now());
+        reserva.setEstado("Confirmada"); // Estado confirmado porque el pago fue exitoso
+        reserva.setRefPayco(refPayco);
+
+        // Reducir cupos
+        disponibilidad.setCuposDisponibles(disponibilidad.getCuposDisponibles() - cantidad);
+        actividadService.agregarActividad(actividad);
+        
+        // Guardar y retornar
+        return reservaRepository.save(reserva);
     }
 }

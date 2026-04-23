@@ -6,6 +6,10 @@
     <link rel="stylesheet" th:href="@{/css/global.css}">
     <link rel="stylesheet" th:href="@{/css/componentes/navbar.css}">
     <link rel="stylesheet" th:href="@{/css/cliente/checkout.css}">
+    
+    <!-- ✅ Script de ePayco -->
+    <script src="https://checkout.epayco.co/checkout.js"></script>
+    
     <style>
         :root {
             --checkout-ink: #0f172a;
@@ -442,7 +446,8 @@
     </div>
     <main class="checkout-page">
 
-        <form th:action="@{/cliente/reservar}" method="post" class="checkout-form">
+        <!-- ✅ Form sin action (no hace submit tradicional, usamos widget ePayco) -->
+        <form class="checkout-form" id="checkoutForm">
 
 
             <input type="hidden" name="idDisponibilidad" id="idDisponibilidadHidden"
@@ -561,7 +566,8 @@
                     <p>El total se actualiza automáticamente según la cantidad de cupos.</p>
                 </div>
 
-                <button type="submit" class="checkout-confirm" th:disabled="${#lists.isEmpty(disponibilidadesDelDia)}">Confirmar reserva</button>
+                <!-- ✅ Botón que abre widget de ePayco en lugar de submit tradicional -->
+                <button type="button" class="checkout-confirm" id="btnPagar" th:disabled="${#lists.isEmpty(disponibilidadesDelDia)}">Pagar con ePayco</button>
             </aside>
         </form>
 
@@ -569,7 +575,33 @@
 
 
     <script th:inline="javascript">
-        const precio = /*[[${actividad.precio}]]*/ 0;
+        // ✅ Datos de Thymeleaf
+        const precio = /*[[${precioUnitario}]]*/ 0;
+        const actividadTitulo = /*[[${actividad.titulo}]]*/ 'Actividad';
+        const actividadId = /*[[${actividad.idActividad}]]*/ 0;
+        const clienteId = /*[[${clienteId}]]*/ 1579987;
+        const clienteNombre = /*[[${clienteNombre}]]*/ 'Jaime';
+        const clienteEmail = /*[[${clienteEmail}]]*/ 'jaimepere2014.jp81@gmail.com';
+        const clienteTelefono = /*[[${clienteTelefono}]]*/ '3052135329';
+        const epaycoPublicKey = /*[[${epaycoPublicKey}]]*/ '2bd9054390390165a8e15290060c20e1';
+        const epaycoTest = /*[[${epaycoTest}]]*/ true;
+
+        // 🐛 DEBUG: Verificar valores recibidos desde el backend
+        console.log('📦 Datos recibidos desde Thymeleaf:', {
+            epaycoPublicKey: epaycoPublicKey,
+            epaycoTest: epaycoTest,
+            clienteId: clienteId,
+            precio: precio,
+            actividadId: actividadId
+        });
+
+        // ⚠️ VALIDACIÓN: Verificar que ePayco script esté cargado
+        if (typeof ePayco === 'undefined') {
+            console.error('❌ CRITICAL: ePayco script no está cargado. Verifica que &lt;script src=\'https://checkout.epayco.co/checkout.js\'&gt;&lt;/script&gt; esté en el HTML.');
+        } else {
+            console.log('✅ ePayco script cargado correctamente');
+        }
+
         const inputCupos = document.querySelector("[name='cantidad']");
         const totalSpan = document.getElementById("total");
         const hiddenDisponibilidad = document.getElementById("idDisponibilidadHidden");
@@ -577,6 +609,7 @@
         const checkoutSlotSelected = document.getElementById("checkoutSlotSelected");
         const checkoutSlotSelectedText = document.getElementById("checkoutSlotSelectedText");
         const checkoutSlotSelectedTextSummary = document.getElementById("checkoutSlotSelectedTextSummary");
+        const btnPagar = document.getElementById("btnPagar");
 
         function seleccionarHorario(card) {
             document.querySelectorAll(".checkout-slot").forEach((slot) => {
@@ -611,16 +644,172 @@
             });
         }
 
-        if (inputCupos) {
-            inputCupos.addEventListener("input", actualizarTotal);
+        // ✅ Función para abrir widget de ePayco
+        function abrirEpayco() {
+            const cantidad = parseInt(inputCupos.value) || 1;
+            const idDisponibilidad = hiddenDisponibilidad.value;
+
+            if (!idDisponibilidad) {
+                alert('Por favor selecciona un horario disponible');
+                return;
+            }
+
+            if (cantidad < 1) {
+                alert('La cantidad debe ser al menos 1');
+                return;
+            }
+
+            // ⚠️ VALIDACIÓN CRÍTICA: Verificar que ePayco esté cargado
+            if (typeof ePayco === 'undefined') {
+                console.error('❌ ePayco no está cargado. Verifica que el script de checkout.epayco.co esté incluido en el HTML.');
+                alert('Error: El sistema de pagos no está disponible. Por favor recarga la página.');
+                return;
+            }
+
+            // ⚠️ VALIDACIÓN CRÍTICA: Verificar que la Public Key esté configurada
+            if (!epaycoPublicKey || epaycoPublicKey.trim() === '') {
+                console.error('❌ ePayco Public Key no está configurada. Verifica application.properties y EpaycoConfig.java');
+                alert('Error: El sistema de pagos no está configurado correctamente.');
+                return;
+            }
+
+            const total = cantidad * precio;
+            const extra3 = `${actividadId}|${clienteId}`; // idActividad|idCliente
+
+            console.log('🔑 Configurando ePayco con:', {
+                publicKey: epaycoPublicKey,
+                testMode: epaycoTest,
+                total: total,
+                clienteId: clienteId
+            });
+
+            const handler = ePayco.checkout.configure({
+                key: epaycoPublicKey,
+                test: epaycoTest
+            });
+
+            // ✅ URLs públicas - IMPORTANTE: ePayco no puede enviar webhooks a localhost
+            // Para desarrollo: usa ngrok (ej: https://abc123.ngrok.io)
+            // Para producción: usa tu dominio real (ej: https://etaapp.com)
+            //const baseUrl = window.location.origin;  Cambiar por URL pública si estás en localhost
+            const baseUrl = "https://elbow-pope-rebuff.ngrok-free.dev"; // Cambiar por URL pública si estás en localhost
+
+            const data = {
+                // Producto
+                name: actividadTitulo,
+                description: `Reserva para ${cantidad} persona(s)`,
+                currency: "cop",
+                amount: total.toString(),
+                tax_base: "0",
+                tax: "0",
+                country: "co",
+                lang: "es",
+
+                // Cliente (pre-llenado)
+                name_billing: clienteNombre,
+                email_billing: clienteEmail,
+                mobilephone_billing: clienteTelefono,
+
+                // URLs de respuesta (confirmation debe ser pública para webhooks)
+                external: "true",
+                confirmation: baseUrl + "/cliente/pago/confirmacion",
+                response: baseUrl + "/cliente/pago/respuesta",
+
+                // Datos adicionales (se envían a confirmación)
+                extra1: idDisponibilidad.toString(),
+                extra2: cantidad.toString(),
+                extra3: extra3,
+
+                // Personalización
+                method_confirmation: "POST",
+                acepted: baseUrl + "/cliente/pago/respuesta?pago=exitoso",
+                rejected: baseUrl + "/cliente/pago/respuesta?pago=fallido",
+                pending: baseUrl + "/cliente/pago/respuesta?pago=pendiente"
+            };
+
+            console.log('ePayco configuration:', {
+                key: epaycoPublicKey,
+                test: epaycoTest,
+                amount: data.amount,
+                confirmation: data.confirmation
+            });
+            
+            handler.open(data);
         }
 
+        // ✅ Detectar parámetros de URL y mostrar alertas
         document.addEventListener("DOMContentLoaded", () => {
+            // ⚠️ VERIFICACIÓN CRÍTICA: Verificar que ePayco esté disponible al cargar la página
+            if (typeof ePayco === 'undefined') {
+                console.error('❌ CRITICAL: ePayco no está disponible después de DOMContentLoaded');
+                console.error('   - Verifica tu conexión a internet');
+                console.error('   - Verifica que https://checkout.epayco.co/checkout.js sea accesible');
+                console.error('   - Puede que un bloqueador de anuncios esté bloqueando el script');
+            } else {
+                console.log('✅ ePayco está disponible y listo para usar');
+            }
+
+            const urlParams = new URLSearchParams(window.location.search);
+            const estadoPago = urlParams.get('pago');
+
+            if (estadoPago) {
+                let alertClass = '';
+                let mensaje = '';
+
+                switch (estadoPago) {
+                    case 'exitoso':
+                        alertClass = 'alert-success';
+                        mensaje = '¡Pago exitoso! Tu reserva ha sido confirmada.';
+                        break;
+                    case 'procesando':
+                        alertClass = 'alert-info';
+                        mensaje = 'Tu pago está siendo procesado. Recibirás una confirmación pronto.';
+                        break;
+                    case 'pendiente':
+                        alertClass = 'alert-info';
+                        mensaje = 'Tu pago está pendiente de aprobación.';
+                        break;
+                    case 'fallido':
+                        alertClass = 'alert-danger';
+                        mensaje = 'El pago falló. Por favor intenta de nuevo.';
+                        break;
+                }
+
+                if (alertClass && mensaje) {
+                    // Crear elemento de alerta dinámicamente
+                    const alertDiv = document.createElement('div');
+                    alertDiv.className = `alert ${alertClass}`;
+                    alertDiv.setAttribute('role', 'alert');
+                    alertDiv.innerHTML = `<span>${mensaje}</span>`;
+                    
+                    // Insertar al inicio del body
+                    document.body.insertBefore(alertDiv, document.body.firstChild);
+                    
+                    // Aplicar animación
+                    alertDiv.classList.add('showAnimationAppearFromTop');
+                    
+                    // Ocultar después de 5 segundos
+                    setTimeout(() => {
+                        alertDiv.style.display = 'none';
+                    }, 5000);
+                }
+            }
+
+            // Inicializar slot activo y calcular total
             const activeSlot = document.querySelector(".checkout-slot.active") || document.querySelector(".checkout-slot");
             if (activeSlot) {
                 seleccionarHorario(activeSlot);
             } else {
                 actualizarTotal();
+            }
+
+            // ✅ Event listeners (dentro de DOMContentLoaded para asegurar que los elementos existan)
+            if (inputCupos) {
+                inputCupos.addEventListener("input", actualizarTotal);
+            }
+
+            if (btnPagar) {
+                btnPagar.addEventListener("click", abrirEpayco);
             }
         });
     </script>

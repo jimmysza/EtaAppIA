@@ -105,7 +105,7 @@
                         <td th:text="${reserva.cantidad}"></td>
                         <td th:text="${reserva.actividad.titulo}"></td>
                         <td th:text="${reserva.actividad.ubicacion}"></td>
-                        <td th:text="${reserva.actividad.precio}"></td>
+                        <td th:text="${'$' + #numbers.formatDecimal(reserva.actividad.precio, 0, 'POINT', 0, 'COMMA')}"></td>
                         <td>
                             <img th:if="${reserva.actividad.imagen != null}"
                                 th:src="@{'/uploads/' + ${reserva.actividad.imagen}}" alt="Imagen actividad"

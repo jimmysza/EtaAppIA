@@ -16,7 +16,7 @@
             <a th:each="actividad : ${actividades.content}"
                 th:href="@{/cliente/detalle/{id}(id=${actividad.idActividad})}" class="Actividad-card-link">
                 <div class="Actividad-card">
-                    <div class="price">$ <span th:text="${#numbers.formatDecimal(actividad.precio, 0, 0)}">10</span>
+                    <div class="price">$<span th:text="${#numbers.formatDecimal(actividad.precio, 0, 'POINT', 0, 'COMMA')}">10</span>
                     </div>
 
                     <img th:if="${actividad.imagen != null}" th:src="@{'/uploads/' + ${actividad.imagen}}"

@@ -877,7 +877,7 @@
 
                         <div class="flex items-center gap-1">
                             <p class="pl-1 text-sm text-blue-600 mb-1 font-bold"
-                                th:text="${ '$ ' + #numbers.formatDecimal(actividad.precioConsumidor, 0, 0)}"></p>
+                                th:text="${#numbers.formatDecimal(precioConsumidor, 0, 'POINT', 0, 'COMMA')}"></p>
                         </div>
 
                         <div class="flex items-center gap-1">

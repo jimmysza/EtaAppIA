@@ -371,7 +371,7 @@
                             <div>
                                 <p class="text-xs font-bold uppercase tracking-[0.18em] text-slate-400 mb-1">Desde</p>
                                 <p class="text-xl font-black text-slate-950"
-                                    th:text="${'$ ' + #numbers.formatDecimal(actividad.precioConsumidor, 0, 0)}">$ 0</p>
+                                   th:text="${#numbers.formatDecimal(precioConsumidor, 0, 'POINT', 0, 'COMMA')}">$ 0</p>
                             </div>
 
                             <div class="rounded-full bg-slate-950 text-white px-4 py-2 text-sm font-bold">

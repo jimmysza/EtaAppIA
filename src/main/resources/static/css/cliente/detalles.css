@@ -526,3 +526,240 @@ h4 {
 .reseñas .contain-title-reseña h3 {
     top: 70px;
 }
+
+/* ============================================================
+   BADGES — encabezado de la actividad
+   ============================================================ */
+
+.badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 20px;
+}
+
+.badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    border-radius: 999px;
+    font-size: 12.5px;
+    font-weight: 600;
+    border: 1px solid transparent;
+    line-height: 1.4;
+    white-space: nowrap;
+}
+
+/* Badge de calificación / estrellas */
+.badge-star {
+    background: #fffbeb;
+    color: #92400e;
+    border-color: #fde68a;
+}
+
+/* Badge de idioma */
+.badge-lang,
+.badge:has(svg[viewBox="0 0 36 36"]) {
+    background: #eff6ff;
+    color: #1e40af;
+    border-color: #bfdbfe;
+}
+
+/* Badge de ubicación */
+.badge-loc {
+    background: #f0fdf4;
+    color: #166534;
+    border-color: #bbf7d0;
+}
+
+/* Badge de fecha creación */
+.badge-fecha {
+    background: #f5f3ff;
+    color: #5b21b6;
+    border-color: #ddd6fe;
+}
+
+/* Fallback genérico para cualquier badge sin clase específica */
+.badge:not(.badge-star):not(.badge-lang):not(.badge-loc):not(.badge-fecha) {
+    background: #f8fafc;
+    color: #475569;
+    border-color: #e2e8f0;
+}
+
+/* Íconos SVG dentro de badges */
+.badge svg {
+    flex-shrink: 0;
+    width: 14px;
+    height: 14px;
+}
+
+
+/* ============================================================
+   COLABORADOR — fila del anfitrión
+   ============================================================ */
+
+.colaborador {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 16px 18px;
+    background: #f8fafc;
+    border-radius: 14px;
+    border: 1px solid #e2e8f0;
+    margin-bottom: 24px;
+}
+
+.colaborador-avatar {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background: var(--color-medium-blue, #1e56a0);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ffffff;
+    font-weight: 700;
+    font-size: 20px;
+    flex-shrink: 0;
+    overflow: hidden;
+}
+
+.colaborador-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+.colaborador-texto h3 {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--color-deep-navy, #0a2540);
+    margin-bottom: 2px;
+}
+
+.colaborador-texto p {
+    font-size: 13px;
+    color: #64748b;
+    margin: 0;
+}
+
+
+/* ============================================================
+   DESCRIPCIÓN — caja de texto principal
+   ============================================================ */
+
+.contenido-texto {
+    background: #f8fafc;
+    border-radius: 14px;
+    padding: 20px 22px;
+    font-size: 15px;
+    line-height: 1.75;
+    color: #334155;
+    border: 1px solid #e2e8f0;
+    margin-bottom: 4px;
+    width: 100%;
+}
+
+
+/* ============================================================
+   SECCIONES — Incluye, Normas, Condiciones
+   ============================================================ */
+
+/* Reemplaza .contenido-title por esta estructura en el HTML:
+   <div class="seccion">
+     <div class="seccion-header">
+       <div class="seccion-icon seccion-icon-incluye"> ... svg ... </div>
+       <p class="seccion-titulo">Qué incluye</p>
+     </div>
+     <div class="seccion-body seccion-body-incluye">
+       <p th:text="${actividad.incluye}"></p>
+     </div>
+   </div>
+*/
+
+.seccion {
+    margin-top: 28px;
+}
+
+.seccion-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.seccion-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.seccion-icon svg {
+    width: 16px;
+    height: 16px;
+}
+
+/* Ícono de "Incluye" — azul */
+.seccion-icon-incluye {
+    background: #eff6ff;
+}
+
+/* Ícono de "Normas" — naranja */
+.seccion-icon-normas {
+    background: #fff7ed;
+}
+
+/* Ícono de "Condiciones" — morado */
+.seccion-icon-condiciones {
+    background: #fdf4ff;
+}
+
+.seccion-titulo {
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--color-deep-navy, #0a2540);
+    margin: 0;
+}
+
+.seccion-body {
+    background: #ffffff;
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+    padding: 16px 18px;
+    font-size: 14.5px;
+    line-height: 1.8;
+    color: #475569;
+    border-left-width: 3px;
+}
+
+.seccion-body p {
+    margin: 0;
+}
+
+/* Acento lateral por sección */
+.seccion-body-incluye {
+    border-left-color: #3b82f6;
+}
+
+.seccion-body-normas {
+    border-left-color: #f97316;
+}
+
+.seccion-body-condiciones {
+    border-left-color: #a855f7;
+}
+
+
+/* ============================================================
+   OVERRIDE — quita el estilo viejo de .contenido-title
+   ============================================================ */
+
+.contenido-title {
+    display: none; /* reemplazado por .seccion-titulo */
+}

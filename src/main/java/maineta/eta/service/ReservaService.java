@@ -21,4 +21,10 @@ public interface ReservaService {
     Reserva guardarReserva(Reserva reserva);
     public boolean existeReservaRealizada(Long idCliente, Long idActividad);
     
+    /**
+     * Crea una reserva desde el proceso de pago de ePayco.
+     * Incluye el refPayco para idempotencia.
+     */
+    Reserva crearReservaDesdeEpayco(Long idDisponibilidad, Long idCliente, 
+                                    Long idActividad, int cantidad, String refPayco) throws Exception;
 }

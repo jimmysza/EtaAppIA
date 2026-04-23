@@ -122,7 +122,8 @@ public class SecurityConfig {
                                         "/colaboradores/**",
                                         "/images/**",
                                         "/uploads/**",
-                                        "/chat/**")
+                                        "/chat/**",
+                                        "/cliente/pago/confirmacion") // ✅ Webhook de ePayco (público, server-to-server)
                                 .permitAll() // Rutas públicas (login, recursos estáticos, páginas de error, etc.)
                                 .requestMatchers("/").permitAll() // La raíz es pública, pero puede controlarse desde el controller
 

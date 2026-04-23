@@ -288,7 +288,8 @@
                 <li><a href="#info" class="nav-link nav-hidden">Informacion</a></li>
                 <!-- <li><a href="#map" class="nav-link">Mapa</a></li> -->
                 <li><a href="#reseñas" class="nav-link nav-hidden">Reseñas</a></li>
-                <li><a href="#reserva" class="nav-link nav-hidden text-white font-bold bgBlueMain rounded-md py-1">reserva ya</a></li>
+                <li><a href="#reserva"
+                        class="nav-link nav-hidden text-white font-bold bgBlueMain rounded-md py-1">reserva ya</a></li>
             </ul>
             <div class="social-nav flex center gap-2 ">
                 <!-- Botón Favorito -->
@@ -583,14 +584,83 @@
                     </div>
                 </div>
             </section>
-            <div class="colaborador flex items-center">
-                <!-- <img src="../images/perfil_colaborador.jpg" alt="Foto del colaborador" class="colaborador-foto"> -->
+            <div class="colaborador">
+                <div class="colaborador-avatar">
+                    <!-- Si tienes foto del colaborador: -->
+                    <!-- <img th:src="@{|/uploads/${actividad.colaborador.foto}|}" th:alt="${actividad.colaborador.usuario.nombre}" /> -->
+                    <!-- Si no, muestra inicial: -->
+                    <span
+                        th:text="${#strings.substring(actividad.colaborador.usuario.nombre, 0, 1).toUpperCase()}">J</span>
+                </div>
+                <div class="colaborador-texto">
+                    <h3 th:text="${actividad.colaborador.usuario.nombre}">Jimmy</h3>
+                    <p>Anfitrión · Colaborador verificado</p>
+                </div>
+            </div>
+
+
+            <!-- DESCRIPCIÓN — sin cambios, solo ajusta la clase -->
+            <div class="contenido-texto">
+                <p th:text="${actividad.descripcion}">Descripción de la actividad...</p>
+            </div>
+
+
+            <!-- SECCIÓN: QUÉ INCLUYE -->
+            <div class="seccion" th:if="${actividad.incluye != null and !#strings.isEmpty(actividad.incluye)}">
+                <div class="seccion-header">
+                    <div class="seccion-icon seccion-icon-incluye">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                            <path fill="#3b82f6" d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
+                        </svg>
+                    </div>
+                    <p class="seccion-titulo">Qué incluye</p>
+                </div>
+                <div class="seccion-body seccion-body-incluye">
+                    <p th:text="${actividad.incluye}"></p>
+                </div>
+            </div>
+
+
+            <!-- SECCIÓN: NORMAS -->
+            <div class="seccion" th:if="${actividad.normas != null and !#strings.isEmpty(actividad.normas)}">
+                <div class="seccion-header">
+                    <div class="seccion-icon seccion-icon-normas">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                            <path fill="#f97316"
+                                d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2m1 15h-2v-2h2zm0-4h-2V7h2z" />
+                        </svg>
+                    </div>
+                    <p class="seccion-titulo">Normas</p>
+                </div>
+                <div class="seccion-body seccion-body-normas">
+                    <p th:text="${actividad.normas}"></p>
+                </div>
+            </div>
+
+
+            <!-- SECCIÓN: CONDICIONES -->
+            <div class="seccion" th:if="${actividad.condiciones != null and !#strings.isEmpty(actividad.condiciones)}">
+                <div class="seccion-header">
+                    <div class="seccion-icon seccion-icon-condiciones">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                            <path fill="#a855f7"
+                                d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8zm-1 7V3.5L18.5 9z" />
+                        </svg>
+                    </div>
+                    <p class="seccion-titulo">Condiciones</p>
+                </div>
+                <div class="seccion-body seccion-body-condiciones">
+                    <p th:text="${actividad.condiciones}"></p>
+                </div>
+            </div>
+            <!-- <div class="colaborador flex items-center">
+                 <img src="../images/perfil_colaborador.jpg" alt="Foto del colaborador" class="colaborador-foto"> 
 
                 <div class="colaborador-texto">
                     <h3 th:text="${actividad.colaborador.usuario.nombre}">Jimmy</h3>
                     <p>Alfitrion</p>
                 </div>
-            </div>
+            </div> -->
             <!-- <div class="tiempo flex justify-start">
                 <div class="card-time flex flex-col justify-end">
                     <div class="flex hours justify-end">
@@ -622,7 +692,7 @@
                     <p class="title-time"></p>ida y vuelta</p>
                 </div>
             </div> -->
-
+            <!-- 
             <div class="contenido-texto">
                 <p th:text="${actividad.descripcion}">La Isla Cholon es un destino turístico popular en Cartagena,
                     Colombia, conocido por sus hermosas
@@ -641,12 +711,12 @@
             <p th:text="${actividad.normas}"></p>
             <p class="contenido-title">Condiciones</p>
             <p th:text="${actividad.condiciones}"></p>
-
+ -->
             <!-- Mapa de ubicación -->
             <div th:if="${actividad.latitud != null and actividad.longitud != null}" class="mt-8">
                 <p class="contenido-title">Ubicación</p>
-                <div style="width:100%; height:220px; border-radius:12px; overflow:hidden; border:1px solid #e5e7eb;">
-                    <div id="mapaCliente" style="width:100%; height:100%;"></div>
+                <div style="width:100%; height:220px; border-radius:12px; overflow:hidden; z-index:1 ;border:1px solid #e5e7eb;">
+                    <div id="mapaCliente" style="z-index:1;  width:100%; height:100%;"></div>
                 </div>
                 <p class="text-sm text-gray-500 mt-2" th:text="${actividad.ubicacion}"></p>
             </div>
@@ -658,7 +728,7 @@
             <!-- Precio + botón disparador -->
             <div class="p-4">
                 <h3 class="text-2xl font-bold text-gray-900 min-w-[338px]">
-                    $<span th:text="${#numbers.formatDecimal(precioConsumidor, 0, 0)}">118,000</span>
+                    $<span th:text="${#numbers.formatDecimal(precioConsumidor, 0, 'POINT', 0, 'COMMA')}"></span>
                     <span class="text-base font-normal text-gray-500">/reserva</span>
                 </h3>
 

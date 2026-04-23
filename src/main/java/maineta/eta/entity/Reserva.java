@@ -47,6 +47,9 @@ public class Reserva {
 
     private LocalDateTime fechaReserva;
 
+    @Column(length = 100, unique = true)
+    private String refPayco; // Referencia del pago en ePayco
+
     public Cliente getCliente() {
         return cliente;
     }

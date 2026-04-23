@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
+import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
@@ -436,6 +437,11 @@ public class ColaboradorController {
         Map<Integer, CalendarioDiaDTO> calendarioMap = calendarioDias.stream()
                 .collect(Collectors.toMap(d -> d.getFecha().getDayOfMonth(), d -> d));
 
+        // Calcular el día de la semana del primer día del mes (1=Lun...7=Dom)
+        int primerDiaSemana = ym.atDay(1).getDayOfWeek().getValue();
+        System.out.println("DEBUG: Calendario " + ym + " - Primer día del mes cae en: " + 
+                           ym.atDay(1).getDayOfWeek() + " (valor=" + primerDiaSemana + ")");
+
         // Si se seleccionó una fecha, cargar detalle del día
         List<DisponibilidadDetalleDTO> detalleDia = null;
         LocalDate fechaSeleccionada = null;
@@ -471,7 +477,7 @@ public class ColaboradorController {
         model.addAttribute("anio", ym.getYear());
         model.addAttribute("mes", ym.getMonthValue());
         model.addAttribute("mesNombre", mesNombre);
-        model.addAttribute("primerDiaSemana", ym.atDay(1).getDayOfWeek().getValue()); // 1=Lun ... 7=Dom
+        model.addAttribute("primerDiaSemana", primerDiaSemana); // 1=Lun ... 7=Dom
         model.addAttribute("diasEnMes", ym.lengthOfMonth());
         model.addAttribute("detalleDia", detalleDia);
         model.addAttribute("fechaSeleccionada", fechaSeleccionada);
@@ -612,6 +618,13 @@ public class ColaboradorController {
             reservas = List.of();
         }
 
+        // Agrupar disponibilidades por fecha (día)
+        Map<LocalDate, List<Disponibilidad>> disponibilidadesPorDia = disponibilidades.stream()
+                .collect(Collectors.groupingBy(
+                        Disponibilidad::getFecha,
+                        TreeMap::new,
+                        Collectors.toList()));
+
         // Agrupar reservas por disponibilidad
         Map<Long, List<Reserva>> reservasPorDisponibilidad = reservas.stream()
                 .filter(r -> r.getDisponibilidad() != null)
@@ -640,14 +653,40 @@ public class ColaboradorController {
         BigDecimal ingresoTotal = ingresosPorDisponibilidad.values().stream()
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
+        // Calcular totales por día
+        Map<LocalDate, Integer> reservasPorDia = new LinkedHashMap<>();
+        Map<LocalDate, BigDecimal> ingresosPorDia = new LinkedHashMap<>();
+        DateTimeFormatter fechaReservaFormatter = DateTimeFormatter.ofPattern("EEEE, dd MMMM yyyy", new Locale("es", "ES"));
+        Map<LocalDate, String> etiquetasDia = new LinkedHashMap<>();
+        for (Map.Entry<LocalDate, List<Disponibilidad>> diaEntry : disponibilidadesPorDia.entrySet()) {
+            int totalReservasDia = 0;
+            BigDecimal totalIngresosDia = BigDecimal.ZERO;
+            for (Disponibilidad disp : diaEntry.getValue()) {
+                Long idDisp = disp.getIdDisponibilidad();
+                if (reservasPorDisponibilidad.containsKey(idDisp)) {
+                    totalReservasDia += reservasPorDisponibilidad.get(idDisp).size();
+                }
+                if (ingresosPorDisponibilidad.containsKey(idDisp)) {
+                    totalIngresosDia = totalIngresosDia.add(ingresosPorDisponibilidad.get(idDisp));
+                }
+            }
+            reservasPorDia.put(diaEntry.getKey(), totalReservasDia);
+            ingresosPorDia.put(diaEntry.getKey(), totalIngresosDia);
+            etiquetasDia.put(diaEntry.getKey(), diaEntry.getKey().format(fechaReservaFormatter));
+        }
+
         model.addAttribute("actividad", actividad);
-        model.addAttribute("disponibilidades", disponibilidades);
+        model.addAttribute("disponibilidadesPorDia", disponibilidadesPorDia);
+        model.addAttribute("totalDisponibilidades", disponibilidades.size());
         model.addAttribute("reservasPorDisponibilidad", reservasPorDisponibilidad);
         model.addAttribute("reservasSinDisponibilidad", reservasSinDisponibilidad);
         model.addAttribute("totalReservas", totalReservas);
         model.addAttribute("totalPersonasReservadas", totalPersonasReservadas);
         model.addAttribute("ingresosPorDisponibilidad", ingresosPorDisponibilidad);
         model.addAttribute("ingresoTotal", ingresoTotal);
+        model.addAttribute("reservasPorDia", reservasPorDia);
+        model.addAttribute("ingresosPorDia", ingresosPorDia);
+        model.addAttribute("etiquetasDia", etiquetasDia);
         return "colaborador/reservaciones-actividad";
     }
 

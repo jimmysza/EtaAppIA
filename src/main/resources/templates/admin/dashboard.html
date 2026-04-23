@@ -318,7 +318,7 @@
                                 <td th:text="${actividad.titulo}"></td>
                                 <td th:text="${actividad.colaborador.usuario.nombre}"></td>
                                 <td th:text="${#temporals.format(actividad.createdAt, 'dd/MM/yyyy')}"></td>
-                                <td>$<span th:text="${#numbers.formatDecimal(actividad.precio, 0, 0)}"></span></td>
+                                <td>$<span th:text="${#numbers.formatDecimal(actividad.precio, 0, 'POINT', 0, 'COMMA')}"></span></td>
                                 <td th:text="${actividad.categoria.nombre}"></td>
                             </tr>
                         </tbody>

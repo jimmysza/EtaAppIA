@@ -52,14 +52,14 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 
-// === MODAL DE COMENTARIOS ===
+// === MODAL DE COMENTARIOS (adaptado a modal-add) ===
 document.addEventListener("DOMContentLoaded", () => {
-    const modal = document.querySelector(".comment-modal");
-    const openModalBtn = document.querySelector(".btn-modal-comment .text-modal-comment");
-    const closeModalBtn = document.querySelector(".close-modal-comment");
+    const modal = document.querySelector(".modal.modal-add");
+    const openModalBtn = document.getElementById("open-add-modal");
+    const closeModalBtn = modal ? modal.querySelector(".close-modal, .close-btn-modal") : null;
 
     if (!modal || !openModalBtn || !closeModalBtn) {
-        console.warn("⚠️ No se encontraron los elementos del modal de comentarios");
+        console.warn("⚠️ No se encontraron los elementos del modal de comentarios (modal-add)");
         return;
     }
 

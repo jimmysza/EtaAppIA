@@ -5,10 +5,23 @@
 
     <section th:fragment="preguntasFrecuentes"
         th:if="${actividad != null and actividad.preguntasFrecuentes != null and !#lists.isEmpty(actividad.preguntasFrecuentes)}"
-        class="w-full max-w-7xl mx-auto px-6 md:px-10 py-12 md:py-20">
+        class="faq-section">
 
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 py-15">
-            <div class="lg:col-span-4">
+        <div class="faq-grid">
+
+            <!-- Columna izquierda: título -->
+            <!-- <div class="faq-left">
+            <p class="faq-eyebrow">Antes de reservar</p>
+            <h3 class="faq-titulo">
+                Preguntas frecuentes sobre
+                <span th:text="${actividad.titulo}">la actividad</span>
+            </h3>
+            <p class="faq-sub">
+                Resuelve las dudas más comunes antes de confirmar tu reserva.
+            </p>
+        </div> -->
+
+            <div class="faq-left">
                 <div class="lg:sticky lg:top-20">
                     <h3 class="text-4xl md:text-3xl font-bold text-text-primary mb-4">
                         Preguntas frecuentes sobre
@@ -20,38 +33,28 @@
                 </div>
             </div>
 
-            <div class="lg:col-span-8">
-                <div class="space-y-0 overflow-hidden">
-                    <div th:each="faq : ${actividad.preguntasFrecuentes}" class="faq-item border-b border-border-color last:border-b-0">
-                        <button
-                            class="w-full px-6 py-6 text-left focus:outline-none focus:bg-gray-50 transition-colors duration-200 group"
-                            onclick="toggleFAQ(this)" aria-expanded="false">
-                            <div class="flex items-start justify-between gap-4">
-                                <h3
-                                    class="text-lg md:text-xl font-semibold text-text-primary pr-8 group-hover:text-primary transition-colors duration-200"
-                                    th:text="${faq.pregunta}">
-                                    Pregunta frecuente
-                                </h3>
-                                <span class="flex-shrink-0 w-6 h-6 flex items-center justify-center">
-                                    <svg class="w-6 h-6 text-text-secondary transform transition-transform duration-300 group-hover:text-primary"
-                                        fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M19 9l-7 7-7-7" />
-                                    </svg>
-                                </span>
-                            </div>
-                        </button>
-                        <div class="faq-content max-h-0 overflow-hidden transition-all duration-300 ease-in-out">
-                            <div class="px-6 pb-6">
-                                <p class="text-text-secondary leading-relaxed whitespace-pre-line" th:text="${faq.respuesta}">
-                                    Respuesta frecuente
-                                </p>
-                            </div>
+            <!-- Columna derecha: acordeón -->
+            <div class="faq-list">
+                <div th:each="faq : ${actividad.preguntasFrecuentes}" class="faq-item">
+                    <button class="faq-btn" onclick="toggleFAQ(this)" aria-expanded="false">
+                        <span class="faq-pregunta" th:text="${faq.pregunta}">Pregunta frecuente</span>
+                        <span class="faq-chevron">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                                    d="M19 9l-7 7-7-7" />
+                            </svg>
+                        </span>
+                    </button>
+                    <div class="faq-content">
+                        <div class="faq-respuesta">
+                            <p th:text="${faq.respuesta}">Respuesta frecuente</p>
                         </div>
                     </div>
                 </div>
             </div>
+
         </div>
+
     </section>
 
 </body>
