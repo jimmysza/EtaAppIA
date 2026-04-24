@@ -380,7 +380,7 @@
                             </div>
 
                             <!-- Acciones -->
-                            <div class="flex gap-2">
+                            <div class="flex flex-col gap-2">
                                 <!-- Editar cupos -->
                                 <form th:action="@{/colaborador/disponibilidades/editar-cupos}" method="post"
                                     class="flex items-center gap-2 flex-1">
@@ -414,6 +414,14 @@
                                         Cambiar
                                     </button>
                                 </form>
+                                
+                                <!-- Cancelar Disponibilidad (cancela todas las reservas) -->
+                                <button th:if="${slot.estado != 'CANCELADO'}" 
+                                        type="button"
+                                        class="btn-cancelar-disponibilidad bg-red-500 hover:bg-red-600 text-white text-xs px-3 py-1.5 rounded font-medium transition w-full"
+                                        th:attr="data-id=${slot.idDisponibilidad}">
+                                    ⚠️ Cancelar Disponibilidad (Cancela Reservas)
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -421,6 +429,34 @@
             </div>
         </div>
     </main>
+
+    <!-- Modal de Cancelación de Disponibilidad -->
+    <div id="modal-cancelar-disponibilidad" class="hidden fixed inset-0 bg-black/40 z-50 flex items-center justify-center">
+        <div class="bg-white rounded-xl shadow-xl w-full max-w-md p-6">
+            <h2 class="text-lg font-bold text-red-600 mb-2">⚠️ Advertencia: Cancelar Disponibilidad</h2>
+            <p class="text-sm text-gray-700 mb-4">
+                Esta acción cancelará <strong>TODAS las reservas confirmadas</strong> asociadas a esta disponibilidad. 
+                Los clientes recibirán reembolsos automáticos del 100% y tú recibirás una <strong>penalización</strong> 
+                que afectará tu reputación.
+            </p>
+            <form id="form-cancelar-disponibilidad" action="" method="post" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Motivo de Cancelación</label>
+                    <textarea name="motivo" required rows="3" 
+                        class="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-red-500 focus:border-red-500"
+                        placeholder="Explica el motivo de la cancelación..."></textarea>
+                </div>
+                <div class="flex gap-2">
+                    <button type="submit" class="flex-1 bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg font-medium">
+                        Confirmar Cancelación
+                    </button>
+                    <button type="button" id="btn-cerrar-modal-cancelar-disp" class="flex-1 bg-gray-300 hover:bg-gray-400 text-gray-700 px-4 py-2 rounded-lg font-medium">
+                        Cerrar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
 
     <!-- MODAL: Agregar Disponibilidad Individual -->
     <div id="modalAgregar" class="hidden fixed inset-0 bg-black/40 z-50 flex items-center justify-center">
@@ -533,6 +569,34 @@
 
     <script th:src="@{/js/dashboard.js}"></script>
     <script>
+        // Modal de cancelación de disponibilidad
+        document.addEventListener('DOMContentLoaded', function() {
+            const modal = document.getElementById('modal-cancelar-disponibilidad');
+            const btnCerrar = document.getElementById('btn-cerrar-modal-cancelar-disp');
+            const form = document.getElementById('form-cancelar-disponibilidad');
+
+            // Abrir modal al hacer clic en botones de cancelar
+            document.querySelectorAll('.btn-cancelar-disponibilidad').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const idDisponibilidad = this.getAttribute('data-id');
+                    form.action = '/colaborador/disponibilidades/cancelar/' + idDisponibilidad;
+                    modal.classList.remove('hidden');
+                });
+            });
+
+            // Cerrar modal
+            btnCerrar.addEventListener('click', function() {
+                modal.classList.add('hidden');
+            });
+
+            // Cerrar modal al hacer clic fuera
+            modal.addEventListener('click', function(e) {
+                if (e.target === modal) {
+                    modal.classList.add('hidden');
+                }
+            });
+        });
+
         // Auto-hide alerts
         document.addEventListener('DOMContentLoaded', function () {
             ['alertMsg', 'alertErr'].forEach(function (id) {

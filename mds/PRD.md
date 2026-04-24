@@ -1,8 +1,8 @@
 # Product Requirements Document (PRD)
 ## Plataforma ETA — Marketplace de Actividades Turísticas y Recreativas
 
-**Versión:** 1.0  
-**Fecha:** 18 de marzo de 2026  
+**Versión:** 2.0  
+**Fecha:** 24 de abril de 2026  
 **Estado:** En desarrollo  
 
 ---
@@ -10,6 +10,8 @@
 ## 1. Resumen Ejecutivo
 
 ETA es una plataforma web de tipo marketplace que conecta a proveedores de actividades turísticas y recreativas (denominados **Colaboradores**) con usuarios finales (**Clientes**). Los colaboradores pueden publicar, gestionar y monetizar sus actividades; los clientes pueden descubrirlas, reservarlas y calificarlas. Un **Administrador** supervisa la operación global, gestiona los datos maestros del sistema y controla la comisión de la plataforma.
+
+**Versión 2.0** incorpora capacidades avanzadas de **inteligencia artificial**, **pagos electrónicos reales**, **predicción de demanda** mediante machine learning, **comunicación automatizada** por email, y **planificación de rutas turísticas**. La plataforma integra tecnologías de punta como Anthropic Claude/OpenAI para chatbot conversacional, ePayco para pagos seguros, y algoritmos predictivos para optimizar la ocupación de actividades.
 
 ---
 
@@ -44,6 +46,9 @@ Usuario final que consume las actividades.
 - Buscar actividades por texto libre o por categoría.
 - Ver el detalle de una actividad (descripción, normas, qué incluye, condiciones, ubicación en mapa, calificación, comentarios, galería de imágenes).
 - Seleccionar una disponibilidad (fecha, hora, cupos) y hacer una reserva.
+- **Pagar reservas mediante ePayco** (tarjeta de crédito, débito, PSE, efectivo).
+- Recibir **email de confirmación** tras crear reserva.
+- Recibir **email recordatorio** 24 horas antes de la actividad.
 - Gestionar sus reservas desde su dashboard personal.
 - Escriturar comentarios y calificaciones (1-5 estrellas) solo si tiene una reserva completada en esa actividad.
 - Guardar actividades como favoritas y acceder a la lista desde su perfil.
@@ -51,6 +56,8 @@ Usuario final que consume las actividades.
 - **Crear planes del día**: Agrupar múltiples actividades en una ruta temática con orden, horarios sugeridos y notas personalizadas.
 - **Ver sus planes creados** y compartirlos públicamente.
 - **Explorar planes públicos** de otros clientes y colaboradores en vista de mapa.
+- **Buscar actividades cercanas** a su ubicación actual con radio de distancia.
+- **Interactuar con chatbot de IA** para obtener recomendaciones personalizadas.
 
 ### 4.2 Colaborador
 Proveedor/empresa que ofrece actividades.
@@ -58,14 +65,19 @@ Proveedor/empresa que ofrece actividades.
 **Capacidades:**
 - Registrarse con correo/contraseña, con NIT e ID de seguridad.
 - Crear actividades con: título, descripción, categoría, idioma, precio, ubicación (lat/lon), normas, qué incluye, condiciones, imagen principal y galería.
+- **Agregar preguntas frecuentes** específicas para cada actividad.
 - Configurar disponibilidades puntuales (fecha específica, hora inicio/fin, cupos) o mediante **patrones recurrentes** (días de la semana, rango de fechas, hora y cupos).
 - Editar o actualizar actividades existentes.
 - Ver listado paginado de sus actividades.
 - Consultar las reservas recibidas en cada actividad/disponibilidad.
+- **Ver predicciones de ocupación** basadas en modelo de machine learning.
+- **Visualizar tendencias de demanda** para planificar mejor la disponibilidad.
 - Tener un perfil público visible para los clientes.
 - **Crear planes del día**: Agrupar múltiples actividades (propias o de otros) en una ruta temática con orden, horarios sugeridos y notas personalizadas.
 - **Ver sus planes creados** y compartirlos públicamente.
 - **Explorar planes públicos** en vista de mapa.
+- Recibir notificaciones de nuevas reservas (email).
+- **Interactuar con chatbot de IA** para análisis de desempeño de actividades.
 
 ### 4.3 Administrador
 Operador de la plataforma.
@@ -85,6 +97,11 @@ Sin registro.
 - Buscar y explorar actividades.
 - Ver el detalle de cualquier actividad.
 - Ver perfiles públicos de colaboradores.
+- Lista de colaboradores.
+- **Explorar planes públicos** en /planes con mapa interactivo.
+- **Ver detalle de planes** sin necesidad de autenticación.
+- **Buscar actividades cercanas** por ubicación.
+- **Interactuar con chatbot de IA** para obtener información general.
 - Registrarse o iniciar sesión.
 
 ---
@@ -201,6 +218,85 @@ Sin registro.
 | PLAN-08 | Contador de vistas para medir popularidad de planes | Media |
 | PLAN-09 | Los creadores pueden ver sus planes en /cliente/planes/mis-planes o /colaborador/planes/mis-planes | Alta |
 | PLAN-10 | Top 5 planes más recientes en la vista principal de /planes | Media |
+
+---
+
+### 5.11 Sistema de Pagos (ePayco)
+
+| ID | Requerimiento | Prioridad |
+|----|--------------|-----------|
+| PAY-01 | Integración completa con pasarela de pagos ePayco | Alta |
+| PAY-02 | Checkout seguro con iframe de ePayco en proceso de reserva | Alta |
+| PAY-03 | Confirmación de transacción mediante webhook de ePayco | Alta |
+| PAY-04 | Actualización automática del estado de reserva tras pago exitoso | Alta |
+| PAY-05 | Almacenamiento de referencia de pago (ref_payco) en cada reserva | Alta |
+| PAY-06 | Soporte para pruebas en sandbox con credenciales de testing | Media |
+| PAY-07 | Configuración de ngrok para desarrollo local con webhooks | Media |
+| PAY-08 | Validación de firmas digitales para seguridad en confirmaciones | Alta |
+
+---
+
+### 5.12 Modelo Predictivo de Ocupación
+
+| ID | Requerimiento | Prioridad |
+|----|--------------|-----------|
+| PRED-01 | Modelo predictivo para estimar ocupación futura de disponibilidades | Alta |
+| PRED-02 | Predicciones basadas en histórico de reservas y patrones temporales | Alta |
+| PRED-03 | Visualización de predicciones en dashboard del colaborador | Media |
+| PRED-04 | Indicadores de ocupación esperada (baja, media, alta) por fecha | Media |
+| PRED-05 | Integración con calendario de disponibilidades para planificación | Media |
+| PRED-06 | Exportación de modelo entrenado (.model) para reutilización | Baja |
+
+---
+
+### 5.13 Chatbot Inteligente con IA
+
+| ID | Requerimiento | Prioridad |
+|----|--------------|-----------|
+| CHAT-01 | Chatbot interactivo con IA generativa (Anthropic Claude o OpenAI GPT) | Alta |
+| CHAT-02 | Respuestas contextuales sobre actividades, reservas y servicios | Alta |
+| CHAT-03 | Widget de chat flotante disponible en todas las páginas principales | Alta |
+| CHAT-04 | Integración con base de conocimiento de la plataforma | Media |
+| CHAT-05 | Historial de conversación por sesión de usuario | Media |
+| CHAT-06 | Renderizado de respuestas en formato Markdown con HTML | Alta |
+| CHAT-07 | Configuración intercambiable entre proveedores de IA (Anthropic/OpenAI) | Media |
+
+---
+
+### 5.14 Emails Automatizados
+
+| ID | Requerimiento | Prioridad |
+|----|--------------|-----------|
+| EMAIL-01 | Email de confirmación tras crear una reserva | Alta |
+| EMAIL-02 | Email recordatorio 24 horas antes de la actividad | Alta |
+| EMAIL-03 | Templates HTML profesionales con branding de la plataforma | Media |
+| EMAIL-04 | Incluir detalles completos de la reserva en emails (fecha, hora, actividad, precio) | Alta |
+| EMAIL-05 | Scheduler automático que ejecuta recordatorios diarios | Alta |
+| EMAIL-06 | Configuración SMTP para envío de emails (Gmail, SendGrid, etc.) | Alta |
+
+---
+
+### 5.15 Mapa de Actividades Cercanas
+
+| ID | Requerimiento | Prioridad |
+|----|--------------|-----------|
+| MAP-01 | Vista de mapa interactivo mostrando actividades cercanas a ubicación dada | Alta |
+| MAP-02 | Búsqueda de actividades por radio de distancia (km) desde un punto | Media |
+| MAP-03 | Filtros de actividades cercanas por categoría en vista de mapa | Media |
+| MAP-04 | Marcadores en mapa con vista previa de actividad al hacer clic | Alta |
+| MAP-05 | Integración con API de mapas (Google Maps, Leaflet, Mapbox) | Media |
+| MAP-06 | Cálculo de distancias usando coordenadas geográficas (lat/lon) | Alta |
+
+---
+
+### 5.16 Preguntas Frecuentes por Actividad
+
+| ID | Requerimiento | Prioridad |
+|----|--------------|-----------|
+| FAQ-01 | Colaboradores pueden agregar preguntas frecuentes específicas por actividad | Media |
+| FAQ-02 | Visualización de FAQs en página de detalle de actividad | Media |
+| FAQ-03 | Acordeón/collapse interactivo para mostrar respuestas | Baja |
+| FAQ-04 | Edición y eliminación de FAQs desde panel del colaborador | Media |
 ---
 
 ## 6. Requerimientos No Funcionales
@@ -259,7 +355,7 @@ Usuario ────────────── Rol
 | `actividad` | id, titulo, descripcion, precio, ubicacion, latitud, longitud, normas, incluye, condiciones, imagen, calificacion, createdAt → FK colaborador, categoria, idioma |
 | `disponibilidad` | id, fecha, horaInicio, horaFin, cuposTotales, cuposDisponibles, estado → FK actividad |
 | `patron_disponibilidad` | id, diasSemana, horaInicio, horaFin, cuposTotales, fechaInicio, fechaFin, estado → FK actividad |
-| `reserva` | id, estado (Pendiente/Confirmada/Cancelada/Hecho), cantidad, fechaReserva → FK disponibilidad, cliente, actividad |
+| `reserva` | id, estado (Pendiente/Confirmada/Cancelada/Hecho), cantidad, fechaReserva, ref_payco, precioTotal → FK disponibilidad, cliente, actividad |
 | `comentario` | id, texto, calificacion (1-5), fechaComentario → FK cliente, actividad |
 | `favorito` | id, createdAt → FK cliente, actividad (UNIQUE juntos) |
 | `categoria` | id, nombre (UNIQUE), imagen |
@@ -267,6 +363,7 @@ Usuario ────────────── Rol
 | `imagen_actividad` | id, nombre → FK actividad |
 | `planes` | id, titulo, descripcion, imagenPortada, duracionEstimada, tipo, idClienteCreador, idColaboradorCreador, fechaCreacion, publico, vistas |
 | `plan_actividades` | id, idPlan, idActividad, orden, horaSugerida, notaPersonalizada |
+| `pregunta_frecuente_actividad` | id, pregunta, respuesta → FK actividad |
 
 ---
 
@@ -289,32 +386,52 @@ Aplicación web **monolítica** con patrón **MVC**, renderizado del lado del se
 | Base de datos | MySQL 8 |
 | Build tool | Apache Maven |
 | Contenerización | Docker + Docker Compose |
-| Email | Spring Mail |
+| Email | Spring Mail + SMTP |
 | Validación | Spring Validation (Bean Validation) |
+| Pasarela de pagos | ePayco (Colombia) |
+| IA Generativa | Anthropic Claude API / OpenAI GPT API |
+| Machine Learning | Apache Commons Math (regresión lineal) |
+| Scheduling | Spring @Scheduled |
+| Mapas | Google Maps API / Leaflet |
 
 ### 8.3 Componentes del Sistema
 
 ```
 ┌─────────────────────────────────────────────────────┐
 │                  CLIENTE (Navegador)                 │
-│           HTML + Thymeleaf + Tailwind + JS           │
+│     HTML + Thymeleaf + Tailwind + JS + Chat Widget  │
 └───────────────────────┬─────────────────────────────┘
-                        │ HTTP
+                        │ HTTP/HTTPS
 ┌───────────────────────▼─────────────────────────────┐
 │              SPRING BOOT APPLICATION                  │
 │  ┌─────────────┐  ┌──────────────┐  ┌─────────────┐ │
 │  │ Controllers │→ │   Services   │→ │Repositories │ │
-│  │ (6 ctrlrs) │  │  (14+ svcs)  │  │  (JPA/SQL)  │ │
+│  │ (10+ ctrlrs)│  │  (20+ svcs)  │  │  (JPA/SQL)  │ │
 │  └─────────────┘  └──────────────┘  └──────┬──────┘ │
 │  ┌─────────────────────────────────────────┐│        │
 │  │ Spring Security + OAuth2 + BCrypt       ││        │
+│  └─────────────────────────────────────────┘│        │
+│  ┌─────────────────────────────────────────┐│        │
+│  │ ML Prediction Service (Commons Math)    ││        │
+│  └─────────────────────────────────────────┘│        │
+│  ┌─────────────────────────────────────────┐│        │
+│  │ Scheduler (Email Reminders)             ││        │
 │  └─────────────────────────────────────────┘│        │
 └────────────────────────────────────────────┬┘        │
                                              │         │
 ┌────────────────────────────────────────────▼─────────┐
 │                    MySQL 8                            │
-│                  (15 tablas)                          │
+│                  (17+ tablas)                         │
 └──────────────────────────────────────────────────────┘
+
+         Integraciones Externas:
+┌─────────────────┐  ┌─────────────────┐  ┌──────────────┐
+│  ePayco API     │  │ Anthropic/      │  │ Google Maps  │
+│  (Webhooks)     │  │ OpenAI APIs     │  │ API          │
+└─────────────────┘  └─────────────────┘  └──────────────┘
+         ▲                    ▲                    ▲
+         └────────────────────┴────────────────────┘
+                    Spring Boot App
 ```
 
 ### 8.4 Rutas Principales
@@ -328,6 +445,9 @@ GET  /registro/colaborador      → Registro de colaborador
 GET  /actividad/{slug}-{id}     → Detalle de actividad
 GET  /resultados-busqueda       → Búsqueda
 GET  /colaboradores             → Lista de colaboradores
+GET  /planes                    → Listado público de planes
+GET  /planes/{id}               → Detalle de plan
+GET  /actividades-cercanas      → Mapa de actividades cercanas
 ```
 
 **Rutas de Cliente (ROLE_CLIENTE):**
@@ -338,6 +458,9 @@ POST /cliente/reservar          → Confirmar reserva
 GET  /cliente/informacion       → Mi perfil
 POST /cliente/actualizar/{id}   → Actualizar mi perfil
 POST /comentarios/agregar/{id}  → Agregar comentario
+GET  /cliente/planes/crear      → Formulario crear plan
+POST /cliente/planes/crear      → Guardar plan
+GET  /cliente/planes/mis-planes → Mis planes creados
 ```
 
 **Rutas de Colaborador (ROLE_COLABORADOR):**
@@ -347,6 +470,10 @@ GET  /colaborador/actividades   → Mis actividades (paginado)
 GET  /colaborador/actividades/nueva → Formulario crear actividad
 POST /colaborador/actividades/addAct → Guardar actividad
 POST /colaborador/actividades/{id}/actualizar → Editar actividad
+GET  /colaborador/planes/crear      → Formulario crear plan
+POST /colaborador/planes/crear      → Guardar plan
+GET  /colaborador/planes/mis-planes → Mis planes creados
+GET  /colaborador/disponibilidades/{id}/predicciones → Ver predicciones
 ```
 
 **Rutas de Administrador (ROLE_ADMIN):**
@@ -358,6 +485,14 @@ POST /admin/categorias/eliminar → Eliminar categoría
 GET  /admin/idiomas             → Gestión de idiomas
 POST /admin/idiomas/nueva       → Crear idioma
 POST /admin/idiomas/eliminar    → Eliminar idioma
+```
+
+**Rutas API/AJAX:**
+```
+POST /api/chatbot/mensaje       → Enviar mensaje al chatbot
+GET  /api/chatbot/historial     → Obtener historial de chat
+POST /pagos/confirmacion        → Webhook ePayco (confirmación pago)
+GET  /api/actividades/cercanas  → Buscar actividades por coordenadas
 ```
 
 ---
@@ -436,6 +571,81 @@ Usuario (autenticado o anónimo)
   ──→ Ve itinerario completo con actividades ordenadas
   ──→ Incrementa contador de vistas del plan
   ──→ Puede hacer clic en cada actividad para ver detalle (/actividad/{slug}-{id})
+```
+
+### 9.7 Flujo de Pago con ePayco
+```
+Cliente autenticado
+  ──→ Selecciona disponibilidad
+  ──→ GET /cliente/checkout/{idDispo}
+  ──→ Revisa resumen de reserva (actividad, fecha, cupos, precio total)
+  ──→ POST /cliente/reservar → Se abre iframe de ePayco
+  ──→ Cliente ingresa datos de pago (tarjeta/PSE/efectivo)
+  ──→ ePayco procesa transacción
+  ──→ ePayco envía webhook a /pagos/confirmacion
+  ──→ Sistema valida firma digital
+  ──→ Sistema actualiza estado de Reserva a "Confirmada"
+  ──→ Sistema guarda ref_payco en Reserva
+  ──→ Sistema envía email de confirmación al cliente
+  ──→ Redirige a /cliente/reserva-exitosa
+```
+
+### 9.8 Flujo de Chatbot con IA
+```
+Usuario (en cualquier página)
+  ──→ Hace clic en widget de chat flotante
+  ──→ Escribe pregunta (ej: "¿Qué actividades de aventura tienen?")
+  ──→ POST /api/chatbot/mensaje
+  ──→ Sistema envía contexto a API de IA (Anthropic Claude o OpenAI)
+  ──→ IA genera respuesta contextual basada en actividades reales
+  ──→ Sistema renderiza respuesta en Markdown
+  ──→ Usuario ve respuesta con links a actividades sugeridas
+  ──→ Conversación se guarda en sesión
+```
+
+### 9.9 Flujo de Emails Automatizados
+```
+Sistema (Scheduler ejecuta diariamente a las 9 AM)
+  ──→ RecordatorioReservaScheduler busca reservas con actividad mañana
+  ──→ Para cada reserva encontrada:
+      ──→ Carga template emails/recordatorio-reserva.html
+      ──→ Reemplaza variables (nombre cliente, actividad, fecha, hora)
+      ──→ Envía email vía SMTP
+      ──→ Registra en log
+
+// Email de confirmación (inmediato tras crear reserva):
+Cliente crea reserva
+  ──→ ReservaService.crearReserva()
+  ──→ EmailReservaService.enviarConfirmacion(reserva)
+  ──→ Carga template emails/confirmacion-reserva.html
+  ──→ Envía email con detalles completos de la reserva
+```
+
+### 9.10 Flujo de Mapa de Actividades Cercanas
+```
+Usuario
+  ──→ GET /actividades-cercanas
+  ──→ Permite al navegador obtener geolocalización
+  ──→ JavaScript obtiene latitud/longitud actual
+  ──→ GET /api/actividades/cercanas?lat=X&lon=Y&radio=10
+  ──→ Sistema calcula distancias usando fórmula de Haversine
+  ──→ Devuelve actividades dentro del radio ordenadas por distancia
+  ──→ Frontend renderiza mapa con marcadores
+  ──→ Usuario hace clic en marcador → ver detalle de actividad
+```
+
+### 9.11 Flujo de Predicción de Ocupación
+```
+Colaborador autenticado
+  ──→ GET /colaborador/disponibilidades/{idActividad}
+  ──→ Ve calendario con disponibilidades
+  ──→ Hace clic en botón "Ver Predicciones"
+  ──→ GET /colaborador/disponibilidades/{id}/predicciones
+  ──→ PrediccionService analiza histórico de reservas
+  ──→ Modelo ML calcula ocupación esperada por fecha
+  ──→ Sistema devuelve predicciones (baja/media/alta)
+  ──→ Frontend muestra gráfico de tendencias
+  ──→ Colaborador ajusta cupos basándose en predicción
 ```
 
 ---
@@ -553,14 +763,52 @@ El sistema se levanta mediante `docker-compose up` con dos servicios:
 - [x] Detalle de plan muestra itinerario completo ordenado
 - [x] Los creadores pueden ver sus planes en /mis-planes
 
+### Sistema de Pagos
+- [x] Integración completa con ePayco para procesar pagos
+- [x] Checkout con iframe seguro de ePayco
+- [x] Confirmación automática vía webhook
+- [x] Almacenamiento de referencia de pago en cada reserva
+- [x] Validación de firmas digitales para seguridad
+- [x] Soporte para ambiente sandbox y producción
+
+### Modelo Predictivo
+- [x] Modelo de regresión lineal para predecir ocupación
+- [x] Visualización de predicciones en calendario de colaborador
+- [x] Indicadores de ocupación esperada (baja/media/alta)
+- [x] Integración con datos históricos de reservas
+
+### Chatbot con IA
+- [x] Widget de chat flotante en todas las páginas
+- [x] Integración con Anthropic Claude o OpenAI GPT
+- [x] Respuestas contextuales sobre actividades y reservas
+- [x] Renderizado Markdown de respuestas
+- [x] Historial de conversación por sesión
+
+### Emails Automatizados
+- [x] Email de confirmación tras crear reserva
+- [x] Email recordatorio 24h antes de la actividad
+- [x] Templates HTML profesionales con branding
+- [x] Scheduler automático para recordatorios diarios
+- [x] Configuración SMTP flexible
+
+### Mapa de Actividades Cercanas
+- [x] Vista de mapa con actividades cercanas a ubicación
+- [x] Búsqueda por radio de distancia
+- [x] Filtros por categoría en vista de mapa
+- [x] Marcadores con vista previa de actividad
+- [x] Cálculo de distancias con coordenadas geográficas
+
+### Preguntas Frecuentes
+- [x] FAQs específicas por actividad
+- [x] Visualización en página de detalle
+- [x] Componente interactivo (acordeón)
+
 ---
 
-## 14. Fuera del Alcance (Out of Scope) — v1.0
+## 14. Fuera del Alcance (Out of Scope) — v2.0
 
 Los siguientes elementos no están contemplados en la versión actual:
 
-- Pasarela de pago real (pagos con tarjeta, PSE, etc.) — actualmente el checkout registra la reserva pero no procesa pago.
-- Sistema de notificaciones push o en tiempo real (el websocket existe pero su alcance completo está pendiente).
 - App móvil nativa (iOS/Android).
 - Sistema de reembolsos automatizados.
 - Multi-idioma de la interfaz (el sistema maneja idiomas de actividades, no de la UI).
@@ -569,9 +817,10 @@ Los siguientes elementos no están contemplados en la versión actual:
 - Edición de planes ya creados (solo creación y visualización).
 - Compartir planes en redes sociales (funcionalidad social futura).
 - Sistema de valoración/comentarios para planes (solo para actividades).
-- Edición de planes ya creados (solo creación y visualización).
-- Compartir planes en redes sociales (funcionalidad social futura).
-- Sistema de valoración/comentarios para planes (solo para actividades).
+- Integración con múltiples pasarelas de pago (solo ePayco en v2.0).
+- Soporte para múltiples monedas (solo COP - Pesos colombianos).
+- Sistema de cupones y descuentos.
+- Programa de puntos o fidelización.
 
 ---
 
@@ -588,3 +837,195 @@ Los siguientes elementos no están contemplados en la versión actual:
 ---
 
 *Documento preparado a partir del código fuente real del proyecto ETA (eta_app) — Spring Boot 3 + MySQL + Thymeleaf.*
+
+---
+
+## 16. Historial de Cambios
+
+### Versión 2.0 — 24 de abril de 2026
+
+Esta versión representa un salto significativo en funcionalidades avanzadas, agregando inteligencia artificial, pagos reales, y predicciones de ocupación.
+
+#### Commit 1: Planes del Día + UI Responsive (8 de abril de 2026)
+**Hash:** `c5672a72`
+
+**Nuevas Características:**
+- ✅ **Sistema completo de Planes del Día**: Clientes y colaboradores pueden crear rutas turísticas agrupando múltiples actividades
+- ✅ **Vistas de planes**: `/planes` (listado público), `/planes/{id}` (detalle), `/mis-planes` (del creador)
+- ✅ **Mapa interactivo en planes**: Muestra todas las actividades del plan con marcadores
+- ✅ **Preguntas frecuentes por actividad**: Entidad `PreguntaFrecuenteActividad` con accordion UI
+- ✅ **CLAUDE.md**: Documentación arquitectónica completa para IA
+- ✅ **Mejoras UI/UX**: Responsive design, mejoras en login, detalle de actividad, perfil colaborador
+
+**Archivos Clave:**
+- `entity/Plan.java`, `entity/PlanActividad.java`, `entity/PreguntaFrecuenteActividad.java`
+- `controller/PlanController.java`, `ClientePlanController.java`, `ColaboradorPlanController.java`
+- `service/PlanService.java` + implementación
+- `templates/planes/` (crear-plan.html, detalle-plan.html, mis-planes.html, planes.html)
+- `static/js/planes/` (crear-plan.js, planes.js)
+- `CLAUDE.md` (493 líneas de arquitectura documentada)
+
+---
+
+#### Commit 2: Modelo Predictivo de Ocupación (15 de abril de 2026)
+**Hash:** `6f876f1f`
+
+**Nuevas Características:**
+- ✅ **Modelo de Machine Learning**: Regresión lineal para predecir ocupación de disponibilidades
+- ✅ **Servicio de Predicción**: `PrediccionService` con algoritmo basado en Apache Commons Math
+- ✅ **Visualización de predicciones**: Dashboard colaborador muestra ocupación esperada (baja/media/alta)
+- ✅ **DTO especializado**: `PrediccionOcupacionDTO` con múltiples métricas
+- ✅ **Archivo de modelo entrenado**: `modeloPredictivo.model` (190KB)
+- ✅ **Documentación técnica**: `mds/creaccionDelModelo.md` (100 líneas)
+
+**Archivos Clave:**
+- `service/PrediccionService.java` + `PrediccionServiceImpl.java` (292 líneas)
+- `dto/PrediccionOcupacionDTO.java`
+- `static/js/prediccion.js` (242 líneas de visualización)
+- `resources/modeloPredictivo.model`
+- `predict/README.md` (201 líneas de explicación del algoritmo)
+- Actualización de `mds/db.md` (120 líneas) y `mds/PRD.md`
+
+**Tecnologías Agregadas:**
+- Apache Commons Math 3.x para regresión lineal
+
+---
+
+#### Commit 3: IA Generativa + Emails + Mapa de Cercanía (22 de abril de 2026)
+**Hash:** `356bb0b1`
+
+**Nuevas Características:**
+- ✅ **Chatbot con IA**: Integración con Anthropic Claude y OpenAI GPT
+- ✅ **Widget de chat flotante**: Disponible en todas las páginas principales
+- ✅ **Respuestas contextuales**: El bot conoce actividades, reservas y servicios de la plataforma
+- ✅ **Emails automatizados**:
+  - Email de confirmación tras crear reserva
+  - Email recordatorio 24h antes de la actividad
+  - Templates HTML profesionales (`templates/emails/`)
+- ✅ **Scheduler de recordatorios**: `RecordatorioReservaScheduler` ejecuta diariamente a las 9 AM
+- ✅ **Mapa de actividades cercanas**: `/actividades-cercanas` con búsqueda por radio de distancia
+- ✅ **Cálculo de distancias geográficas**: Query nativa con fórmula de Haversine
+
+**Archivos Clave:**
+- `config/ChatAiConfig.java` (configuración multi-proveedor IA)
+- `controller/ChatBotController.java` (62 líneas)
+- `service/ChatBotService.java` (214 líneas con integración dual Anthropic/OpenAI)
+- `service/EmailReservaService.java` + implementación (119 líneas)
+- `service/RecordatorioReservaScheduler.java` (94 líneas con @Scheduled)
+- `templates/emails/confirmacion-reserva.html` (226 líneas)
+- `templates/emails/recordatorio-reserva.html` (236 líneas)
+- `templates/actividades-cercanas.html` (142 líneas con mapa)
+- `static/js/chat-widget.js` (185 líneas)
+- `static/js/mapa-cercanas.js` (421 líneas con integración de mapas)
+- `dto/ChatMensajeRequestDTO.java`, `ChatMensajeResponseDTO.java`, `ActividadCercanaDTO.java`
+
+**Documentación:**
+- `mds/implementaIA.md` (548 líneas)
+- `mds/moduloMapaCercania.md` (474 líneas)
+- `mds/configuracion-emails.md` (218 líneas)
+- `mds/wompi.md` (792 líneas - documentación de alternativa de pago)
+
+**Tecnologías Agregadas:**
+- Spring AI (Anthropic Claude)
+- OpenAI Java SDK
+- Spring Mail + SMTP
+- Spring @Scheduled para tareas programadas
+
+**Dependencias Maven:**
+```xml
+<dependency>
+    <groupId>org.springframework.ai</groupId>
+    <artifactId>spring-ai-anthropic-spring-boot-starter</artifactId>
+</dependency>
+<dependency>
+    <groupId>com.theokanning.openai-gpt3-java</groupId>
+    <artifactId>service</artifactId>
+</dependency>
+```
+
+---
+
+#### Commit 4: Integración ePayco + Mejoras en Reservas (22 de abril de 2026)
+**Hash:** `f95a3129`
+
+**Nuevas Características:**
+- ✅ **Pasarela de pagos ePayco**: Integración completa para Colombia
+- ✅ **Checkout con iframe seguro**: `PagoController` maneja flujo de pago
+- ✅ **Confirmación vía webhook**: Endpoint `/pagos/confirmacion` valida firmas digitales
+- ✅ **Campo `ref_payco` en Reserva**: Almacena referencia de transacción
+- ✅ **Estado de pago en reservas**: Actualización automática tras pago exitoso
+- ✅ **Configuración ngrok**: Script PowerShell para desarrollo local con webhooks
+- ✅ **Ambiente sandbox/producción**: Credenciales configurables
+- ✅ **Mejoras en vista de reservas**: UI mejorada para colaboradores
+- ✅ **Sistema de comentarios refinado**: Componente mejorado con mejor UX
+- ✅ **Detalles de actividad enriquecidos**: Más información en vista de detalle
+
+**Archivos Clave:**
+- `config/EpaycoConfig.java` (78 líneas)
+- `controller/PagoController.java` (141 líneas con lógica de webhooks)
+- `service/EpaycoService.java` (133 líneas)
+- `entity/Reserva.java` (campo `ref_payco` agregado)
+- `templates/cliente/checkout.html` (199 líneas con iframe ePayco)
+- `templates/colaborador/reservaciones-actividad.html` (525 líneas mejoradas)
+- `templates/componentes/comentarios.html` (195 líneas refactorizadas)
+- `templates/componentes/preguntasFrecuentes.html` (65 líneas)
+- `templates/detalle-actividad.html` (88 líneas de mejoras)
+- `static/css/cliente/detalles.css` (237 líneas)
+- `static/css/componentes/preguntasFrecuentes.css` (160 líneas)
+- `start-epayco-dev.ps1` (144 líneas - script automatización ngrok)
+
+**Documentación ePayco:**
+- `EPAYCO_CREDENCIALES.md` (145 líneas)
+- `INICIO_RAPIDO_EPAYCO.md` (164 líneas)
+- `SETUP_NGROK_EPAYCO.md` (290 líneas)
+- `SOLUCION_EPAYCO_CLIENT_TOKEN.md` (346 líneas)
+- `mds/epayco.md` (254 líneas)
+
+**Configuración:**
+```properties
+# application.properties
+epayco.public-key=test_xxx
+epayco.private-key=test_xxx
+epayco.p-cust-id=xxx
+epayco.p-key=xxx
+epayco.test=true
+epayco.callback-url=https://xxx.ngrok.io/pagos/confirmacion
+epayco.confirmation-url=https://xxx.ngrok.io/pagos/confirmacion
+epayco.response-url=http://localhost:8080/cliente/reserva-exitosa
+```
+
+---
+
+### Resumen de Cambios v1.0 → v2.0
+
+| Categoría | Cambios |
+|-----------|---------|
+| **Nuevas Entidades** | Plan, PlanActividad, PreguntaFrecuenteActividad |
+| **Nuevos Servicios** | PlanService, PrediccionService, ChatBotService, EmailReservaService, EpaycoService |
+| **Nuevos Controllers** | PlanController, ClientePlanController, ColaboradorPlanController, ChatBotController, PagoController |
+| **Integraciones Externas** | ePayco, Anthropic Claude, OpenAI GPT, Google Maps API |
+| **Machine Learning** | Modelo predictivo de ocupación (regresión lineal) |
+| **Emails** | Confirmación y recordatorios automatizados con templates HTML |
+| **UI/UX** | Responsive design completo, chat widget, mapas interactivos |
+| **Documentación** | +2,500 líneas de documentación técnica en `/mds` |
+| **Scripts** | `start-epayco-dev.ps1` para automatización ngrok |
+| **Líneas de Código** | ~8,000 líneas nuevas en Java/HTML/JS/CSS |
+
+---
+
+### Próximas Versiones Planificadas
+
+**v2.1 (Mayo 2026):**
+- Sistema de notificaciones en tiempo real (WebSocket completo)
+- Panel de analítica para colaboradores
+- Sistema de reembolsos
+
+**v3.0 (Junio 2026):**
+- App móvil (React Native/Flutter)
+- Multi-idioma en interfaz
+- Sistema de cupones y descuentos
+- Programa de puntos de fidelización
+
+---
+
+*Última actualización: 24 de abril de 2026*

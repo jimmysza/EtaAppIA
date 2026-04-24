@@ -9,6 +9,7 @@ public interface AdminService {
     Admin buscarAdminPorId(long idAdmin);
     Admin obtenerAdminPrincipal();
     Admin actualizarPorcentajeComision(BigDecimal porcentajeComision);
+    Admin actualizarHorasCancelacion(Integer horasCancelacion);
     /*Optional<Admin> obtenerPorUsuario(Usuario usuario);*/
 
 }

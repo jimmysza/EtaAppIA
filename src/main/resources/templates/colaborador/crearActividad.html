@@ -226,6 +226,22 @@
                     </select>
                 </div>
 
+                <!-- Política de Cancelación -->
+                <div class="mb-6">
+                    <label class="block text-gray-900 font-bold mb-2">
+                        Política de Cancelación <span class="text-red-500">*</span>
+                    </label>
+                    <select id="politicaCancelacion" th:field="*{politicaCancelacion}" data-required="true"
+                        class="w-full px-4 py-3 bg-gray-50 border-0 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <option value="" disabled selected>Selecciona una política</option>
+                        <option value="SIN_REEMBOLSO">Sin reembolso - Reserva no reembolsable</option>
+                        <option value="REEMBOLSO_TOTAL_SI_A_TIEMPO">Reembolso total - Cancelación a tiempo (según ventana admin)</option>
+                        <option value="REEMBOLSO_PARCIAL">Reembolso parcial - 50% si cancela a tiempo</option>
+                        <option value="SIEMPRE_GRATUITA">Cancelación gratuita - Siempre 100% reembolsable</option>
+                    </select>
+                    <p class="text-xs text-gray-500 mt-1">Define cómo se manejan las cancelaciones para esta actividad</p>
+                </div>
+
                 <!-- Incluye -->
                 <div class="mb-6">
                     <label class="block text-gray-900 font-bold mb-2">

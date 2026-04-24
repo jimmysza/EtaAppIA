@@ -1,6 +1,7 @@
 package maineta.eta.controller;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
@@ -19,10 +20,13 @@ import maineta.eta.entity.Actividad;
 import maineta.eta.entity.Admin;
 import maineta.eta.entity.Categoria;
 import maineta.eta.entity.Cliente;
+import maineta.eta.entity.EstadoPagoColaborador;
+import maineta.eta.entity.EstadoReembolso;
 import maineta.eta.entity.Idioma;
 import maineta.eta.entity.Reserva;
 import maineta.eta.service.ActividadService;
 import maineta.eta.service.AdminService;
+import maineta.eta.service.CancelacionService;
 import maineta.eta.service.CategoriaService;
 import maineta.eta.service.ClienteService;
 import maineta.eta.service.ColaboradorService;
@@ -47,13 +51,15 @@ public class AdminController {
     private final ClienteService clienteService;
     private final ColaboradorService colaboradorService;
     private final DisponibilidadService disponibilidadService;
+    private final CancelacionService cancelacionService;
 
     /* @Autowired */
     public AdminController(AdminService adminService, IUploadFileService uploadFileService, CategoriaService categoriaService, IdiomaService idiomaService,
             ActividadService actividadService,
             UsuarioService usuarioService, ColaboradorService colaboradorService,
             ReservaService reservaService,
-            ClienteService clienteService, DisponibilidadService disponibilidadService) {
+            ClienteService clienteService, DisponibilidadService disponibilidadService,
+            CancelacionService cancelacionService) {
         this.adminService = adminService;
         this.uploadFileService = uploadFileService;
         this.categoriaService = categoriaService;
@@ -64,6 +70,7 @@ public class AdminController {
         this.usuarioService = usuarioService;
         this.reservaService = reservaService;
         this.colaboradorService = colaboradorService;
+        this.cancelacionService = cancelacionService;
     }
 
     @GetMapping("/dashboard")
@@ -102,6 +109,7 @@ public class AdminController {
         model.addAttribute("CantidadReservacion", reservaService.ContadorReservas());
         model.addAttribute("CantidadActividad", actividadService.ContadorActividades());
         model.addAttribute("CantidadDisponibilidades", disponibilidadService.ContadorDisponibilidades());
+        model.addAttribute("horasCancelacion", admin.getHorasCancelacion());
 
         return "admin/dashboard";
     }
@@ -195,6 +203,166 @@ public class AdminController {
             redirectAttrs.addFlashAttribute("error", e.getMessage());
         }
         return "redirect:/admin/categorias";
+    }
+
+    // ===== ENDPOINTS DE GESTIÓN DE PAGOS Y REEMBOLSOS =====
+
+    /**
+     * RN-13: Panel de administración de pagos pendientes a colaboradores
+     */
+    @GetMapping("/pagos")
+    public String listarPagosPendientes(@RequestParam(defaultValue = "0") int page, Model model) {
+        // Obtener reservas con estado CONFIRMADA o COMPLETADA y estadoPagoColaborador = PENDIENTE_PAGO
+        Page<Reserva> reservasPage = reservaService.obtenerReservasConPagoPendiente(PageRequest.of(page, 20));
+
+        // Calcular totales
+        BigDecimal totalPendiente = reservasPage.getContent().stream()
+            .map(r -> r.getPrecioColaborador() != null ? r.getPrecioColaborador().multiply(new BigDecimal(r.getCantidad())) : BigDecimal.ZERO)
+            .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        model.addAttribute("reservas", reservasPage.getContent());
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", reservasPage.getTotalPages());
+        model.addAttribute("totalPendiente", totalPendiente);
+        model.addAttribute("pagina", "pagos");
+
+        return "admin/pagos";
+    }
+
+    /**
+     * Marcar un pago al colaborador como pagado
+     */
+    @PostMapping("/pagos/marcar-pagado/{idReserva}")
+    public String marcarPagoPagado(@PathVariable Long idReserva, RedirectAttributes redirectAttrs) {
+        try {
+            Reserva reserva = reservaService.obtenerPorId(idReserva)
+                .orElseThrow(() -> new IllegalArgumentException("Reserva no encontrada"));
+
+            reserva.setEstadoPagoColaborador(EstadoPagoColaborador.PAGADO);
+            reserva.setFechaPagoColaborador(LocalDateTime.now());
+            reservaService.guardarReserva(reserva);
+
+            redirectAttrs.addFlashAttribute("mensaje", "Pago marcado como realizado");
+        } catch (Exception e) {
+            redirectAttrs.addFlashAttribute("error", "Error: " + e.getMessage());
+        }
+
+        return "redirect:/admin/pagos";
+    }
+
+    /**
+     * RN-13: Panel de administración de reembolsos pendientes
+     */
+    @GetMapping("/reembolsos")
+    public String listarReembolsosPendientes(@RequestParam(defaultValue = "0") int page, Model model) {
+        Page<Reserva> reservasPage = reservaService.obtenerReservasConReembolsoPendiente(PageRequest.of(page, 20));
+
+        BigDecimal totalReembolsos = reservasPage.getContent().stream()
+            .map(r -> r.getMontoReembolso() != null ? r.getMontoReembolso() : BigDecimal.ZERO)
+            .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        model.addAttribute("reservas", reservasPage.getContent());
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", reservasPage.getTotalPages());
+        model.addAttribute("totalReembolsos", totalReembolsos);
+        model.addAttribute("pagina", "reembolsos");
+
+        return "admin/reembolsos";
+    }
+
+    /**
+     * Marcar un reembolso como enviado
+     */
+    @PostMapping("/reembolsos/marcar-enviado/{idReserva}")
+    public String marcarReembolsoEnviado(@PathVariable Long idReserva, RedirectAttributes redirectAttrs) {
+        try {
+            Reserva reserva = reservaService.obtenerPorId(idReserva)
+                .orElseThrow(() -> new IllegalArgumentException("Reserva no encontrada"));
+
+            reserva.setEstadoReembolso(EstadoReembolso.REEMBOLSADO);
+            reserva.setFechaReembolso(LocalDateTime.now());
+            reservaService.guardarReserva(reserva);
+
+            redirectAttrs.addFlashAttribute("mensaje", "Reembolso marcado como enviado");
+        } catch (Exception e) {
+            redirectAttrs.addFlashAttribute("error", "Error: " + e.getMessage());
+        }
+
+        return "redirect:/admin/reembolsos";
+    }
+
+    /**
+     * RN-13: Cancelación manual de reserva por admin
+     */
+    @PostMapping("/reserva/cancelar/{idReserva}")
+    public String cancelarReservaAdmin(@PathVariable Long idReserva,
+                                      @RequestParam String tipoReembolso,
+                                      @RequestParam(required = false) BigDecimal montoReembolso,
+                                      @RequestParam String motivo,
+                                      RedirectAttributes redirectAttrs) {
+        try {
+            cancelacionService.cancelarPorAdmin(idReserva, tipoReembolso, montoReembolso, motivo);
+            redirectAttrs.addFlashAttribute("mensaje", "Reserva cancelada por administrador");
+        } catch (Exception e) {
+            redirectAttrs.addFlashAttribute("error", "Error: " + e.getMessage());
+        }
+
+        return "redirect:/admin/dashboard";
+    }
+
+    /**
+     * Configuración de ventana de cancelación
+     */
+    @PostMapping("/configuracion/cancelacion")
+    public String actualizarConfiguracionCancelacion(@RequestParam Integer horasCancelacion,
+                                                     RedirectAttributes redirectAttrs) {
+        try {
+            adminService.actualizarHorasCancelacion(horasCancelacion);
+            redirectAttrs.addFlashAttribute("mensaje", "Configuración de cancelación actualizada: " + horasCancelacion + " horas");
+        } catch (Exception e) {
+            redirectAttrs.addFlashAttribute("error", "Error: " + e.getMessage());
+        }
+
+        return "redirect:/admin/dashboard";
+    }
+
+    /**
+     * Panel de ingresos y comisiones ganadas por ETA
+     */
+    @GetMapping("/ingresos")
+    public String listarIngresos(@RequestParam(defaultValue = "0") int page,
+                                @RequestParam(required = false) String estado,
+                                Model model) {
+        Page<Reserva> reservasPage = reservaService.obtenerTodasReservas(PageRequest.of(page, 50));
+
+        // Filtrar por estado si se especifica
+        if (estado != null && !estado.isEmpty()) {
+            reservasPage = reservaService.obtenerPorEstado(estado, PageRequest.of(page, 50));
+        }
+
+        // Calcular estadísticas
+        BigDecimal totalComisionesGanadas = reservasPage.getContent().stream()
+            .filter(r -> "CONFIRMADA".equals(r.getEstado()) || "COMPLETADA".equals(r.getEstado()))
+            .map(r -> r.getComisionEta() != null ? r.getComisionEta() : BigDecimal.ZERO)
+            .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        long totalReservas = reservasPage.getTotalElements();
+        long reservasCompletadas = reservasPage.getContent().stream()
+            .filter(r -> "COMPLETADA".equals(r.getEstado())).count();
+        long reservasCanceladas = reservasPage.getContent().stream()
+            .filter(r -> r.getEstado().startsWith("CANCELADA")).count();
+
+        model.addAttribute("reservas", reservasPage.getContent());
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", reservasPage.getTotalPages());
+        model.addAttribute("totalComisionesGanadas", totalComisionesGanadas);
+        model.addAttribute("totalReservas", totalReservas);
+        model.addAttribute("reservasCompletadas", reservasCompletadas);
+        model.addAttribute("reservasCanceladas", reservasCanceladas);
+        model.addAttribute("estadoFiltro", estado);
+        model.addAttribute("pagina", "ingresos");
+
+        return "admin/ingresos";
     }
 
 }

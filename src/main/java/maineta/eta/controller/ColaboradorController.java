@@ -2,6 +2,7 @@ package maineta.eta.controller;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.security.Principal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.YearMonth;
@@ -47,6 +48,7 @@ import maineta.eta.entity.PreguntaFrecuenteActividad;
 import maineta.eta.entity.Reserva;
 import maineta.eta.entity.Usuario;
 import maineta.eta.service.ActividadService;
+import maineta.eta.service.CancelacionService;
 import maineta.eta.service.CategoriaService;
 import maineta.eta.service.ChatService;
 import maineta.eta.service.ColaboradorService;
@@ -77,13 +79,14 @@ public class ColaboradorController {
     private final ChatService chatService;
     private final KpiColaboradorService kpiColaboradorService;
     private final PrediccionService prediccionService;
+    private final CancelacionService cancelacionService;
 
     public ColaboradorController(ActividadService actividadService, UsuarioService usuarioService,
             ColaboradorService colaboradorService, IUploadFileService uploadFileService,
             CategoriaService categoriaService, IdiomaService idiomaService, DisponibilidadService disponibilidadService,
             ReservaService reservaService, PatronDisponibilidadService patronDisponibilidadService,
             ChatService chatService, KpiColaboradorService kpiColaboradorService,
-            PrediccionService prediccionService) {
+            PrediccionService prediccionService, CancelacionService cancelacionService) {
         this.actividadService = actividadService;
         this.usuarioService = usuarioService;
         this.colaboradorService = colaboradorService;
@@ -96,6 +99,7 @@ public class ColaboradorController {
         this.chatService = chatService;
         this.kpiColaboradorService = kpiColaboradorService;
         this.prediccionService = prediccionService;
+        this.cancelacionService = cancelacionService;
     }
 
     @ModelAttribute
@@ -169,6 +173,7 @@ public class ColaboradorController {
         model.addAttribute("colaboradorPerfil", colaborador);
         model.addAttribute("usuarioPerfil", usuario);
         model.addAttribute("ultimasReservas", ultimasReservas);
+        model.addAttribute("penalizaciones", colaborador.getPenalizaciones());
 
         return "colaborador/dashboard";
     }
@@ -840,5 +845,41 @@ public class ColaboradorController {
             return texto;
         }
         return texto.substring(0, 1).toUpperCase() + texto.substring(1);
+    }
+
+    /**
+     * Cancelar una disponibilidad completa (todas sus reservas)
+     * RN-09: Incrementa penalizaciones del colaborador
+     */
+    @PostMapping("/disponibilidades/cancelar/{idDisponibilidad}")
+    public String cancelarDisponibilidad(@PathVariable Long idDisponibilidad,
+                                        @RequestParam(required = false) String motivo,
+                                        Principal principal,
+                                        RedirectAttributes redirectAttributes) {
+        try {
+            String email = principal.getName();
+            Usuario usuario = usuarioService.obtenerPorEmail(email);
+            Colaborador colaborador = colaboradorService.obtenerPorUsuario(usuario)
+                .orElseThrow(() -> new IllegalStateException("Colaborador no encontrado"));
+
+            // Validar que existen reservas confirmadas
+            Disponibilidad disponibilidad = disponibilidadService.obtenerPorId(idDisponibilidad)
+                .orElseThrow(() -> new IllegalArgumentException("Disponibilidad no encontrada"));
+
+            if (motivo == null || motivo.isBlank()) {
+                motivo = "Cancelada por el colaborador sin motivo especificado";
+            }
+
+            cancelacionService.cancelarPorColaborador(idDisponibilidad, colaborador.getIdColaborador(), motivo);
+
+            redirectAttributes.addFlashAttribute("mensajeExito", 
+                "Disponibilidad cancelada. Todas las reservas han sido reembolsadas. Se ha incrementado tu contador de penalizaciones.");
+
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("mensajeError", 
+                "Error al cancelar disponibilidad: " + e.getMessage());
+        }
+
+        return "redirect:/colaborador/disponibilidades";
     }
 }

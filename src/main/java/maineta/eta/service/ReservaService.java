@@ -3,6 +3,9 @@ package maineta.eta.service;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 import maineta.eta.entity.Actividad;
 import maineta.eta.entity.Cliente;
 import maineta.eta.entity.Disponibilidad;
@@ -27,4 +30,11 @@ public interface ReservaService {
      */
     Reserva crearReservaDesdeEpayco(Long idDisponibilidad, Long idCliente, 
                                     Long idActividad, int cantidad, String refPayco) throws Exception;
+    
+    // Métodos para administración de pagos y reembolsos
+    Page<Reserva> obtenerReservasConPagoPendiente(Pageable pageable);
+    Page<Reserva> obtenerReservasConReembolsoPendiente(Pageable pageable);
+    Page<Reserva> obtenerTodasReservas(Pageable pageable);
+    Page<Reserva> obtenerPorEstado(String estado, Pageable pageable);
+    Optional<Reserva> obtenerPorId(Long idReserva);
 }

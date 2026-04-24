@@ -31,5 +31,8 @@ public class Admin {
     @Column(precision = 5, scale = 2)
     private BigDecimal porcentajeComision = new BigDecimal("18.00");
 
+    @Column(nullable = false)
+    private Integer horasCancelacion = 24;
+
     // getters y setters
 }

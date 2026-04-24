@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ETA | Reembolsos Pendientes</title>
+    
+    <link rel="stylesheet" th:href="@{/css/global.css}">
+    <link rel="stylesheet" th:href="@{/css/adminBd.css}">
+    <link rel="stylesheet" th:href="@{/css/componentes/tabla.css}">
+    <link rel="stylesheet" th:href="@{/css/tailwind.css}">
+    <link rel="icon" th:href="@{/images/logos/logo.webp}" type="image/x-icon" />
+</head>
+<body>
+    <div th:if="${exito}" class="alert alert-success" role="alert">
+        <span th:text="${exito}">Reembolso registrado correctamente.</span>
+    </div>
+    <div th:if="${error}" class="alert alert-danger" role="alert">
+        <span th:text="${error}">Error al procesar reembolso.</span>
+    </div>
+
+    <section class="container-manager">
+        <div th:replace="~{componentes/sideBarAdmin :: sideBarAdmin}"></div>
+
+        <main class="main-content">
+            <div class="header-manager">
+                <div class="id-image">
+                    <div class="manager-user">
+                        <img th:src="@{/images/logos/logo.webp}" alt="ETA Admin">
+                    </div>
+                    <div class="id-content">
+                        <h1>Reembolsos Pendientes a Clientes</h1>
+                        <p>Gestiona los reembolsos pendientes</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow p-6 mb-6">
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="text-xl font-bold">Reservas con Reembolso Pendiente</h2>
+                    <span class="bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full text-sm font-semibold" 
+                          th:text="${reembolsosPage.totalElements} + ' pendientes'">0 pendientes</span>
+                </div>
+
+                <table class="w-full">
+                    <thead>
+                        <tr class="bg-gray-50">
+                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">ID</th>
+                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Cliente</th>
+                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actividad</th>
+                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Monto Reembolso</th>
+                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Fecha Cancelación</th>
+                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Cancelado Por</th>
+                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Motivo</th>
+                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:if="${reembolsosPage.content == null or reembolsosPage.content.isEmpty()}">
+                            <td colspan="8" class="text-center py-8 text-gray-500">No hay reembolsos pendientes</td>
+                        </tr>
+                        <tr th:each="reserva : ${reembolsosPage.content}" class="border-b hover:bg-gray-50">
+                            <td class="px-4 py-3" th:text="${reserva.idReserva}">1</td>
+                            <td class="px-4 py-3">
+                                <div class="font-medium" th:text="${reserva.cliente.nombre}">Cliente</div>
+                                <div class="text-sm text-gray-500" th:text="${reserva.cliente.usuario.email}">email</div>
+                            </td>
+                            <td class="px-4 py-3">
+                                <div class="font-medium" th:text="${reserva.actividad.titulo}">Actividad</div>
+                                <div class="text-sm text-gray-500" th:text="'Colaborador: ' + ${reserva.actividad.colaborador.nombre}"></div>
+                            </td>
+                            <td class="px-4 py-3 font-semibold text-red-600" 
+                                th:text="'$' + ${#numbers.formatDecimal(reserva.montoReembolso, 0, 'POINT', 0, 'COMMA')}">$100,000</td>
+                            <td class="px-4 py-3" th:text="${#temporals.format(reserva.fechaCancelacion, 'dd/MM/yyyy HH:mm')}">01/01/2025</td>
+                            <td class="px-4 py-3">
+                                <span class="px-2 py-1 rounded text-xs font-medium"
+                                      th:classappend="${reserva.canceladoPor == 'CLIENTE' ? 'bg-blue-100 text-blue-800' : (reserva.canceladoPor == 'COLABORADOR' ? 'bg-purple-100 text-purple-800' : 'bg-gray-100 text-gray-800')}"
+                                      th:text="${reserva.canceladoPor}">CLIENTE</span>
+                            </td>
+                            <td class="px-4 py-3 text-sm max-w-xs truncate" th:text="${reserva.motivoCancelacion}" title="${reserva.motivoCancelacion}">Motivo</td>
+                            <td class="px-4 py-3">
+                                <form th:action="@{/admin/reembolsos/marcar-enviado/{idReserva}(idReserva=${reserva.idReserva})}" method="post" class="inline">
+                                    <button type="submit" 
+                                            class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded text-sm font-medium"
+                                            onclick="return confirm('¿Confirmar que se realizó el reembolso al cliente?')">
+                                        Marcar como Reembolsado
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <!-- Paginación -->
+                <div class="flex items-center justify-between mt-6" th:if="${reembolsosPage.totalPages > 1}">
+                    <div class="text-sm text-gray-500">
+                        Mostrando <span th:text="${reembolsosPage.number * reembolsosPage.size + 1}">1</span> a 
+                        <span th:text="${(reembolsosPage.number + 1) * reembolsosPage.size > reembolsosPage.totalElements ? reembolsosPage.totalElements : (reembolsosPage.number + 1) * reembolsosPage.size}">10</span> 
+                        de <span th:text="${reembolsosPage.totalElements}">100</span> resultados
+                    </div>
+                    <div class="flex gap-2">
+                        <a th:if="${!reembolsosPage.first}" 
+                           th:href="@{/admin/reembolsos(page=${reembolsosPage.number - 1})}"
+                           class="px-4 py-2 bg-gray-100 text-gray-700 rounded hover:bg-gray-200">Anterior</a>
+                        <a th:if="${!reembolsosPage.last}" 
+                           th:href="@{/admin/reembolsos(page=${reembolsosPage.number + 1})}"
+                           class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Siguiente</a>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </section>
+
+    <script th:src="@{/js/alert.js}"></script>
+</body>
+</html>

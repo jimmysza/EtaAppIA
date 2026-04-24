@@ -173,6 +173,37 @@
                                     <input id="nit" th:field="*{nit}" type="text" required
                                         class="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-900 outline-none transition focus:border-sky-500 focus:bg-white focus:ring-4 focus:ring-sky-100">
                                 </div>
+
+                                <div class="md:col-span-2 mt-4">
+                                    <p class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3">Información Bancaria para Pagos</p>
+                                </div>
+
+                                <div>
+                                    <label for="banco" class="block text-sm font-semibold text-slate-700 mb-2">Banco</label>
+                                    <input id="banco" th:field="*{banco}" type="text" 
+                                        placeholder="Ej: Bancolombia, Davivienda"
+                                        class="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-900 outline-none transition focus:border-sky-500 focus:bg-white focus:ring-4 focus:ring-sky-100">
+                                </div>
+
+                                <div>
+                                    <label for="numeroCuenta" class="block text-sm font-semibold text-slate-700 mb-2">Número de Cuenta</label>
+                                    <input id="numeroCuenta" th:field="*{numeroCuenta}" type="text" 
+                                        placeholder="Número de cuenta bancaria"
+                                        class="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-900 outline-none transition focus:border-sky-500 focus:bg-white focus:ring-4 focus:ring-sky-100">
+                                </div>
+
+                                <div class="md:col-span-2">
+                                    <label for="tipoCuenta" class="block text-sm font-semibold text-slate-700 mb-2">Tipo de Cuenta</label>
+                                    <select id="tipoCuenta" th:field="*{tipoCuenta}"
+                                        class="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-900 outline-none transition focus:border-sky-500 focus:bg-white focus:ring-4 focus:ring-sky-100">
+                                        <option value="">Selecciona tipo de cuenta</option>
+                                        <option value="AHORROS">Ahorros</option>
+                                        <option value="CORRIENTE">Corriente</option>
+                                    </select>
+                                    <p class="text-xs text-slate-500 mt-2">
+                                        Esta información se usa para transferir tus pagos por las reservas completadas.
+                                    </p>
+                                </div>
                             </div>
 
                             <div class="mt-8 rounded-3xl bg-slate-950 px-5 py-5 text-white">

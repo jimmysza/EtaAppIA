@@ -2,6 +2,8 @@ package maineta.eta.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -34,6 +36,20 @@ public class Colaborador {
 
     @Column(name = "foto_perfil", length = 255)
     private String fotoPerfil;
+
+    // Campos para pagos a colaborador
+    @Column(length = 100)
+    private String banco;
+
+    @Column(length = 50)
+    private String numeroCuenta;
+
+    @Enumerated(EnumType.STRING)
+    @Column(length = 20)
+    private TipoCuenta tipoCuenta;
+
+    @Column(nullable = false)
+    private Integer penalizaciones = 0;
 
     // getters y setters
 }

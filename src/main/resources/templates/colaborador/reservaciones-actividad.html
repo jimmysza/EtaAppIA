@@ -13,7 +13,7 @@
     <link rel="stylesheet" th:href="@{/css/colaborador/navColab.css}">
     <link rel="stylesheet" th:href="@{/css/tailwind.css}">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-
+<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <style>
         .resumen-general {
             display: flex;
@@ -190,6 +190,14 @@
             cursor: pointer;
             transition: background 0.2s;
             user-select: none;
+        }
+
+        .btn-sub{
+            padding: 7px 10px;
+            border-radius: 8px;
+            background:rgb(0, 174, 255);
+            color: white;
+
         }
 
         .slot-header:hover {
@@ -523,8 +531,8 @@
                         <option value="Cancelada">Cancelada</option>
                     </select>
 
-                    <div class="btnSubmit">
-                        <button type="submit" class="button-default">Guardar</button>
+                    <div class="w-full flex justify-center">
+                        <button type="submit" class="btn-sub">Guardar</button>
                     </div>
                 </div>
             </form>

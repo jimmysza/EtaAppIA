@@ -1,14 +1,18 @@
 package maineta.eta.entity;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -49,6 +53,46 @@ public class Reserva {
 
     @Column(length = 100, unique = true)
     private String refPayco; // Referencia del pago en ePayco
+
+    // Campos de precios y comisiones (RN-01, RN-02)
+    @Column(precision = 10, scale = 2)
+    private BigDecimal precioColaborador; // Precio base de la actividad
+
+    @Column(precision = 10, scale = 2)
+    private BigDecimal precioConsumidor; // Precio con comisión que pagó el cliente
+
+    @Column(precision = 5, scale = 2)
+    private BigDecimal comisionPorcentaje; // % de comisión aplicado (ej: 18.00)
+
+    @Column(precision = 10, scale = 2)
+    private BigDecimal comisionEta; // Monto que gana ETA (precioConsumidor - precioColaborador)
+
+    // Campos de pago al colaborador
+    @Enumerated(EnumType.STRING)
+    @Column(length = 30)
+    private EstadoPagoColaborador estadoPagoColaborador = EstadoPagoColaborador.PENDIENTE_PAGO;
+
+    private LocalDateTime fechaPagoColaborador;
+
+    // Campos de cancelación y reembolsos
+    @Enumerated(EnumType.STRING)
+    @Column(length = 50)
+    private PoliticaCancelacion politicaAplicada; // Política vigente al momento de la reserva
+
+    @Column(precision = 10, scale = 2)
+    private BigDecimal montoReembolso; // Monto a reembolsar al cliente en caso de cancelación
+
+    @Enumerated(EnumType.STRING)
+    @Column(length = 30)
+    private EstadoReembolso estadoReembolso = EstadoReembolso.SIN_REEMBOLSO;
+
+    private LocalDateTime fechaReembolso;
+
+    @Column(length = 20)
+    private String canceladoPor; // CLIENTE, COLABORADOR, ADMIN
+
+    @Lob
+    private String motivoCancelacion;
 
     public Cliente getCliente() {
         return cliente;

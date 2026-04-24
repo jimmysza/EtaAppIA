@@ -44,7 +44,7 @@ Obtén tu authtoken en: https://dashboard.ngrok.com/signup
 # Terminal 1: Iniciar Spring Boot
 mvnw spring-boot:run
 
-# Terminal 2: Iniciar ngrok
+# Terminal 2: Iniciar ngroka
 ngrok http 8080
 
 # Copiar la URL de ngrok (ej: https://abc123.ngrok-free.app)

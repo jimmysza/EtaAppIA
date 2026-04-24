@@ -67,4 +67,11 @@ public class AdminServiceimpl implements AdminService {
         admin.setPorcentajeComision(porcentajeComision);
         return adminRepository.save(admin);
     }
+
+    @Override
+    public Admin actualizarHorasCancelacion(Integer horasCancelacion) {
+        Admin admin = obtenerAdminPrincipal();
+        admin.setHorasCancelacion(horasCancelacion);
+        return adminRepository.save(admin);
+    }
 }

@@ -5,12 +5,17 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import maineta.eta.entity.Cliente;
+import maineta.eta.entity.Disponibilidad;
+import maineta.eta.entity.EstadoPagoColaborador;
+import maineta.eta.entity.EstadoReembolso;
 import maineta.eta.entity.Reserva;
 
 @Repository
@@ -24,6 +29,9 @@ public interface ReservaRepository extends JpaRepository<Reserva, Long> {
     Optional<Reserva> findByIdReservaAndActividad_Colaborador_Usuario_Email(Long idReserva, String email);
     Optional<Reserva> findByidReserva(Long idReserva);
     Optional<Reserva> findByRefPayco(String refPayco);
+    
+    // Para cancelaciones por colaborador
+    List<Reserva> findByDisponibilidadAndEstado(Disponibilidad disponibilidad, String estado);
 
     // Queries para KPIs
 
@@ -127,4 +135,9 @@ public interface ReservaRepository extends JpaRepository<Reserva, Long> {
         AND (r.estado = 'PENDIENTE' OR r.estado = 'CONFIRMADA' OR r.estado = 'Confirmada' OR r.estado = 'Pendiente')
     """)
     List<Reserva> findReservasPorFechaDisponibilidad(@Param("fecha") java.time.LocalDate fecha);
+    
+    // Métodos de paginación para administración
+    Page<Reserva> findByEstadoPagoColaborador(EstadoPagoColaborador estadoPagoColaborador, Pageable pageable);
+    Page<Reserva> findByEstadoReembolso(EstadoReembolso estadoReembolso, Pageable pageable);
+    Page<Reserva> findByEstado(String estado, Pageable pageable);
 }

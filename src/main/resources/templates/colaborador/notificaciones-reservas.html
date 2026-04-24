@@ -17,6 +17,7 @@
         }
 
         .notification-list::-webkit-scrollbar {
+            gap: 7px;
             width: 8px;
         }
 
@@ -86,7 +87,7 @@
                     </div>
 
                     <div th:if="${!#lists.isEmpty(reservasRecientes)}" class="grid grid-cols-1 xl:grid-cols-2 gap-6">
-                        <section class="notification-card rounded-3xl bg-white p-6">
+                        <section class="notification-card w-full rounded-3xl bg-white p-6">
                             <div class="flex items-center justify-between mb-5">
                                 <div>
                                     <p class="text-xs font-bold uppercase tracking-wider text-sky-600 mb-2">Timeline</p>
@@ -131,14 +132,14 @@
                             </div>
                         </section>
 
-                        <section class="notification-card rounded-3xl bg-white p-6">
+                        <section class="notification-card w-full rounded-3xl bg-white p-6">
                             <div class="mb-5">
                                 <p class="text-xs font-bold uppercase tracking-wider text-emerald-600 mb-2">Agrupado</p>
                                 <h2 class="text-xl font-black text-slate-950">Mas recientes por actividad</h2>
                             </div>
 
-                            <div class="notification-list max-h-[720px] overflow-y-auto space-y-5 pr-1">
-                                <article th:each="entry : ${reservasPorActividad}" class="rounded-2xl border border-slate-200 p-4">
+                            <div class="notification-list max-h-[720px] overflow-y-auto space-y-5 pr-1 gap-3 ">
+                                <article th:each="entry : ${reservasPorActividad}" class="rounded-2xl border border-slate-200 p-4 mt-3">
                                     <div class="flex items-center justify-between gap-3 mb-3">
                                         <h3 class="text-base font-bold text-slate-950" th:text="${entry.key}">Actividad</h3>
                                         <span class="rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-700"
@@ -147,7 +148,7 @@
 
                                     <div class="mb-3" th:if="${!#lists.isEmpty(entry.value) and entry.value[0].actividad != null}">
                                         <a th:href="@{/colaborador/reservas/{idActividad}(idActividad=${entry.value[0].actividad.idActividad})}"
-                                            class="inline-flex items-center justify-center rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-2 text-sm font-semibold text-emerald-700 transition hover:bg-emerald-100">
+                                            class="inline-flex items-center justify-center rounded-xl border border-emerald-200 text-white bg-emerald-500 px-4 py-2 text-sm font-semibold  transition hover:bg-emerald-100">
                                             Ir a reservas de esta actividad
                                         </a>
                                     </div>

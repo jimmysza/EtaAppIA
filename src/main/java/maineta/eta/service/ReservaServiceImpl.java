@@ -4,12 +4,16 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import maineta.eta.entity.Actividad;
 import maineta.eta.entity.Cliente;
 import maineta.eta.entity.Disponibilidad;
+import maineta.eta.entity.EstadoPagoColaborador;
+import maineta.eta.entity.EstadoReembolso;
 import maineta.eta.entity.Reserva;
 import maineta.eta.repository.ReservaRepository;
 
@@ -152,5 +156,30 @@ public class ReservaServiceImpl implements ReservaService {
         
         // Guardar y retornar
         return reservaRepository.save(reserva);
+    }
+    
+    @Override
+    public Page<Reserva> obtenerReservasConPagoPendiente(Pageable pageable) {
+        return reservaRepository.findByEstadoPagoColaborador(EstadoPagoColaborador.PENDIENTE_PAGO, pageable);
+    }
+    
+    @Override
+    public Page<Reserva> obtenerReservasConReembolsoPendiente(Pageable pageable) {
+        return reservaRepository.findByEstadoReembolso(EstadoReembolso.PENDIENTE_REEMBOLSO, pageable);
+    }
+    
+    @Override
+    public Page<Reserva> obtenerTodasReservas(Pageable pageable) {
+        return reservaRepository.findAll(pageable);
+    }
+    
+    @Override
+    public Page<Reserva> obtenerPorEstado(String estado, Pageable pageable) {
+        return reservaRepository.findByEstado(estado, pageable);
+    }
+    
+    @Override
+    public Optional<Reserva> obtenerPorId(Long idReserva) {
+        return reservaRepository.findById(idReserva);
     }
 }

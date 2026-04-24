@@ -1,7 +1,9 @@
 package maineta.eta.controller;
 
 import java.math.BigDecimal;
+import java.security.Principal;
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -37,6 +39,8 @@ import maineta.eta.entity.MensajeChat;
 import maineta.eta.entity.Reserva;
 import maineta.eta.entity.Usuario;
 import maineta.eta.service.ActividadService;
+import maineta.eta.service.CancelacionFueraDeTiempoException;
+import maineta.eta.service.CancelacionService;
 import maineta.eta.service.ChatService;
 import maineta.eta.service.ClienteService;
 import maineta.eta.service.ComentarioService;
@@ -61,6 +65,7 @@ public class ClienteController {
     private final ChatService chatService;
     private final EmailReservaService emailReservaService;
     private final EpaycoConfig epaycoConfig;
+    private final CancelacionService cancelacionService;
 
     public ClienteController(
             ActividadService actividadService,
@@ -73,7 +78,8 @@ public class ClienteController {
             ComentarioService comentarioService,
             ChatService chatService,
             EmailReservaService emailReservaService,
-            EpaycoConfig epaycoConfig) {
+            EpaycoConfig epaycoConfig,
+            CancelacionService cancelacionService) {
 
         this.actividadService = actividadService;
         this.reservaService = reservaService;
@@ -86,6 +92,7 @@ public class ClienteController {
         this.chatService = chatService;
         this.emailReservaService = emailReservaService;
         this.epaycoConfig = epaycoConfig;
+        this.cancelacionService = cancelacionService;
     }
 
     @GetMapping("/dashboard")
@@ -519,6 +526,62 @@ public class ClienteController {
         if (error != null) {
             model.addAttribute("error", error);
         }
+    }
+
+    /**
+     * Endpoint para validar si un cliente puede cancelar una reserva
+     * Devuelve información de la cancelación vía AJAX
+     */
+    @GetMapping("/reserva/validar-cancelacion/{idReserva}")
+    @ResponseBody
+    public Map<String, Object> validarCancelacion(@PathVariable Long idReserva, Principal principal) {
+        try {
+            String email = principal.getName();
+            Usuario usuario = usuarioService.obtenerPorEmail(email);
+            Cliente cliente = clienteService.obtenerPorUsuario(usuario)
+                .orElseThrow(() -> new IllegalStateException("Cliente no encontrado"));
+
+            CancelacionService.CancelacionInfo info = cancelacionService.validarCancelacion(idReserva, cliente.getId());
+
+            Map<String, Object> response = new HashMap<>();
+            response.put("puede", info.isPuede());
+            response.put("montoReembolso", info.getMontoReembolso());
+            response.put("mensaje", info.getMensaje());
+            response.put("horasRestantes", info.getHorasRestantes());
+            return response;
+
+        } catch (Exception e) {
+            Map<String, Object> error = new HashMap<>();
+            error.put("puede", false);
+            error.put("mensaje", e.getMessage());
+            return error;
+        }
+    }
+
+    /**
+     * Endpoint para cancelar una reserva
+     */
+    @PostMapping("/reserva/cancelar/{idReserva}")
+    public String cancelarReserva(@PathVariable Long idReserva, 
+                                  Principal principal,
+                                  RedirectAttributes redirectAttributes) {
+        try {
+            String email = principal.getName();
+            Usuario usuario = usuarioService.obtenerPorEmail(email);
+            Cliente cliente = clienteService.obtenerPorUsuario(usuario)
+                .orElseThrow(() -> new IllegalStateException("Cliente no encontrado"));
+
+            cancelacionService.cancelarPorCliente(idReserva, cliente.getId());
+
+            redirectAttributes.addFlashAttribute("mensajeExito", "Reserva cancelada exitosamente. El reembolso será procesado en los próximos días.");
+            
+        } catch (CancelacionFueraDeTiempoException e) {
+            redirectAttributes.addFlashAttribute("mensajeError", e.getMessage());
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("mensajeError", "Error al cancelar la reserva: " + e.getMessage());
+        }
+
+        return "redirect:/cliente/dashboard";
     }
 
 }

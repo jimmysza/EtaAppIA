@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ETA | Pagos Pendientes</title>
+    
+    <link rel="stylesheet" th:href="@{/css/global.css}">
+    <link rel="stylesheet" th:href="@{/css/adminBd.css}">
+    <link rel="stylesheet" th:href="@{/css/componentes/tabla.css}">
+    <link rel="stylesheet" th:href="@{/css/tailwind.css}">
+    <link rel="icon" th:href="@{/images/logos/logo.webp}" type="image/x-icon" />
+</head>
+<body>
+    <div th:if="${exito}" class="alert alert-success" role="alert">
+        <span th:text="${exito}">Pago registrado correctamente.</span>
+    </div>
+    <div th:if="${error}" class="alert alert-danger" role="alert">
+        <span th:text="${error}">Error al procesar pago.</span>
+    </div>
+
+    <section class="container-manager">
+        <div th:replace="~{componentes/sideBarAdmin :: sideBarAdmin}"></div>
+
+        <main class="main-content">
+            <div class="header-manager">
+                <div class="id-image">
+                    <div class="manager-user">
+                        <img th:src="@{/images/logos/logo.webp}" alt="ETA Admin">
+                    </div>
+                    <div class="id-content">
+                        <h1>Pagos Pendientes a Colaboradores</h1>
+                        <p>Gestiona los pagos pendientes</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow p-6 mb-6">
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="text-xl font-bold">Reservas con Pago Pendiente</h2>
+                    <span class="bg-orange-100 text-orange-800 px-3 py-1 rounded-full text-sm font-semibold" 
+                          th:text="${pagosPage.totalElements} + ' pendientes'">0 pendientes</span>
+                </div>
+
+                <table class="w-full">
+                    <thead>
+                        <tr class="bg-gray-50">
+                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">ID</th>
+                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Cliente</th>
+                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Colaborador</th>
+                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actividad</th>
+                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Fecha Actividad</th>
+                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Precio Colaborador</th>
+                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Comisión ETA</th>
+                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:if="${pagosPage.content == null or pagosPage.content.isEmpty()}">
+                            <td colspan="8" class="text-center py-8 text-gray-500">No hay pagos pendientes</td>
+                        </tr>
+                        <tr th:each="reserva : ${pagosPage.content}" class="border-b hover:bg-gray-50">
+                            <td class="px-4 py-3" th:text="${reserva.idReserva}">1</td>
+                            <td class="px-4 py-3">
+                                <div class="font-medium" th:text="${reserva.cliente.nombre}">Cliente</div>
+                                <div class="text-sm text-gray-500" th:text="${reserva.cliente.usuario.email}">email</div>
+                            </td>
+                            <td class="px-4 py-3">
+                                <div class="font-medium" th:text="${reserva.actividad.colaborador.nombre}">Colaborador</div>
+                                <div class="text-sm text-gray-500">
+                                    <span th:text="'Banco: ' + ${reserva.actividad.colaborador.banco ?: 'No registrado'}"></span><br>
+                                    <span th:text="'Cuenta: ' + ${reserva.actividad.colaborador.numeroCuenta ?: 'No registrada'}"></span>
+                                </div>
+                            </td>
+                            <td class="px-4 py-3" th:text="${reserva.actividad.titulo}">Actividad</td>
+                            <td class="px-4 py-3" th:text="${#temporals.format(reserva.disponibilidad.fecha, 'dd/MM/yyyy')}">01/01/2025</td>
+                            <td class="px-4 py-3 font-semibold text-green-600" 
+                                th:text="'$' + ${#numbers.formatDecimal(reserva.precioColaborador, 0, 'POINT', 0, 'COMMA')}">$100,000</td>
+                            <td class="px-4 py-3 font-semibold text-blue-600" 
+                                th:text="'$' + ${#numbers.formatDecimal(reserva.comisionEta, 0, 'POINT', 0, 'COMMA')}">$10,000</td>
+                            <td class="px-4 py-3">
+                                <form th:action="@{/admin/pagos/marcar-pagado/{idReserva}(idReserva=${reserva.idReserva})}" method="post" class="inline">
+                                    <button type="submit" 
+                                            class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded text-sm font-medium"
+                                            onclick="return confirm('¿Confirmar que se realizó el pago al colaborador?')">
+                                        Marcar como Pagado
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <!-- Paginación -->
+                <div class="flex items-center justify-between mt-6" th:if="${pagosPage.totalPages > 1}">
+                    <div class="text-sm text-gray-500">
+                        Mostrando <span th:text="${pagosPage.number * pagosPage.size + 1}">1</span> a 
+                        <span th:text="${(pagosPage.number + 1) * pagosPage.size > pagosPage.totalElements ? pagosPage.totalElements : (pagosPage.number + 1) * pagosPage.size}">10</span> 
+                        de <span th:text="${pagosPage.totalElements}">100</span> resultados
+                    </div>
+                    <div class="flex gap-2">
+                        <a th:if="${!pagosPage.first}" 
+                           th:href="@{/admin/pagos(page=${pagosPage.number - 1})}"
+                           class="px-4 py-2 bg-gray-100 text-gray-700 rounded hover:bg-gray-200">Anterior</a>
+                        <a th:if="${!pagosPage.last}" 
+                           th:href="@{/admin/pagos(page=${pagosPage.number + 1})}"
+                           class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Siguiente</a>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </section>
+
+    <script th:src="@{/js/alert.js}"></script>
+</body>
+</html>

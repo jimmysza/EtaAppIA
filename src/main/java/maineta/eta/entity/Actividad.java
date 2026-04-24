@@ -8,6 +8,8 @@ import java.util.List;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -72,6 +74,10 @@ public class Actividad {
 
     @Column(nullable = false    )
     private BigDecimal precio;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 50)
+    private PoliticaCancelacion politicaCancelacion = PoliticaCancelacion.REEMBOLSO_TOTAL_SI_A_TIEMPO;
 
     private LocalDateTime updatedAt = LocalDateTime.now();
 
