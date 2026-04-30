@@ -216,8 +216,14 @@ public class ClienteServiceImpl implements ClienteService {
         cliente.setUsuario(usuarioGuardado);
         Cliente clienteGuardado = clienteRepository.save(cliente);
         
-        // Enviar email de verificación
-        verificacionCorreoService.enviarCorreoVerificacion(usuarioGuardado);
+        // Enviar email de verificación (si falla, no cancela el registro)
+        try {
+            verificacionCorreoService.enviarCorreoVerificacion(usuarioGuardado);
+        } catch (Exception e) {
+            // Log del error pero no falla el registro
+            System.err.println("⚠️ Error al enviar email de verificación a " + usuarioGuardado.getEmail() + ": " + e.getMessage());
+            e.printStackTrace();
+        }
         
         return clienteGuardado;
     }

@@ -220,7 +220,8 @@ public class AdminController {
             .map(r -> r.getPrecioColaborador() != null ? r.getPrecioColaborador().multiply(new BigDecimal(r.getCantidad())) : BigDecimal.ZERO)
             .reduce(BigDecimal.ZERO, BigDecimal::add);
 
-        model.addAttribute("reservas", reservasPage.getContent());
+        model.addAttribute("pagosPage", reservasPage);
+        //model.addAttribute("reservas", reservasPage.getContent());
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", reservasPage.getTotalPages());
         model.addAttribute("totalPendiente", totalPendiente);
@@ -261,7 +262,7 @@ public class AdminController {
             .map(r -> r.getMontoReembolso() != null ? r.getMontoReembolso() : BigDecimal.ZERO)
             .reduce(BigDecimal.ZERO, BigDecimal::add);
 
-        model.addAttribute("reservas", reservasPage.getContent());
+        model.addAttribute("reembolsosPage", reservasPage);
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", reservasPage.getTotalPages());
         model.addAttribute("totalReembolsos", totalReembolsos);

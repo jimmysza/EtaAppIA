@@ -456,13 +456,20 @@ public class ColaboradorController {
             
             // Agregar predicciones para cada disponibilidad del día
             if (detalleDia != null && !detalleDia.isEmpty()) {
+                System.out.println("📅 Cargando " + detalleDia.size() + " disponibilidades del " + fechaSeleccionada);
                 for (DisponibilidadDetalleDTO detalle : detalleDia) {
                     try {
                         PrediccionOcupacionDTO prediccion = prediccionService.predecirOcupacion(detalle.getIdDisponibilidad());
                         detalle.setPrediccion(prediccion);
+                        if (prediccion != null) {
+                            System.out.println("✅ Predicción exitosa para disponibilidad " + detalle.getIdDisponibilidad());
+                        } else {
+                            System.out.println("⚠️ Predicción nula para disponibilidad " + detalle.getIdDisponibilidad());
+                        }
                     } catch (Exception e) {
-                        System.err.println("Error al predecir ocupación para disponibilidad " + 
+                        System.err.println("❌ Error al predecir ocupación para disponibilidad " + 
                             detalle.getIdDisponibilidad() + ": " + e.getMessage());
+                        e.printStackTrace();
                         // Continuar con las demás predicciones aunque falle una
                     }
                 }

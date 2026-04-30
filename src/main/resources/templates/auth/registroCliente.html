@@ -655,8 +655,11 @@
     function submitFormFinal() {
       if (!validarPasoModal()) return;
       cerrarModal();
-      // Hacer clic en el botón submit real del form
-      document.getElementById('btnSubmitReal').click();
+      // Enviar el formulario directamente
+      const form = document.querySelector('form');
+      if (form) {
+        form.submit();
+      }
     }
 
     // Permitir cerrar modal con ESC
