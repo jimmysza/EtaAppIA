@@ -159,6 +159,52 @@ public class ReservaServiceImpl implements ReservaService {
     }
     
     @Override
+    @Transactional
+    public Reserva crearReservaDesdeWompi(Long idDisponibilidad, Long idCliente, 
+                                          Long idActividad, int cantidad, String reference,
+                                          String wompiTransactionId) throws Exception {
+        
+        // Obtener actividad
+        Actividad actividad = actividadService.listarById(idActividad);
+        if (actividad == null) {
+            throw new Exception("Actividad no encontrada");
+        }
+                
+        // Obtener disponibilidad usando el servicio
+        Disponibilidad disponibilidad = disponibilidadService.obtenerPorId(idDisponibilidad)
+                .orElseThrow(() -> new Exception("Disponibilidad no encontrada"));
+
+        // Verificar cupos
+        if (disponibilidad.getCuposDisponibles() < cantidad) {
+            throw new Exception("No hay suficientes cupos disponibles. Solo quedan: " + disponibilidad.getCuposDisponibles());
+        }
+
+        // Obtener cliente
+        Cliente cliente = clienteService.obtenerPorId(idCliente);
+        if (cliente == null) {
+            throw new Exception("Cliente no encontrado");
+        }
+
+        // Crear reserva
+        Reserva reserva = new Reserva();
+        reserva.setActividad(actividad);
+        reserva.setDisponibilidad(disponibilidad);
+        reserva.setCliente(cliente);
+        reserva.setCantidad(cantidad);
+        reserva.setFechaReserva(LocalDateTime.now());
+        reserva.setEstado("Confirmada"); // Estado confirmado porque el pago fue exitoso
+        reserva.setRefWompi(reference); // Referencia de Wompi
+        reserva.setWompiTransactionId(wompiTransactionId); // ID de transacción de Wompi
+
+        // Reducir cupos
+        disponibilidad.setCuposDisponibles(disponibilidad.getCuposDisponibles() - cantidad);
+        actividadService.agregarActividad(actividad);
+        
+        // Guardar y retornar
+        return reservaRepository.save(reserva);
+    }
+    
+    @Override
     public Page<Reserva> obtenerReservasConPagoPendiente(Pageable pageable) {
         return reservaRepository.findByEstadoPagoColaborador(EstadoPagoColaborador.PENDIENTE_PAGO, pageable);
     }

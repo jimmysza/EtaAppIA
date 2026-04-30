@@ -31,6 +31,14 @@ public interface ReservaService {
     Reserva crearReservaDesdeEpayco(Long idDisponibilidad, Long idCliente, 
                                     Long idActividad, int cantidad, String refPayco) throws Exception;
     
+    /**
+     * Crea una reserva desde el proceso de pago de Wompi.
+     * Incluye la reference y wompiTransactionId para idempotencia y trazabilidad.
+     */
+    Reserva crearReservaDesdeWompi(Long idDisponibilidad, Long idCliente, 
+                                   Long idActividad, int cantidad, String reference, 
+                                   String wompiTransactionId) throws Exception;
+    
     // Métodos para administración de pagos y reembolsos
     Page<Reserva> obtenerReservasConPagoPendiente(Pageable pageable);
     Page<Reserva> obtenerReservasConReembolsoPendiente(Pageable pageable);

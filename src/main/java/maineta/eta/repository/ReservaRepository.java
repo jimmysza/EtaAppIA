@@ -29,6 +29,7 @@ public interface ReservaRepository extends JpaRepository<Reserva, Long> {
     Optional<Reserva> findByIdReservaAndActividad_Colaborador_Usuario_Email(Long idReserva, String email);
     Optional<Reserva> findByidReserva(Long idReserva);
     Optional<Reserva> findByRefPayco(String refPayco);
+    Optional<Reserva> findByRefWompi(String refWompi);
     
     // Para cancelaciones por colaborador
     List<Reserva> findByDisponibilidadAndEstado(Disponibilidad disponibilidad, String estado);

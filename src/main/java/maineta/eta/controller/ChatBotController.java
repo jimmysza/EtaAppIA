@@ -1,15 +1,18 @@
 package maineta.eta.controller;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import jakarta.validation.Valid;
 import maineta.eta.dto.ChatMensajeRequestDTO;
 import maineta.eta.dto.ChatMensajeResponseDTO;
+import maineta.eta.dto.ChatRecomendacionDTO;
 import maineta.eta.service.ChatBotService;
 
 /**
@@ -19,6 +22,7 @@ import maineta.eta.service.ChatBotService;
  *
  * Rutas:
  * - POST /chat/mensaje → Fragmento HTML con la respuesta del bot
+ * - POST /chat/recomendar → JSON con recomendación estructurada (filtros + respuesta)
  *
  * Acceso: público (ver SecurityConfig - /chat/**)
  */
@@ -58,5 +62,33 @@ public class ChatBotController {
             return "componentes/chat-respuesta :: mensajeError";
         }
     }
+
+    /**
+     * Endpoint JSON para obtener recomendaciones inteligentes con filtros estructurados.
+     * Retorna la respuesta del bot + filtros para redirigir a /actividades/buscar.
+     * 
+     * Usado por el widget de chat para detectar recomendaciones y mostrar botones de acción.
+     */
+    @PostMapping("/recomendar")
+    @ResponseBody
+    public ResponseEntity<ChatRecomendacionDTO> procesarConRecomendacion(
+            @Valid @RequestBody ChatMensajeRequestDTO request,
+            BindingResult binding) {
+
+        if (binding.hasErrors()) {
+            return ResponseEntity.badRequest()
+                    .body(ChatRecomendacionDTO.sinRecomendacion("Mensaje inválido"));
+        }
+
+        try {
+            ChatRecomendacionDTO recomendacion = chatBotService.procesarConRecomendacion(request);
+            return ResponseEntity.ok(recomendacion);
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError()
+                    .body(ChatRecomendacionDTO.sinRecomendacion(
+                            "El asistente no está disponible en este momento."));
+        }
+    }
 }
+
 

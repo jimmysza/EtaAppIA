@@ -54,8 +54,8 @@ public class CancelacionService {
         }
 
         // RN-06: Solo se pueden cancelar reservas CONFIRMADA
-        if (!"CONFIRMADA".equals(reserva.getEstado())) {
-            throw new IllegalArgumentException("Solo se pueden cancelar reservas confirmadas");
+        if (!"Pendiente".equals(reserva.getEstado())) {
+            throw new IllegalArgumentException("Solo se pueden cancelar reservas Pendiente");
         }
 
         // Obtener política aplicada
@@ -119,7 +119,7 @@ public class CancelacionService {
         }
 
         // RN-10: Obtener todas las reservas CONFIRMADA de esa disponibilidad
-        List<Reserva> reservas = reservaRepository.findByDisponibilidadAndEstado(disponibilidad, "CONFIRMADA");
+        List<Reserva> reservas = reservaRepository.findByDisponibilidadAndEstado(disponibilidad, "Hecho");
 
         if (reservas.isEmpty()) {
             throw new IllegalArgumentException("No hay reservas confirmadas para cancelar en esta fecha");

@@ -5,7 +5,6 @@ import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import maineta.eta.config.EpaycoConfig;
@@ -18,8 +17,11 @@ import maineta.eta.repository.ReservaRepository;
 /**
  * Servicio encargado de procesar las confirmaciones de pago desde ePayco.
  * Verifica firmas, valida pagos y crea reservas cuando el pago es exitoso.
+ * 
+ * ⚠️ DESHABILITADO: Migrado a Wompi. Bean desactivado para evitar errores de inyección.
+ * Mantener código por si se requiere rollback.
  */
-@Service
+// @Service  // ⚠️ Deshabilitado tras migración a Wompi
 public class EpaycoService {
 
     private static final Logger logger = LoggerFactory.getLogger(EpaycoService.class);

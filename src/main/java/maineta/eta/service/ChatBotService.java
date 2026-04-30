@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import maineta.eta.config.UsuarioHelper;
 import maineta.eta.dto.ChatMensajeRequestDTO;
 import maineta.eta.dto.ChatMensajeResponseDTO;
+import maineta.eta.dto.ChatRecomendacionDTO;
 import maineta.eta.dto.MensajeDTO;
 import maineta.eta.entity.Actividad;
 
@@ -28,6 +29,7 @@ import maineta.eta.entity.Actividad;
  * 2. Armar el system prompt con las reglas del bot y el contexto de actividades.
  * 3. Construir la cadena [system + historial + mensaje actual] y llamar al LLM.
  * 4. Devolver la respuesta al controller.
+ * 5. Generar recomendaciones inteligentes con filtros estructurados.
  */
 @Service
 public class ChatBotService {
@@ -35,6 +37,7 @@ public class ChatBotService {
     private final ChatClient chatClient;
     private final ActividadService actividadService;
     private final UsuarioHelper usuarioHelper;
+    private final ChatBotRecomendacionService recomendacionService;
 
     @Value("${eta.chat.max-historial:10}")
     private int maxHistorial;
@@ -62,23 +65,44 @@ public class ChatBotService {
             "actividades, precios ni calificaciones.\n" +
             "4. Sé conciso: respuestas de máximo 3-4 oraciones o una lista corta de 3 ítems.\n" +
             "5. Tono: amigable, cálido, como un guía local experto. Usa emojis con moderación.\n" +
-            "6. Idioma: responde siempre en español, aunque el usuario escriba en otro idioma.\n\n" +
+            "6. Idioma: responde siempre en español, aunque el usuario escriba en otro idioma.\n" +
+            "7. Si recomiendas buscar actividades, termina con una frase motivadora como: " +
+            "\"¿Te gustaría ver las opciones disponibles?\" o \"Puedo mostrarte lo que tenemos\".\n\n" +
             "CONTEXTO DE ACTIVIDADES DISPONIBLES HOY:\n" +
             "%s\n\n" +
             "Si no hay actividades relevantes en el contexto, dile al usuario que explore el " +
             "catálogo completo en la sección de búsqueda.";
 
     public ChatBotService(ChatClient chatClient, ActividadService actividadService,
-            UsuarioHelper usuarioHelper) {
+            UsuarioHelper usuarioHelper, ChatBotRecomendacionService recomendacionService) {
         this.chatClient = chatClient;
         this.actividadService = actividadService;
         this.usuarioHelper = usuarioHelper;
+        this.recomendacionService = recomendacionService;
     }
 
     /**
      * Procesa un mensaje del usuario y devuelve la respuesta del asistente.
      */
     public ChatMensajeResponseDTO procesarMensaje(ChatMensajeRequestDTO request) {
+        String respuesta = generarRespuesta(request);
+        return ChatMensajeResponseDTO.ok(respuesta);
+    }
+
+    /**
+     * Procesa un mensaje y genera recomendación con filtros estructurados.
+     */
+    public ChatRecomendacionDTO procesarConRecomendacion(ChatMensajeRequestDTO request) {
+        String respuesta = generarRespuesta(request);
+        
+        // Analizar el mensaje para detectar intención de búsqueda
+        return recomendacionService.analizarYGenerarRecomendacion(request.getMensaje(), respuesta);
+    }
+
+    /**
+     * Genera la respuesta del asistente llamando al LLM.
+     */
+    private String generarRespuesta(ChatMensajeRequestDTO request) {
         // 1. Construir contexto de actividades relevantes
         String actividadesContexto = construirContextoActividades(
                 request.getMensaje(), request.getContextoActividad());
@@ -108,11 +132,9 @@ public class ChatBotService {
         mensajes.add(new UserMessage(request.getMensaje()));
 
         // 4. Llamar al LLM (bloqueante en v1)
-        String respuesta = chatClient.prompt(new Prompt(mensajes))
+        return chatClient.prompt(new Prompt(mensajes))
                 .call()
                 .content();
-
-        return ChatMensajeResponseDTO.ok(respuesta);
     }
 
     /**
@@ -212,3 +234,4 @@ public class ChatBotService {
         return false;
     }
 }
+

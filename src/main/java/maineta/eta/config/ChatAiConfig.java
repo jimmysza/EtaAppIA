@@ -8,15 +8,18 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
- * Configuración de Spring AI.
- * Selecciona el ChatClient activo según la propiedad eta.chat.provider.
- * Solo uno de los dos beans estará activo en runtime.
+ * Configuración de Spring AI para ETA Chatbot.
+ * Define beans condicionales según la propiedad eta.chat.provider.
+ * 
+ * Proveedores soportados:
+ * - openai (por defecto): Usa GPT-4 o GPT-3.5
+ * - anthropic: Usa Claude
  */
 @Configuration
 public class ChatAiConfig {
 
     @Bean
-    @ConditionalOnProperty(name = "eta.chat.provider", havingValue = "openai")
+    @ConditionalOnProperty(name = "eta.chat.provider", havingValue = "openai", matchIfMissing = true)
     public ChatClient openAiChatClient(OpenAiChatModel model) {
         return ChatClient.builder(model).build();
     }
