@@ -135,12 +135,32 @@
     <div class="flex mx-auto">
 
         <!-- SIDEBAR MEJORADO CON TAILWIND CSS -->
-        <aside
-            class="min-w-[260px] max-w-[320px] bg-white border-r border-gray-200 flex flex-col h-[calc(100vh-64px)] sticky top-0">
+        <aside class="w-[280px] bg-white border-r border-gray-200 flex flex-col 
+               h-[calc(100vh-64px)] sticky top-16">
+
             <!-- Header del sidebar -->
-            <div class="px-5 py-6 border-b border-gray-100">
-                <h2 class="text-sm font-bold text-gray-600 uppercase tracking-wider mb-1">Configuración</h2>
-                <p class="text-xs text-gray-600">Edita las secciones de tu actividad</p>
+            <div class="px-6 py-6 border-b border-gray-100 flex flex-col items-center">
+
+                <!-- LOGO -->
+                <!--<a th:href="@{/colaborador/actividades}" class="group transition duration-200 hover:scale-105">
+
+                    <img th:src="@{/images/logos/logo.webp}" alt="ETA Logo"
+                        class="w-20 h-20 object-contain rounded-2xl bg-white p-2 shadow-sm">
+                </a>-->
+
+                <!-- TEXTO -->
+                <div class="text-center mt-4">
+
+                    <h2 class="text-sm font-bold text-gray-700 uppercase tracking-wider">
+                        Configuración
+                    </h2>
+
+                    <p class="text-xs text-gray-500 mt-1 leading-5">
+                        Edita las secciones de tu actividad
+                    </p>
+
+                </div>
+
             </div>
 
             <!-- Navegación de secciones -->
