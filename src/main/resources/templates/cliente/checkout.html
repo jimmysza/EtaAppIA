@@ -3,10 +3,11 @@
 
 <head>
     <title>Reservar Actividad</title>
-    <link rel="stylesheet" th:href="@{/css/global.css}">
     <link rel="stylesheet" th:href="@{/css/componentes/navbar.css}">
     <link rel="stylesheet" th:href="@{/css/cliente/checkout.css}">
-    
+    <link rel="stylesheet" th:href="@{/css/global.css}">
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+
     <style>
         :root {
             --checkout-ink: #0f172a;
@@ -53,7 +54,8 @@
 
         .checkout-slot.active {
             border-color: #2563eb;
-            background: linear-gradient(135deg, #eff6ff 0%, #ffffff 100%);
+            background: linear-gradient(135deg, #ffffff 0%, #a5cbeb 100%);
+
             box-shadow: 0 16px 34px rgba(37, 99, 235, 0.16);
         }
 
@@ -63,6 +65,17 @@
             justify-content: space-between;
             gap: 12px;
         }
+
+        .bgBlueMainL {
+            background-color: #1d4ed8;
+            width: 100%;
+            padding: 8px 20px;
+            border-radius: 12px;
+
+            color: var(--color-white);
+            font-weight: bold;
+        }
+
 
         .checkout-slot-time {
             font-weight: 700;
@@ -458,7 +471,8 @@
                         <span class="checkout-eyebrow">Paso final de reserva</span>
                         <h1 class="checkout-title" th:text="${actividad.titulo}">Actividad</h1>
                         <p class="checkout-subtitle">
-                            Elige el horario que mejor te funcione para el dia seleccionado y define cuántos cupos vas a reservar.
+                            Elige el horario que mejor te funcione para el dia seleccionado y define cuántos cupos vas a
+                            reservar.
                         </p>
                     </div>
                     <a th:href="@{/actividad/{slug}-{id}(slug=${actividad.titulo.toLowerCase().replaceAll('[^a-z0-9\\s-]', '').replaceAll('\\s+', '-').replaceAll('-+', '-')}, id=${actividad.idActividad}, fechaReserva=${fechaSeleccionada})} + '#reserva'"
@@ -482,8 +496,7 @@
                         Ya no hay horarios disponibles para este dia. Vuelve y elige otra fecha.
                     </div>
                     <div th:if="${!#lists.isEmpty(disponibilidadesDelDia)}" class="checkout-slot-list">
-                        <button type="button"
-                            th:each="opcion, iterStat : ${disponibilidadesDelDia}"
+                        <button type="button" th:each="opcion, iterStat : ${disponibilidadesDelDia}"
                             class="checkout-slot"
                             th:classappend="${(disponibilidad != null and opcion.idDisponibilidad == disponibilidad.idDisponibilidad) or (disponibilidad == null and iterStat.first)} ? ' active' : ''"
                             th:attr="data-id=${opcion.idDisponibilidad},
@@ -492,9 +505,10 @@
                             onclick="seleccionarHorario(this)">
                             <div class="checkout-slot-row">
                                 <span class="checkout-slot-time"
-                                    th:text="${#temporals.format(opcion.horaInicio, 'HH:mm') + ' - ' + #temporals.format(opcion.horaFin, 'HH:mm')}">09:00 - 11:00</span>
-                                <span class="checkout-slot-cupos"
-                                    th:text="${opcion.cuposDisponibles + ' cupos'}">4 cupos</span>
+                                    th:text="${#temporals.format(opcion.horaInicio, 'HH:mm') + ' - ' + #temporals.format(opcion.horaFin, 'HH:mm')}">09:00
+                                    - 11:00</span>
+                                <span class="checkout-slot-cupos" th:text="${opcion.cuposDisponibles + ' cupos'}">4
+                                    cupos</span>
                             </div>
                         </button>
                     </div>
@@ -519,13 +533,14 @@
                         </div>
                         <div class="checkout-stock">
                             <span>Cupos disponibles: </span>
-                            <strong id="cuposCheckout" th:text="${disponibilidad != null ? disponibilidad.cuposDisponibles : 0}">0</strong>
+                            <strong id="cuposCheckout"
+                                th:text="${disponibilidad != null ? disponibilidad.cuposDisponibles : 0}">0</strong>
                         </div>
                     </div>
                 </section>
             </section>
 
-            
+
             <aside class="resumen checkout-summary-card">
                 <div class="checkout-summary-top">
                     <span class="checkout-summary-eyebrow">Resumen</span>
@@ -542,7 +557,8 @@
                     </div>
                     <div class="checkout-summary-row">
                         <span>Dia</span>
-                        <strong th:text="${fechaSeleccionada != null ? #temporals.format(fechaSeleccionada, 'dd/MM/yyyy') : 'Pendiente'}">12/04/2026</strong>
+                        <strong
+                            th:text="${fechaSeleccionada != null ? #temporals.format(fechaSeleccionada, 'dd/MM/yyyy') : 'Pendiente'}">12/04/2026</strong>
                     </div>
                     <div class="checkout-summary-row">
                         <span>Horario</span>
@@ -564,8 +580,9 @@
                 </div>
 
                 <!-- ✅ Botón que envía el formulario y redirige a Wompi -->
-                <button type="submit" class="checkout-confirm" id="btnPagar" th:disabled="${#lists.isEmpty(disponibilidadesDelDia)}">
-                    Pagar con Wompi
+                <button type="submit" class=" bg-blue-600 bgBlueMainL" id="btnPagar"
+                    th:disabled="${#lists.isEmpty(disponibilidadesDelDia)}">
+                    Pagar<i class="fa-brands fa-cc-visa"></i>
                 </button>
             </aside>
         </form>
@@ -619,7 +636,7 @@
                 style: 'currency',
                 currency: 'COP'
             });
-            
+
             // Actualizar hidden input para enviar la cantidad correcta
             if (hiddenCantidad) {
                 hiddenCantidad.value = cantidad;
@@ -627,7 +644,7 @@
         }
 
         // ✅ Validación antes de enviar el formulario
-        checkoutForm.addEventListener("submit", function(e) {
+        checkoutForm.addEventListener("submit", function (e) {
             const idDisponibilidad = hiddenDisponibilidad.value;
             const cantidad = parseInt(inputCupos.value) || 0;
 
@@ -681,13 +698,13 @@
                     alertDiv.className = `alert ${alertClass}`;
                     alertDiv.setAttribute('role', 'alert');
                     alertDiv.innerHTML = `<span>${mensaje}</span>`;
-                    
+
                     // Insertar al inicio del body
                     document.body.insertBefore(alertDiv, document.body.firstChild);
-                    
+
                     // Aplicar animación
                     alertDiv.classList.add('showAnimationAppearFromTop');
-                    
+
                     // Ocultar después de 5 segundos
                     setTimeout(() => {
                         alertDiv.style.display = 'none';

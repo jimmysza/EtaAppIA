@@ -36,6 +36,23 @@
             right: 10px;
         }
 
+        .star-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 2px;
+            transition: transform 0.15s ease;
+        }
+
+        .star-btn:hover {
+            transform: scale(1.2);
+        }
+
+        .star-btn.active svg,
+        .star-btn:hover svg {
+            fill: #fbbf24;
+            stroke: #fbbf24;
+        }
 
         .despues-paginacion svg {
             rotate: 180deg;
@@ -253,6 +270,155 @@
             font-weight: 700;
             margin-bottom: 6px;
         }
+
+        /* ====== ACCORDION ESTILOS ====== */
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out, padding 0.3s ease;
+        }
+
+        .accordion-content.active {
+            max-height: 500px;
+        }
+
+        .accordion-icon {
+            transition: transform 0.3s ease;
+        }
+
+        .accordion-btn.active .accordion-icon {
+            transform: rotate(180deg);
+        }
+
+        /* ====== STICKY NAVBAR MEJORADO ====== */
+        .sticky-container {
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            width: 100%;
+            transition: all 0.3s ease;
+            background: transparent;
+        }
+
+        .sticky-container.scrolled {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+
+
+
+        .nav-pill-container {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: #f3f4f6;
+            border-radius: 100px;
+            padding: 6px;
+            border: 1px solid #e5e7eb;
+        }
+
+        .nav-pill {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            border-radius: 100px;
+            text-decoration: none;
+            color: #6b7280;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+
+        .nav-pill:hover {
+            background: white;
+            color: #111827;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        .nav-pill.active {
+            background: #111827;
+            color: white;
+            box-shadow: 0 4px 12px rgba(17, 24, 39, 0.25);
+        }
+
+        .nav-pill-reserva {
+            background: linear-gradient(135deg, #FD8150 0%, #e8683a 100%);
+            color: white;
+            font-weight: 600;
+            box-shadow: 0 4px 12px rgba(253, 129, 80, 0.35);
+        }
+
+        .nav-pill-reserva:hover {
+            background: linear-gradient(135deg, #e8683a 0%, #d45a2e 100%);
+            color: white;
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(253, 129, 80, 0.45);
+        }
+
+        .badge-confianza {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 14px;
+            border-radius: 100px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            background: #ecfdf5;
+            color: #059669;
+            border: 1px solid #a7f3d0;
+        }
+
+        .hero-pill {
+            display: inline-block;
+            padding: 0.1em 0.42em;
+            border-radius: 999px;
+            background: linear-gradient(135deg, rgba(253, 129, 80, 0.18), rgba(253, 129, 80, 0.16));
+            color: #FD8150;
+            box-shadow: inset 0 0 0 1px rgba(253, 129, 80, 0.08);
+        }
+
+        .garantia-box {
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            border: 1px solid #bae6fd;
+            border-radius: 16px;
+            padding: 16px;
+            margin-top: 20px;
+        }
+
+        .precio-tachado {
+            text-decoration: line-through;
+            color: #9ca3af;
+            font-size: 0.875rem;
+        }
+
+        .descuento-badge {
+            background: #fee2e2;
+            color: #dc2626;
+            padding: 2px 10px;
+            border-radius: 100px;
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+
+        @media (max-width: 768px) {
+            .nav-pill-container {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+                scrollbar-width: none;
+            }
+
+            .nav-pill-container::-webkit-scrollbar {
+                display: none;
+            }
+
+            .nav-pill {
+                padding: 8px 16px;
+                font-size: 0.8rem;
+            }
+        }
     </style>
 </head>
 
@@ -269,53 +435,89 @@
     <div th:replace="~{componentes/navbar :: navbar}"></div>
     <!--contenedor principal-->
 
-    <section class="sticky-container">
+    <!-- STICKY NAVBAR MEJORADO -->
+    <section class="sticky-container" id="stickyNav">
         <nav id="navbar">
-            <ul>
-                <li><a th:href="@{/}" class=" nav-inicio flex items-center gap-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24">
-                            <g fill="none">
-                                <path
-                                    d="M24 0v24H0V0zM12.593 23.258l-.011.002l-.071.035l-.02.004l-.014-.004l-.071-.035q-.016-.005-.024.005l-.004.01l-.017.428l.005.02l.01.013l.104.074l.015.004l.012-.004l.104-.074l.012-.016l.004-.017l-.017-.427q-.004-.016-.017-.018m.265-.113l-.013.002l-.185.093l-.01.01l-.003.011l.018.43l.005.012l.008.007l.201.093q.019.005.029-.008l.004-.014l-.034-.614q-.005-.019-.02-.022m-.715.002a.02.02 0 0 0-.027.006l-.006.014l-.034.614q.001.018.017.024l.015-.002l.201-.093l.01-.008l.004-.011l.017-.43l-.003-.012l-.01-.01z" />
-                                <path fill="#000"
-                                    d="M3.283 10.94a1.5 1.5 0 0 0 0 2.12l5.656 5.658a1.5 1.5 0 1 0 2.122-2.122L7.965 13.5H19.5a1.5 1.5 0 0 0 0-3H7.965l3.096-3.096a1.5 1.5 0 1 0-2.122-2.121z"
-                                    stroke-width="0.2" stroke="#000" />
-                            </g>
+            <!-- Left: Navegación tipo pill -->
+            <div class="nav-pill-container">
+                <a th:href="@{/}" class="nav-pill">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                        <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                    </svg>
+                    Inicio
+                </a>
+                <a href="#galeria" class="nav-pill nav-scroll">Galería</a>
+                <a href="#info" class="nav-pill nav-scroll">Información</a>
+                <a href="#reseñas" class="nav-pill nav-scroll">Reseñas</a>
+            </div>
+
+            <!-- Right: Acciones sociales + CTA -->
+            <div class="flex items-center gap-3">
+                <!-- Badges de confianza quemados -->
+                <div class="hidden lg:flex items-center gap-2 mr-2">
+                    <span class="badge-confianza">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2.5">
+                            <path d="M20 6L9 17l-5-5" />
                         </svg>
-                        Inicio
-                    </a></li>
-                <li><a href="#galeria" class="nav-link nav-hidden">Galeria</a></li>
-                <li><a href="#info" class="nav-link nav-hidden">Informacion</a></li>
-                <!-- <li><a href="#map" class="nav-link">Mapa</a></li> -->
-                <li><a href="#reseñas" class="nav-link nav-hidden">Reseñas</a></li>
-                <li><a href="#reserva"
-                        class="nav-link nav-hidden text-white font-bold bgBlueMain rounded-md py-1">reserva ya</a></li>
-            </ul>
-            <div class="social-nav flex center gap-2 ">
-                <!-- Botón Favorito -->
+                        Reserva segura
+                    </span>
+                    <span class="badge-confianza" style="background: #fef3c7; color: #d97706; border-color: #fcd34d;">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2.5">
+                            <path
+                                d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                        </svg>
+
+                        <span
+                            th:text="${promedioCalificacion != null ? #numbers.formatDecimal(promedioCalificacion, 1, 1) : '0.0'}">4.5</span><span>/5</span>
+                        <span>valoración</span>
+                    </span>
+                </div>
+
+
+                <!-- Botón favorito -->
                 <button type="button" id="btnFavDetalle"
-                    class="p-[10px] rounded-full flex items-center justify-center hover:bg-gray-200 border border-blue-200 text-black"
+                    class="w-10 h-10 rounded-full flex items-center justify-center hover:bg-gray-100 border border-gray-200 text-gray-700 transition-all hover:scale-105"
                     th:data-id="${actividad.idActividad}" onclick="toggleFavDetalle(this);"
                     th:title="${esFavorito} ? 'Quitar de favoritos' : 'Agregar a favoritos'">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
-                        th:fill="${esFavorito} ? '#ef4444' : 'none'" th:stroke="${esFavorito} ? '#ef4444' : '#000'"
-                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="fav-icon-detalle">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
+                        th:fill="${esFavorito} ? '#ef4444' : 'none'"
+                        th:stroke="${esFavorito} ? '#ef4444' : 'currentColor'" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round" class="fav-icon-detalle">
                         <path
                             d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
                     </svg>
                 </button>
 
-                <a href="#" onclick="compartirPagina(event)"><svg xmlns="http://www.w3.org/2000/svg" width="20"
-                        height="20" viewBox="0 0 24 24">
-                        <path fill="#fff" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="m20 12l-6.4-7v3.5C10.4 8.5 4 10.6 4 19c0-1.167 1.92-3.5 9.6-3.5V19z" />
-                    </svg></a>
+                <!-- Compartir -->
+                <button onclick="compartirPagina(event)"
+                    class="w-10 h-10 rounded-full flex items-center justify-center hover:bg-gray-100 border border-gray-200 text-gray-700 transition-all hover:scale-105">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8" />
+                        <polyline points="16 6 12 2 8 6" />
+                        <line x1="12" y1="2" x2="12" y2="15" />
+                    </svg>
+                </button>
+
                 <a href="#" th:attr="data-lat=${actividad.latitud}, data-lon=${actividad.longitud}"
                     onclick="irAMaps(event)"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
                         viewBox="0 0 24 24">
-                        <path fill="#fff"
+                        <path fill="#000"
                             d="M18.9 6c-.2-.6-.8-1-1.4-1h-11c-.7 0-1.2.4-1.4 1L3 12v8c0 .5.5 1 1 1h1c.6 0 1-.5 1-1v-1h12v1c0 .5.5 1 1 1h1c.5 0 1-.5 1-1v-8zM6.8 7h10.3l1.1 3H5.8zM19 17H5v-5h14zM7.5 13c.8 0 1.5.7 1.5 1.5S8.3 16 7.5 16S6 15.3 6 14.5S6.7 13 7.5 13m9 0c.8 0 1.5.7 1.5 1.5s-.7 1.5-1.5 1.5s-1.5-.7-1.5-1.5s.7-1.5 1.5-1.5" />
                     </svg></a>
+
+                <!-- CTA Principal -->
+                <a href="#reserva" class="nav-pill nav-pill-reserva hidden md:flex items-center gap-2">
+                    Reserva ya
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="9 18 15 12 9 6" />
+                    </svg>
+                </a>
             </div>
         </nav>
     </section>
@@ -544,17 +746,12 @@
                         </th:block>
                     </span>
 
-                    <!-- <span class="badge">2,9 km</span>
-            <span class="badge">Eta. 1hr</span>
-            <span class="badge">easy</span> -->
-
                     <div class="badge">
-
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 36 36">
                             <path fill="#808080" d="m11 16.5l-1 3.1h2z" class="clr-i-solid clr-i-solid-path-1"
                                 stroke-width="1" stroke="#808080" />
                             <path fill="#808080"
-                                d="M30.3 3h-16v5h4v2h-13c-1.7 0-3 1.3-3 3v11c0 1.7 1.3 3 3 3h1v5.1l6.3-5.1h6.7v-7h11c1.7 0 3-1.3 3-3V6c0-1.7-1.3-3-3-3M13.1 22.9l-.5-1.6H9.5l-.6 1.6H6.5L9.8 14h2.4l3.3 8.9zM28.3 15v2c-1.3 0-2.7-.4-3.9-1c-1.2.6-2.6.9-4 1l-.1-2q1.05 0 2.1-.3c-.9-.9-1.5-2-1.8-3.2h2.1c.3.9.9 1.6 1.6 2.2c1.1-.9 1.8-2.2 1.9-3.7h-6V8h3V6h2v2h3.3l.1 1c.1 2.1-.7 4.2-2.2 5.7c.7.2 1.3.3 1.9.3"
+                                d="M30.3 3h-16v5h4v2h-13c-1.7 0-3 1.3-3 3v11c0 1.7 1.3 3 3 3h1v5.1l6.3-5.1h6.7v-7h11c1.7 0 3-1.3 3-3V6c0-1.7-1.3-3-3-3M13.1 22.9l-.5-1.6H9.5l-.6 1.6H6.5L9.8 14h2.4l3.3 8.9zM19 17H5v-5h14zM7.5 13c.8 0 1.5.7 1.5 1.5S8.3 16 7.5 16S6 15.3 6 14.5S6.7 13 7.5 13m9 0c.8 0 1.5.7 1.5 1.5s-.7 1.5-1.5 1.5s-1.5-.7-1.5-1.5s.7-1.5 1.5-1.5"
                                 class="clr-i-solid clr-i-solid-path-2" stroke-width="1" stroke="#808080" />
                             <path fill="none" d="M0 0h36v36H0z" />
                         </svg>
@@ -584,11 +781,24 @@
                     </div>
                 </div>
             </section>
+
+            <!-- BANNER DE URGENCIA QUEMADO -->
+            <!--     <div
+                class="mt-4 p-4 bg-gradient-to-r from-orange-50 to-red-50 border border-orange-200 rounded-2xl flex items-center gap-3">
+                <div class="w-10 h-10 bg-orange-100 rounded-full flex items-center justify-center flex-shrink-0">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="#ea580c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
+                    </svg>
+                </div>
+                <div>
+                    <p class="text-sm font-bold text-gray-900">¡Solo quedan 3 cupos para esta semana!</p>
+                    <p class="text-xs text-gray-600">15 personas están viendo esta actividad ahora mismo</p>
+                </div>
+            </div>
+ -->
             <div class="colaborador">
                 <div class="colaborador-avatar">
-                    <!-- Si tienes foto del colaborador: -->
-                    <!-- <img th:src="@{|/uploads/${actividad.colaborador.foto}|}" th:alt="${actividad.colaborador.usuario.nombre}" /> -->
-                    <!-- Si no, muestra inicial: -->
                     <span
                         th:text="${#strings.substring(actividad.colaborador.usuario.nombre, 0, 1).toUpperCase()}">J</span>
                 </div>
@@ -599,123 +809,161 @@
             </div>
 
 
-            <!-- DESCRIPCIÓN — sin cambios, solo ajusta la clase -->
+            <!-- DESCRIPCIÓN -->
             <div class="contenido-texto">
                 <p th:text="${actividad.descripcion}">Descripción de la actividad...</p>
             </div>
 
-
-            <!-- SECCIÓN: QUÉ INCLUYE -->
-            <div class="seccion" th:if="${actividad.incluye != null and !#strings.isEmpty(actividad.incluye)}">
-                <div class="seccion-header">
-                    <div class="seccion-icon seccion-icon-incluye">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                            <path fill="#3b82f6" d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
-                        </svg>
+            <!-- SECCIÓN: QUÉ INCLUYE - ACCORDION -->
+            <div class="seccion " th:if="${actividad.incluye != null and !#strings.isEmpty(actividad.incluye)}">
+                <button
+                    class="accordion-btn w-full flex items-center justify-between p-4 bg-white border border-gray-200 rounded-2xl hover:border-gray-300 transition-all group"
+                    onclick="toggleAccordion(this)">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 bg-blue-50 rounded-xl flex items-center justify-center flex-shrink-0">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                                fill="none" stroke="#3b82f6" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <polyline points="20 6 9 17 4 12" />
+                            </svg>
+                        </div>
+                        <div class="text-left">
+                            <p class="font-semibold text-gray-900">Qué incluye</p>
+                            <p class="text-xs text-gray-500">Ver todo lo que está incluido en esta experiencia</p>
+                        </div>
                     </div>
-                    <p class="seccion-titulo">Qué incluye</p>
-                </div>
-                <div class="seccion-body seccion-body-incluye">
-                    <p th:text="${actividad.incluye}"></p>
-                </div>
-            </div>
-
-
-            <!-- SECCIÓN: NORMAS -->
-            <div class="seccion" th:if="${actividad.normas != null and !#strings.isEmpty(actividad.normas)}">
-                <div class="seccion-header">
-                    <div class="seccion-icon seccion-icon-normas">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                            <path fill="#f97316"
-                                d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2m1 15h-2v-2h2zm0-4h-2V7h2z" />
-                        </svg>
-                    </div>
-                    <p class="seccion-titulo">Normas</p>
-                </div>
-                <div class="seccion-body seccion-body-normas">
-                    <p th:text="${actividad.normas}"></p>
-                </div>
-            </div>
-
-
-            <!-- SECCIÓN: CONDICIONES -->
-            <div class="seccion" th:if="${actividad.condiciones != null and !#strings.isEmpty(actividad.condiciones)}">
-                <div class="seccion-header">
-                    <div class="seccion-icon seccion-icon-condiciones">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                            <path fill="#a855f7"
-                                d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8zm-1 7V3.5L18.5 9z" />
-                        </svg>
-                    </div>
-                    <p class="seccion-titulo">Condiciones</p>
-                </div>
-                <div class="seccion-body seccion-body-condiciones">
-                    <p th:text="${actividad.condiciones}"></p>
-                </div>
-            </div>
-            <!-- <div class="colaborador flex items-center">
-                 <img src="../images/perfil_colaborador.jpg" alt="Foto del colaborador" class="colaborador-foto"> 
-
-                <div class="colaborador-texto">
-                    <h3 th:text="${actividad.colaborador.usuario.nombre}">Jimmy</h3>
-                    <p>Alfitrion</p>
-                </div>
-            </div> -->
-            <!-- <div class="tiempo flex justify-start">
-                <div class="card-time flex flex-col justify-end">
-                    <div class="flex hours justify-end">
-                        <p>5<span>hr</span></p>
-                        <p>30<span>m</span></p>
-                    </div>
-                    <p class="title-time">Duraccion</p>
-                </div>
-                <div class="card-time flex flex-col justify-end">
-                    <div class="flex hours justify-end">
-                        <p>7<span>:</span></p>
-                        <p>30<span>AM</span></p>
-                    </div>
-                    <p class="title-time">Salida</p>
-                </div>
-                <div class="card-time flex flex-col justify-end">
-                    <div class="flex hours justify-end">
-                        <p>4<span>:</span></p>
-                        <p>00<span>PM</span></p>
-                    </div>
-                    <p class="title-time">Recogida</p>
-                </div>
-
-                <div class="card-time flex flex-col justify-end">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="35" height="35" viewBox="0 0 24 24">
-                        <path fill="#000"
-                            d="M19.235 13.234H4.765v3.494L0 11.964l4.765-4.765v3.494h14.47V7.199L24 11.964l-4.765 4.765z" />
+                    <svg class="accordion-icon w-5 h-5 text-gray-400 group-hover:text-gray-600" fill="none"
+                        stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                     </svg>
-                    <p class="title-time"></p>ida y vuelta</p>
+                </button>
+                <div class="accordion-content bg-gray-50 border-x border-b border-gray-200 rounded-b-2xl mx-1">
+                    <div class="p-4 text-gray-700 leading-relaxed" th:text="${actividad.incluye}">
+                        Contenido de qué incluye...
+                    </div>
                 </div>
-            </div> -->
-            <!-- 
-            <div class="contenido-texto">
-                <p th:text="${actividad.descripcion}">La Isla Cholon es un destino turístico popular en Cartagena,
-                    Colombia, conocido por sus hermosas
-                    playas,
-                    aguas cristalinas y ambiente relajado. Es un lugar ideal para disfrutar de actividades acuáticas
-                    como
-                    snorkel, buceo y paseos en bote. La isla también cuenta con restaurantes y bares donde los
-                    visitantes
-                    pueden disfrutar de la gastronomía local y cócteles refrescantes. Además, Cholon es famosa por su
-                    vibrante vida nocturna, con fiestas en la playa que atraen a turistas y lugareños por igual.</p>
             </div>
 
-            <p class="contenido-title">Incluye</p>
-            <p th:text="${actividad.incluye}"></p>
-            <p class="contenido-title">Normas</p>
-            <p th:text="${actividad.normas}"></p>
-            <p class="contenido-title">Condiciones</p>
-            <p th:text="${actividad.condiciones}"></p>
- -->
+            <!-- SECCIÓN: NORMAS - ACCORDION -->
+            <div class="seccion " th:if="${actividad.normas != null and !#strings.isEmpty(actividad.normas)}">
+                <button
+                    class="accordion-btn w-full flex items-center justify-between p-4 bg-white border border-gray-200 rounded-2xl hover:border-gray-300 transition-all group"
+                    onclick="toggleAccordion(this)">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 bg-orange-50 rounded-xl flex items-center justify-center flex-shrink-0">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                                fill="none" stroke="#f97316" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10" />
+                                <line x1="12" y1="8" x2="12" y2="12" />
+                                <line x1="12" y1="16" x2="12.01" y2="16" />
+                            </svg>
+                        </div>
+                        <div class="text-left">
+                            <p class="font-semibold text-gray-900">Normas</p>
+                            <p class="text-xs text-gray-500">Reglas importantes para tu seguridad y disfrute</p>
+                        </div>
+                    </div>
+                    <svg class="accordion-icon w-5 h-5 text-gray-400 group-hover:text-gray-600" fill="none"
+                        stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                    </svg>
+                </button>
+                <div class="accordion-content bg-gray-50 border-x border-b border-gray-200 rounded-b-2xl mx-1">
+                    <div class="p-4 text-gray-700 leading-relaxed" th:text="${actividad.normas}">
+                        Contenido de normas...
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECCIÓN: CONDICIONES - ACCORDION -->
+            <div class="seccion " th:if="${actividad.condiciones != null and !#strings.isEmpty(actividad.condiciones)}">
+                <button
+                    class="accordion-btn w-full flex items-center justify-between p-4 bg-white border border-gray-200 rounded-2xl hover:border-gray-300 transition-all group"
+                    onclick="toggleAccordion(this)">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 bg-purple-50 rounded-xl flex items-center justify-center flex-shrink-0">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                                fill="none" stroke="#a855f7" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                                <polyline points="14 2 14 8 20 8" />
+                                <line x1="16" y1="13" x2="8" y2="13" />
+                                <line x1="16" y1="17" x2="8" y2="17" />
+                                <polyline points="10 9 9 9 8 9" />
+                            </svg>
+                        </div>
+                        <div class="text-left">
+                            <p class="font-semibold text-gray-900">Condiciones</p>
+                            <p class="text-xs text-gray-500">Políticas de cancelación y reembolso</p>
+                        </div>
+                    </div>
+                    <svg class="accordion-icon w-5 h-5 text-gray-400 group-hover:text-gray-600" fill="none"
+                        stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                    </svg>
+                </button>
+                <div class="accordion-content bg-gray-50 border-x border-b border-gray-200 rounded-b-2xl mx-1">
+                    <div class="p-4 text-gray-700 leading-relaxed" th:text="${actividad.condiciones}">
+                        Contenido de condiciones...
+                    </div>
+                </div>
+            </div>
+
+            <!-- BENEFICIOS ADICIONALES QUEMADOS -->
+            <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-3">
+                <!-- <div class="flex items-start gap-3 p-4 bg-green-50 border border-green-100 rounded-2xl">
+                    <div class="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2.5">
+                            <path d="M20 6L9 17l-5-5" />
+                        </svg>
+                    </div>
+                    <div>
+                        <p class="text-sm font-semibold text-gray-900">Cancelación gratuita</p>
+                        <p class="text-xs text-gray-600 mt-0.5">Hasta 24 horas antes de la actividad</p>
+                    </div>
+                </div> -->
+                <div class="flex items-start gap-3 p-4 bg-blue-50 border border-blue-100 rounded-2xl">
+                    <div class="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2.5">
+                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                        </svg>
+                    </div>
+                    <div>
+                        <p class="text-sm font-semibold text-gray-900">Pago 100% seguro</p>
+                        <p class="text-xs text-gray-600 mt-0.5">Encriptación SSL y protección al comprador</p>
+                    </div>
+                </div>
+                <div class="flex items-start gap-3 p-4 bg-amber-50 border border-amber-100 rounded-2xl">
+                    <div class="w-8 h-8 bg-amber-100 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#d97706" stroke-width="2.5">
+                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                        </svg>
+                    </div>
+                    <div>
+                        <p class="text-sm font-semibold text-gray-900">Soporte 24/7</p>
+                        <p class="text-xs text-gray-600 mt-0.5">Estamos aquí para ayudarte en cualquier momento</p>
+                    </div>
+                </div>
+                <!--  <div class="flex items-start gap-3 p-4 bg-rose-50 border border-rose-100 rounded-2xl">
+                    <div class="w-8 h-8 bg-rose-100 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#e11d48" stroke-width="2.5">
+                            <path
+                                d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+                        </svg>
+                    </div>
+                    <div>
+                        <p class="text-sm font-semibold text-gray-900">Experiencia garantizada</p>
+                        <p class="text-xs text-gray-600 mt-0.5">O te devolvemos tu dinero, sin preguntas</p>
+                    </div>
+                </div> -->
+            </div>
+
             <!-- Mapa de ubicación -->
             <div th:if="${actividad.latitud != null and actividad.longitud != null}" class="mt-8">
                 <p class="contenido-title">Ubicación</p>
-                <div style="width:100%; height:220px; border-radius:12px; overflow:hidden; z-index:1 ;border:1px solid #e5e7eb;">
+                <div
+                    style="width:100%; height:220px; border-radius:12px; overflow:hidden; z-index:1 ;border:1px solid #e5e7eb;">
                     <div id="mapaCliente" style="z-index:1;  width:100%; height:100%;"></div>
                 </div>
                 <p class="text-sm text-gray-500 mt-2" th:text="${actividad.ubicacion}"></p>
@@ -727,13 +975,37 @@
 
             <!-- Precio + botón disparador -->
             <div class="p-4">
+                <!-- BADGE DE DESCUENTO QUEMADO -->
+                <!-- <div class="flex items-center gap-2 mb-3">
+                    <span class="descuento-badge">-20% OFF</span>
+                    <span class="precio-tachado">$250.000 COP</span>
+                </div> -->
+
                 <h3 class="text-2xl font-bold text-gray-900 min-w-[338px]">
                     $<span th:text="${#numbers.formatDecimal(precioConsumidor, 0, 'POINT', 0, 'COMMA')}"></span>
                     <span class="text-base font-normal text-gray-500">/reserva</span>
                 </h3>
 
+                <!-- GARANTÍA DE MEJOR PRECIO QUEMADA -->
+                <div class="garantia-box mt-3">
+                    <div class="flex items-center gap-2 mb-1">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0284c7" stroke-width="2.5">
+                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                        </svg>
+                        <span class="text-sm font-bold text-sky-800">Garantía de mejor precio</span>
+                    </div>
+                    <p class="text-xs text-sky-700">Si encuentras este tour más barato en otro sitio, te igualamos el
+                        precio y te damos un 10% de descuento adicional.</p>
+                </div>
+
                 <button onclick="document.getElementById('panelReserva').classList.toggle('hidden')"
-                    class="min-w-[338px] mt-3 w-full bg-gray-900 hover:bg-gray-700 text-white text-sm font-semibold py-3 px-4 rounded-xl transition-colors cursor-pointer">
+                    class="min-w-[338px] mt-4 w-full bg-gray-900 hover:bg-gray-700 text-white text-sm font-semibold py-3 px-4 rounded-xl transition-colors cursor-pointer flex items-center justify-center gap-2">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                        <line x1="16" y1="2" x2="16" y2="6" />
+                        <line x1="8" y1="2" x2="8" y2="6" />
+                        <line x1="3" y1="10" x2="21" y2="10" />
+                    </svg>
                     Selecciona una fecha para reservar
                 </button>
 
@@ -848,6 +1120,21 @@
 
                     </form>
                 </div>
+
+                <!-- CONTENIDO QUEMADO ADICIONAL EN EL PANEL DERECHO -->
+                <div class="mt-6 space-y-4">
+
+
+                    <!-- CTA secundario -->
+                    <div class="p-4 bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl text-white">
+                        <p class="text-sm font-bold mb-1">¿Tienes dudas?</p>
+                        <p class="text-xs text-gray-300 mb-3">Nuestro equipo te responde en menos de 5 minutos</p>
+                        <a href="https://wa.me/573125808876" target="_blank"
+                            class="w-full min-w-[200px] py-2.5 bg-white text-gray-900 text-sm font-semibold rounded-xl hover:bg-gray-100 transition-colors px-2">
+                            Chatear con un asesor
+                        </a>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -871,7 +1158,7 @@
 
         </div>
     </section>
-
+    <div th:replace="~{componentes/chat-widget :: chatWidget(actividadId=${actividad.idActividad})}"></div>
     <div th:replace="~{componentes/comentarios :: reseñas}"></div>
 
     <div th:replace="~{componentes/preguntasFrecuentes :: preguntasFrecuentes}"></div>
@@ -886,17 +1173,15 @@
     <script th:src="@{/js/detalle.js}"></script>
     <script th:src="@{/js/modales.js}"></script>
     <script th:src="@{/js/alert.js}"></script>
-
     <script>
-        // Recopilar todas las imágenes de la galería
+        // ========== GALERÍA LIGHTBOX ==========
         let todasLasImagenes = [];
         let indiceActual = 0;
 
         document.addEventListener('DOMContentLoaded', function () {
-            // Imagen principal
             const mainImg = document.querySelector('.galeria-main img');
             if (mainImg) todasLasImagenes.push(mainImg.src);
-            // Thumbnails
+
             document.querySelectorAll('.galeria-thumb img').forEach(img => {
                 todasLasImagenes.push(img.src);
             });
@@ -941,9 +1226,72 @@
                 cambiarImagen(1);
             }
         });
-    </script>
 
-    <script>
+        // ========== ACCORDION ==========
+        function toggleAccordion(btn) {
+            const content = btn.nextElementSibling;
+            const isActive = btn.classList.contains('active');
+
+            document.querySelectorAll('.accordion-btn').forEach(b => {
+                b.classList.remove('active');
+                b.nextElementSibling.classList.remove('active');
+                b.nextElementSibling.style.maxHeight = null;
+            });
+
+            if (!isActive) {
+                btn.classList.add('active');
+                content.classList.add('active');
+                content.style.maxHeight = content.scrollHeight + "px";
+            }
+        }
+
+        // ========== STICKY NAVBAR ==========
+        window.addEventListener('scroll', function () {
+            const sticky = document.getElementById('stickyNav'); z
+            const navbar = document.getElementById('navbar');
+
+            if (window.scrollY > 10) {
+                sticky.classList.add('scrolled');
+                navbar.style.background = 'transparent';
+            } else {
+                sticky.classList.remove('scrolled');
+                navbar.style.background = 'transparent';
+            }
+        }, { passive: true });
+
+        // Active state en scroll
+        const sections = document.querySelectorAll('section[id]');
+        const navLinks = document.querySelectorAll('.nav-scroll');
+
+        window.addEventListener('scroll', () => {
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                if (scrollY >= (sectionTop - 200)) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === '#' + current) {
+                    link.classList.add('active');
+                }
+            });
+        });
+
+        // Smooth scroll
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+
+        // ========== FAVORITOS ==========
         function toggleFavDetalle(btn) {
             const id = btn.getAttribute('data-id');
             fetch('/cliente/favorito/toggle/' + id, { method: 'POST' })
@@ -969,30 +1317,8 @@
                 })
                 .catch(() => window.location.href = '/login');
         }
-    </script>
 
-    <!-- Script del mapa de ubicación para cliente -->
-    <script th:if="${actividad.latitud != null and actividad.longitud != null}" th:inline="javascript">
-        document.addEventListener('DOMContentLoaded', function () {
-            const lat = /*[[${actividad.latitud}]]*/ 10.3910;
-            const lng = /*[[${actividad.longitud}]]*/ -75.4794;
-            const titulo = /*[[${actividad.titulo}]]*/ 'Actividad';
-            const ubicacion = /*[[${actividad.ubicacion}]]*/ '';
-
-            const mapaCliente = L.map('mapaCliente').setView([lat, lng], 15);
-
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                attribution: '&copy; OpenStreetMap'
-            }).addTo(mapaCliente);
-
-            L.marker([lat, lng])
-                .addTo(mapaCliente)
-                .bindPopup('<b>' + titulo + '</b><br>' + ubicacion)
-                .openPopup();
-        });
-    </script>
-    <!--Compartir pagina-->
-    <script>
+        // ========== COMPARTIR ==========
         function compartirPagina(e) {
             e.preventDefault();
             if (navigator.share) {
@@ -1004,6 +1330,7 @@
             }
         }
 
+        // ========== GOOGLE MAPS ==========
         function irAMaps(e) {
             e.preventDefault();
             var btn = e.currentTarget;
@@ -1022,11 +1349,101 @@
                 window.open('https://www.google.com/maps/search/?api=1&query=' + lat + ',' + lon, '_blank');
             }
         }
+
+        // ========== PANEL RESERVA ==========
+        document.addEventListener('DOMContentLoaded', function () {
+            var fechaInput = document.querySelector('input[name="fechaSeleccionada"]');
+            if (fechaInput && fechaInput.value) {
+                document.getElementById('panelReserva').classList.remove('hidden');
+            }
+
+            document.querySelectorAll('a[href*="mesReserva"]').forEach(function (link) {
+                link.addEventListener('click', function () {
+                    sessionStorage.setItem('panelReservaAbierto', '1');
+                });
+            });
+
+            if (sessionStorage.getItem('panelReservaAbierto')) {
+                document.getElementById('panelReserva').classList.remove('hidden');
+                sessionStorage.removeItem('panelReservaAbierto');
+            }
+        });
+
+
+    </script>
+    <script th:if="${actividad.latitud != null and actividad.longitud != null}" th:inline="javascript">
+        document.addEventListener('DOMContentLoaded', function () {
+            const lat = /*[[${actividad.latitud}]]*/ 10.3910;
+            const lng = /*[[${actividad.longitud}]]*/ -75.4794;
+            const titulo = /*[[${actividad.titulo}]]*/ 'Actividad';
+            const ubicacion = /*[[${actividad.ubicacion}]]*/ '';
+
+            const mapaCliente = L.map('mapaCliente').setView([lat, lng], 15);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; OpenStreetMap'
+            }).addTo(mapaCliente);
+
+            L.marker([lat, lng]).addTo(mapaCliente)
+                .bindPopup('<b>' + titulo + '</b><br>' + ubicacion)
+                .openPopup();
+        });
     </script>
 
-    <!-- ETA Assistant Chatbot Widget (con contexto de la actividad actual) -->
-    <div th:replace="~{componentes/chat-widget :: chatWidget(actividadId=${actividad.idActividad})}"></div>
+    <script>
+        // ========== MODAL COMENTARIO ==========
+        const modal = document.getElementById('modalAddComentario');
+        const openBtn = document.getElementById('open-add-modal');
 
+        if (openBtn) {
+            openBtn.addEventListener('click', function () {
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+            });
+        }
+
+        function cerrarModalComentario() {
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+            // Reset form
+            document.getElementById('formComentario').reset();
+            document.querySelectorAll('.star-btn').forEach(s => s.classList.remove('active'));
+            document.getElementById('calificacionHidden').value = '';
+            document.getElementById('starLabel').textContent = 'Selecciona una calificación';
+        }
+
+        // Cerrar al hacer clic fuera
+        modal.addEventListener('click', function (e) {
+            if (e.target === modal) cerrarModalComentario();
+        });
+
+        // ========== ESTRELLAS ==========
+        const labels = ['', 'Muy malo', 'Malo', 'Regular', 'Bueno', '¡Excelente!'];
+        const stars = document.querySelectorAll('.star-btn');
+        const hidden = document.getElementById('calificacionHidden');
+        const labelEl = document.getElementById('starLabel');
+
+        stars.forEach(btn => {
+            btn.addEventListener('click', function () {
+                const val = parseInt(this.dataset.value);
+                hidden.value = val;
+                labelEl.textContent = labels[val];
+
+                stars.forEach(s => {
+                    const sVal = parseInt(s.dataset.value);
+                    s.classList.toggle('active', sVal <= val);
+                });
+            });
+        });
+
+        // ========== VALIDACIÓN FORM ==========
+        document.getElementById('formComentario').addEventListener('submit', function (e) {
+            if (!hidden.value) {
+                e.preventDefault();
+                alert('Por favor selecciona una calificación');
+                return false;
+            }
+        });
+    </script>
 </body>
 
 </html>

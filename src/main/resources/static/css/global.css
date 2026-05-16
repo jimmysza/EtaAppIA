@@ -148,7 +148,7 @@ button[type="submit"]:focus {
     border: 1px solid #bee5eb;
 }
 
-.alert-info-big{
+.alert-info-big {
     top: -200%;
     transform: translate(-50%, -10%);
 }
@@ -172,11 +172,12 @@ button[type="submit"]:focus {
 
 .red {
     color: #ff2200
-}d
+}
 
 .ColorBlue {
     color: var(--color-main);
 }
+
 .bgBlueMain {
     background-color: var(--color-main);
 }

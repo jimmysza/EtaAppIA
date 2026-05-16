@@ -10,33 +10,16 @@
     <link rel="stylesheet" th:href="@{/css/componentes/modales.css}">
     <link rel="stylesheet" th:href="@{/css/colaborador/detallesColab.css}">
     <link rel="stylesheet" th:href="@{/css/tailwind.css}">
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <!-- Leaflet CSS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <!-- Leaflet JS -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <style>
-        /* Estilos para los botones del sidebar */
-        .btnEdicion {
-            transition: all 0.2s ease;
-        }
-
-        .btnEdicion:hover {
-            background-color: #f3f4f6;
-            border-color: #111827;
-        }
-
-        .btnEdicion.active {
-            background-color: #e5e7eb;
-            border-color: #111827;
-            border-width: 2px;
-        }
-
         /* Estilos para las secciones del formulario */
         .form-edit {
             display: none;
             animation: fadeIn 0.3s ease;
-
         }
 
         .form-edit.active {
@@ -64,7 +47,6 @@
             background: white;
             border-radius: 0.75rem;
             padding: 2rem;
-
         }
 
         .form-edit label {
@@ -150,67 +132,144 @@
         <span th:text="${message}"></span>
     </div>
 
-    <div class="flex  mx-auto">
+    <div class="flex mx-auto">
 
+        <!-- SIDEBAR MEJORADO CON TAILWIND CSS -->
         <aside
-            class=" min-w-[200px] max-w-[500px] border-r-2 border-gray-200 flex flex-col justify-start items-center gap-5 pt-10 overflow-y-scroll max-h-[90vh] pb-20 px-4">
-            <a id="btnTitulo"
-                class="btnEdicion active text-xl font-bold px-6 py-3 border border-gray-200 w-full cursor-pointer rounded-xl">
-                Título
-            </a>
-            <a id="btnDesc"
-                class="btnEdicion text-xl font-bold px-6 py-3 border border-gray-200 w-full cursor-pointer rounded-xl">
-                Descripción
-            </a>
-            <a id="btnImg"
-                class="btnEdicion text-xl font-bold px-6 py-3 border border-gray-200 w-full cursor-pointer rounded-xl">
-                Imagen Principal
-            </a>
-            <a id="btnImagenes"
-                class="btnEdicion text-xl font-bold px-6 py-3 border border-gray-200 w-full cursor-pointer rounded-xl">
-                Imágenes Adicionales
-            </a>
-            <a id="btnPrecio"
-                class="btnEdicion text-xl font-bold px-6 py-3 border border-gray-200 w-full cursor-pointer rounded-xl">
-                Precio
-            </a>
-            <a id="btnIdioma"
-                class="btnEdicion text-xl font-bold px-6 py-3 border border-gray-200 w-full cursor-pointer rounded-xl">
-                Idioma
-            </a>
-            <a id="btnCategoria"
-                class="btnEdicion text-xl font-bold px-6 py-3 border border-gray-200 w-full cursor-pointer rounded-xl">
-                Categoria
-            </a>
-            <a id="btnMasInformacion"
-                class="btnEdicion text-xl font-bold px-6 py-3 border border-gray-200 w-full cursor-pointer rounded-xl">
-                Mas Informacion
-            </a>
-            <a id="btnCalificacion"
-                class="btnEdicion text-xl font-bold px-6 py-3 border border-gray-200 w-full cursor-pointer rounded-xl">
-                Calificación
-            </a>
-            <a id="btnPlata"
-                class="btnEdicion text-xl font-bold px-6 py-3 border border-gray-200 w-full cursor-pointer rounded-xl">
-                Plata Ganada
-            </a>
-            <a id="btnUbicacion"
-                class="btnEdicion text-xl font-bold px-6 py-3 border border-gray-200 w-full cursor-pointer rounded-xl">
-                Ubicación
-            </a>
-            <button class="
-            text-xl font-bold px-6 py-3  w-full cursor-pointer rounded-xl bg-red-600 text-white flex justify-center items-center
-             text-open-delete" id="open-delete-modal" th:attr="data-id=${actividad.idActividad}">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
-                    style="display: inline-block; vertical-align: middle; margin-right: 0.5rem;">
-                    <g fill="none">
-                        <path fill="#fff" d="M8 21h8a2 2 0 0 0 2-2V7H6v12a2 2 0 0 0 2 2" opacity="0.16" />
-                        <path stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
-                            d="M14 11v6m-4-6v6M6 7v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V7M4 7h16M7 7l2-4h6l2 4" />
-                    </g>
-                </svg>
-                Eliminar Actividad
-            </button>
+            class="min-w-[260px] max-w-[320px] bg-white border-r border-gray-200 flex flex-col h-[calc(100vh-64px)] sticky top-0">
+            <!-- Header del sidebar -->
+            <div class="px-5 py-6 border-b border-gray-100">
+                <h2 class="text-sm font-bold text-gray-600 uppercase tracking-wider mb-1">Configuración</h2>
+                <p class="text-xs text-gray-600">Edita las secciones de tu actividad</p>
+            </div>
+
+            <!-- Navegación de secciones -->
+            <nav class="flex-1 overflow-y-auto px-3 py-4 space-y-1">
+                <a id="btnTitulo"
+                    class="btnEdicion active group flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-xl transition-all duration-200 cursor-pointer bg-gray-50 text-gray-900 border-2 border-gray-900 shadow-sm">
+                    <svg class="w-5 h-5 text-gray-500 group-hover:text-gray-700" fill="none" stroke="currentColor"
+                        viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                    </svg>
+                    <span>Título</span>
+                </a>
+
+                <a id="btnDesc"
+                    class="btnEdicion group flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-xl transition-all duration-200 cursor-pointer text-gray-600 hover:bg-gray-50 hover:text-gray-900 border border-transparent hover:border-gray-200">
+                    <svg class="w-5 h-5 text-gray-400 group-hover:text-gray-500" fill="none" stroke="currentColor"
+                        viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M4 6h16M4 12h16M4 18h7" />
+                    </svg>
+                    <span>Descripción</span>
+                </a>
+
+                <a id="btnImg"
+                    class="btnEdicion group flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-xl transition-all duration-200 cursor-pointer text-gray-600 hover:bg-gray-50 hover:text-gray-900 border border-transparent hover:border-gray-200">
+                    <svg class="w-5 h-5 text-gray-400 group-hover:text-gray-500" fill="none" stroke="currentColor"
+                        viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                    <span>Imagen Principal</span>
+                </a>
+
+                <a id="btnImagenes"
+                    class="btnEdicion group flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-xl transition-all duration-200 cursor-pointer text-gray-600 hover:bg-gray-50 hover:text-gray-900 border border-transparent hover:border-gray-200">
+                    <svg class="w-5 h-5 text-gray-400 group-hover:text-gray-500" fill="none" stroke="currentColor"
+                        viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                    <span>Imágenes Adicionales</span>
+                </a>
+
+                <a id="btnPrecio"
+                    class="btnEdicion group flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-xl transition-all duration-200 cursor-pointer text-gray-600 hover:bg-gray-50 hover:text-gray-900 border border-transparent hover:border-gray-200">
+                    <svg class="w-5 h-5 text-gray-400 group-hover:text-gray-500" fill="none" stroke="currentColor"
+                        viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <span>Precio</span>
+                </a>
+
+                <a id="btnIdioma"
+                    class="btnEdicion group flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-xl transition-all duration-200 cursor-pointer text-gray-600 hover:bg-gray-50 hover:text-gray-900 border border-transparent hover:border-gray-200">
+                    <svg class="w-5 h-5 text-gray-400 group-hover:text-gray-500" fill="none" stroke="currentColor"
+                        viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129" />
+                    </svg>
+                    <span>Idioma</span>
+                </a>
+
+                <a id="btnCategoria"
+                    class="btnEdicion group flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-xl transition-all duration-200 cursor-pointer text-gray-600 hover:bg-gray-50 hover:text-gray-900 border border-transparent hover:border-gray-200">
+                    <svg class="w-5 h-5 text-gray-400 group-hover:text-gray-500" fill="none" stroke="currentColor"
+                        viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+                    </svg>
+                    <span>Categoría</span>
+                </a>
+
+                <a id="btnMasInformacion"
+                    class="btnEdicion group flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-xl transition-all duration-200 cursor-pointer text-gray-600 hover:bg-gray-50 hover:text-gray-900 border border-transparent hover:border-gray-200">
+                    <svg class="w-5 h-5 text-gray-400 group-hover:text-gray-500" fill="none" stroke="currentColor"
+                        viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <span>Más Información</span>
+                </a>
+
+                <a id="btnCalificacion"
+                    class="btnEdicion group flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-xl transition-all duration-200 cursor-pointer text-gray-600 hover:bg-gray-50 hover:text-gray-900 border border-transparent hover:border-gray-200">
+                    <svg class="w-5 h-5 text-gray-400 group-hover:text-gray-500" fill="none" stroke="currentColor"
+                        viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
+                    </svg>
+                    <span>Calificación</span>
+                </a>
+
+                <a id="btnPlata"
+                    class="btnEdicion group flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-xl transition-all duration-200 cursor-pointer text-gray-600 hover:bg-gray-50 hover:text-gray-900 border border-transparent hover:border-gray-200">
+                    <svg class="w-5 h-5 text-gray-400 group-hover:text-gray-500" fill="none" stroke="currentColor"
+                        viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <span>Ingresos</span>
+                </a>
+
+                <a id="btnUbicacion"
+                    class="btnEdicion group flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-xl transition-all duration-200 cursor-pointer text-gray-600 hover:bg-gray-50 hover:text-gray-900 border border-transparent hover:border-gray-200">
+                    <svg class="w-5 h-5 text-gray-400 group-hover:text-gray-500" fill="none" stroke="currentColor"
+                        viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+                    <span>Ubicación</span>
+                </a>
+            </nav>
+
+            <!-- Footer del sidebar - Botón eliminar -->
+            <div class="p-4 border-t border-gray-100">
+                <button id="open-delete-modal" th:attr="data-id=${actividad.idActividad}"
+                    class="w-full flex items-center justify-center gap-2 px-4 py-3 text-sm font-semibold text-red-600 bg-red-50 hover:bg-red-100 rounded-xl transition-all duration-200 border border-red-200 hover:border-red-300 group">
+                    <svg class="w-5 h-5 text-red-500 group-hover:text-red-600 transition-colors" fill="none"
+                        stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                    </svg>
+                    <span>Eliminar Actividad</span>
+                </button>
+            </div>
         </aside>
 
         <main class="w-full overflow-y-scroll max-h-[90vh]">
@@ -258,7 +317,6 @@
 
                     <!--MAs informacion-->
                     <form class="form-edit" id="seccionMasInformacion" method="post"
-
                         th:action="@{/colaborador/actividades/{id}/actualizar(id=${actividad.idActividad})}"
                         th:object="${actividadUpdateDto}">
 
@@ -268,7 +326,7 @@
                             style="width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 0.5rem;"></textarea>
 
                         <p class="text-sm text-gray-500 mt-2">Proporciona información detallada</p>
-                        
+
                         <label for="normas">Normas</label>
                         <textarea id="normas" th:field="*{normas}" rows="6"
                             style="width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 0.5rem;"></textarea>
@@ -287,7 +345,8 @@
                                 style="display: flex; justify-content: space-between; align-items: center; gap: 1rem; margin-bottom: 0.75rem; flex-wrap: wrap;">
                                 <div>
                                     <label style="margin-bottom: 0.25rem; display: block;">Preguntas frecuentes</label>
-                                    <p class="text-sm text-gray-500">Puedes agregarlas si quieres mostrarlas en la vista publica</p>
+                                    <p class="text-sm text-gray-500">Puedes agregarlas si quieres mostrarlas en la vista
+                                        publica</p>
                                 </div>
                                 <button type="button" id="agregarFaqBtn"
                                     style="border: 1px solid #2563eb; color: #2563eb; background: white; border-radius: 999px; padding: 0.6rem 1rem; font-weight: 600;">
@@ -300,7 +359,8 @@
                                     style="border: 1px solid #e5e7eb; border-radius: 1rem; padding: 1rem; background: #f9fafb;">
                                     <div
                                         style="display: flex; justify-content: space-between; align-items: center; gap: 1rem; margin-bottom: 0.75rem;">
-                                        <strong style="color: #111827;">FAQ <span th:text="${stat.count}">1</span></strong>
+                                        <strong style="color: #111827;">FAQ <span
+                                                th:text="${stat.count}">1</span></strong>
                                         <button type="button" class="remove-faq-btn"
                                             style="border: none; background: transparent; color: #dc2626; font-weight: 600;">
                                             Eliminar
@@ -309,8 +369,8 @@
 
                                     <label th:for="${'faqPregunta' + stat.index}">Pregunta</label>
                                     <input th:id="${'faqPregunta' + stat.index}"
-                                        th:name="${'preguntasFrecuentesPreguntas[' + stat.index + ']'}" th:value="${pregunta}"
-                                        type="text" placeholder="Ej: Que debo llevar?"
+                                        th:name="${'preguntasFrecuentesPreguntas[' + stat.index + ']'}"
+                                        th:value="${pregunta}" type="text" placeholder="Ej: Que debo llevar?"
                                         style="width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 0.75rem; margin-bottom: 0.75rem;">
 
                                     <label th:for="${'faqRespuesta' + stat.index}">Respuesta</label>
@@ -381,16 +441,17 @@
 
                         <!-- Galería de imágenes existentes -->
                         <div style="display: flex; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.5rem;">
-                            <div th:if="${imagenes == null or #lists.isEmpty(imagenes)}" class="info-display" style="width: 100%;">
+                            <div th:if="${imagenes == null or #lists.isEmpty(imagenes)}" class="info-display"
+                                style="width: 100%;">
                                 <p>No hay imágenes adicionales</p>
                             </div>
                             <div th:each="img : ${imagenes}" style="position: relative; display: inline-block;">
                                 <img th:src="@{|/uploads/${img.nombre}|}" alt="Imagen adicional"
                                     style="width: 200px; height: 150px; object-fit: cover; border-radius: 0.5rem; border: 1px solid #d1d5db;" />
                                 <a th:href="@{/colaborador/imagenes/eliminar/{idImagen}/{idActividad}(idImagen=${img.idImagen}, idActividad=${actividad.idActividad})}"
-                                   style="position: absolute; top: 0.25rem; right: 0.25rem; background: #ef4444; color: white; border-radius: 50%; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; text-decoration: none; font-weight: bold; font-size: 14px;"
-                                   title="Eliminar imagen"
-                                   onclick="return confirm('¿Estás seguro de eliminar esta imagen?')">
+                                    style="position: absolute; top: 0.25rem; right: 0.25rem; background: #ef4444; color: white; border-radius: 50%; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; text-decoration: none; font-weight: bold; font-size: 14px;"
+                                    title="Eliminar imagen"
+                                    onclick="return confirm('¿Estás seguro de eliminar esta imagen?')">
                                     ✕
                                 </a>
                             </div>
@@ -403,7 +464,8 @@
 
                             <label for="imagenesExtra" id="dropZoneExtra"
                                 class="border-2 border-dashed border-gray-300 bg-gray-50 rounded-xl p-8 mb-4 text-center transition-colors cursor-pointer hover:border-gray-400 block">
-                                <input type="file" id="imagenesExtra" name="imagenesExtra" class="hidden" accept="image/*" multiple>
+                                <input type="file" id="imagenesExtra" name="imagenesExtra" class="hidden"
+                                    accept="image/*" multiple>
                                 <svg class="w-8 h-8 mx-auto mb-3 text-gray-400" fill="none" stroke="currentColor"
                                     viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -533,11 +595,12 @@
 
                     <!-- Sección Plata Ganada -->
                     <div class="form-edit" id="seccionPlata">
-                        <label>Plata Ganada</label>
+                        <label>Ingresos generados</label>
                         <div class="info-display">
                             <div style="display: flex; align-items: center; gap: 0.5rem;">
                                 <span style="font-size: 2rem; font-weight: 600;">$</span>
-                                <span style="font-size: 2rem; font-weight: 600;" th:text="${plataGanada}">0</span>
+                                <span style="font-size: 2rem; font-weight: 600;"
+                                    th:text="${#numbers.formatDecimal(plataGanada, 0, 'COMMA', 0, 'POINT')}">0</span>
                                 <span style="font-size: 1.25rem; color: #6b7280;">COP</span>
                             </div>
                         </div>
@@ -560,17 +623,16 @@
                         <div class="grid grid-cols-2 gap-4 mb-4">
                             <div>
                                 <label class="text-sm text-gray-600">Latitud</label>
-                                <input type="text" id="latitudDisplayColab" readonly
-                                    th:value="${actividad.latitud}"
+                                <input type="text" id="latitudDisplayColab" readonly th:value="${actividad.latitud}"
                                     class="bg-gray-100 cursor-not-allowed" />
                                 <input type="hidden" id="latitudColab" name="latitud" th:value="${actividad.latitud}">
                             </div>
                             <div>
                                 <label class="text-sm text-gray-600">Longitud</label>
-                                <input type="text" id="longitudDisplayColab" readonly
-                                    th:value="${actividad.longitud}"
+                                <input type="text" id="longitudDisplayColab" readonly th:value="${actividad.longitud}"
                                     class="bg-gray-100 cursor-not-allowed" />
-                                <input type="hidden" id="longitudColab" name="longitud" th:value="${actividad.longitud}">
+                                <input type="hidden" id="longitudColab" name="longitud"
+                                    th:value="${actividad.longitud}">
                             </div>
                         </div>
 
@@ -623,7 +685,8 @@
     <script th:src="@{/js/alert.js}"></script>
     <script>
         // Función para mostrar secciones según el botón clickeado
-        function mostrarSeccion(seccionId) {
+        // Función para mostrar secciones según el botón clickeado
+        function mostrarSeccion(seccionId, evento) {
             // Ocultar todas las secciones
             document.querySelectorAll('.form-edit').forEach(seccion => {
                 seccion.classList.remove('active');
@@ -638,25 +701,32 @@
             // Remover clase active de todos los botones
             document.querySelectorAll('.btnEdicion').forEach(btn => {
                 btn.classList.remove('active');
+                // Resetear estilos Tailwind al estado inactivo
+                btn.className = btn.className
+                    .replace('bg-gray-50 text-gray-900 border-2 border-gray-900 shadow-sm', '')
+                    .replace('text-gray-600 hover:bg-gray-50 hover:text-gray-900 border border-transparent hover:border-gray-200', '')
+                    .trim();
+                btn.classList.add('btnEdicion', 'group', 'flex', 'items-center', 'gap-3', 'px-4', 'py-3', 'text-sm', 'font-medium', 'rounded-xl', 'transition-all', 'duration-200', 'cursor-pointer', 'text-gray-600', 'hover:bg-gray-50', 'hover:text-gray-900', 'border', 'border-transparent', 'hover:border-gray-200');
             });
 
-            // Agregar clase active al botón clickeado
-            event.target.classList.add('active');
+            // Agregar clase active al botón clickeado usando currentTarget
+            const botonClickeado = evento.currentTarget;
+            botonClickeado.classList.remove('text-gray-600', 'hover:bg-gray-50', 'hover:text-gray-900', 'border-transparent', 'hover:border-gray-200');
+            botonClickeado.classList.add('active', 'bg-gray-50', 'text-gray-900', 'border-2', 'border-gray-900', 'shadow-sm');
         }
 
         // Agregar event listeners a todos los botones
-        document.getElementById('btnTitulo').addEventListener('click', () => mostrarSeccion('seccionTitulo'));
-        document.getElementById('btnDesc').addEventListener('click', () => mostrarSeccion('seccionDesc'));
-        document.getElementById('btnImg').addEventListener('click', () => mostrarSeccion('seccionImg'));
-        document.getElementById('btnPrecio').addEventListener('click', () => mostrarSeccion('seccionPrecio'));
-        document.getElementById('btnIdioma').addEventListener('click', () => mostrarSeccion('seccionIdioma'));
-        document.getElementById('btnCalificacion').addEventListener('click', () => mostrarSeccion('seccionCalificacion'));
-        document.getElementById('btnPlata').addEventListener('click', () => mostrarSeccion('seccionPlata'));
-        document.getElementById('btnUbicacion').addEventListener('click', () => mostrarSeccion('seccionUbicacion'));
-        document.getElementById('btnCategoria').addEventListener('click', () => mostrarSeccion('seccionCategoria'));
-        document.getElementById('btnMasInformacion').addEventListener('click', () => mostrarSeccion('seccionMasInformacion'));
-        document.getElementById('btnImagenes').addEventListener('click', () => mostrarSeccion('seccionImagenes'));
-
+        document.getElementById('btnTitulo').addEventListener('click', (e) => mostrarSeccion('seccionTitulo', e));
+        document.getElementById('btnDesc').addEventListener('click', (e) => mostrarSeccion('seccionDesc', e));
+        document.getElementById('btnImg').addEventListener('click', (e) => mostrarSeccion('seccionImg', e));
+        document.getElementById('btnPrecio').addEventListener('click', (e) => mostrarSeccion('seccionPrecio', e));
+        document.getElementById('btnIdioma').addEventListener('click', (e) => mostrarSeccion('seccionIdioma', e));
+        document.getElementById('btnCalificacion').addEventListener('click', (e) => mostrarSeccion('seccionCalificacion', e));
+        document.getElementById('btnPlata').addEventListener('click', (e) => mostrarSeccion('seccionPlata', e));
+        document.getElementById('btnUbicacion').addEventListener('click', (e) => mostrarSeccion('seccionUbicacion', e));
+        document.getElementById('btnCategoria').addEventListener('click', (e) => mostrarSeccion('seccionCategoria', e));
+        document.getElementById('btnMasInformacion').addEventListener('click', (e) => mostrarSeccion('seccionMasInformacion', e));
+        document.getElementById('btnImagenes').addEventListener('click', (e) => mostrarSeccion('seccionImagenes', e));
         document.addEventListener('DOMContentLoaded', function () {
             const dropZone = document.getElementById('dropZone');
             const fileInput = document.getElementById('imagenFile');
@@ -862,14 +932,14 @@
                 markerColab = L.marker([latVal, lngVal], { draggable: true }).addTo(mapColab);
                 document.getElementById('latitudDisplayColab').value = latVal.toFixed(6);
                 document.getElementById('longitudDisplayColab').value = lngVal.toFixed(6);
-                
-                markerColab.on('dragend', function(e) {
+
+                markerColab.on('dragend', function (e) {
                     const pos = e.target.getLatLng();
                     updateCoordsColab(pos.lat, pos.lng);
                 });
             }
 
-            mapColab.on('click', function(e) {
+            mapColab.on('click', function (e) {
                 const lat = e.latlng.lat;
                 const lng = e.latlng.lng;
                 updateCoordsColab(lat, lng);
@@ -878,7 +948,7 @@
                     markerColab.setLatLng(e.latlng);
                 } else {
                     markerColab = L.marker(e.latlng, { draggable: true }).addTo(mapColab);
-                    markerColab.on('dragend', function(ev) {
+                    markerColab.on('dragend', function (ev) {
                         const pos = ev.target.getLatLng();
                         updateCoordsColab(pos.lat, pos.lng);
                     });
@@ -896,8 +966,8 @@
         // Inicializar mapa cuando se muestre la sección ubicación
         const btnUbicacion = document.getElementById('btnUbicacion');
         if (btnUbicacion) {
-            btnUbicacion.addEventListener('click', function() {
-                setTimeout(function() {
+            btnUbicacion.addEventListener('click', function () {
+                setTimeout(function () {
                     if (!mapColab) {
                         initMapColab();
                     } else {

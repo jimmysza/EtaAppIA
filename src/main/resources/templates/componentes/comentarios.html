@@ -1,406 +1,259 @@
-<!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<body>
+    <section id="reseñas" th:fragment="reseñas" class="resenas-section">
 
-<body class="bg-gray-50">
-    <section id="reseñas" th:fragment="reseñas" class="w-full max-w-7xl mx-auto px-6 md:px-10 py-12 md:py-20">
+        <!-- ── Sidebar: resumen de calificación ── -->
+        <div class="resenas-sidebar">
+            <div class="rating-card">
 
-        <!-- Grid Container -->
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
+                <!-- Puntuación grande -->
+                <div class="rating-big">
+                    <span
+                        th:text="${promedioCalificacion != null ? #numbers.formatDecimal(promedioCalificacion, 1, 1) : '0.0'}">4.5</span>
+                    <span class="rating-denom">/5</span>
+                </div>
 
-            <!-- Left Column - Rating Summary (Sticky) -->
-            <div class="lg:col-span-4">
-                <div class="lg:sticky lg:top-8">
-                    <!-- Overall Rating -->
-                    <div class="mb-8">
-                        <h3 class="text-sm font-semibold text-text-secondary uppercase tracking-wide mb-4">
-                            Overall rating
-                        </h3>
-                        <div class="flex items-baseline gap-2 mb-3">
-                            <span class="text-5xl md:text-6xl font-bold text-text-primary"
-                                th:text="${promedioCalificacion != null ? #numbers.formatDecimal(promedioCalificacion, 1, 1) : '0.0'}"></span>
-                            <span class="text-2xl text-text-secondary">/5</span>
-                        </div>
-                        <div class="flex items-center gap-1 mb-2">
-                            <!-- Dynamic Overall Stars -->
-                            <th:block
-                                th:with="avg=${promedioCalificacion != null ? promedioCalificacion : 0},
-                                               fullStars=${promedioCalificacion != null ? T(java.lang.Math).floor(promedioCalificacion).intValue() : 0},
-                                               hasHalf=${promedioCalificacion != null and (promedioCalificacion - T(java.lang.Math).floor(promedioCalificacion) >= 0.25 and promedioCalificacion - T(java.lang.Math).floor(promedioCalificacion) < 0.75)},
-                                               emptyStars=${5 - (promedioCalificacion != null ? T(java.lang.Math).floor(promedioCalificacion).intValue() : 0) - (promedioCalificacion != null and (promedioCalificacion - T(java.lang.Math).floor(promedioCalificacion) >= 0.25 and promedioCalificacion - T(java.lang.Math).floor(promedioCalificacion) < 0.75) ? 1 : 0)}">
-                                <!-- Full stars -->
-                                <th:block th:if="${fullStars > 0}" th:each="i : ${#numbers.sequence(1, fullStars)}">
-                                    <svg class="w-8 h-8 text-text-primary fill-current" viewBox="0 0 24 24">
-                                        <path
-                                            d="m12 17.275l-4.15 2.5q-.275.175-.575.15t-.525-.2t-.35-.437t-.05-.588l1.1-4.725L3.775 10.8q-.25-.225-.312-.513t.037-.562t.3-.45t.55-.225l4.85-.425l1.875-4.45q.125-.3.388-.45t.537-.15t.537.15t.388.45l1.875 4.45l4.85.425q.35.05.55.225t.3.45t.038.563t-.313.512l-3.675 3.175l1.1 4.725q.075.325-.05.588t-.35.437t-.525.2t-.575-.15z" />
-                                    </svg>
-                                </th:block>
-                                <!-- Half star -->
-                                <svg th:if="${hasHalf}" class="w-8 h-8 text-text-primary fill-current"
-                                    viewBox="0 0 24 24">
-                                    <path
-                                        d="m8.85 16.825l3.15-1.9l3.15 1.925l-.825-3.6l2.775-2.4l-3.65-.325l-1.45-3.4l-1.45 3.375l-3.65.325l2.775 2.425zm3.15.45l-4.15 2.5q-.275.175-.575.15t-.525-.2t-.35-.437t-.05-.588l1.1-4.725L3.775 10.8q-.25-.225-.312-.513t.037-.562t.3-.45t.55-.225l4.85-.425l1.875-4.45q.125-.3.388-.45t.537-.15t.537.15t.388.45l1.875 4.45l4.85.425q.35.05.55.225t.3.45t.038.563t-.313.512l-3.675 3.175l1.1 4.725q.075.325-.05.588t-.35.437t-.525.2t-.575-.15zm0-5.025" />
-                                </svg>
-                                <!-- Empty stars -->
-                                <th:block th:if="${emptyStars > 0}" th:each="i : ${#numbers.sequence(1, emptyStars)}">
-                                    <svg class="w-8 h-8 text-gray-300 fill-current" viewBox="0 0 24 24">
-                                        <path
-                                            d="m8.85 16.825l3.15-1.9l3.15 1.925l-.825-3.6l2.775-2.4l-3.65-.325l-1.45-3.4l-1.45 3.375l-3.65.325l2.775 2.425zm3.15.45l-4.15 2.5q-.275.175-.575.15t-.525-.2t-.35-.437t-.05-.588l1.1-4.725L3.775 10.8q-.25-.225-.312-.513t.037-.562t.3-.45t.55-.225l4.85-.425l1.875-4.45q.125-.3.388-.45t.537-.15t.537.15t.388.45l1.875 4.45l4.85.425q.35.05.55.225t.3.45t.038.563t-.313.512l-3.675 3.175l1.1 4.725q.075.325-.05.588t-.35.437t-.525.2t-.575-.15zm0-5.025" />
-                                    </svg>
-                                </th:block>
-                            </th:block>
-                        </div>
-                        <p class="text-sm text-text-secondary">
-                            based on <span th:text="${comentarios.totalElements}">0</span> reviews
-                        </p>
-                    </div>
+                <!-- Estrellas decorativas -->
+                <div class="stars-display">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="#f59e0b">
+                        <path
+                            d="m12 17.275-4.15 2.5q-.275.175-.575.15t-.525-.2-.35-.437-.05-.588l1.1-4.725L3.775 10.8q-.25-.225-.312-.513t.037-.562.3-.45.55-.225l4.85-.425 1.875-4.45q.125-.3.388-.45t.537-.15.537.15.388.45l1.875 4.45 4.85.425q.35.05.55.225t.3.45.038.563-.313.512l-3.675 3.175 1.1 4.725q.075.325-.05.588t-.35.437-.525.2-.575-.15z" />
+                    </svg>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="#f59e0b">
+                        <path
+                            d="m12 17.275-4.15 2.5q-.275.175-.575.15t-.525-.2-.35-.437-.05-.588l1.1-4.725L3.775 10.8q-.25-.225-.312-.513t.037-.562.3-.45.55-.225l4.85-.425 1.875-4.45q.125-.3.388-.45t.537-.15.537.15.388.45l1.875 4.45 4.85.425q.35.05.55.225t.3.45.038.563-.313.512l-3.675 3.175 1.1 4.725q.075.325-.05.588t-.35.437-.525.2-.575-.15z" />
+                    </svg>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="#f59e0b">
+                        <path
+                            d="m12 17.275-4.15 2.5q-.275.175-.575.15t-.525-.2-.35-.437-.05-.588l1.1-4.725L3.775 10.8q-.25-.225-.312-.513t.037-.562.3-.45.55-.225l4.85-.425 1.875-4.45q.125-.3.388-.45t.537-.15.537.15.388.45l1.875 4.45 4.85.425q.35.05.55.225t.3.45.038.563-.313.512l-3.675 3.175 1.1 4.725q.075.325-.05.588t-.35.437-.525.2-.575-.15z" />
+                    </svg>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="#f59e0b">
+                        <path
+                            d="m12 17.275-4.15 2.5q-.275.175-.575.15t-.525-.2-.35-.437-.05-.588l1.1-4.725L3.775 10.8q-.25-.225-.312-.513t.037-.562.3-.45.55-.225l4.85-.425 1.875-4.45q.125-.3.388-.45t.537-.15.537.15.388.45l1.875 4.45 4.85.425q.35.05.55.225t.3.45.038.563-.313.512l-3.675 3.175 1.1 4.725q.075.325-.05.588t-.35.437-.525.2-.575-.15z" />
+                    </svg>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="#e5e7eb">
+                        <path
+                            d="m12 17.275-4.15 2.5q-.275.175-.575.15t-.525-.2-.35-.437-.05-.588l1.1-4.725L3.775 10.8q-.25-.225-.312-.513t.037-.562.3-.45.55-.225l4.85-.425 1.875-4.45q.125-.3.388-.45t.537-.15.537.15.388.45l1.875 4.45 4.85.425q.35.05.55.225t.3.45.038.563-.313.512l-3.675 3.175 1.1 4.725q.075.325-.05.588t-.35.437-.525.2-.575-.15z" />
+                    </svg>
+                </div>
 
-                    <!-- Review Summary - Distribución de estrellas -->
-                    <div class="space-y-3 mb-8">
-                        <h4 class="text-sm font-semibold text-text-secondary uppercase tracking-wide mb-4">
-                            Distribución de reseñas
-                        </h4>
-                        <!-- Si hay menos de 5 comentarios, mostrar mensaje -->  
-                        <div th:if="${totalComentarios < 5}" class="rounded-xl border border-dashed border-gray-300 bg-gray-50 px-4 py-5 text-center">
-                            <svg class="w-10 h-10 mx-auto mb-2 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-                                    d="M11.48 3.499a.562.562 0 0 1 1.04 0l2.125 5.111a.563.563 0 0 0 .475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 0 0-.182.557l1.285 5.385a.562.562 0 0 1-.84.61l-4.725-2.885a.562.562 0 0 0-.586 0L6.982 20.54a.562.562 0 0 1-.84-.61l1.285-5.386a.562.562 0 0 0-.182-.557l-4.204-3.602a.562.562 0 0 1 .321-.988l5.518-.442a.563.563 0 0 0 .475-.345z" />
-                            </svg>
-                            <p class="text-sm font-semibold text-gray-500">Por definir calificación</p>
-                            <p class="text-xs text-gray-400 mt-1">Se necesitan al menos 5 reseñas</p>
-                        </div>
-                        <!-- Distribución real cuando hay 5 o más comentarios -->
-                        <th:block th:if="${totalComentarios >= 5}" th:each="star : ${#numbers.sequence(5, 1)}">
-                            <div class="flex items-center gap-3">
-                                <span class="text-sm text-text-secondary w-16 flex items-center gap-1">
-                                    <span th:text="${star}"></span>
-                                    <svg class="w-4 h-4 fill-current text-text-primary" viewBox="0 0 24 24">
-                                        <path
-                                            d="m12 17.275l-4.15 2.5q-.275.175-.575.15t-.525-.2t-.35-.437t-.05-.588l1.1-4.725L3.775 10.8q-.25-.225-.312-.513t.037-.562t.3-.45t.55-.225l4.85-.425l1.875-4.45q.125-.3.388-.45t.537-.15t.537.15t.388.45l1.875 4.45l4.85.425q.35.05.55.225t.3.45t.038.563t-.313.512l-3.675 3.175l1.1 4.725q.075.325-.05.588t-.35.437t-.525.2t-.575-.15z" />
-                                    </svg>
-                                </span>
-                                <div class="flex-1 bg-gray-200 rounded-full h-2">
-                                    <div class="bg-text-primary h-2 rounded-full transition-all duration-300"
-                                        th:style="'width: ' + (${totalComentarios != null and totalComentarios > 0 ? (distribucionEstrellas[__${star}__] * 100 / totalComentarios) : 0}) + '%'">
-                                    </div>
-                                </div>
-                                <span class="text-sm font-semibold text-text-primary w-8 text-right"
-                                    th:text="${distribucionEstrellas != null ? distribucionEstrellas[__${star}__] : 0}">0</span>
+                <p class="reviews-meta">
+                    Basado en <strong th:text="${totalComentarios}">0</strong> reseñas
+                </p>
+
+                <!-- Distribución (≥5 comentarios) -->
+                <div class="dist-section" th:if="${totalComentarios >= 5}">
+                    <div th:each="star : ${#numbers.sequence(5, 1)}" class="dist-row">
+                        <span class="dist-label" th:text="${star} + '★'">5★</span>
+                        <div class="dist-bar-bg">
+                            <div class="dist-bar-fill"
+                                th:style="'width:' + (${totalComentarios > 0 && distribucionEstrellas != null && distribucionEstrellas[__${star}__] != null ? (distribucionEstrellas[__${star}__] * 100 / totalComentarios) : 0}) + '%'">
                             </div>
-                        </th:block>
+                        </div>
+                        <span class="dist-count"
+                            th:text="${distribucionEstrellas != null && distribucionEstrellas[__${star}__] != null ? distribucionEstrellas[__${star}__] : 0}">0</span>
                     </div>
                 </div>
+
+                <!-- Mensaje sin suficientes reseñas -->
+                <div class="no-dist" th:if="${totalComentarios < 5}">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#d1d5db" stroke-width="1.5"
+                        style="display:block;margin:0 auto 0.5rem;">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
+                    </svg>
+                    <p class="no-dist-title">Por definir calificación</p>
+                    <p class="no-dist-sub">Se necesitan al menos 5 reseñas</p>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- ── Panel principal ── -->
+        <div class="resenas-main">
+
+            <!-- Encabezado -->
+            <div class="resenas-header">
+                <h3 class="resenas-title">Reseñas</h3>
+                <span class="resenas-total" th:text="${totalComentarios} + ' comentarios'">0 comentarios</span>
             </div>
 
-            <!-- Right Column - Reviews List -->
-            <div class="lg:col-span-8">
-                <!-- Add Comment Button - solo si el usuario realizó la actividad -->
-                <div th:if="${puedeCommentar}" class="mb-6">
-                    <button id="open-add-modal"
-                        class="bgBlueMain w-full md:w-auto flex items-center justify-center gap-2 px-6 py-3 text-white font-semibold rounded-lg transition-colors duration-200 shadow-sm hover:shadow-md bg-color-main">
-                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                            <path
-                                d="M12 4c4.411 0 8 3.589 8 8s-3.589 8-8 8s-8-3.589-8-8s3.589-8 8-8m0-2C6.477 2 2 6.477 2 12s4.477 10 10 10s10-4.477 10-10S17.523 2 12 2m5 9h-4V7h-2v4H7v2h4v4h2v-4h4z" />
-                        </svg>
-                        Agregar Comentario
-                    </button>
-                </div>
+            <!-- Búsqueda -->
+           <!--  <div class="search-resenas">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                    stroke="#9ca3af" stroke-width="2">
+                    <circle cx="11" cy="11" r="8" />
+                    <path d="m21 21-4.3-4.3" />
+                </svg>
+                <input type="text" placeholder="Buscar en las reseñas..." />
+            </div> -->
 
-                <!-- No Comments Message -->
-                <div th:if="${comentarios.totalElements == 0}" class="text-center py-12 bg-white rounded-2xl shadow-sm">
-                    <svg class="w-16 h-16 mx-auto text-gray-300 mb-4" fill="none" stroke="currentColor"
-                        viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-                    </svg>
-                    <p class="text-text-secondary text-lg">No hay comentarios todavía.</p>
-                    <p class="text-text-secondary text-sm mt-2">¡Sé el primero en dejar una reseña!</p>
-                </div>
+            <!-- Botón agregar -->
+            <button th:if="${puedeCommentar}" id="open-add-modal" class="btn-add-resena">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                    <path
+                        d="M12 4c4.411 0 8 3.589 8 8s-3.589 8-8 8-8-3.589-8-8 3.589-8 8-8m0-2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2m5 9h-4V7h-2v4H7v2h4v4h2v-4h4z" />
+                </svg>
+                Agregar comentario
+            </button>
 
-                <!-- Reviews List -->
-                <div class="space-y-6">
-                    <!-- Review Card -->
-                    <div th:each="comentario : ${comentarios.content}"
-                        class="bg-white rounded-2xl shadow-sm p-6 hover:shadow-md transition-shadow duration-200">
+            <!-- Estado vacío -->
+            <div th:if="${comentarios == null || comentarios.content == null || #lists.isEmpty(comentarios.content)}"
+                class="empty-resenas">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
+                    style="display:block;margin:0 auto 1rem;color:#d1d5db;">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                </svg>
+                <p class="empty-resenas-title">No hay comentarios todavía.</p>
+                <p class="empty-resenas-sub">¡Sé el primero en dejar una reseña!</p>
+            </div>
 
-                        <!-- Review Header -->
-                        <div class="flex items-start gap-4 mb-4">
-                            <!-- Avatar -->
-                            <div class="flex-shrink-0">
-                                <div class="w-12 h-12 rounded-full bg-primary flex items-center justify-center text-white font-semibold text-lg"
-                                    th:text="${comentario.cliente.usuario.nombre != null ? comentario.cliente.usuario.nombre.substring(0,1).toUpperCase() : 'U'}">
-                                    G
-                                </div>
-                            </div>
+            <!-- Lista de reseñas -->
+            <div class="reviews-list"
+                th:if="${comentarios != null && comentarios.content != null && !#lists.isEmpty(comentarios.content)}">
 
-                            <!-- User Info -->
-                            <div class="flex-1 min-w-0">
-                                <div class="flex items-center justify-between mb-1">
-                                    <h4 class="font-semibold text-text-primary"
-                                        th:text="${comentario.cliente.usuario.nombre}">
-                                        Viajero
-                                    </h4>
-                                    <button class="text-text-secondary hover:text-text-primary">
-                                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                                            <path
-                                                d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z" />
-                                        </svg>
-                                    </button>
-                                </div>
-
-                                <div class="flex flex-wrap items-center gap-3 text-sm text-text-secondary">
-                                    <span th:text="${#temporals.format(comentario.fechaComentario, 'MMMM d, yyyy')}">
-                                        February 13, 2026
-                                    </span>
-                                    <span>•</span>
-                                    <span class="flex items-center gap-1">
-                                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                                            <path
-                                                d="M9 11.75A2.25 2.25 0 1 1 11.25 14A2.25 2.25 0 0 1 9 11.75zm3-4.5A2.25 2.25 0 1 1 14.25 9.5A2.25 2.25 0 0 1 12 7.25zm8.77 5.36l-1-3.37a1 1 0 0 0-1-.73h-3V7a1 1 0 0 0-1-1H9.5a1 1 0 0 0-1 1v1.5h-3a1 1 0 0 0-1 .73l-1 3.37a1 1 0 0 0 .26.9l5 4.42a1 1 0 0 0 1.48 0l5-4.42a1 1 0 0 0 .26-.9z" />
-                                        </svg>
-                                        Reserva verificada
-                                    </span>
-                                </div>
-
-                                <!-- Stars -->
-                                <div class="flex items-center gap-1 mt-2">
-                                    <!-- Full stars -->
+                <div th:each="comentario : ${comentarios.content}" class="review-card">
+                    <div class="review-top">
+                        <div class="reviewer-info">
+                            <!-- Avatar inicial -->
+                            <div class="reviewer-avatar" th:text="${comentario.cliente != null && comentario.cliente.usuario != null && comentario.cliente.usuario.nombre != null
+                                       ? comentario.cliente.usuario.nombre.substring(0,1).toUpperCase() : 'U'}">U</div>
+                            <div>
+                                <div class="reviewer-name" th:text="${comentario.cliente != null && comentario.cliente.usuario != null
+                                           ? comentario.cliente.usuario.nombre : 'Usuario'}">Usuario</div>
+                                <!-- Mini estrellas -->
+                                <div class="mini-stars">
                                     <span
-                                        th:each="i : ${#numbers.sequence(1, comentario.calificacion > 0 ? comentario.calificacion : 0)}">
-                                        <svg class="w-5 h-5 text-text-primary fill-current" viewBox="0 0 24 24">
+                                        th:each="i : ${#numbers.sequence(1, comentario.calificacion != null ? comentario.calificacion : 0)}">
+                                        <svg width="12" height="12" viewBox="0 0 24 24" fill="#f59e0b">
                                             <path
-                                                d="m12 17.275l-4.15 2.5q-.275.175-.575.15t-.525-.2t-.35-.437t-.05-.588l1.1-4.725L3.775 10.8q-.25-.225-.312-.513t.037-.562t.3-.45t.55-.225l4.85-.425l1.875-4.45q.125-.3.388-.45t.537-.15t.537.15t.388.45l1.875 4.45l4.85.425q.35.05.55.225t.3.45t.038.563t-.313.512l-3.675 3.175l1.1 4.725q.075.325-.05.588t-.35.437t-.525.2t-.575-.15z" />
+                                                d="m12 17.275-4.15 2.5q-.275.175-.575.15t-.525-.2-.35-.437-.05-.588l1.1-4.725L3.775 10.8q-.25-.225-.312-.513t.037-.562.3-.45.55-.225l4.85-.425 1.875-4.45q.125-.3.388-.45t.537-.15.537.15.388.45l1.875 4.45 4.85.425q.35.05.55.225t.3.45.038.563-.313.512l-3.675 3.175 1.1 4.725q.075.325-.05.588t-.35.437-.525.2-.575-.15z" />
                                         </svg>
                                     </span>
-                                    <!-- Empty stars -->
-                                    <th:block th:if="${comentario.calificacion < 5}">
-                                        <span th:each="i : ${#numbers.sequence(1, 5 - comentario.calificacion)}">
-                                            <svg class="w-5 h-5 text-gray-300 fill-current" viewBox="0 0 24 24">
-                                                <path
-                                                    d="m8.85 16.825l3.15-1.9l3.15 1.925l-.825-3.6l2.775-2.4l-3.65-.325l-1.45-3.4l-1.45 3.375l-3.65.325l2.775 2.425zm3.15.45l-4.15 2.5q-.275.175-.575.15t-.525-.2t-.35-.437t-.05-.588l1.1-4.725L3.775 10.8q-.25-.225-.312-.513t.037-.562t.3-.45t.55-.225l4.85-.425l1.875-4.45q.125-.3.388-.45t.537-.15t.537.15t.388.45l1.875 4.45l4.85.425q.35.05.55.225t.3.45t.038.563t-.313.512l-3.675 3.175l1.1 4.725q.075.325-.05.588t-.35.437t-.525.2t-.575-.15zm0-5.025" />
-                                            </svg>
-                                        </span>
-                                    </th:block>
-                                    <span class="ml-2 text-sm font-semibold text-text-primary"
-                                        th:text="${comentario.calificacion}">5</span>
+                                    <span th:if="${comentario.calificacion != null && comentario.calificacion < 5}"
+                                        th:each="i : ${#numbers.sequence(1, 5 - comentario.calificacion)}">
+                                        <svg width="12" height="12" viewBox="0 0 24 24" fill="#e5e7eb">
+                                            <path
+                                                d="m12 17.275-4.15 2.5q-.275.175-.575.15t-.525-.2-.35-.437-.05-.588l1.1-4.725L3.775 10.8q-.25-.225-.312-.513t.037-.562.3-.45.55-.225l4.85-.425 1.875-4.45q.125-.3.388-.45t.537-.15.537.15.388.45l1.875 4.45 4.85.425q.35.05.55.225t.3.45.038.563-.313.512l-3.675 3.175 1.1 4.725q.075.325-.05.588t-.35.437-.525.2-.575-.15z" />
+                                        </svg>
+                                    </span>
                                 </div>
                             </div>
                         </div>
-
-                        <!-- Review Text -->
-                        <div class="space-y-3">
-                            <p class="text-text-primary leading-relaxed" th:text="${comentario.texto}">
-                                Hace mucho calor en la pared sin sombra, así que hay que ir temprano.
-                            </p>
-
-                            <!-- Location -->
-                            <div class="flex items-center gap-2 text-sm text-text-secondary">
-                                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                                    <path
-                                        d="M12 12q.825 0 1.413-.587T14 10t-.587-1.412T12 8t-1.412.588T10 10t.588 1.413T12 12m0 7.35q3.05-2.8 4.525-5.087T18 10.2q0-2.725-1.737-4.462T12 4T7.738 5.738T6 10.2q0 1.775 1.475 4.063T12 19.35M12 22q-4.025-3.425-6.012-6.362T4 10.2q0-3.75 2.413-5.975T12 2t5.588 2.225T20 10.2q0 2.5-1.987 5.438T12 22m0-12" />
-                                </svg>
-                                <span th:text="${actividad.ubicacion}">Ubicación</span>
-                            </div>
-
-                            <!-- Read More Button -->
-                            <button
-                                class="text-primary hover:text-primary-dark font-semibold text-sm flex items-center gap-1 group">
-                                Leer más
-                                <svg class="w-4 h-4 transform group-hover:translate-x-1 transition-transform"
-                                    fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M9 5l7 7-7 7" />
-                                </svg>
-                            </button>
-                        </div>
-
-                        <!-- Review Footer -->
-                        <div class="flex items-center justify-between mt-4 pt-4 border-t border-border-color">
-                            <button
-                                class="flex items-center gap-2 text-sm text-text-secondary hover:text-primary transition-colors">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5" />
-                                </svg>
-                                <span>¿Te fue útil?</span>
-                            </button>
-                            <button class="text-sm text-primary hover:text-primary-dark font-semibold">
-                                Traducir
-                            </button>
-                        </div>
+                        <span class="review-date"
+                            th:text="${#temporals.format(comentario.fechaComentario, 'dd MMM yyyy')}">01 Ene 2026</span>
                     </div>
+                    <p class="review-text" th:text="${comentario.texto}">Texto del comentario...</p>
                 </div>
 
-                <!-- Pagination -->
-                <div th:if="${comentariosTotalPages > 1}" class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mt-8">
-                    <a th:if="${comentariosCurrentPage > 0}"
-                        th:href="@{/actividad/{slug}-{id}(slug=${actividad.titulo.toLowerCase().replaceAll('[^a-z0-9\\s-]', '').replaceAll('\\s+', '-').replaceAll('-+', '-')}, id=${id}, comentariosPage=${comentariosCurrentPage - 1})} + '#reseñas'"
-                        class="px-6 py-3 border border-border-color rounded-lg hover:bg-gray-50 font-semibold transition-colors duration-200">
-                        ← Anterior
-                    </a>
-                    <span class="text-sm text-text-secondary">
-                        Página <span th:text="${comentariosCurrentPage + 1}">1</span> de <span th:text="${comentariosTotalPages}">10</span>
-                    </span>
-                    <div class="flex flex-wrap items-center justify-center gap-2">
-                        <a th:each="numeroPagina : ${comentariosPageNumbers}"
-                            th:href="@{/actividad/{slug}-{id}(slug=${actividad.titulo.toLowerCase().replaceAll('[^a-z0-9\\s-]', '').replaceAll('\\s+', '-').replaceAll('-+', '-')}, id=${id}, comentariosPage=${numeroPagina})} + '#reseñas'"
-                            th:text="${numeroPagina + 1}"
-                            class="min-w-11 px-4 py-3 border rounded-lg font-semibold transition-colors duration-200 text-center"
-                            th:classappend="${numeroPagina == comentariosCurrentPage} ? ' bg-text-primary text-white border-text-primary' : ' border-border-color hover:bg-gray-50 text-text-primary'">
-                            1
-                        </a>
-                    </div>
-                    <a th:if="${comentariosCurrentPage < comentariosTotalPages - 1}"
-                        th:href="@{/actividad/{slug}-{id}(slug=${actividad.titulo.toLowerCase().replaceAll('[^a-z0-9\\s-]', '').replaceAll('\\s+', '-').replaceAll('-+', '-')}, id=${id}, comentariosPage=${comentariosCurrentPage + 1})} + '#reseñas'"
-                        class="px-6 py-3 border border-border-color rounded-lg hover:bg-gray-50 font-semibold transition-colors duration-200">
-                        Siguiente →
-                    </a>
-                </div>
+            </div>
+
+            <!-- Paginación -->
+            <div th:if="${comentarios != null && comentarios.totalPages > 1}" class="pagination-resenas">
+
+                <a th:if="${comentariosCurrentPage != null && comentariosCurrentPage > 0}"
+                    th:href="@{/actividad/{slug}-{id}(slug=${actividad != null ? actividad.titulo.toLowerCase().replaceAll('[^a-z0-9\\s-]', '').replaceAll('\\s+', '-').replaceAll('-+', '-') : ''}, id=${id != null ? id : ''}, comentariosPage=${comentariosCurrentPage - 1})} + '#reseñas'"
+                    class="page-link">← Anterior</a>
+
+                <th:block th:if="${comentariosPageNumbers != null}" th:each="num : ${comentariosPageNumbers}">
+                    <a th:href="@{/actividad/{slug}-{id}(slug=${actividad != null ? actividad.titulo.toLowerCase().replaceAll('[^a-z0-9\\s-]', '').replaceAll('\\s+', '-').replaceAll('-+', '-') : ''}, id=${id != null ? id : ''}, comentariosPage=${num})} + '#reseñas'"
+                        th:text="${num + 1}"
+                        th:class="${num == comentariosCurrentPage} ? 'page-link active' : 'page-link'">1</a>
+                </th:block>
+
+                <a th:if="${comentariosCurrentPage != null && comentariosCurrentPage < comentarios.totalPages - 1}"
+                    th:href="@{/actividad/{slug}-{id}(slug=${actividad != null ? actividad.titulo.toLowerCase().replaceAll('[^a-z0-9\\s-]', '').replaceAll('\\s+', '-').replaceAll('-+', '-') : ''}, id=${id != null ? id : ''}, comentariosPage=${comentariosCurrentPage + 1})} + '#reseñas'"
+                    class="page-link">Siguiente →</a>
             </div>
 
         </div>
 
-        <!-- Modal Agregar Comentario -->
-        <div class="modal modal-add">
-            <form th:action="@{/comentarios/agregar/{idActividad}(idActividad=${actividad.idActividad})}" method="post">
+        <!-- ════════════════════════════════════════
+         Modal Agregar Comentario — SIN CAMBIOS
+         ════════════════════════════════════════ -->
+        <div id="modalAddComentario"
+            class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden items-center justify-center">
+            <div class="bg-white rounded-2xl p-8 max-w-lg w-full mx-4 relative shadow-2xl">
+                <button onclick="cerrarModalComentario()"
+                    class="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 text-gray-400 hover:text-gray-600 transition-colors text-xl">&times;</button>
 
-                <div class="form-heading">
-                    <h2>Agregar Comentario</h2>
-                    <p>Agrega tus Comentario</p>
-                    <span class="close-modal close-btn-modal">&times;</span>
+                <div class="mb-6">
+                    <h2 class="text-2xl font-bold text-gray-900">Agregar Comentario</h2>
+                    <p class="text-gray-500 mt-1">Comparte tu experiencia con esta actividad</p>
                 </div>
 
-                <div class="inputs-form">
+                <form
+                    th:action="@{/comentarios/agregar/{idActividad}(idActividad=${actividad != null ? actividad.idActividad : ''})}"
+                    method="post" id="formComentario">
 
-                    <label for="comentario">Comentario <span class="red">*</span></label>
-                    <textarea name="texto" id="comentario" placeholder="Escribe tu comentario..." required></textarea>
-
-                    <label>Calificación: <span class="red">*</span></label>
-                    <input type="hidden" name="calificacion" id="calificacionHidden" value="" required />
-                    <div class="star-rating-input" id="starRatingInput" role="group" aria-label="Calificación">
-                        <button type="button" class="star-btn" data-value="1" title="1 estrella" aria-label="1 estrella">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m12 17.275l-4.15 2.5q-.275.175-.575.15t-.525-.2t-.35-.437t-.05-.588l1.1-4.725L3.775 10.8q-.25-.225-.312-.513t.037-.562t.3-.45t.55-.225l4.85-.425l1.875-4.45q.125-.3.388-.45t.537-.15t.537.15t.388.45l1.875 4.45l4.85.425q.35.05.55.225t.3.45t.038.563t-.313.512l-3.675 3.175l1.1 4.725q.075.325-.05.588t-.35.437t-.525.2t-.575-.15z" /></svg>
-                        </button>
-                        <button type="button" class="star-btn" data-value="2" title="2 estrellas" aria-label="2 estrellas">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m12 17.275l-4.15 2.5q-.275.175-.575.15t-.525-.2t-.35-.437t-.05-.588l1.1-4.725L3.775 10.8q-.25-.225-.312-.513t.037-.562t.3-.45t.55-.225l4.85-.425l1.875-4.45q.125-.3.388-.45t.537-.15t.537.15t.388.45l1.875 4.45l4.85.425q.35.05.55.225t.3.45t.038.563t-.313.512l-3.675 3.175l1.1 4.725q.075.325-.05.588t-.35.437t-.525.2t-.575-.15z" /></svg>
-                        </button>
-                        <button type="button" class="star-btn" data-value="3" title="3 estrellas" aria-label="3 estrellas">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m12 17.275l-4.15 2.5q-.275.175-.575.15t-.525-.2t-.35-.437t-.05-.588l1.1-4.725L3.775 10.8q-.25-.225-.312-.513t.037-.562t.3-.45t.55-.225l4.85-.425l1.875-4.45q.125-.3.388-.45t.537-.15t.537.15t.388.45l1.875 4.45l4.85.425q.35.05.55.225t.3.45t.038.563t-.313.512l-3.675 3.175l1.1 4.725q.075.325-.05.588t-.35.437t-.525.2t-.575-.15z" /></svg>
-                        </button>
-                        <button type="button" class="star-btn" data-value="4" title="4 estrellas" aria-label="4 estrellas">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m12 17.275l-4.15 2.5q-.275.175-.575.15t-.525-.2t-.35-.437t-.05-.588l1.1-4.725L3.775 10.8q-.25-.225-.312-.513t.037-.562t.3-.45t.55-.225l4.85-.425l1.875-4.45q.125-.3.388-.45t.537-.15t.537.15t.388.45l1.875 4.45l4.85.425q.35.05.55.225t.3.45t.038.563t-.313.512l-3.675 3.175l1.1 4.725q.075.325-.05.588t-.35.437t-.525.2t-.575-.15z" /></svg>
-                        </button>
-                        <button type="button" class="star-btn" data-value="5" title="5 estrellas" aria-label="5 estrellas">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m12 17.275l-4.15 2.5q-.275.175-.575.15t-.525-.2t-.35-.437t-.05-.588l1.1-4.725L3.775 10.8q-.25-.225-.312-.513t.037-.562t.3-.45t.55-.225l4.85-.425l1.875-4.45q.125-.3.388-.45t.537-.15t.537.15t.388.45l1.875 4.45l4.85.425q.35.05.55.225t.3.45t.038.563t-.313.512l-3.675 3.175l1.1 4.725q.075.325-.05.588t-.35.437t-.525.2t-.575-.15z" /></svg>
-                        </button>
-                        <span id="starLabel" class="star-label">Selecciona una calificación</span>
+                    <!-- Estrellas -->
+                    <div class="mb-6">
+                        <label class="block text-sm font-medium text-gray-700 mb-3">Calificación *</label>
+                        <div class="flex items-center gap-2" id="starRatingInput">
+                            <button type="button" class="star-btn p-1 rounded-lg hover:bg-gray-50 transition-colors"
+                                data-value="1">
+                                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#d1d5db"
+                                    stroke-width="1.5">
+                                    <path
+                                        d="m12 17.275l-4.15 2.5q-.275.175-.575.15t-.525-.2t-.35-.437t-.05-.588l1.1-4.725L3.775 10.8q-.25-.225-.312-.513t.037-.562t.3-.45t.55-.225l4.85-.425l1.875-4.45q.125-.3.388-.45t.537-.15t.537.15t.388.45l1.875 4.45l4.85.425q.35.05.55.225t.3.45t.038.563t-.313.512l-3.675 3.175l1.1 4.725q.075.325-.05.588t-.35.437t-.525.2t-.575-.15z" />
+                                </svg>
+                            </button>
+                            <button type="button" class="star-btn p-1 rounded-lg hover:bg-gray-50 transition-colors"
+                                data-value="2">
+                                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#d1d5db"
+                                    stroke-width="1.5">
+                                    <path
+                                        d="m12 17.275l-4.15 2.5q-.275.175-.575.15t-.525-.2t-.35-.437t-.05-.588l1.1-4.725L3.775 10.8q-.25-.225-.312-.513t.037-.562t.3-.45t.55-.225l4.85-.425l1.875-4.45q.125-.3.388-.45t.537-.15t.537.15t.388.45l1.875 4.45l4.85.425q.35.05.55.225t.3.45t.038.563t-.313.512l-3.675 3.175l1.1 4.725q.075.325-.05.588t-.35.437t-.525.2t-.575-.15z" />
+                                </svg>
+                            </button>
+                            <button type="button" class="star-btn p-1 rounded-lg hover:bg-gray-50 transition-colors"
+                                data-value="3">
+                                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#d1d5db"
+                                    stroke-width="1.5">
+                                    <path
+                                        d="m12 17.275l-4.15 2.5q-.275.175-.575.15t-.525-.2t-.35-.437t-.05-.588l1.1-4.725L3.775 10.8q-.25-.225-.312-.513t.037-.562t.3-.45t.55-.225l4.85-.425l1.875-4.45q.125-.3.388-.45t.537-.15t.537.15t.388.45l1.875 4.45l4.85.425q.35.05.55.225t.3.45t.038.563t-.313.512l-3.675 3.175l1.1 4.725q.075.325-.05.588t-.35.437t-.525.2t-.575-.15z" />
+                                </svg>
+                            </button>
+                            <button type="button" class="star-btn p-1 rounded-lg hover:bg-gray-50 transition-colors"
+                                data-value="4">
+                                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#d1d5db"
+                                    stroke-width="1.5">
+                                    <path
+                                        d="m12 17.275l-4.15 2.5q-.275.175-.575.15t-.525-.2t-.35-.437t-.05-.588l1.1-4.725L3.775 10.8q-.25-.225-.312-.513t.037-.562t.3-.45t.55-.225l4.85-.425l1.875-4.45q.125-.3.388-.45t.537-.15t.537.15t.388.45l1.875 4.45l4.85.425q.35.05.55.225t.3.45t.038.563t-.313.512l-3.675 3.175l1.1 4.725q.075.325-.05.588t-.35.437t-.525.2t-.575-.15z" />
+                                </svg>
+                            </button>
+                            <button type="button" class="star-btn p-1 rounded-lg hover:bg-gray-50 transition-colors"
+                                data-value="5">
+                                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#d1d5db"
+                                    stroke-width="1.5">
+                                    <path
+                                        d="m12 17.275l-4.15 2.5q-.275.175-.575.15t-.525-.2t-.35-.437t-.05-.588l1.1-4.725L3.775 10.8q-.25-.225-.312-.513t.037-.562t.3-.45t.55-.225l4.85-.425l1.875-4.45q.125-.3.388-.45t.537-.15t.537.15t.388.45l1.875 4.45l4.85.425q.35.05.55.225t.3.45t.038.563t-.313.512l-3.675 3.175l1.1 4.725q.075.325-.05.588t-.35.437t-.525.2t-.575-.15z" />
+                                </svg>
+                            </button>
+                            <input type="hidden" name="calificacion" id="calificacionHidden" required />
+                            <span id="starLabel" class="ml-2 text-sm text-gray-500 font-medium">Selecciona una
+                                calificación</span>
+                        </div>
                     </div>
 
-                    <div class="btnSubmit">
-                        <button type="submit" class="btn-submit button-default">Enviar Comentario</button>
+                    <!-- Texto -->
+                    <div class="mb-6">
+                        <label for="textoComentario" class="block text-sm font-medium text-gray-700 mb-2">Tu comentario
+                            *</label>
+                        <textarea id="textoComentario" name="texto" rows="4"
+                            class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none bg-gray-50 focus:bg-white transition-colors"
+                            placeholder="Cuéntanos tu experiencia..." required></textarea>
                     </div>
 
-                </div>
-
-            </form>
+                    <button type="submit"
+                        class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-xl transition-all duration-200 shadow-sm hover:shadow-md">
+                        Enviar Comentario
+                    </button>
+                </form>
+            </div>
         </div>
 
     </section>
-
-    <style>
-        .star-rating-input {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            flex-wrap: wrap;
-        }
-        .star-btn {
-            background: none;
-            border: none;
-            padding: 2px;
-            cursor: pointer;
-            line-height: 0;
-            transition: transform 0.1s ease;
-        }
-        .star-btn:hover,
-        .star-btn:focus {
-            transform: scale(1.15);
-            outline: none;
-        }
-        .star-btn svg {
-            width: 32px;
-            height: 32px;
-            color: #d1d5db;
-            transition: color 0.15s ease, fill 0.15s ease;
-        }
-        .star-btn.active svg,
-        .star-btn.hovered svg {
-            color: #f59e0b;
-            fill: #f59e0b;
-        }
-        .star-label {
-            font-size: 0.82rem;
-            color: #6b7280;
-            margin-left: 6px;
-        }
-    </style>
-
-    <script>
-        (function () {
-            const labels = ['', 'Muy malo', 'Malo', 'Regular', 'Bueno', '¡Excelente!'];
-            document.querySelectorAll('#starRatingInput').forEach(function (container) {
-                const hidden = container.closest('.inputs-form').querySelector('#calificacionHidden');
-                const labelEl = container.querySelector('#starLabel');
-                const stars = container.querySelectorAll('.star-btn');
-
-                function highlightUpTo(n) {
-                    stars.forEach(function (s) {
-                        const v = parseInt(s.dataset.value, 10);
-                        s.classList.toggle('hovered', v <= n);
-                        s.classList.remove('active');
-                    });
-                }
-
-                function setSelected(n) {
-                    hidden.value = n;
-                    stars.forEach(function (s) {
-                        const v = parseInt(s.dataset.value, 10);
-                        s.classList.toggle('active', v <= n);
-                        s.classList.remove('hovered');
-                    });
-                    labelEl.textContent = labels[n] || '';
-                }
-
-                stars.forEach(function (btn) {
-                    btn.addEventListener('mouseenter', function () {
-                        highlightUpTo(parseInt(btn.dataset.value, 10));
-                    });
-                    btn.addEventListener('mouseleave', function () {
-                        const sel = parseInt(hidden.value, 10) || 0;
-                        stars.forEach(function (s) {
-                            s.classList.remove('hovered');
-                            s.classList.toggle('active', parseInt(s.dataset.value, 10) <= sel);
-                        });
-                    });
-                    btn.addEventListener('click', function () {
-                        setSelected(parseInt(btn.dataset.value, 10));
-                    });
-                });
-            });
-
-            // Validate star selection before submit
-            var modal = document.querySelector('.modal-add');
-            if (modal) {
-                var form = modal.querySelector('form');
-                if (form) {
-                    form.addEventListener('submit', function (e) {
-                        var hidden = form.querySelector('#calificacionHidden');
-                        if (!hidden.value) {
-                            e.preventDefault();
-                            alert('Por favor selecciona una calificación antes de enviar.');
-                        }
-                    });
-                }
-            }
-        })();
-    </script>
 </body>
+
+</html>

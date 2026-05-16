@@ -33,9 +33,12 @@ import maineta.eta.service.WompiService;
 /**
  * Controller que maneja los pagos a través de Wompi.
  * 
- * - GET /cliente/pago/iniciar → Redirige directamente a checkout.wompi.co con URL completa
- * - POST /cliente/pago/webhook → Endpoint público llamado por Wompi (server-to-server)
- * - GET /cliente/pago/respuesta → Endpoint donde llega el cliente tras completar el pago en Wompi
+ * - GET /cliente/pago/iniciar → Redirige directamente a checkout.wompi.co con
+ * URL completa
+ * - POST /cliente/pago/webhook → Endpoint público llamado por Wompi
+ * (server-to-server)
+ * - GET /cliente/pago/respuesta → Endpoint donde llega el cliente tras
+ * completar el pago en Wompi
  */
 @Controller
 @RequestMapping("/cliente/pago")
@@ -49,13 +52,13 @@ public class PagoController {
     private final ReservaService reservaService;
     private final ActividadService actividadService;
     private final DisponibilidadService disponibilidadService;
-    
+
     @Value("${pago.enabled:false}")
     private boolean pagoEnabled;
 
-    public PagoController(WompiService wompiService, UsuarioService usuarioService, 
-                         ClienteService clienteService, ReservaService reservaService,
-                         ActividadService actividadService, DisponibilidadService disponibilidadService) {
+    public PagoController(WompiService wompiService, UsuarioService usuarioService,
+            ClienteService clienteService, ReservaService reservaService,
+            ActividadService actividadService, DisponibilidadService disponibilidadService) {
         this.wompiService = wompiService;
         this.usuarioService = usuarioService;
         this.clienteService = clienteService;
@@ -68,10 +71,10 @@ public class PagoController {
      * Endpoint que redirige directamente a la página de pago de Wompi.
      * Protegido con ROLE_CLIENTE.
      * 
-     * @param idDisponibilidad ID de la disponibilidad a reservar
-     * @param idActividad ID de la actividad
-     * @param cantidad Cantidad de cupos a reservar
-     * @param principal Usuario autenticado
+     * @param idDisponibilidad   ID de la disponibilidad a reservar
+     * @param idActividad        ID de la actividad
+     * @param cantidad           Cantidad de cupos a reservar
+     * @param principal          Usuario autenticado
      * @param redirectAttributes Para pasar mensajes de error
      * @return Redirect a la URL de pago de Wompi
      */
@@ -84,8 +87,8 @@ public class PagoController {
             Principal principal,
             RedirectAttributes redirectAttributes) {
 
-        logger.info("Iniciando pago Wompi - Usuario: {}, Actividad: {}, Cantidad: {}", 
-                    principal.getName(), idActividad, cantidad);
+        logger.info("Iniciando pago Wompi - Usuario: {}, Actividad: {}, Cantidad: {}",
+                principal.getName(), idActividad, cantidad);
 
         try {
             // Obtener usuario autenticado
@@ -98,7 +101,8 @@ public class PagoController {
 
             // Obtener cliente asociado al usuario
             Cliente cliente = clienteService.obtenerPorUsuario(usuario)
-                .orElseThrow(() -> new RuntimeException("Cliente no encontrado para usuario: " + usuario.getEmail()));
+                    .orElseThrow(
+                            () -> new RuntimeException("Cliente no encontrado para usuario: " + usuario.getEmail()));
 
             // ⚠️ MODO SIN PAGO: Crear reserva directamente (pago.enabled=false)
             if (!pagoEnabled) {
@@ -109,13 +113,13 @@ public class PagoController {
                     if (actividad == null) {
                         throw new RuntimeException("Actividad no encontrada");
                     }
-                    
+
                     Optional<Disponibilidad> dispOpt = disponibilidadService.obtenerPorId(idDisponibilidad);
                     if (!dispOpt.isPresent()) {
                         throw new RuntimeException("Disponibilidad no encontrada");
                     }
                     Disponibilidad disponibilidad = dispOpt.get();
-                    
+
                     // Crear reserva sin pago
                     reservaService.hacerReserva(cliente, actividad, disponibilidad, cantidad);
                     redirectAttributes.addFlashAttribute("success", "¡Reserva creada exitosamente! (Modo sin pago)");
@@ -123,22 +127,21 @@ public class PagoController {
                 } catch (Exception e) {
                     logger.error("Error al crear reserva sin pago", e);
                     redirectAttributes.addFlashAttribute("error", "Error al crear reserva: " + e.getMessage());
-                    return String.format("redirect:/cliente/checkout/actividad/%d?idDispo=%d", 
-                                       idActividad, idDisponibilidad);
+                    return String.format("redirect:/cliente/checkout/actividad/%d?idDispo=%d",
+                            idActividad, idDisponibilidad);
                 }
             }
-            
+
             // ✅ MODO CON PAGO: Redirigir a Wompi (pago.enabled=true)
             logger.info("Modo con pago activado - Generando URL de Wompi");
             String urlWompi = wompiService.generarUrlPago(
-                idDisponibilidad,
-                cliente.getId(),
-                idActividad,
-                cantidad,
-                usuario.getEmail(),
-                usuario.getNombre(),
-                usuario.getTelefono()
-            );
+                    idDisponibilidad,
+                    cliente.getId(),
+                    idActividad,
+                    cantidad,
+                    usuario.getEmail(),
+                    usuario.getNombre(),
+                    usuario.getTelefono());
 
             logger.info("Redirigiendo a Wompi - URL generada (longitud: {})", urlWompi.length());
 
@@ -148,8 +151,8 @@ public class PagoController {
         } catch (Exception e) {
             logger.error("Error al generar URL de pago de Wompi", e);
             redirectAttributes.addFlashAttribute("error", "Error al procesar el pago: " + e.getMessage());
-            return String.format("redirect:/cliente/checkout/actividad/%d?idDispo=%d", 
-                               idActividad, idDisponibilidad);
+            return String.format("redirect:/cliente/checkout/actividad/%d?idDispo=%d",
+                    idActividad, idDisponibilidad);
         }
     }
 
@@ -157,15 +160,16 @@ public class PagoController {
      * Endpoint de webhook llamado por Wompi (server-to-server).
      * DEBE ser público (sin autenticación).
      * 
-     * @param body JSON enviado por Wompi
-     * @param checksumHeader Hash de verificación enviado en el header "wompi-signature-checksum"
+     * @param body           JSON enviado por Wompi
+     * @param checksumHeader Hash de verificación enviado en el header
+     *                       "wompi-signature-checksum"
      * @return HTTP 200 OK siempre (Wompi espera 200 para confirmar recepción)
      */
     @PostMapping("/webhook")
     public ResponseEntity<String> webhook(
             @RequestBody String body,
             @RequestHeader(name = "wompi-signature-checksum", required = false) String checksumHeader) {
-        
+
         logger.info("Webhook recibido de Wompi");
         logger.debug("Body: {}", body);
         logger.debug("Checksum: {}", checksumHeader);
@@ -188,10 +192,12 @@ public class PagoController {
     }
 
     /**
-     * Endpoint de respuesta al que llega el cliente tras completar el pago en Wompi.
+     * Endpoint de respuesta al que llega el cliente tras completar el pago en
+     * Wompi.
      * Protegido con ROLE_CLIENTE.
      * 
-     * @param reference Referencia del pago (query param: ?ref=ETA-123-456-789)
+     * @param reference          Referencia del pago (query param:
+     *                           ?ref=ETA-123-456-789)
      * @param redirectAttributes Para pasar mensajes de alerta
      * @return Redirección al dashboard o al checkout según el estado
      */
@@ -210,7 +216,7 @@ public class PagoController {
 
         // Buscar PagoIntento por referencia
         Optional<PagoIntento> pagoIntentoOpt = wompiService.obtenerPorReferencia(reference);
-        
+
         if (!pagoIntentoOpt.isPresent()) {
             logger.warn("PagoIntento no encontrado para referencia: {}", reference);
             return "redirect:/cliente/dashboard?pago=error";
@@ -230,8 +236,8 @@ public class PagoController {
 
             case "FALLIDO":
                 logger.warn("Pago fallido. Ref: {}", reference);
-                return String.format("redirect:/cliente/checkout/actividad/%d?pago=fallido&idDispo=%d", 
-                                   pagoIntento.getIdActividad(), pagoIntento.getIdDisponibilidad());
+                return String.format("redirect:/cliente/checkout/actividad/%d?pago=fallido&idDispo=%d",
+                        pagoIntento.getIdActividad(), pagoIntento.getIdDisponibilidad());
 
             default:
                 logger.warn("Estado de PagoIntento desconocido: {}. Ref: {}", pagoIntento.getEstado(), reference);
