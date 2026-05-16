@@ -3,13 +3,11 @@
 
 <head>
     <title>Reservar Actividad</title>
-    <link rel="stylesheet" th:href="@{/css/global.css}">
     <link rel="stylesheet" th:href="@{/css/componentes/navbar.css}">
     <link rel="stylesheet" th:href="@{/css/cliente/checkout.css}">
-    
-    <!-- ✅ Script de ePayco -->
-    <script src="https://checkout.epayco.co/checkout.js"></script>
-    
+    <link rel="stylesheet" th:href="@{/css/global.css}">
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+
     <style>
         :root {
             --checkout-ink: #0f172a;
@@ -56,7 +54,8 @@
 
         .checkout-slot.active {
             border-color: #2563eb;
-            background: linear-gradient(135deg, #eff6ff 0%, #ffffff 100%);
+            background: linear-gradient(135deg, #ffffff 0%, #a5cbeb 100%);
+
             box-shadow: 0 16px 34px rgba(37, 99, 235, 0.16);
         }
 
@@ -66,6 +65,17 @@
             justify-content: space-between;
             gap: 12px;
         }
+
+        .bgBlueMainL {
+            background-color: #1d4ed8;
+            width: 100%;
+            padding: 8px 20px;
+            border-radius: 12px;
+
+            color: var(--color-white);
+            font-weight: bold;
+        }
+
 
         .checkout-slot-time {
             font-weight: 700;
@@ -446,14 +456,14 @@
     </div>
     <main class="checkout-page">
 
-        <!-- ✅ Form sin action (no hace submit tradicional, usamos widget ePayco) -->
-        <form class="checkout-form" id="checkoutForm">
+        <!-- ✅ Formulario que redirige a Wompi al hacer submit -->
+        <form class="checkout-form" id="checkoutForm" action="/cliente/pago/iniciar" method="get">
 
 
             <input type="hidden" name="idDisponibilidad" id="idDisponibilidadHidden"
                 th:value="${disponibilidad != null ? disponibilidad.idDisponibilidad : ''}">
             <input type="hidden" name="idActividad" th:value="${actividad.idActividad}">
-            <input type="hidden" name="fechaSeleccionada" th:value="${fechaSeleccionada}">
+            <input type="hidden" name="cantidad" id="cantidadHiddenForm" value="1">
 
             <section class="productos checkout-primary-card">
                 <div class="checkout-topbar">
@@ -461,7 +471,8 @@
                         <span class="checkout-eyebrow">Paso final de reserva</span>
                         <h1 class="checkout-title" th:text="${actividad.titulo}">Actividad</h1>
                         <p class="checkout-subtitle">
-                            Elige el horario que mejor te funcione para el dia seleccionado y define cuántos cupos vas a reservar.
+                            Elige el horario que mejor te funcione para el dia seleccionado y define cuántos cupos vas a
+                            reservar.
                         </p>
                     </div>
                     <a th:href="@{/actividad/{slug}-{id}(slug=${actividad.titulo.toLowerCase().replaceAll('[^a-z0-9\\s-]', '').replaceAll('\\s+', '-').replaceAll('-+', '-')}, id=${actividad.idActividad}, fechaReserva=${fechaSeleccionada})} + '#reserva'"
@@ -485,8 +496,7 @@
                         Ya no hay horarios disponibles para este dia. Vuelve y elige otra fecha.
                     </div>
                     <div th:if="${!#lists.isEmpty(disponibilidadesDelDia)}" class="checkout-slot-list">
-                        <button type="button"
-                            th:each="opcion, iterStat : ${disponibilidadesDelDia}"
+                        <button type="button" th:each="opcion, iterStat : ${disponibilidadesDelDia}"
                             class="checkout-slot"
                             th:classappend="${(disponibilidad != null and opcion.idDisponibilidad == disponibilidad.idDisponibilidad) or (disponibilidad == null and iterStat.first)} ? ' active' : ''"
                             th:attr="data-id=${opcion.idDisponibilidad},
@@ -495,9 +505,10 @@
                             onclick="seleccionarHorario(this)">
                             <div class="checkout-slot-row">
                                 <span class="checkout-slot-time"
-                                    th:text="${#temporals.format(opcion.horaInicio, 'HH:mm') + ' - ' + #temporals.format(opcion.horaFin, 'HH:mm')}">09:00 - 11:00</span>
-                                <span class="checkout-slot-cupos"
-                                    th:text="${opcion.cuposDisponibles + ' cupos'}">4 cupos</span>
+                                    th:text="${#temporals.format(opcion.horaInicio, 'HH:mm') + ' - ' + #temporals.format(opcion.horaFin, 'HH:mm')}">09:00
+                                    - 11:00</span>
+                                <span class="checkout-slot-cupos" th:text="${opcion.cuposDisponibles + ' cupos'}">4
+                                    cupos</span>
                             </div>
                         </button>
                     </div>
@@ -522,13 +533,14 @@
                         </div>
                         <div class="checkout-stock">
                             <span>Cupos disponibles: </span>
-                            <strong id="cuposCheckout" th:text="${disponibilidad != null ? disponibilidad.cuposDisponibles : 0}">0</strong>
+                            <strong id="cuposCheckout"
+                                th:text="${disponibilidad != null ? disponibilidad.cuposDisponibles : 0}">0</strong>
                         </div>
                     </div>
                 </section>
             </section>
 
-            
+
             <aside class="resumen checkout-summary-card">
                 <div class="checkout-summary-top">
                     <span class="checkout-summary-eyebrow">Resumen</span>
@@ -545,7 +557,8 @@
                     </div>
                     <div class="checkout-summary-row">
                         <span>Dia</span>
-                        <strong th:text="${fechaSeleccionada != null ? #temporals.format(fechaSeleccionada, 'dd/MM/yyyy') : 'Pendiente'}">12/04/2026</strong>
+                        <strong
+                            th:text="${fechaSeleccionada != null ? #temporals.format(fechaSeleccionada, 'dd/MM/yyyy') : 'Pendiente'}">12/04/2026</strong>
                     </div>
                     <div class="checkout-summary-row">
                         <span>Horario</span>
@@ -566,8 +579,11 @@
                     <p>El total se actualiza automáticamente según la cantidad de cupos.</p>
                 </div>
 
-                <!-- ✅ Botón que abre widget de ePayco en lugar de submit tradicional -->
-                <button type="button" class="checkout-confirm" id="btnPagar" th:disabled="${#lists.isEmpty(disponibilidadesDelDia)}">Pagar con ePayco</button>
+                <!-- ✅ Botón que envía el formulario y redirige a Wompi -->
+                <button type="submit" class=" bg-blue-600 bgBlueMainL" id="btnPagar"
+                    th:disabled="${#lists.isEmpty(disponibilidadesDelDia)}">
+                    Pagar<i class="fa-brands fa-cc-visa"></i>
+                </button>
             </aside>
         </form>
 
@@ -575,41 +591,19 @@
 
 
     <script th:inline="javascript">
-        // ✅ Datos de Thymeleaf
+        // ✅ Datos de Thymeleaf (solo necesitamos el precio para calcular total)
         const precio = /*[[${precioUnitario}]]*/ 0;
-        const actividadTitulo = /*[[${actividad.titulo}]]*/ 'Actividad';
-        const actividadId = /*[[${actividad.idActividad}]]*/ 0;
-        const clienteId = /*[[${clienteId}]]*/ 1579987;
-        const clienteNombre = /*[[${clienteNombre}]]*/ 'Jaime';
-        const clienteEmail = /*[[${clienteEmail}]]*/ 'jaimepere2014.jp81@gmail.com';
-        const clienteTelefono = /*[[${clienteTelefono}]]*/ '3052135329';
-        const epaycoPublicKey = /*[[${epaycoPublicKey}]]*/ '2bd9054390390165a8e15290060c20e1';
-        const epaycoTest = /*[[${epaycoTest}]]*/ true;
-
-        // 🐛 DEBUG: Verificar valores recibidos desde el backend
-        console.log('📦 Datos recibidos desde Thymeleaf:', {
-            epaycoPublicKey: epaycoPublicKey,
-            epaycoTest: epaycoTest,
-            clienteId: clienteId,
-            precio: precio,
-            actividadId: actividadId
-        });
-
-        // ⚠️ VALIDACIÓN: Verificar que ePayco script esté cargado
-        if (typeof ePayco === 'undefined') {
-            console.error('❌ CRITICAL: ePayco script no está cargado. Verifica que &lt;script src=\'https://checkout.epayco.co/checkout.js\'&gt;&lt;/script&gt; esté en el HTML.');
-        } else {
-            console.log('✅ ePayco script cargado correctamente');
-        }
 
         const inputCupos = document.querySelector("[name='cantidad']");
         const totalSpan = document.getElementById("total");
         const hiddenDisponibilidad = document.getElementById("idDisponibilidadHidden");
+        const hiddenCantidad = document.getElementById("cantidadHiddenForm");
         const cuposCheckout = document.getElementById("cuposCheckout");
         const checkoutSlotSelected = document.getElementById("checkoutSlotSelected");
         const checkoutSlotSelectedText = document.getElementById("checkoutSlotSelectedText");
         const checkoutSlotSelectedTextSummary = document.getElementById("checkoutSlotSelectedTextSummary");
         const btnPagar = document.getElementById("btnPagar");
+        const checkoutForm = document.getElementById("checkoutForm");
 
         function seleccionarHorario(card) {
             document.querySelectorAll(".checkout-slot").forEach((slot) => {
@@ -642,113 +636,36 @@
                 style: 'currency',
                 currency: 'COP'
             });
+
+            // Actualizar hidden input para enviar la cantidad correcta
+            if (hiddenCantidad) {
+                hiddenCantidad.value = cantidad;
+            }
         }
 
-        // ✅ Función para abrir widget de ePayco
-        function abrirEpayco() {
-            const cantidad = parseInt(inputCupos.value) || 1;
+        // ✅ Validación antes de enviar el formulario
+        checkoutForm.addEventListener("submit", function (e) {
             const idDisponibilidad = hiddenDisponibilidad.value;
+            const cantidad = parseInt(inputCupos.value) || 0;
 
             if (!idDisponibilidad) {
+                e.preventDefault();
                 alert('Por favor selecciona un horario disponible');
-                return;
+                return false;
             }
 
             if (cantidad < 1) {
+                e.preventDefault();
                 alert('La cantidad debe ser al menos 1');
-                return;
+                return false;
             }
 
-            // ⚠️ VALIDACIÓN CRÍTICA: Verificar que ePayco esté cargado
-            if (typeof ePayco === 'undefined') {
-                console.error('❌ ePayco no está cargado. Verifica que el script de checkout.epayco.co esté incluido en el HTML.');
-                alert('Error: El sistema de pagos no está disponible. Por favor recarga la página.');
-                return;
-            }
-
-            // ⚠️ VALIDACIÓN CRÍTICA: Verificar que la Public Key esté configurada
-            if (!epaycoPublicKey || epaycoPublicKey.trim() === '') {
-                console.error('❌ ePayco Public Key no está configurada. Verifica application.properties y EpaycoConfig.java');
-                alert('Error: El sistema de pagos no está configurado correctamente.');
-                return;
-            }
-
-            const total = cantidad * precio;
-            const extra3 = `${actividadId}|${clienteId}`; // idActividad|idCliente
-
-            console.log('🔑 Configurando ePayco con:', {
-                publicKey: epaycoPublicKey,
-                testMode: epaycoTest,
-                total: total,
-                clienteId: clienteId
-            });
-
-            const handler = ePayco.checkout.configure({
-                key: epaycoPublicKey,
-                test: epaycoTest
-            });
-
-            // ✅ URLs públicas - IMPORTANTE: ePayco no puede enviar webhooks a localhost
-            // Para desarrollo: usa ngrok (ej: https://abc123.ngrok.io)
-            // Para producción: usa tu dominio real (ej: https://etaapp.com)
-            //const baseUrl = window.location.origin;  Cambiar por URL pública si estás en localhost
-            const baseUrl = "https://elbow-pope-rebuff.ngrok-free.dev"; // Cambiar por URL pública si estás en localhost
-
-            const data = {
-                // Producto
-                name: actividadTitulo,
-                description: `Reserva para ${cantidad} persona(s)`,
-                currency: "cop",
-                amount: total.toString(),
-                tax_base: "0",
-                tax: "0",
-                country: "co",
-                lang: "es",
-
-                // Cliente (pre-llenado)
-                name_billing: clienteNombre,
-                email_billing: clienteEmail,
-                mobilephone_billing: clienteTelefono,
-
-                // URLs de respuesta (confirmation debe ser pública para webhooks)
-                external: "true",
-                confirmation: baseUrl + "/cliente/pago/confirmacion",
-                response: baseUrl + "/cliente/pago/respuesta",
-
-                // Datos adicionales (se envían a confirmación)
-                extra1: idDisponibilidad.toString(),
-                extra2: cantidad.toString(),
-                extra3: extra3,
-
-                // Personalización
-                method_confirmation: "POST",
-                acepted: baseUrl + "/cliente/pago/respuesta?pago=exitoso",
-                rejected: baseUrl + "/cliente/pago/respuesta?pago=fallido",
-                pending: baseUrl + "/cliente/pago/respuesta?pago=pendiente"
-            };
-
-            console.log('ePayco configuration:', {
-                key: epaycoPublicKey,
-                test: epaycoTest,
-                amount: data.amount,
-                confirmation: data.confirmation
-            });
-            
-            handler.open(data);
-        }
+            // Si todo está OK, el formulario se envía normalmente (GET a /cliente/pago/iniciar)
+            // El backend generará la URL de Wompi y redirigirá al cliente
+        });
 
         // ✅ Detectar parámetros de URL y mostrar alertas
         document.addEventListener("DOMContentLoaded", () => {
-            // ⚠️ VERIFICACIÓN CRÍTICA: Verificar que ePayco esté disponible al cargar la página
-            if (typeof ePayco === 'undefined') {
-                console.error('❌ CRITICAL: ePayco no está disponible después de DOMContentLoaded');
-                console.error('   - Verifica tu conexión a internet');
-                console.error('   - Verifica que https://checkout.epayco.co/checkout.js sea accesible');
-                console.error('   - Puede que un bloqueador de anuncios esté bloqueando el script');
-            } else {
-                console.log('✅ ePayco está disponible y listo para usar');
-            }
-
             const urlParams = new URLSearchParams(window.location.search);
             const estadoPago = urlParams.get('pago');
 
@@ -781,13 +698,13 @@
                     alertDiv.className = `alert ${alertClass}`;
                     alertDiv.setAttribute('role', 'alert');
                     alertDiv.innerHTML = `<span>${mensaje}</span>`;
-                    
+
                     // Insertar al inicio del body
                     document.body.insertBefore(alertDiv, document.body.firstChild);
-                    
+
                     // Aplicar animación
                     alertDiv.classList.add('showAnimationAppearFromTop');
-                    
+
                     // Ocultar después de 5 segundos
                     setTimeout(() => {
                         alertDiv.style.display = 'none';
@@ -803,13 +720,9 @@
                 actualizarTotal();
             }
 
-            // ✅ Event listeners (dentro de DOMContentLoaded para asegurar que los elementos existan)
+            // ✅ Event listener para actualizar total cuando cambia la cantidad
             if (inputCupos) {
                 inputCupos.addEventListener("input", actualizarTotal);
-            }
-
-            if (btnPagar) {
-                btnPagar.addEventListener("click", abrirEpayco);
             }
         });
     </script>

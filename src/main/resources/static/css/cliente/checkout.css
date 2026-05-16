@@ -19,7 +19,7 @@
 
 }
 
-h1{
+h1 {
     color: var(--color-medium-blue);
 }
 
@@ -64,7 +64,7 @@ main.checkout-page>form>.productos>.form-group {
     width: 100%;
     padding: 8px 20px;
     border-radius: 12px;
-    background-color: var(--color-medium-blue);
+    background: linear-gradient(135deg, #eff6ff 0%, #ffffff 100%);
     color: var(--color-white);
     font-weight: bold;
 }
@@ -86,7 +86,7 @@ main.checkout-page>form>.productos>.form-group {
     color: #0a0a0a;
 }
 
-.resumen h2{
+.resumen h2 {
     font-size: 35px;
 }
 
@@ -97,7 +97,8 @@ main.checkout-page>form>.productos>.form-group {
     flex-direction: column;
     gap: 40px;
 }
-.informacion-resumen p{
+
+.informacion-resumen p {
     text-align: start;
     font-weight: bold;
 }

@@ -6,15 +6,17 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Configuration;
 
 import lombok.Getter;
 
 /**
  * Configuración de credenciales de ePayco.
  * Lee las claves desde application.properties y proporciona utilidades para verificar firmas.
+ * 
+ * ⚠️ DESHABILITADO: Migrado a Wompi. Bean desactivado para evitar errores de inyección.
+ * Mantener código por si se requiere rollback.
  */
-@Configuration
+// @Configuration  // ⚠️ Deshabilitado tras migración a Wompi
 @Getter
 public class EpaycoConfig {
 

@@ -26,7 +26,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import maineta.eta.config.EpaycoConfig;
 import maineta.eta.config.UsuarioHelper;
 import maineta.eta.dto.ActividadDTO;
 import maineta.eta.dto.ReservaDTO;
@@ -64,7 +63,6 @@ public class ClienteController {
     private final ComentarioService comentarioService;
     private final ChatService chatService;
     private final EmailReservaService emailReservaService;
-    private final EpaycoConfig epaycoConfig;
     private final CancelacionService cancelacionService;
 
     public ClienteController(
@@ -78,7 +76,6 @@ public class ClienteController {
             ComentarioService comentarioService,
             ChatService chatService,
             EmailReservaService emailReservaService,
-            EpaycoConfig epaycoConfig,
             CancelacionService cancelacionService) {
 
         this.actividadService = actividadService;
@@ -91,7 +88,6 @@ public class ClienteController {
         this.comentarioService = comentarioService;
         this.chatService = chatService;
         this.emailReservaService = emailReservaService;
-        this.epaycoConfig = epaycoConfig;
         this.cancelacionService = cancelacionService;
     }
 
@@ -301,25 +297,35 @@ public class ClienteController {
     }
 
     @GetMapping("/cancelar/reserva/{id}")
-    public String cancelarReservacion(@PathVariable Long id, RedirectAttributes redirectAttributes) {
-        Optional<Reserva> reservaOpt = reservaService.ObtenerReservaPorId(id);
+    public String cancelarReservacion(@PathVariable Long id, RedirectAttributes redirectAttributes, Authentication authentication) {
+        // Obtener el cliente autenticado
+        String email = authentication.getName();
+        Usuario usuario = usuarioService.obtenerPorEmail(email);
+        Cliente cliente = clienteService.obtenerPorUsuario(usuario)
+                .orElseThrow(() -> new RuntimeException("Cliente no encontrado"));
 
-        if (reservaOpt.isEmpty()) {
-            redirectAttributes.addFlashAttribute("error", "No se encontró la reserva a cancelar");
+        try {
+            // Usar el servicio de cancelación que aplica las políticas correctas
+            cancelacionService.cancelarPorCliente(id, cliente.getId());
+            
+            redirectAttributes.addFlashAttribute("exito", "Reserva cancelada correctamente. El reembolso será procesado según la política de la actividad.");
+            return "redirect:/cliente/dashboard";
+            
+        } catch (CancelacionFueraDeTiempoException e) {
+            // Fuera de la ventana de cancelación permitida
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
+            return "redirect:/cliente/dashboard";
+            
+        } catch (IllegalArgumentException e) {
+            // Otros errores de validación
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
+            return "redirect:/cliente/dashboard";
+            
+        } catch (Exception e) {
+            // Error inesperado
+            redirectAttributes.addFlashAttribute("error", "Error al cancelar la reserva: " + e.getMessage());
             return "redirect:/cliente/dashboard";
         }
-
-        Reserva reserva = reservaOpt.get();
-        Disponibilidad disponibilidad = reserva.getDisponibilidad();
-
-        // 🔄 Devolver cupos
-        disponibilidad.setCuposDisponibles(disponibilidad.getCuposDisponibles() + reserva.getCantidad());
-
-        disponibilidadService.guardarDisponibilidad(disponibilidad); // 🔹 asegurado update BD
-        reservaService.EliminarReservacion(reserva); // 🔹 eliminar reserva
-
-        redirectAttributes.addFlashAttribute("exito", "Reserva cancelada correctamente");
-        return "redirect:/cliente/dashboard";
     }
 
     // ========================
@@ -511,17 +517,8 @@ public class ClienteController {
         model.addAttribute("precioUnitario", precioUnitario);
         model.addAttribute("pagina", "checkout");
         
-        // ✅ Datos de ePayco
-        model.addAttribute("epaycoPublicKey", epaycoConfig.getPublicKey());
-        model.addAttribute("epaycoTest", epaycoConfig.isTest());
-        
-        // ✅ Datos del cliente para pre-llenar ePayco
-        if (cliente != null) {
-            model.addAttribute("clienteNombre", cliente.getUsuario().getNombre());
-            model.addAttribute("clienteEmail", cliente.getUsuario().getEmail());
-            model.addAttribute("clienteTelefono", cliente.getUsuario().getTelefono());
-            model.addAttribute("clienteId", cliente.getId());
-        }
+        // ✅ Ya no necesitamos pasar datos de Wompi ni del cliente al frontend
+        // El formulario simplemente redirige a /cliente/pago/iniciar con los parámetros necesarios
         
         if (error != null) {
             model.addAttribute("error", error);

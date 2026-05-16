@@ -59,7 +59,7 @@ public class RegistroController {
     }
 
     // ==================================================
-    //  REGISTRO DE CLIENTE
+    // REGISTRO DE CLIENTE
     // ==================================================
     @GetMapping("/cliente")
     public String mostrarRegistroCliente(Model model) {
@@ -85,7 +85,7 @@ public class RegistroController {
             // Crear el OnboardingForm con los datos recibidos
             OnboardingForm form = new OnboardingForm();
             form.setCategoriasIds(categoriasIds);
-            
+
             // Convertir String a ENUM
             if (grupoViaje != null && !grupoViaje.isEmpty()) {
                 form.setGrupoViaje(GrupoViaje.valueOf(grupoViaje));
@@ -96,10 +96,10 @@ public class RegistroController {
             if (disponibilidadSemana != null && !disponibilidadSemana.isEmpty()) {
                 form.setDisponibilidadSemana(DisponibilidadSemana.valueOf(disponibilidadSemana));
             }
-            
+
             // Registrar cliente con preferencias y enviar email
             clienteService.registrarClienteConPreferencias(cliente, form);
-            
+
             // Redirigir al login con mensaje de verificación pendiente
             return "redirect:/login?role=cliente&pendingVerification";
         } catch (Exception e) {
@@ -110,7 +110,7 @@ public class RegistroController {
     }
 
     // ==================================================
-    //  REGISTRO DE COLABORADOR
+    // REGISTRO DE COLABORADOR
     // ==================================================
     @GetMapping("/colaborador")
     public String mostrarRegistroColaborador(Model model) {
@@ -126,16 +126,19 @@ public class RegistroController {
             @ModelAttribute("colaborador") Colaborador colaborador,
             RedirectAttributes redirectAttributes) {
         try {
-            colaboradorService.registrarColaborador(colaborador); 
+            colaboradorService.registrarColaborador(colaborador);
+            System.out.println("Colaborador registrado exitosamente");
             return "redirect:/login?role=colaborador&pendingVerification";
         } catch (RuntimeException e) {
+            System.out.println("Error al registrar colaborador");
+            System.out.println(e.getMessage());
             redirectAttributes.addFlashAttribute("error", e.getMessage());
             return "redirect:/registro/colaborador";
         }
     }
 
     // ==================================================
-    //  REGISTRO DE ADMIN
+    // REGISTRO DE ADMIN
     // ==================================================
     @GetMapping("/admin")
     public String mostrarRegistroAdmin(Model model) {
@@ -161,7 +164,7 @@ public class RegistroController {
     }
 
     // ==================================================
-    //  VERIFICACIÓN DE CORREO
+    // VERIFICACIÓN DE CORREO
     // ==================================================
     @GetMapping("/verificar")
     public String verificarCuenta(@RequestParam("token") String token) {

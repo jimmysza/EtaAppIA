@@ -13,7 +13,7 @@
     <link rel="stylesheet" th:href="@{/css/colaborador/navColab.css}">
     <link rel="stylesheet" th:href="@{/css/tailwind.css}">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <style>
         .resumen-general {
             display: flex;
@@ -192,10 +192,10 @@
             user-select: none;
         }
 
-        .btn-sub{
+        .btn-sub {
             padding: 7px 10px;
             border-radius: 8px;
-            background:rgb(0, 174, 255);
+            background: rgb(0, 174, 255);
             color: white;
 
         }
@@ -368,7 +368,10 @@
             </div>
             <div class="resumen-card verde">
                 <h3>Ingresos Totales</h3>
-                <div class="valor" th:text="'$' + ${#numbers.formatDecimal(ingresoTotal, 1, 2)}">$0.00</div>
+                <div class="valor" th:text="'$' + ${#numbers.formatDecimal(ingresoTotal, 0, 'POINT', 0, 'COMMA')}">$0.00
+                </div>
+                <!-- <p th:text="${#numbers.formatDecimal(resumen.variacionIngresos, 0, 'POINT', 0, 'COMMA')}">
+                    $544,365</p> -->
             </div>
         </div>
 
@@ -394,7 +397,7 @@
                     <span class="badge badge-reservas"
                         th:text="'🎫 ' + ${reservasPorDia.get(diaEntry.key)} + ' Reservas'"></span>
                     <span class="badge badge-ingresos"
-                        th:text="'💰 $' + ${#numbers.formatDecimal(ingresosPorDia.get(diaEntry.key), 1, 2)}"></span>
+                        th:text="'💰 $' + ${#numbers.formatDecimal(ingresosPorDia.get(diaEntry.key), 0, 'POINT', 0, 'COMMA')}"></span>
                 </div>
             </div>
 
@@ -414,7 +417,7 @@
                             <span class="badge badge-reservas"
                                 th:text="(${reservasPorDisponibilidad.containsKey(disp.idDisponibilidad)} ? ${#lists.size(reservasPorDisponibilidad.get(disp.idDisponibilidad))} : 0) + ' Reserva' + ((${reservasPorDisponibilidad.containsKey(disp.idDisponibilidad)} ? ${#lists.size(reservasPorDisponibilidad.get(disp.idDisponibilidad))} : 0) != 1 ? 's' : '')"></span>
                             <span class="badge badge-ingresos"
-                                th:text="'$' + (${ingresosPorDisponibilidad.containsKey(disp.idDisponibilidad)} ? ${#numbers.formatDecimal(ingresosPorDisponibilidad.get(disp.idDisponibilidad), 1, 2)} : '0.00')"></span>
+                                th:text="'$' + (${ingresosPorDisponibilidad.containsKey(disp.idDisponibilidad)} ? ${#numbers.formatDecimal(ingresosPorDisponibilidad.get(disp.idDisponibilidad), 0, 'POINT', 0, 'COMMA')} : '0.00')"></span>
                         </div>
                     </div>
 

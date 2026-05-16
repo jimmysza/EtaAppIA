@@ -88,33 +88,33 @@
         };
 
         try {
-            const res = await fetch('/chat/mensaje', {
+            // Usar endpoint de recomendaciones que devuelve JSON
+            const res = await fetch('/chat/recomendar', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
             });
 
-            // El servidor devuelve un fragmento Thymeleaf (HTML parcial)
-            const html = await res.text();
+            const data = await res.json();
             removeTypingIndicator();
 
-            // Parsear el fragmento y añadirlo al área de mensajes
-            const temp = document.createElement('div');
-            temp.innerHTML = html.trim();
-            const msgEl = temp.firstElementChild;
-
-            if (msgEl) {
-                messagesEl.appendChild(msgEl);
-                scrollToBottom();
-
-                // Guardar en historial solo si fue respuesta exitosa del bot
-                if (!msgEl.classList.contains('bot-error')) {
-                    const botText = msgEl.querySelector('.chat-bubble')?.textContent?.trim() || '';
-                    conversationHistory.push(
-                        { rol: 'user',      contenido: texto   },
-                        { rol: 'assistant', contenido: botText }
-                    );
+            if (data.respuesta) {
+                // Mostrar respuesta del bot
+                const tieneRecomendacion = data.tieneRecomendacion && data.filtros;
+                
+                if (tieneRecomendacion) {
+                    // Respuesta con botón de recomendación
+                    appendMessageWithRecommendation(data.respuesta, data.filtros);
+                } else {
+                    // Respuesta normal sin recomendación
+                    appendMessage('bot', data.respuesta);
                 }
+
+                // Guardar en historial
+                conversationHistory.push(
+                    { rol: 'user',      contenido: texto          },
+                    { rol: 'assistant', contenido: data.respuesta }
+                );
             } else {
                 appendMessage('bot-error', 'Respuesta inesperada del servidor.');
             }
@@ -150,6 +150,59 @@
         wrapper.appendChild(bubble);
         messagesEl.appendChild(wrapper);
         scrollToBottom();
+    }
+
+    /**
+     * Agrega un mensaje con botón de recomendación.
+     * @param {string} respuesta - Texto de la respuesta del bot
+     * @param {object} filtros - Objeto con filtros recomendados
+     */
+    function appendMessageWithRecommendation(respuesta, filtros) {
+        const wrapper = document.createElement('div');
+        wrapper.className = 'chat-msg bot';
+
+        const bubble = document.createElement('div');
+        bubble.className = 'chat-bubble';
+        bubble.textContent = respuesta;
+
+        // Crear botón de acción
+        const button = document.createElement('button');
+        button.className = 'chat-recommend-btn';
+        button.textContent = filtros.textoBoton || 'Ver actividades';
+        button.onclick = function() {
+            redirigirConFiltros(filtros);
+        };
+
+        wrapper.appendChild(bubble);
+        wrapper.appendChild(button);
+        messagesEl.appendChild(wrapper);
+        scrollToBottom();
+    }
+
+    /**
+     * Construye la URL de /actividades/buscar con los filtros y redirige.
+     * @param {object} filtros - Objeto con filtros (nombre, categoriaId, idiomaId, precioMin, precioMax)
+     */
+    function redirigirConFiltros(filtros) {
+        const params = new URLSearchParams();
+
+        if (filtros.nombre) {
+            params.append('nombre', filtros.nombre);
+        }
+        if (filtros.categoriaId) {
+            params.append('categoriaId', filtros.categoriaId);
+        }
+        if (filtros.idiomaId) {
+            params.append('idiomaId', filtros.idiomaId);
+        }
+        if (filtros.precioMin) {
+            params.append('precioMin', filtros.precioMin);
+        }
+        if (filtros.precioMax) {
+            params.append('precioMax', filtros.precioMax);
+        }
+
+        window.location.href = `/actividades/buscar?${params.toString()}`;
     }
 
     // ── Indicador de "escribiendo..." ─────────────────────────────────────────

@@ -54,6 +54,12 @@ public class Reserva {
     @Column(length = 100, unique = true)
     private String refPayco; // Referencia del pago en ePayco
 
+    @Column(length = 100, unique = true)
+    private String refWompi; // Referencia del pago en Wompi
+
+    @Column(length = 100)
+    private String wompiTransactionId; // ID de transacción en Wompi
+
     // Campos de precios y comisiones (RN-01, RN-02)
     @Column(precision = 10, scale = 2)
     private BigDecimal precioColaborador; // Precio base de la actividad
