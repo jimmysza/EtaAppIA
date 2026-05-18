@@ -127,4 +127,8 @@ public class Actividad {
         return precio.multiply(new BigDecimal("1.18"));
     }
 
+    public long getCantidadComentario() {
+        return comentarios != null ? comentarios.size() : 0;
+    }
+
 }
