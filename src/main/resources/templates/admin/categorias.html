@@ -9,9 +9,9 @@
     <link rel="stylesheet" th:href="@{/css/dashboard.css}">
     <link rel="stylesheet" th:href="@{/css/componentes/modales.css}">
 
-    <link rel="icon" th:href="@{/images/logos/etabluerrvg.webp}" type="image/x-icon" />
+    <link rel="icon" th:href="@{/images/logos/Logo.webp}" type="image/x-icon" />
     <link rel="stylesheet" th:href="@{/css/tailwind.css}">
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <title>ETA | Actividades</title>
 
     <style>
@@ -23,9 +23,11 @@
             border-radius: 8px;
             padding: 20px;
         }
-        .text-open-delete{
+
+        .text-open-delete {
             margin: 0px 3px;
         }
+
         .Actividad-card {
             display: flex;
             flex-direction: column;
@@ -195,31 +197,45 @@
                 <div th:if="${mensaje}" class="alert alert-success" th:text="${mensaje}"></div>
                 <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
 
-                <div style="width: 100%; max-width: 1500px; margin: 20px auto; background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.08);">
+                <div
+                    style="width: 100%; max-width: 1500px; margin: 20px auto; background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.08);">
                     <table style="width: 100%; border-collapse: collapse;">
                         <thead>
                             <tr style="background-color: #f3f4f6; border-bottom: 2px solid #e5e7eb;">
-                                <th style="padding: 15px; text-align: left; font-weight: 600; font-size: 12px; color: #374151;">#</th>
-                                <th style="padding: 15px; text-align: left; font-weight: 600; font-size: 12px; color: #374151;">Imagen</th>
-                                <th style="padding: 15px; text-align: left; font-weight: 600; font-size: 12px; color: #374151;">Nombre Categoría</th>
-                                <th style="padding: 15px; text-align: center; font-weight: 600; font-size: 12px; color: #374151;">Actividades</th>
-                                <th style="padding: 15px; text-align: center; font-weight: 600; font-size: 12px; color: #374151;">Acciones</th>
+                                <th
+                                    style="padding: 15px; text-align: left; font-weight: 600; font-size: 12px; color: #374151;">
+                                    #</th>
+                                <th
+                                    style="padding: 15px; text-align: left; font-weight: 600; font-size: 12px; color: #374151;">
+                                    Imagen</th>
+                                <th
+                                    style="padding: 15px; text-align: left; font-weight: 600; font-size: 12px; color: #374151;">
+                                    Nombre Categoría</th>
+                                <th
+                                    style="padding: 15px; text-align: center; font-weight: 600; font-size: 12px; color: #374151;">
+                                    Actividades</th>
+                                <th
+                                    style="padding: 15px; text-align: center; font-weight: 600; font-size: 12px; color: #374151;">
+                                    Acciones</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr th:if="${categorias == null or #lists.isEmpty(categorias)}" style="border-bottom: 1px solid #e5e7eb;">
+                            <tr th:if="${categorias == null or #lists.isEmpty(categorias)}"
+                                style="border-bottom: 1px solid #e5e7eb;">
                                 <td colspan="5" style="text-align: center; color: #999; padding: 30px;">
                                     No hay categorías registradas aún
                                 </td>
                             </tr>
-                            <tr th:each="categoria, iterStat : ${categorias}" style="border-bottom: 1px solid #e5e7eb; transition: background-color 0.2s;" onmouseover="this.style.backgroundColor='#f9fafb'" onmouseout="this.style.backgroundColor='transparent'">
+                            <tr th:each="categoria, iterStat : ${categorias}"
+                                style="border-bottom: 1px solid #e5e7eb; transition: background-color 0.2s;"
+                                onmouseover="this.style.backgroundColor='#f9fafb'"
+                                onmouseout="this.style.backgroundColor='transparent'">
                                 <td style="padding: 15px; font-size: 12px; color: #6b7280;">
                                     <span th:text="${iterStat.count}"></span>
                                 </td>
                                 <td style="padding: 15px;">
                                     <img th:if="${categoria.imagen != null and !#strings.isEmpty(categoria.imagen)}"
-                                        th:src="@{${categoria.imagen}}"
-                                        th:alt="${categoria.nombre}"
+                                        th:src="@{${categoria.imagen}}" th:alt="${categoria.nombre}"
                                         style="width: 56px; height: 56px; object-fit: cover; border-radius: 10px; border: 1px solid #e5e7eb;">
                                     <div th:if="${categoria.imagen == null or #strings.isEmpty(categoria.imagen)}"
                                         style="width: 56px; height: 56px; display: flex; align-items: center; justify-content: center; border-radius: 10px; background-color: #f3f4f6; color: #9ca3af; font-size: 11px; border: 1px solid #e5e7eb;">
@@ -230,12 +246,17 @@
                                     <span th:text="${categoria.nombre}"></span>
                                 </td>
                                 <td style="padding: 15px; text-align: center; font-size: 12px; color: #6b7280;">
-                                    <span style="display: inline-block; background-color: #dbeafe; color: #0c4a6e; padding: 4px 10px; border-radius: 12px; font-weight: 600;">
-                                        <span th:text="${categoria.actividades != null ? #lists.size(categoria.actividades) : 0}"></span>
+                                    <span
+                                        style="display: inline-block; background-color: #dbeafe; color: #0c4a6e; padding: 4px 10px; border-radius: 12px; font-weight: 600;">
+                                        <span
+                                            th:text="${categoria.actividades != null ? #lists.size(categoria.actividades) : 0}"></span>
                                     </span>
                                 </td>
                                 <td style="padding: 15px; text-align: center;">
-                                    <button th:attr="data-id=${categoria.idCategoria}" id="open-delete-modal" style="padding: 6px 10px; background-color: #ef4444; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 12px; transition: all 0.2s;" onmouseover="this.style.backgroundColor='#dc2626'" onmouseout="this.style.backgroundColor='#ef4444'">
+                                    <button th:attr="data-id=${categoria.idCategoria}" id="open-delete-modal"
+                                        style="padding: 6px 10px; background-color: #ef4444; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 12px; transition: all 0.2s;"
+                                        onmouseover="this.style.backgroundColor='#dc2626'"
+                                        onmouseout="this.style.backgroundColor='#ef4444'">
                                         Eliminar
                                     </button>
                                 </td>
@@ -252,7 +273,8 @@
 
         <div class="modal modal-add">
 
-            <form th:action="@{/admin/categorias/nueva}" th:object="${categoria}" method="post" enctype="multipart/form-data">
+            <form th:action="@{/admin/categorias/nueva}" th:object="${categoria}" method="post"
+                enctype="multipart/form-data">
 
                 <div class="form-heading">
                     <h2>Agregar Categoria</h2>
@@ -302,7 +324,7 @@
             </div>
         </form>
     </div>
-   <!--   <div class="categorias">
+    <!--   <div class="categorias">
                 <h3>Categorias</h3>
                 <div class="card-categorias-contain">
                     <div class="card-categorias">

@@ -1,61 +1,67 @@
 <!DOCTYPE html>
-<html lang="es" xmlns:th="http://www.thymeleaf.org" 
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Planes del Día - Eta</title>
-    
+
     <link rel="icon" th:href="@{/images/logos/isotipo.webp}" type="image/x-icon" />
     <link rel="stylesheet" th:href="@{/fonts/fonts.css}">
     <link rel="stylesheet" th:href="@{/css/global.css}">
     <link rel="stylesheet" th:href="@{/css/componentes/navbar.css}">
     <link rel="stylesheet" th:href="@{/css/componentes/footer.css}">
     <link rel="stylesheet" th:href="@{/css/planes/planes.css}">
-    
+
     <!-- Leaflet CSS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    
+
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 </head>
+
 <body class="bg-gray-50">
     <div th:replace="~{componentes/navbar :: navbar}"></div>
-    
+
     <main class="pt-24 pb-12">
         <!-- Header Section -->
         <div class="max-w-7xl mx-auto px-4 mb-8">
             <div class="text-center mb-8">
-                <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-purple-100 text-purple-700 font-semibold text-sm mb-4">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <div
+                    class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-orange-100 text-orange-700 font-semibold text-sm mb-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2">
                         <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
                         <circle cx="12" cy="10" r="3"></circle>
                     </svg>
                     Rutas Curadas
                 </div>
-                
+
                 <h1 class="text-4xl md:text-5xl font-black text-gray-900 mb-4">
-                    Planes del Día en <span class="text-purple-600">Cartagena</span>
+                    Planes del Día en <span class="text-orange-600">Cartagena</span>
                 </h1>
                 <p class="text-lg text-gray-600 max-w-2xl mx-auto mb-6">
-                    Descubre rutas temáticas creadas por expertos y la comunidad. Un día completo de experiencias únicas.
+                    Descubre rutas temáticas creadas por expertos y la comunidad. Un día completo de experiencias
+                    únicas.
                 </p>
-                
+
                 <!-- CTA Button -->
                 <div sec:authorize="isAuthenticated()">
                     <a th:href="${esCliente != null && esCliente} ? '/cliente/planes/crear' : '/colaborador/planes/crear'"
-                       class="inline-flex items-center gap-2 bg-purple-600 hover:bg-purple-700 text-white font-bold px-6 py-3 rounded-full transition-all shadow-lg hover:shadow-xl">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        class="inline-flex items-center gap-2 bg-orange-600 hover:bg-orange-700 text-white font-bold px-6 py-3 rounded-full transition-all shadow-lg hover:shadow-xl">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2">
                             <line x1="12" y1="5" x2="12" y2="19"></line>
                             <line x1="5" y1="12" x2="19" y2="12"></line>
                         </svg>
                         Crear mi Plan
                     </a>
                 </div>
-                
+
                 <div sec:authorize="isAnonymous()">
                     <a href="/login?registrarse"
-                       class="inline-flex items-center gap-2 bg-purple-600 hover:bg-purple-700 text-white font-bold px-6 py-3 rounded-full transition-all shadow-lg hover:shadow-xl">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        class="inline-flex items-center gap-2 bg-orange-600 hover:bg-orange-700 text-white font-bold px-6 py-3 rounded-full transition-all shadow-lg hover:shadow-xl">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2">
                             <line x1="12" y1="5" x2="12" y2="19"></line>
                             <line x1="5" y1="12" x2="19" y2="12"></line>
                         </svg>
@@ -68,7 +74,7 @@
         <!-- Mapa y Lista de Planes -->
         <div class="max-w-7xl mx-auto px-4">
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
-                
+
                 <!-- Mapa (sticky en desktop) -->
                 <div class="lg:col-span-5">
                     <div class="sticky top-24">
@@ -77,87 +83,94 @@
                         </div>
                         <div class="mt-4 p-4 bg-white rounded-xl shadow-md">
                             <p class="text-xs text-gray-600">
-                                <span class="font-semibold">💡 Tip:</span> Haz click en un marcador para ver el plan correspondiente
+                                <span class="font-semibold">💡 Tip:</span> Haz click en un marcador para ver el plan
+                                correspondiente
                             </p>
                         </div>
                     </div>
                 </div>
-                
+
                 <!-- Lista de Planes -->
                 <div class="lg:col-span-7 space-y-6">
                     <h2 class="text-2xl font-bold text-gray-900 mb-4">Planes Destacados</h2>
-                    
+
                     <!-- Plan Card -->
-                    <div th:each="plan, iterStat : ${topPlanes}" 
-                         th:id="'plan-' + ${plan.id}"
-                         class="plan-card bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all border-2 border-gray-200 hover:border-purple-500 overflow-hidden">
-                        
+                    <div th:each="plan, iterStat : ${topPlanes}" th:id="'plan-' + ${plan.id}"
+                        class="plan-card bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all border-2 border-gray-200 hover:border-orange-500 overflow-hidden">
+
                         <!-- Imagen de portada -->
                         <div class="relative h-48 overflow-hidden">
-                            <img th:if="${plan.imagenPortada != null}" 
-                                 th:src="@{'/uploads/' + ${plan.imagenPortada}}" 
-                                 alt="Portada del plan"
-                                 class="w-full h-full object-cover">
+                            <img th:if="${plan.imagenPortada != null}" th:src="@{'/uploads/' + ${plan.imagenPortada}}"
+                                alt="Portada del plan" class="w-full h-full object-cover">
                             <div th:if="${plan.imagenPortada == null}"
-                                 class="w-full h-full bg-gradient-to-br from-purple-400 to-purple-600 flex items-center justify-center">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5">
+                                class="w-full h-full bg-gradient-to-br from-orange-400 to-orange-600 flex items-center justify-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24"
+                                    fill="none" stroke="white" stroke-width="1.5">
                                     <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
                                     <circle cx="12" cy="10" r="3"></circle>
                                 </svg>
                             </div>
-                            
+
                             <!-- Badge del tipo -->
                             <div class="absolute top-4 right-4 px-3 py-1 rounded-full text-xs font-bold text-white shadow-lg"
-                                 th:classappend="${plan.tipo == 'Cultural'} ? 'bg-blue-500' : (${plan.tipo == 'Aventura'} ? 'bg-green-500' : 'bg-orange-500')">
+                                th:classappend="${plan.tipo == 'Cultural'} ? 'bg-blue-500' : (${plan.tipo == 'Aventura'} ? 'bg-green-500' : 'bg-orange-500')">
                                 <span th:text="${plan.tipo}">Cultural</span>
                             </div>
                         </div>
-                        
+
                         <div class="p-6">
                             <!-- Título y descripción -->
-                            <h3 class="text-2xl font-black text-gray-900 mb-2" th:text="${plan.titulo}">Día Cultural en Getsemaní</h3>
-                            <p class="text-gray-600 mb-4 line-clamp-2" th:text="${plan.descripcion}">Descripción del plan...</p>
-                            
+                            <h3 class="text-2xl font-black text-gray-900 mb-2" th:text="${plan.titulo}">Día Cultural en
+                                Getsemaní</h3>
+                            <p class="text-gray-600 mb-4 line-clamp-2" th:text="${plan.descripcion}">Descripción del
+                                plan...</p>
+
                             <!-- Metadata -->
                             <div class="flex flex-wrap items-center gap-4 mb-4 text-sm text-gray-600">
                                 <div class="flex items-center gap-1">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2">
                                         <circle cx="12" cy="12" r="10"></circle>
                                         <polyline points="12 6 12 12 16 14"></polyline>
                                     </svg>
                                     <span th:text="${plan.duracionEstimada}">8 horas</span>
                                 </div>
-                                
+
                                 <div class="flex items-center gap-1">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2">
                                         <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
                                         <circle cx="12" cy="10" r="3"></circle>
                                     </svg>
                                     <span th:text="${#lists.size(plan.actividades)} + ' paradas'">5 paradas</span>
                                 </div>
-                                
+
                                 <div class="flex items-center gap-1">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2">
                                         <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
                                         <circle cx="12" cy="12" r="3"></circle>
                                     </svg>
                                     <span th:text="${plan.vistas} + ' vistas'">123 vistas</span>
                                 </div>
                             </div>
-                            
+
                             <!-- Badge del creador -->
                             <div class="mb-4">
                                 <div th:if="${plan.rolCreador == 'COLABORADOR'}"
-                                     class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-100 text-blue-700 text-xs font-semibold">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
-                                        <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/>
+                                    class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-100 text-blue-700 text-xs font-semibold">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
+                                        fill="currentColor">
+                                        <path
+                                            d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" />
                                     </svg>
                                     Creado por Colaborador: <span th:text="${plan.nombreCreador}">Nombre</span>
                                 </div>
-                                
+
                                 <div th:if="${plan.rolCreador == 'CLIENTE'}"
-                                     class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-green-100 text-green-700 text-xs font-semibold">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-green-100 text-green-700 text-xs font-semibold">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2">
                                         <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
                                         <circle cx="9" cy="7" r="4"></circle>
                                         <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
@@ -166,39 +179,40 @@
                                     Creado por la Comunidad: <span th:text="${plan.nombreCreador}">Nombre</span>
                                 </div>
                             </div>
-                            
+
                             <!-- Preview de actividades -->
                             <div class="space-y-2 mb-4">
                                 <p class="text-sm font-semibold text-gray-700">Actividades incluidas:</p>
-                                <div th:each="actividad, actIterStat : ${plan.actividades}" 
-                                     th:if="${actIterStat.index < 3}"
-                                     class="flex items-center gap-2 text-sm text-gray-600">
-                                    <span class="flex-shrink-0 w-6 h-6 rounded-full bg-purple-100 text-purple-700 flex items-center justify-center text-xs font-bold"
-                                          th:text="${actividad.orden}">1</span>
+                                <div th:each="actividad, actIterStat : ${plan.actividades}"
+                                    th:if="${actIterStat.index < 3}"
+                                    class="flex items-center gap-2 text-sm text-gray-600">
+                                    <span
+                                        class="flex-shrink-0 w-6 h-6 rounded-full bg-orange-100 text-orange-700 flex items-center justify-center text-xs font-bold"
+                                        th:text="${actividad.orden}">1</span>
                                     <a th:href="@{'/actividad/' + ${actividad.slugActividad} + '-' + ${actividad.idActividad}}"
-                                       class="hover:text-purple-600 hover:underline flex-1"
-                                       th:text="${actividad.nombreActividad}">Nombre Actividad</a>
-                                    <span class="text-xs text-gray-500" th:text="${actividad.horaSugerida}">9:00 AM</span>
+                                        class="hover:text-orange-600 hover:underline flex-1"
+                                        th:text="${actividad.nombreActividad}">Nombre Actividad</a>
+                                    <span class="text-xs text-gray-500" th:text="${actividad.horaSugerida}">9:00
+                                        AM</span>
                                 </div>
-                                <p th:if="${#lists.size(plan.actividades) > 3}" 
-                                   class="text-xs text-gray-500">
+                                <p th:if="${#lists.size(plan.actividades) > 3}" class="text-xs text-gray-500">
                                     + <span th:text="${#lists.size(plan.actividades) - 3}">2</span> actividades más
                                 </p>
                             </div>
-                            
+
                             <!-- Botón Ver Plan Completo -->
                             <a th:href="@{'/planes/' + ${plan.id}}"
-                               class="block w-full text-center bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 rounded-xl transition-all">
+                                class="block w-full text-center bg-orange-600 hover:bg-orange-700 text-white font-bold py-3 rounded-xl transition-all">
                                 Ver Plan Completo
                             </a>
                         </div>
                     </div>
-                    
+
                     <!-- Empty State -->
-                    <div th:if="${#lists.isEmpty(topPlanes)}" 
-                         class="text-center py-16 bg-white rounded-2xl border-2 border-dashed border-gray-300">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" 
-                             stroke="currentColor" stroke-width="1.5" class="mx-auto mb-4 text-gray-400">
+                    <div th:if="${#lists.isEmpty(topPlanes)}"
+                        class="text-center py-16 bg-white rounded-2xl border-2 border-dashed border-gray-300">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="1.5" class="mx-auto mb-4 text-gray-400">
                             <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
                             <circle cx="12" cy="10" r="3"></circle>
                         </svg>
@@ -210,16 +224,18 @@
         </div>
 
         <!-- CTA Section -->
-        <div class="max-w-4xl mx-auto px-4 mt-16">
-            <div class="bg-gradient-to-r from-purple-600 to-purple-800 rounded-3xl p-8 text-white text-center shadow-2xl">
+        <div class="max-w-4xl mx-auto px-4 mt-16 mb-10">
+            <div
+                class="bg-gradient-to-r from-orange-600 to-orange-800 rounded-3xl p-8 text-white text-center shadow-2xl">
                 <h2 class="text-3xl font-black mb-4">¿Tienes una ruta favorita?</h2>
                 <p class="text-lg mb-6 opacity-90">
                     Comparte tus planes del día con la comunidad y ayuda a otros viajeros a descubrir Cartagena
                 </p>
                 <div sec:authorize="isAuthenticated()">
                     <a th:href="${esCliente != null && esCliente} ? '/cliente/planes/crear' : '/colaborador/planes/crear'"
-                       class="inline-flex items-center gap-2 bg-white text-purple-600 hover:bg-gray-100 font-bold px-8 py-4 rounded-full transition-all shadow-lg">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        class="inline-flex items-center gap-2 bg-white text-orange-600 hover:bg-gray-100 font-bold px-8 py-4 rounded-full transition-all shadow-lg">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2">
                             <line x1="12" y1="5" x2="12" y2="19"></line>
                             <line x1="5" y1="12" x2="19" y2="12"></line>
                         </svg>
@@ -228,26 +244,26 @@
                 </div>
                 <div sec:authorize="isAnonymous()">
                     <a href="/login?registrarse"
-                       class="inline-flex items-center gap-2 bg-white text-purple-600 hover:bg-gray-100 font-bold px-8 py-4 rounded-full transition-all shadow-lg">
+                        class="inline-flex items-center gap-2 bg-white text-orange-600 hover:bg-gray-100 font-bold px-8 py-4 rounded-full transition-all shadow-lg">
                         Regístrate para crear planes
                     </a>
                 </div>
             </div>
         </div>
     </main>
-    
+
     <div th:replace="~{componentes/footer :: footer}"></div>
-    
+
     <!-- Leaflet JS -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    
+
     <!-- Datos de planes para el mapa -->
     <script th:inline="javascript">
         /*<![CDATA[*/
-        const planesData = /*[[${topPlanes}]]*/ [];
+        const planesData = /*[[${topPlanes}]]*/[];
         /*]]>*/
     </script>
-    
+
     <script th:src="@{/js/planes/planes.js}"></script>
     <script th:src="@{/js/alert.js}"></script>
     <script th:src="@{/js/componentes/navbar.js}"></script>
@@ -256,4 +272,5 @@
     <div th:replace="~{componentes/chat-widget :: chatWidget(actividadId=${null})}"></div>
 
 </body>
+
 </html>

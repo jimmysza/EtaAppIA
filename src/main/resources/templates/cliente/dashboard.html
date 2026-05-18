@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard de Clientes</title>
-    
+
     <link rel="stylesheet" th:href="@{/css/global.css}">
     <link rel="stylesheet" th:href="@{/css/cliente/dahsboard-cliente.css}">
     <link rel="stylesheet" th:href="@{/css/adminBd.css}">
@@ -13,8 +13,8 @@
     <link rel="stylesheet" th:href="@{/css/componentes/tabla.css}">
 
     <link rel="stylesheet" th:href="@{/css/tailwind.css}">
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <link rel="icon" th:href="@{/images/logos/logo.webp}" type="image/x-icon" />
 </head>
 
@@ -51,7 +51,7 @@
                             </li>
 
                             <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
-                                <a itemprop="item" >
+                                <a itemprop="item">
                                     <span itemprop="name">Reservas</span>
                                 </a>
                                 <meta itemprop="position" content="2" />
@@ -106,10 +106,12 @@
                         <td th:text="${reserva.cantidad}"></td>
                         <td th:text="${reserva.actividad.titulo}"></td>
                         <td th:text="${reserva.actividad.ubicacion}"></td>
-                        <td th:text="${'$' + #numbers.formatDecimal(reserva.actividad.precio, 0, 'POINT', 0, 'COMMA')}"></td>
+                        <td th:text="${'$' + #numbers.formatDecimal(reserva.actividad.precio, 0, 'POINT', 0, 'COMMA')}">
+                        </td>
                         <td>
-                            <span class="badge" th:classappend="${reserva.estado == 'CONFIRMADA' ? 'badge-success' : (reserva.estado == 'CANCELADA' ? 'badge-danger' : 'badge-warning')}" 
-                                  th:text="${reserva.estado}"></span>
+                            <span class="badge"
+                                th:classappend="${reserva.estado == 'CONFIRMADA' ? 'badge-success' : (reserva.estado == 'CANCELADA' ? 'badge-danger' : 'badge-warning')}"
+                                th:text="${reserva.estado}"></span>
                         </td>
                         <td>
                             <img th:if="${reserva.actividad.imagen != null}"
@@ -118,8 +120,12 @@
                             <span th:if="${reserva.actividad.imagen == null}">Sin imagen</span>
                         </td>
                         <td>
-                            <a class="button-default bg-violet-600" th:href="@{/cliente/reservas/{idReserva}/recibo(idReserva=${reserva.idReserva})}" style="margin-right:8px; display:inline-flex; align-items:center; gap:6px;">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <a class="button-default bg-violet-600"
+                                th:href="@{/cliente/reservas/{idReserva}/recibo(idReserva=${reserva.idReserva})}"
+                                style="margin-right:8px; display:inline-flex; align-items:center; gap:6px;">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round">
                                     <path d="M9 12h6" />
                                     <path d="M9 16h6" />
                                     <path d="M9 8h6" />
@@ -127,20 +133,26 @@
                                 </svg>
                                 Ver mas
                             </a>
-                            <a class="button-default bgBlueMain" th:href="@{/cliente/chats/{idReserva}(idReserva=${reserva.idReserva})}" style="margin-right:8px; display:inline-flex; align-items:center; gap:6px;">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <a class="button-default bgBlueMain"
+                                th:href="@{/cliente/chats/{idReserva}(idReserva=${reserva.idReserva})}"
+                                style="margin-right:8px; display:inline-flex; align-items:center; gap:6px;">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round">
                                     <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
                                 </svg>
                                 Chat
                             </a>
-                            <button th:if="${reserva.estado == 'CONFIRMADA'}" 
-                                    class="button-default bg-orange-600 btn-cancelar-reserva" 
-                                    style="margin-right:8px; display:inline-flex; align-items:center; gap:6px;"
-                                    th:attr="data-id=${reserva.idReserva}">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <circle cx="12" cy="12" r="10"/>
-                                    <line x1="15" y1="9" x2="9" y2="15"/>
-                                    <line x1="9" y1="9" x2="15" y2="15"/>
+                            <button th:if="${reserva.estado == 'CONFIRMADA'}"
+                                class="button-default bg-orange-600 btn-cancelar-reserva"
+                                style="margin-right:8px; display:inline-flex; align-items:center; gap:6px;"
+                                th:attr="data-id=${reserva.idReserva}">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round">
+                                    <circle cx="12" cy="12" r="10" />
+                                    <line x1="15" y1="9" x2="9" y2="15" />
+                                    <line x1="9" y1="9" x2="15" y2="15" />
                                 </svg>
                                 Cancelar
                             </button>
@@ -157,6 +169,19 @@
                                 </svg>
 
                                 Eliminar
+                            </button>
+                            <button class="button-default btn_delete text-open-delete" id="open-delete-modal">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24">
+                                    <g fill="none">
+                                        <path fill="#fff" d="M8 21h8a2 2 0 0 0 2-2V7H6v12a2 2 0 0 0 2 2"
+                                            opacity="0.16" />
+                                        <path stroke="#fff" stroke-linecap="round" stroke-linejoin="round"
+                                            stroke-width="2.5"
+                                            d="M14 11v6m-4-6v6M6 7v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V7M4 7h16M7 7l2-4h6l2 4" />
+                                    </g>
+                                </svg>
+
+                                ver
                             </button>
                         </td>
 
@@ -201,23 +226,28 @@
         <div class="card" style="max-width: 500px; margin: 50px auto;">
             <div class="header-modal">
                 <div class="image">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                        <circle cx="12" cy="12" r="10"/>
-                        <line x1="15" y1="9" x2="9" y2="15"/>
-                        <line x1="9" y1="9" x2="15" y2="15"/>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="1.5">
+                        <circle cx="12" cy="12" r="10" />
+                        <line x1="15" y1="9" x2="9" y2="15" />
+                        <line x1="9" y1="9" x2="15" y2="15" />
                     </svg>
                 </div>
                 <div class="content">
                     <span class="title">Cancelar Reserva</span>
                     <p id="modal-cancelacion-mensaje" class="message">Cargando información...</p>
-                    <div id="modal-cancelacion-info" style="margin-top: 15px; padding: 15px; background: #f0f0f0; border-radius: 8px; display: none;">
-                        <p style="margin: 5px 0;"><strong>Monto de reembolso:</strong> <span id="modal-cancelacion-monto">$0</span></p>
-                        <p style="margin: 5px 0;"><strong>Horas restantes:</strong> <span id="modal-cancelacion-horas">0</span></p>
+                    <div id="modal-cancelacion-info"
+                        style="margin-top: 15px; padding: 15px; background: #f0f0f0; border-radius: 8px; display: none;">
+                        <p style="margin: 5px 0;"><strong>Monto de reembolso:</strong> <span
+                                id="modal-cancelacion-monto">$0</span></p>
+                        <p style="margin: 5px 0;"><strong>Horas restantes:</strong> <span
+                                id="modal-cancelacion-horas">0</span></p>
                     </div>
                 </div>
             </div>
             <div class="actions">
-                <button id="btn-confirmar-cancelacion" type="button" class="delete-btn" style="display: none;">Confirmar Cancelación</button>
+                <button id="btn-confirmar-cancelacion" type="button" class="delete-btn" style="display: none;">Confirmar
+                    Cancelación</button>
                 <button type="button" class="cancel" id="btn-cerrar-modal-cancelacion">Cerrar</button>
             </div>
         </div>
@@ -231,14 +261,17 @@
             font-weight: 600;
             text-transform: uppercase;
         }
+
         .badge-success {
             background-color: #d4edda;
             color: #155724;
         }
+
         .badge-danger {
             background-color: #f8d7da;
             color: #721c24;
         }
+
         .badge-warning {
             background-color: #fff3cd;
             color: #856404;
@@ -247,7 +280,7 @@
 
     <script>
         // Script para manejar cancelación de reservas
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             const modal = document.getElementById('modal-cancelacion');
             const btnCerrar = document.getElementById('btn-cerrar-modal-cancelacion');
             const btnConfirmar = document.getElementById('btn-confirmar-cancelacion');
@@ -255,25 +288,25 @@
             const infoDiv = document.getElementById('modal-cancelacion-info');
             const montoSpan = document.getElementById('modal-cancelacion-monto');
             const horasSpan = document.getElementById('modal-cancelacion-horas');
-            
+
             let idReservaActual = null;
 
             // Abrir modal al hacer clic en botones de cancelar
             document.querySelectorAll('.btn-cancelar-reserva').forEach(btn => {
-                btn.addEventListener('click', function() {
+                btn.addEventListener('click', function () {
                     idReservaActual = this.getAttribute('data-id');
                     abrirModalCancelacion(idReservaActual);
                 });
             });
 
             // Cerrar modal
-            btnCerrar.addEventListener('click', function() {
+            btnCerrar.addEventListener('click', function () {
                 modal.style.display = 'none';
                 idReservaActual = null;
             });
 
             // Confirmar cancelación
-            btnConfirmar.addEventListener('click', function() {
+            btnConfirmar.addEventListener('click', function () {
                 if (idReservaActual) {
                     cancelarReserva(idReservaActual);
                 }
@@ -293,24 +326,24 @@
                         'Content-Type': 'application/json'
                     }
                 })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.puede) {
-                        mensaje.textContent = data.mensaje;
-                        montoSpan.textContent = '$' + new Intl.NumberFormat('es-CO').format(data.montoReembolso);
-                        horasSpan.textContent = data.horasRestantes;
-                        infoDiv.style.display = 'block';
-                        btnConfirmar.style.display = 'inline-block';
-                    } else {
-                        mensaje.textContent = data.mensaje;
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.puede) {
+                            mensaje.textContent = data.mensaje;
+                            montoSpan.textContent = '$' + new Intl.NumberFormat('es-CO').format(data.montoReembolso);
+                            horasSpan.textContent = data.horasRestantes;
+                            infoDiv.style.display = 'block';
+                            btnConfirmar.style.display = 'inline-block';
+                        } else {
+                            mensaje.textContent = data.mensaje;
+                            btnConfirmar.style.display = 'none';
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        mensaje.textContent = 'Error al cargar información de cancelación.';
                         btnConfirmar.style.display = 'none';
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    mensaje.textContent = 'Error al cargar información de cancelación.';
-                    btnConfirmar.style.display = 'none';
-                });
+                    });
             }
 
             // Función para cancelar reserva

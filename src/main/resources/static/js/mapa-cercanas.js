@@ -27,9 +27,9 @@ function inicializarMapa() {
     // Centro inicial: Cartagena como fallback
     const cartagenaLat = 10.3910;
     const cartagenaLon = -75.4794;
-    
+
     mapa = L.map('mapaLeaflet').setView([cartagenaLat, cartagenaLon], 14);
-    
+
     // Tile layer de OpenStreetMap
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
@@ -43,13 +43,13 @@ function inicializarMapa() {
 function configurarEventos() {
     const btnUbicacion = document.getElementById('btnUbicacion');
     const sliderRadio = document.getElementById('sliderRadio');
-    
+
     btnUbicacion.addEventListener('click', solicitarUbicacion);
     sliderRadio.addEventListener('input', (e) => {
         const nuevoRadio = parseInt(e.target.value);
         document.getElementById('labelRadio').textContent = nuevoRadio + ' km';
         radioActual = nuevoRadio;
-        
+
         // Solo recargar si ya tenemos ubicación
         if (latGuardada !== null && lonGuardada !== null) {
             cargarActividades(latGuardada, lonGuardada, radioActual);
@@ -69,33 +69,33 @@ function solicitarUbicacion() {
         mostrarAlerta('Tu navegador no soporta geolocalización', 'error');
         return;
     }
-    
+
     const btnTexto = document.getElementById('btnTexto');
     btnTexto.textContent = 'Detectando ubicación...';
-    
+
     mostrarEstado('cargando');
-    
+
     navigator.geolocation.getCurrentPosition(
         (position) => {
             const lat = position.coords.latitude;
             const lon = position.coords.longitude;
-            
+
             // Guardar coordenadas
             latGuardada = lat;
             lonGuardada = lon;
-            
+
             // Centrar mapa en la ubicación del usuario
             mapa.setView([lat, lon], 15);
-            
+
             // Pintar marcador del usuario
             pintarUserMarker(lat, lon);
-            
+
             // Habilitar slider
             document.getElementById('sliderRadio').disabled = false;
-            
+
             // Cambiar texto del botón
             btnTexto.textContent = 'Actualizar ubicación';
-            
+
             // Cargar actividades cercanas
             cargarActividades(lat, lon, radioActual);
         },
@@ -103,9 +103,9 @@ function solicitarUbicacion() {
             console.error('Error de geolocalización:', error);
             btnTexto.textContent = 'Usar mi ubicación';
             mostrarEstado('inicial');
-            
+
             let mensaje = 'No pudimos obtener tu ubicación.';
-            switch(error.code) {
+            switch (error.code) {
                 case error.PERMISSION_DENIED:
                     mensaje = 'Debes permitir el acceso a tu ubicación en el navegador.';
                     break;
@@ -129,7 +129,7 @@ function pintarUserMarker(lat, lon) {
     if (userMarker) {
         mapa.removeLayer(userMarker);
     }
-    
+
     // Crear icono personalizado para el usuario
     const iconoUsuario = L.divIcon({
         className: 'marker-usuario',
@@ -137,7 +137,7 @@ function pintarUserMarker(lat, lon) {
         iconSize: [28, 28],
         iconAnchor: [14, 14]
     });
-    
+
     userMarker = L.marker([lat, lon], { icon: iconoUsuario }).addTo(mapa);
     userMarker.bindPopup('Tu ubicación').openPopup();
 }
@@ -151,7 +151,7 @@ function pintarUserMarker(lat, lon) {
  */
 function cargarActividades(lat, lon, radio) {
     mostrarEstado('cargando');
-    
+
     fetch(`/actividades/cercanas/json?lat=${lat}&lon=${lon}&radio=${radio}`)
         .then(response => {
             if (!response.ok) {
@@ -165,9 +165,9 @@ function cargarActividades(lat, lon, radio) {
                 document.getElementById('contadorResultados').textContent = '0 actividades encontradas';
             } else {
                 mostrarEstado('resultados');
-                document.getElementById('contadorResultados').textContent = 
+                document.getElementById('contadorResultados').textContent =
                     `${data.length} ${data.length === 1 ? 'actividad encontrada' : 'actividades encontradas'}`;
-                
+
                 limpiarMarcadores();
                 pintarMarcadores(data);
                 renderizarTarjetas(data);
@@ -191,7 +191,7 @@ function cargarActividades(lat, lon, radio) {
 function limpiarMarcadores() {
     marcadoresActividades.forEach(marker => mapa.removeLayer(marker));
     marcadoresActividades = [];
-    
+
     if (circuloRadio) {
         mapa.removeLayer(circuloRadio);
         circuloRadio = null;
@@ -204,7 +204,7 @@ function limpiarMarcadores() {
 function pintarMarcadores(actividades) {
     actividades.forEach((actividad, index) => {
         const numero = index + 1;
-        
+
         // Crear icono numerado
         const iconoNumero = L.divIcon({
             className: 'marker-numero',
@@ -212,11 +212,11 @@ function pintarMarcadores(actividades) {
             iconSize: [28, 28],
             iconAnchor: [14, 28]
         });
-        
-        const marker = L.marker([actividad.latitud, actividad.longitud], { 
-            icon: iconoNumero 
+
+        const marker = L.marker([actividad.latitud, actividad.longitud], {
+            icon: iconoNumero
         }).addTo(mapa);
-        
+
         // Popup con info básica
         marker.bindPopup(`
             <div class="text-center">
@@ -224,13 +224,13 @@ function pintarMarcadores(actividades) {
                 <span class="text-sm text-gray-600">${actividad.distanciaKm} km</span>
             </div>
         `);
-        
+
         // Click en marcador → resaltar tarjeta
         marker.on('click', () => {
             highlightTarjeta(actividad.idActividad);
             scrollToTarjeta(actividad.idActividad);
         });
-        
+
         marcadoresActividades.push(marker);
     });
 }
@@ -242,7 +242,7 @@ function pintarCirculoRadio(lat, lon, radioKm) {
     if (circuloRadio) {
         mapa.removeLayer(circuloRadio);
     }
-    
+
     circuloRadio = L.circle([lat, lon], {
         color: '#1D9E75',
         fillColor: '#1D9E75',
@@ -261,11 +261,11 @@ function pintarCirculoRadio(lat, lon, radioKm) {
 function renderizarTarjetas(actividades) {
     const listaTarjetas = document.getElementById('listaTarjetas');
     listaTarjetas.innerHTML = '';
-    
+
     actividades.forEach((actividad, index) => {
         const numero = index + 1;
         const urlDetalle = construirUrlDetalle(actividad.slug, actividad.idActividad);
-        
+
         const tarjetaHTML = `
             <div class="tarjeta-cercana" data-id="${actividad.idActividad}">
                 <div class="flex gap-3 cursor-pointer" onclick="navegarADetalle('${urlDetalle}')">
@@ -273,12 +273,19 @@ function renderizarTarjetas(actividades) {
                     <div class="flex-shrink-0">
                         <div class="marker-numero-tarjeta">${numero}</div>
                     </div>
-                    
+                    <!-- src="/images/${actividad.imagen || 'placeholder.jpg'}"  -->
                     <!-- Imagen -->
                     <div class="flex-shrink-0 w-24 h-24 rounded-lg overflow-hidden bg-gray-200">
-                        <img src="/images/${actividad.imagen || 'placeholder.jpg'}" 
-                             alt="${actividad.titulo}"
-                             class="w-full h-full object-cover">
+                        <img 
+                            th:if="${actividad.imagen != null}"
+                            th:src="@{'/uploads/' + ${actividad.imagen}}"
+                            alt="${actividad.titulo}"
+                            class="w-full h-full object-cover">
+                        <img 
+                            th:if="${actividad.imagen == null}"
+                            src="/images/placeholder.jpg"
+                            alt="${actividad.titulo}"
+                            class="w-full h-full object-cover">
                     </div>
                     
                     <!-- Info -->
@@ -310,7 +317,7 @@ function renderizarTarjetas(actividades) {
                 </div>
             </div>
         `;
-        
+
         listaTarjetas.insertAdjacentHTML('beforeend', tarjetaHTML);
     });
 }
@@ -323,7 +330,7 @@ function highlightTarjeta(idActividad) {
     document.querySelectorAll('.tarjeta-cercana').forEach(tarjeta => {
         tarjeta.classList.remove('activa');
     });
-    
+
     // Añadir resaltado a la seleccionada
     const tarjeta = document.querySelector(`.tarjeta-cercana[data-id="${idActividad}"]`);
     if (tarjeta) {
@@ -367,15 +374,15 @@ function mostrarEstado(estado) {
     const estadoCargando = document.getElementById('estadoCargando');
     const estadoVacio = document.getElementById('estadoVacio');
     const listaTarjetas = document.getElementById('listaTarjetas');
-    
+
     // Ocultar todos
     estadoInicial.classList.add('hidden');
     estadoCargando.classList.add('hidden');
     estadoVacio.classList.add('hidden');
     listaTarjetas.classList.add('hidden');
-    
+
     // Mostrar el estado correspondiente
-    switch(estado) {
+    switch (estado) {
         case 'inicial':
             estadoInicial.classList.remove('hidden');
             break;
@@ -384,7 +391,7 @@ function mostrarEstado(estado) {
             break;
         case 'vacio':
             estadoVacio.classList.remove('hidden');
-            document.getElementById('mensajeVacio').innerHTML = 
+            document.getElementById('mensajeVacio').innerHTML =
                 `No hay actividades en ${radioActual} km.<br>Intenta ampliar el radio.`;
             break;
         case 'resultados':

@@ -122,7 +122,7 @@ public class PagoController {
 
                     // Crear reserva sin pago
                     reservaService.hacerReserva(cliente, actividad, disponibilidad, cantidad);
-                    redirectAttributes.addFlashAttribute("success", "¡Reserva creada exitosamente! (Modo sin pago)");
+                    redirectAttributes.addFlashAttribute("exito", "¡Reserva creada exitosamente! ");
                     return "redirect:/cliente/dashboard";
                 } catch (Exception e) {
                     logger.error("Error al crear reserva sin pago", e);
@@ -211,7 +211,8 @@ public class PagoController {
 
         if (reference == null || reference.isEmpty()) {
             logger.warn("Parámetros incompletos en respuesta de Wompi");
-            return "redirect:/cliente/dashboard?pago=error";
+            redirectAttributes.addFlashAttribute("error", "Hubo un error con el pago o no se completó.");
+            return "redirect:/cliente/dashboard";
         }
 
         // Buscar PagoIntento por referencia
@@ -219,7 +220,8 @@ public class PagoController {
 
         if (!pagoIntentoOpt.isPresent()) {
             logger.warn("PagoIntento no encontrado para referencia: {}", reference);
-            return "redirect:/cliente/dashboard?pago=error";
+            redirectAttributes.addFlashAttribute("error", "No se encontró el intento de pago.");
+            return "redirect:/cliente/dashboard";
         }
 
         PagoIntento pagoIntento = pagoIntentoOpt.get();
@@ -228,20 +230,24 @@ public class PagoController {
         switch (pagoIntento.getEstado()) {
             case "PROCESADO":
                 logger.info("Pago procesado exitosamente. Ref: {}", reference);
-                return "redirect:/cliente/dashboard?pago=exitoso";
+                redirectAttributes.addFlashAttribute("exito", "¡Reserva y pago procesados exitosamente!");
+                return "redirect:/cliente/dashboard";
 
             case "PENDIENTE":
                 logger.info("Pago pendiente de confirmación. Ref: {}", reference);
-                return "redirect:/cliente/dashboard?pago=procesando";
+                redirectAttributes.addFlashAttribute("exito", "Tu pago está pendiente de confirmación.");
+                return "redirect:/cliente/dashboard";
 
             case "FALLIDO":
                 logger.warn("Pago fallido. Ref: {}", reference);
-                return String.format("redirect:/cliente/checkout/actividad/%d?pago=fallido&idDispo=%d",
+                redirectAttributes.addFlashAttribute("error", "El pago ha fallado o fue rechazado.");
+                return String.format("redirect:/cliente/checkout/actividad/%d?idDispo=%d",
                         pagoIntento.getIdActividad(), pagoIntento.getIdDisponibilidad());
 
             default:
                 logger.warn("Estado de PagoIntento desconocido: {}. Ref: {}", pagoIntento.getEstado(), reference);
-                return "redirect:/cliente/dashboard?pago=desconocido";
+                redirectAttributes.addFlashAttribute("error", "Estado de pago desconocido.");
+                return "redirect:/cliente/dashboard";
         }
     }
 }

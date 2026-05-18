@@ -11,9 +11,9 @@
     <link rel="stylesheet" th:href="@{/css/dashboard.css}">
     <link rel="stylesheet" th:href="@{/css/componentes/modales.css}">
 
-    <link rel="icon" th:href="@{/images/logos/etabluerrvg.webp}" type="image/x-icon" />
+    <link rel="icon" th:href="@{/images/logos/Logo.webp}" type="image/x-icon" />
     <link rel="stylesheet" th:href="@{/css/tailwind.css}">
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <title>ETA | Actividades</title>
 
 </head>
@@ -96,23 +96,36 @@
 
             <div class="Actividades-Container">
 
-                <div style="width: 100%; max-width: 1500px; margin: 20px auto; background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.08);">
+                <div
+                    style="width: 100%; max-width: 1500px; margin: 20px auto; background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.08);">
                     <table style="width: 100%; border-collapse: collapse;">
                         <thead>
                             <tr style="background-color: #f3f4f6; border-bottom: 2px solid #e5e7eb;">
-                                <th style="padding: 15px; text-align: left; font-weight: 600; font-size: 12px; color: #374151;">#</th>
-                                <th style="padding: 15px; text-align: left; font-weight: 600; font-size: 12px; color: #374151;">Nombre Idioma</th>
-                                <th style="padding: 15px; text-align: left; font-weight: 600; font-size: 12px; color: #374151;">Código</th>
-                                <th style="padding: 15px; text-align: center; font-weight: 600; font-size: 12px; color: #374151;">Acciones</th>
+                                <th
+                                    style="padding: 15px; text-align: left; font-weight: 600; font-size: 12px; color: #374151;">
+                                    #</th>
+                                <th
+                                    style="padding: 15px; text-align: left; font-weight: 600; font-size: 12px; color: #374151;">
+                                    Nombre Idioma</th>
+                                <th
+                                    style="padding: 15px; text-align: left; font-weight: 600; font-size: 12px; color: #374151;">
+                                    Código</th>
+                                <th
+                                    style="padding: 15px; text-align: center; font-weight: 600; font-size: 12px; color: #374151;">
+                                    Acciones</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr th:if="${idiomas == null or #lists.isEmpty(idiomas)}" style="border-bottom: 1px solid #e5e7eb;">
+                            <tr th:if="${idiomas == null or #lists.isEmpty(idiomas)}"
+                                style="border-bottom: 1px solid #e5e7eb;">
                                 <td colspan="4" style="text-align: center; color: #999; padding: 30px;">
                                     No hay idiomas registrados aún
                                 </td>
                             </tr>
-                            <tr th:each="idio, iterStat : ${idiomas}" style="border-bottom: 1px solid #e5e7eb; transition: background-color 0.2s;" onmouseover="this.style.backgroundColor='#f9fafb'" onmouseout="this.style.backgroundColor='transparent'">
+                            <tr th:each="idio, iterStat : ${idiomas}"
+                                style="border-bottom: 1px solid #e5e7eb; transition: background-color 0.2s;"
+                                onmouseover="this.style.backgroundColor='#f9fafb'"
+                                onmouseout="this.style.backgroundColor='transparent'">
                                 <td style="padding: 15px; font-size: 12px; color: #6b7280;">
                                     <span th:text="${iterStat.count}"></span>
                                 </td>
@@ -120,10 +133,15 @@
                                     <span th:text="${idio.nombre}"></span>
                                 </td>
                                 <td style="padding: 15px; font-size: 12px; color: #6b7280;">
-                                    <code style="background-color: #f3f4f6; padding: 4px 8px; border-radius: 4px; font-family: monospace;" th:text="${idio.codigo}"></code>
+                                    <code
+                                        style="background-color: #f3f4f6; padding: 4px 8px; border-radius: 4px; font-family: monospace;"
+                                        th:text="${idio.codigo}"></code>
                                 </td>
                                 <td style="padding: 15px; text-align: center;">
-                                    <button style="padding: 6px 10px; background-color: #6b7280; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 12px; transition: all 0.2s;" onmouseover="this.style.backgroundColor='#4b5563'" onmouseout="this.style.backgroundColor='#6b7280'">
+                                    <button
+                                        style="padding: 6px 10px; background-color: #6b7280; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 12px; transition: all 0.2s;"
+                                        onmouseover="this.style.backgroundColor='#4b5563'"
+                                        onmouseout="this.style.backgroundColor='#6b7280'">
                                         Ver
                                     </button>
                                 </td>
@@ -152,7 +170,7 @@
                     <input id="nombre" type="text" th:field="*{nombre}" required />
 
                     <label for="codigo">Nombre codigo <span class="red">*</span></label>
-                    <input id="codigo" type="text" th:field="*{codigo}"  required />
+                    <input id="codigo" type="text" th:field="*{codigo}" required />
 
                     <div class="btnSubmit">
                         <button type="submit" class="btn-submit">Agregar</button>
@@ -162,7 +180,7 @@
             </form>
 
         </div>
-        
+
     </section>
     <script th:src="@{/js/modales.js}"></script>
     <script th:src="@{/js/dashboard.js}"></script>

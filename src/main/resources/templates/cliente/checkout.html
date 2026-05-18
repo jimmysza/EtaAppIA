@@ -469,7 +469,7 @@
                 <div class="checkout-topbar">
                     <div>
                         <span class="checkout-eyebrow">Paso final de reserva</span>
-                        <h1 class="checkout-title" th:text="${actividad.titulo}">Actividad</h1>
+                        <!-- <h1 class="checkout-title" th:text="${actividad.titulo}">Actividad</h1> -->
                         <p class="checkout-subtitle">
                             Elige el horario que mejor te funcione para el dia seleccionado y define cuántos cupos vas a
                             reservar.
@@ -579,7 +579,7 @@
                     <p>El total se actualiza automáticamente según la cantidad de cupos.</p>
                 </div>
 
-                <!-- ✅ Botón que envía el formulario y redirige a Wompi -->
+
                 <button type="submit" class=" bg-blue-600 bgBlueMainL" id="btnPagar"
                     th:disabled="${#lists.isEmpty(disponibilidadesDelDia)}">
                     Pagar<i class="fa-brands fa-cc-visa"></i>

@@ -114,8 +114,7 @@ public class AllAcessController {
                         @RequestParam(required = false) Integer anioReserva,
                         @RequestParam(required = false) Integer mesReserva,
                         @RequestParam(required = false) String fechaReserva,
-                        @RequestParam(required = false) String nombre
-                ) {
+                        @RequestParam(required = false) String nombre) {
                 // 👈 solo necesitas pasar Authentication
 
                 usuarioHelper.agregarInfoUsuarioModel(model, auth);
@@ -136,7 +135,8 @@ public class AllAcessController {
                 int pageSize = 3;
                 Page<Actividad> actividadesPage = actividadService.getActividadesWithPaginationMain(0, pageSize,
                                 nombre);
-                Page<Comentario> comentarioPage = comentarioService.listarComentarioPorIdYPaginacion(id, comentariosPage,
+                Page<Comentario> comentarioPage = comentarioService.listarComentarioPorIdYPaginacion(id,
+                                comentariosPage,
                                 pageSize);
                 List<Disponibilidad> disponibilidads = disponibilidadService.obtenerPorActividad(id);
                 List<Disponibilidad> disponibilidadesDisponibles = disponibilidads.stream()
@@ -224,7 +224,8 @@ public class AllAcessController {
                 model.addAttribute("distribucionEstrellas", distribucionEstrellas);
                 model.addAttribute("totalComentarios", totalComentarios);
 
-                // Verificar si la actividad es favorita del cliente logueado y si puede comentar
+                // Verificar si la actividad es favorita del cliente logueado y si puede
+                // comentar
                 boolean esFavorito = false;
                 boolean puedeCommentar = false;
                 if (auth != null && auth.isAuthenticated() && !auth.getPrincipal().equals("anonymousUser")) {
@@ -401,16 +402,17 @@ public class AllAcessController {
                 }
                 model.addAttribute("favoritosIds", favoritosIds);
                 model.addAttribute("tendencias", actividadService.obtenerTendencias());
-                                        model.addAttribute("masVistas", actividadService.obtenerMasVistas());
-                                        model.addAttribute("masReservadas", actividadService.obtenerMasReservadas());
-                // Si el usuario es cliente autenticado y completó onboarding, agregar listas personalizadas
+                model.addAttribute("masVistas", actividadService.obtenerMasVistas());
+                model.addAttribute("masReservadas", actividadService.obtenerMasReservadas());
+                // Si el usuario es cliente autenticado y completó onboarding, agregar listas
+                // personalizadas
                 if (auth != null && auth.isAuthenticated() && !auth.getPrincipal().equals("anonymousUser")) {
                         try {
                                 Usuario usuario = usuarioService.obtenerPorEmail(auth.getName());
                                 Optional<Cliente> clienteOpt = clienteService.obtenerPorUsuario(usuario);
                                 if (clienteOpt.isPresent() && clienteOpt.get().isOnboardingCompletado()) {
                                         Cliente cliente = clienteOpt.get();
-                                        
+
                                         model.addAttribute("paraTi", actividadService.obtenerParaTi(cliente));
                                 }
                         } catch (Exception e) {
@@ -455,7 +457,8 @@ public class AllAcessController {
                                         dto.setImagen(actividad.getImagen());
                                         dto.setCreatedAt(actividad.getCreatedAt());
                                         dto.setPrecio(actividad.getPrecio());
-                                        dto.setPrecioConsumidor(usuarioHelper.CalcularPrecioConsumidor(actividad.getPrecio()));
+                                        dto.setPrecioConsumidor(
+                                                        usuarioHelper.CalcularPrecioConsumidor(actividad.getPrecio()));
 
                                         if (actividad.getIdioma() != null) {
                                                 dto.setIdIdioma(actividad.getIdioma().getIdIdioma());
@@ -472,7 +475,8 @@ public class AllAcessController {
 
                                         dto.setIdColaborador(idColaborador);
                                         dto.setCantidadComentario(
-                                                        comentariosPorActividad.getOrDefault(actividad.getIdActividad(), 0));
+                                                        comentariosPorActividad.getOrDefault(actividad.getIdActividad(),
+                                                                        0));
 
                                         return dto;
                                 })
@@ -507,7 +511,7 @@ public class AllAcessController {
 
                 // Redirigir al GET con todos los parámetros para permitir URLs compartibles
                 String redirectUrl = "redirect:/actividades/buscar?";
-                
+
                 if (form.getTitulo() != null && !form.getTitulo().trim().isEmpty()) {
                         redirectUrl += "nombre=" + form.getTitulo().trim();
                 }
@@ -526,7 +530,7 @@ public class AllAcessController {
                 if (page > 0) {
                         redirectUrl += "&page=" + page;
                 }
-                
+
                 return redirectUrl;
         }
 
@@ -629,7 +633,8 @@ public class AllAcessController {
                                 .map(Categoria::getIdCategoria)
                                 .collect(Collectors.toSet());
                 List<Categoria> categoriasModal = categoriaService.listarCategorias().stream()
-                                .filter(categoria -> !categoriasVisiblesBusquedaIds.contains(categoria.getIdCategoria()))
+                                .filter(categoria -> !categoriasVisiblesBusquedaIds
+                                                .contains(categoria.getIdCategoria()))
                                 .toList();
 
                 /*
@@ -721,7 +726,6 @@ public class AllAcessController {
                                         dto.setUbicacion(actividad.getUbicacion());
                                         dto.setImagen(actividad.getImagen());
                                         dto.setCreatedAt(actividad.getCreatedAt());
-
                                         // Idioma
                                         dto.setIdIdioma(actividad.getIdioma().getIdIdioma());
                                         dto.setNombreIdioma(actividad.getIdioma().getNombre());
@@ -762,6 +766,7 @@ public class AllAcessController {
                  * 🔹 Model
                  * ===============================
                  */
+                model.addAttribute("filtroCategoriaId", categoriaOpt.get().getIdCategoria());
                 model.addAttribute("busqueda", new BusquedaForm());
                 model.addAttribute("actividades", actividadesDTO);
                 model.addAttribute("currentPage", page);
@@ -825,10 +830,12 @@ public class AllAcessController {
                                         }
 
                                         dto.setCantidadComentario(
-                                                        comentariosPorActividad.getOrDefault(actividad.getIdActividad(), 0));
+                                                        comentariosPorActividad.getOrDefault(actividad.getIdActividad(),
+                                                                        0));
 
                                         dto.setPrecio(actividad.getPrecio());
-                                        dto.setPrecioConsumidor(usuarioHelper.CalcularPrecioConsumidor(actividad.getPrecio()));
+                                        dto.setPrecioConsumidor(
+                                                        usuarioHelper.CalcularPrecioConsumidor(actividad.getPrecio()));
 
                                         return dto;
                                 })
@@ -898,10 +905,12 @@ public class AllAcessController {
                                         }
 
                                         dto.setCantidadComentario(
-                                                        comentariosPorActividad.getOrDefault(actividad.getIdActividad(), 0));
+                                                        comentariosPorActividad.getOrDefault(actividad.getIdActividad(),
+                                                                        0));
 
                                         dto.setPrecio(actividad.getPrecio());
-                                        dto.setPrecioConsumidor(usuarioHelper.CalcularPrecioConsumidor(actividad.getPrecio()));
+                                        dto.setPrecioConsumidor(
+                                                        usuarioHelper.CalcularPrecioConsumidor(actividad.getPrecio()));
 
                                         return dto;
                                 })
@@ -971,10 +980,12 @@ public class AllAcessController {
                                         }
 
                                         dto.setCantidadComentario(
-                                                        comentariosPorActividad.getOrDefault(actividad.getIdActividad(), 0));
+                                                        comentariosPorActividad.getOrDefault(actividad.getIdActividad(),
+                                                                        0));
 
                                         dto.setPrecio(actividad.getPrecio());
-                                        dto.setPrecioConsumidor(usuarioHelper.CalcularPrecioConsumidor(actividad.getPrecio()));
+                                        dto.setPrecioConsumidor(
+                                                        usuarioHelper.CalcularPrecioConsumidor(actividad.getPrecio()));
 
                                         return dto;
                                 })
@@ -1023,7 +1034,8 @@ public class AllAcessController {
                 int pageSize = 12;
                 int pageSizeCategorias = 8;
 
-                Page<Actividad> actividadesPage = actividadService.obtenerTodasParaTi(clienteActual.getId(), page, pageSize);
+                Page<Actividad> actividadesPage = actividadService.obtenerTodasParaTi(clienteActual.getId(), page,
+                                pageSize);
 
                 List<Long> actividadIds = actividadesPage.stream()
                                 .map(Actividad::getIdActividad)
@@ -1059,10 +1071,12 @@ public class AllAcessController {
                                         }
 
                                         dto.setCantidadComentario(
-                                                        comentariosPorActividad.getOrDefault(actividad.getIdActividad(), 0));
+                                                        comentariosPorActividad.getOrDefault(actividad.getIdActividad(),
+                                                                        0));
 
                                         dto.setPrecio(actividad.getPrecio());
-                                        dto.setPrecioConsumidor(usuarioHelper.CalcularPrecioConsumidor(actividad.getPrecio()));
+                                        dto.setPrecioConsumidor(
+                                                        usuarioHelper.CalcularPrecioConsumidor(actividad.getPrecio()));
 
                                         return dto;
                                 })
@@ -1165,7 +1179,8 @@ public class AllAcessController {
 
         /**
          * Vista principal del mapa de actividades cercanas.
-         * El navegador obtiene la geolocalización en el cliente y luego llama al endpoint JSON via AJAX.
+         * El navegador obtiene la geolocalización en el cliente y luego llama al
+         * endpoint JSON via AJAX.
          */
         @GetMapping("/actividades/cercanas")
         public String vistaMapa(Model model, Authentication auth) {
@@ -1176,8 +1191,8 @@ public class AllAcessController {
         /**
          * Endpoint AJAX que devuelve las actividades cercanas en formato JSON.
          * 
-         * @param lat latitud del usuario
-         * @param lon longitud del usuario
+         * @param lat   latitud del usuario
+         * @param lon   longitud del usuario
          * @param radio radio de búsqueda en kilómetros (1-5)
          * @return lista de ActividadCercanaDTO ordenadas por distancia
          */

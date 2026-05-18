@@ -12,8 +12,10 @@
     <link rel="stylesheet" th:href="@{/css/componentes/navbar.css}">
     <link rel="stylesheet" th:href="@{/css/componentes/footer.css}">
     <link rel="stylesheet" th:href="@{/css/mapa-cercanas.css}">
+    <link rel="stylesheet" th:href="@{/css/planes/planes.css}">
 
     <!-- Leaflet CSS -->
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
         integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
 </head>
@@ -23,14 +25,27 @@
     <div th:replace="~{componentes/navbar :: navbar}"></div>
 
     <!-- Hero Section -->
-    <section class="container mx-auto px-4 py-8 mt-20">
+    <div class="max-w-7xl mx-auto px-4 mb-8">
         <div class="text-center mb-8">
-            <h1 class="text-4xl font-bold text-gray-800 mb-4">Actividades Cerca de Ti</h1>
-            <p class="text-lg text-gray-600 max-w-2xl mx-auto">
+            <div
+                class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-orange-100 text-orange-700 font-semibold text-sm mb-4">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2">
+                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                    <circle cx="12" cy="10" r="3"></circle>
+                </svg>
+                Actvidades Cercanas
+            </div>
+
+            <h1 class="text-4xl md:text-5xl font-black text-gray-900 mb-4">
+                Actividades <span class="text-orange-600">Cerca de Ti</span>
+            </h1>
+            <p class="text-lg text-gray-600 max-w-2xl mx-auto mb-6">
                 Descubre experiencias turísticas increíbles a pocos kilómetros de tu ubicación actual.
             </p>
         </div>
-    </section>
+    </div>
+
 
     <!-- Controles Section -->
     <section class="container mx-auto px-4 mb-6">
@@ -53,7 +68,7 @@
                     <label for="sliderRadio" class="text-gray-700 font-medium whitespace-nowrap">
                         Radio de búsqueda:
                     </label>
-                    <input type="range" id="sliderRadio" min="1" max="5" value="3" class="flex-1" disabled>
+                    <input type="range" id="sliderRadio" min="1" max="100" value="3" class="flex-1" disabled>
                     <span id="labelRadio" class="text-gray-800 font-bold min-w-[60px]">3 km</span>
                 </div>
             </div>
@@ -136,7 +151,7 @@
     <script th:src="@{/js/mapa-cercanas.js}"></script>
     <script th:src="@{/js/componentes/Activitycards.js}"></script>
     <script th:src="@{/js/componentes/categorias.js}"></script>
-    
+
 </body>
 
 </html>

@@ -96,6 +96,7 @@ public class RegistroController {
             if (disponibilidadSemana != null && !disponibilidadSemana.isEmpty()) {
                 form.setDisponibilidadSemana(DisponibilidadSemana.valueOf(disponibilidadSemana));
             }
+            System.out.println("OnboardingForm: " + form.toString());
 
             // Registrar cliente con preferencias y enviar email
             clienteService.registrarClienteConPreferencias(cliente, form);
@@ -105,6 +106,9 @@ public class RegistroController {
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", e.getMessage());
             model.addAttribute("categorias", categoriaService.listarCategorias());
+            model.addAttribute("error", e.getMessage());
+
+            System.out.println("Error al registrar cliente: " + e.getMessage());
             return "auth/registroCliente";
         }
     }

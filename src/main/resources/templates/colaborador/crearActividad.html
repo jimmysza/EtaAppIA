@@ -7,13 +7,13 @@
     <link rel="stylesheet" th:href="@{/css/global.css}">
     <link rel="stylesheet" th:href="@{/css/actividad/crearActividad.css}">
     <link rel="stylesheet" th:href="@{/css/tailwind.css}">
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <!-- Leaflet CSS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <!-- Leaflet JS -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
-    <link rel="icon" th:href="@{/images/logos/etabluerrvg.webp}" type="image/x-icon" />
+    <link rel="icon" th:href="@{/images/logos/Logo.webp}" type="image/x-icon" />
     <link rel="icon" th:href="@{/images/logos/logo.webp}" type="image/x-icon" />
     <title>ETA | Crear Actividades</title>
 
@@ -235,11 +235,13 @@
                         class="w-full px-4 py-3 bg-gray-50 border-0 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500">
                         <option value="" disabled selected>Selecciona una política</option>
                         <option value="SIN_REEMBOLSO">Sin reembolso - Reserva no reembolsable</option>
-                        <option value="REEMBOLSO_TOTAL_SI_A_TIEMPO">Reembolso total - Cancelación a tiempo (según ventana admin)</option>
+                        <option value="REEMBOLSO_TOTAL_SI_A_TIEMPO">Reembolso total - Cancelación a tiempo (según
+                            ventana admin)</option>
                         <option value="REEMBOLSO_PARCIAL">Reembolso parcial - 50% si cancela a tiempo</option>
                         <option value="SIEMPRE_GRATUITA">Cancelación gratuita - Siempre 100% reembolsable</option>
                     </select>
-                    <p class="text-xs text-gray-500 mt-1">Define cómo se manejan las cancelaciones para esta actividad</p>
+                    <p class="text-xs text-gray-500 mt-1">Define cómo se manejan las cancelaciones para esta actividad
+                    </p>
                 </div>
 
                 <!-- Incluye -->
@@ -423,7 +425,7 @@
                 attribution: '&copy; OpenStreetMap contributors'
             }).addTo(map);
 
-            map.on('click', function(e) {
+            map.on('click', function (e) {
                 const lat = e.latlng.lat;
                 const lng = e.latlng.lng;
 
@@ -436,7 +438,7 @@
                     marker.setLatLng(e.latlng);
                 } else {
                     marker = L.marker(e.latlng, { draggable: true }).addTo(map);
-                    marker.on('dragend', function(event) {
+                    marker.on('dragend', function (event) {
                         const pos = event.target.getLatLng();
                         document.getElementById('latitud').value = pos.lat;
                         document.getElementById('longitud').value = pos.lng;
@@ -454,7 +456,7 @@
                 map.setView(latlng, 15);
                 document.getElementById('latitudDisplay').value = parseFloat(lat).toFixed(6);
                 document.getElementById('longitudDisplay').value = parseFloat(lng).toFixed(6);
-                marker.on('dragend', function(event) {
+                marker.on('dragend', function (event) {
                     const pos = event.target.getLatLng();
                     document.getElementById('latitud').value = pos.lat;
                     document.getElementById('longitud').value = pos.lng;
@@ -464,11 +466,11 @@
             }
         }
 
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             setTimeout(initMap, 300);
         });
 
-        window.addEventListener('resize', function() {
+        window.addEventListener('resize', function () {
             if (map) map.invalidateSize();
         });
     </script>

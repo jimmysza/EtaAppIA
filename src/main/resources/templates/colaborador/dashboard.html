@@ -32,6 +32,11 @@
 </head>
 
 <body class="bg-gray-50">
+
+    <div th:if="${success}" class="alert alert-info">
+        <div th:text="${success}"></div>
+    </div>
+
     <section class="container-manager">
         <!-- Sidebar -->
         <div th:replace="~{componentes/sidebar :: sidebar}"></div>

@@ -64,7 +64,7 @@ main.checkout-page>form>.productos>.form-group {
     width: 100%;
     padding: 8px 20px;
     border-radius: 12px;
-    background: linear-gradient(135deg, #eff6ff 0%, #ffffff 100%);
+    /* background: linear-gradient(135deg, #eff6ff 0%, #ffffff 100%); */
     color: var(--color-white);
     font-weight: bold;
 }

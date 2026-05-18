@@ -8,7 +8,7 @@
     <link rel="stylesheet" th:href="@{/css/global.css}">
     <link rel="stylesheet" th:href="@{/css/componentes/navbar.css}">
     <link rel="stylesheet" th:href="@{/css/tailwind.css}">
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <link rel="icon" th:href="@{/images/logos/logo.webp}" type="image/x-icon" />
     <style>
@@ -109,10 +109,13 @@
 <body class="receipt-shell">
     <div th:replace="~{componentes/navbar :: navbar}"></div>
 
-    <main class="px-4  ">
+    <div class="pt-20"></div>
+
+    <main class="px-4">
         <section class="receipt-ticket mb-4">
             <div class="px-6 py-8 md:px-10 md:py-10 text-center">
-                <img th:src="@{/images/logos/etabluerrvg.png}" class="mx-auto w-[170px] h-[170px]" alt="logo" loading="lazy" />
+                <img th:src="@{/images/logos/Logo.webp}" class="mx-auto w-[170px] h-[170px]" alt="logo"
+                    loading="lazy" />
                 <h1 class="text-3xl md:text-4xl font-black text-slate-950 mb-3" th:text="${tituloRecibo}">Thank you!
                 </h1>
                 <p class="text-lg text-slate-500 max-w-xl mx-auto" th:text="${subtituloRecibo}">
@@ -155,47 +158,54 @@
                     </div>
                 </div>
 
-                <div
-                    class="receipt-mini-card rounded-[30px] p-5 md:p-6 flex flex-col md:flex-row md:items-center gap-5">
-                    <img th:if="${reserva.actividad != null and reserva.actividad.imagen != null}"
-                        th:src="@{'/uploads/' + ${reserva.actividad.imagen}}" th:alt="${reserva.actividad.titulo}"
-                        class="receipt-cover">
+                <a
+                    th:href="@{/actividad/{slug}-{id}(slug=${#strings.replace(#strings.toLowerCase(reserva.actividad.titulo), ' ', '-')}, id=${reserva.actividad.idActividad})}">
+                    <div
+                        class="receipt-mini-card rounded-[30px] p-5 md:p-6 flex flex-col md:flex-row md:items-center gap-5">
 
-                    <div th:if="${reserva.actividad == null or reserva.actividad.imagen == null}"
-                        class="receipt-cover flex items-center justify-center bg-gradient-to-br from-slate-900 via-sky-600 to-emerald-400 text-white text-4xl font-black">
-                        ETA
-                    </div>
 
-                    <div class="flex-1">
-                        <p class="text-sm uppercase tracking-[0.26em] text-slate-400 font-semibold mb-2">Actividad
-                            reservada</p>
-                        <h2 class="text-2xl font-black text-slate-950 mb-2" th:text="${reserva.actividad.titulo}">Tour
-                            premium</h2>
-                        <p class="text-slate-500 mb-3" th:text="${reserva.actividad.ubicacion}">Cartagena</p>
+                        <img th:if="${reserva.actividad != null and reserva.actividad.imagen != null}"
+                            th:src="@{'/uploads/' + ${reserva.actividad.imagen}}" th:alt="${reserva.actividad.titulo}"
+                            class="receipt-cover">
 
-                        <div class="grid grid-cols-2 md:grid-cols-3 gap-3 text-sm">
-                            <div class="rounded-2xl bg-white/80 px-4 py-3">
-                                <span class="block text-slate-400 font-semibold mb-1">Cantidad</span>
-                                <strong class="text-slate-950 text-lg" th:text="${reserva.cantidad}">2</strong>
-                            </div>
-                            <div class="rounded-2xl bg-white/80 px-4 py-3">
-                                <span class="block text-slate-400 font-semibold mb-1">Precio unitario</span>
-                                <strong class="text-slate-950 text-lg"
-                                    th:text="${'$' + #numbers.formatDecimal(precioUnitario, 0, 'POINT', 0, 'COMMA')}">$
-                                    0</strong>
-                            </div>
-                            <div class="rounded-2xl bg-white/80 px-4 py-3 col-span-2 md:col-span-1">
-                                <span class="block text-slate-400 font-semibold mb-1">Estado</span>
-                                <strong class="text-slate-950 text-lg" th:text="${reserva.estado}">Pendiente</strong>
+                        <div th:if="${reserva.actividad == null or reserva.actividad.imagen == null}"
+                            class="receipt-cover flex items-center justify-center bg-gradient-to-br from-slate-900 via-sky-600 to-emerald-400 text-white text-4xl font-black">
+                            ETA
+                        </div>
+
+                        <div class="flex-1">
+                            <p class="text-sm uppercase tracking-[0.26em] text-slate-400 font-semibold mb-2">Actividad
+                                reservada</p>
+                            <h2 class="text-2xl font-black text-slate-950 mb-2" th:text="${reserva.actividad.titulo}">
+                                Tour
+                                premium</h2>
+                            <p class="text-slate-500 mb-3" th:text="${reserva.actividad.ubicacion}">Cartagena</p>
+
+                            <div class="grid grid-cols-2 md:grid-cols-3 gap-3 text-sm">
+                                <div class="rounded-2xl bg-white/80 px-4 py-3">
+                                    <span class="block text-slate-400 font-semibold mb-1">Cantidad</span>
+                                    <strong class="text-slate-950 text-lg" th:text="${reserva.cantidad}">2</strong>
+                                </div>
+                                <div class="rounded-2xl bg-white/80 px-4 py-3">
+                                    <span class="block text-slate-400 font-semibold mb-1">Precio unitario</span>
+                                    <strong class="text-slate-950 text-lg"
+                                        th:text="${'$' + #numbers.formatDecimal(precioUnitario, 0, 'POINT', 0, 'COMMA')}">$
+                                        0</strong>
+                                </div>
+                                <div class="rounded-2xl bg-white/80 px-4 py-3 col-span-2 md:col-span-1">
+                                    <span class="block text-slate-400 font-semibold mb-1">Estado</span>
+                                    <strong class="text-slate-950 text-lg"
+                                        th:text="${reserva.estado}">Pendiente</strong>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
+                </a>
             </div>
 
             <div class="px-6 pt-8 md:px-10 md:pt-10">
 
-               <!--  <div class="flex justify-center gap-8 text-sm tracking-[0.35em] text-slate-500 mt-4">
+                <!--  <div class="flex justify-center gap-8 text-sm tracking-[0.35em] text-slate-500 mt-4">
                     <p>
                         Identificacion: <span th:text="${reserva.idReserva}">101</span> 
                     </p>
