@@ -65,6 +65,11 @@ public interface ActividadRepository extends JpaRepository<Actividad, Long>, Jpa
     List<Actividad> findTop10ByOrderByTotalVistasDesc();
 
     /**
+     * Obtiene actividades similares por categoría e idioma excluyendo la actual
+     */
+    List<Actividad> findTop3ByCategoria_IdCategoriaAndIdioma_IdIdiomaAndIdActividadNotOrderByCalificacionDesc(Long idCategoria, Long idIdioma, Long idActividad);
+
+    /**
      * Obtiene las actividades más reservadas
      */
     @Query("SELECT a FROM Actividad a LEFT JOIN a.reservas r GROUP BY a ORDER BY COUNT(r) DESC")

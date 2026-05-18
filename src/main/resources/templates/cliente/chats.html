@@ -10,7 +10,7 @@
     <link rel="stylesheet" th:href="@{/css/adminBd.css}">
     <link rel="stylesheet" th:href="@{/css/componentes/tabla.css}">
     <link rel="stylesheet" th:href="@{/css/tailwind.css}">
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <link rel="icon" th:href="@{/images/logos/logo.webp}" type="image/x-icon" />
 </head>
 
@@ -21,13 +21,16 @@
         <main class="main-content">
             <div class="header_db">
                 <div class="flex gap-3">
-                    <svg id="hideBar" class="hidebar-dashboard" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-                        <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 3.5v17M3 9.4c0-2.24 0-3.36.436-4.216a4 4 0 0 1 1.748-1.748C6.04 3 7.16 3 9.4 3h5.2c2.24 0 3.36 0 4.216.436a4 4 0 0 1 1.748 1.748C21 6.04 21 7.16 21 9.4v5.2c0 2.24 0 3.36-.436 4.216a4 4 0 0 1-1.748 1.748C17.96 21 16.84 21 14.6 21H9.4c-2.24 0-3.36 0-4.216-.436a4 4 0 0 1-1.748-1.748C3 17.96 3 16.84 3 14.6z" />
+                    <svg id="hideBar" class="hidebar-dashboard" xmlns="http://www.w3.org/2000/svg" width="24"
+                        height="24" viewBox="0 0 24 24">
+                        <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                            stroke-width="1.5"
+                            d="M15 3.5v17M3 9.4c0-2.24 0-3.36.436-4.216a4 4 0 0 1 1.748-1.748C6.04 3 7.16 3 9.4 3h5.2c2.24 0 3.36 0 4.216.436a4 4 0 0 1 1.748 1.748C21 6.04 21 7.16 21 9.4v5.2c0 2.24 0 3.36-.436 4.216a4 4 0 0 1-1.748 1.748C17.96 21 16.84 21 14.6 21H9.4c-2.24 0-3.36 0-4.216-.436a4 4 0 0 1-1.748-1.748C3 17.96 3 16.84 3 14.6z" />
                     </svg>
                     <nav aria-label="Breadcrumb">
                         <ol class="breadcrumbs">
                             <li><a href="/">Inicio</a></li>
-                            <li><span>Chats</span></li>
+                            <li><a href="/cliente/chats" class="text-blue-600 font-bold">Chats</a></li>
                         </ol>
                     </nav>
                 </div>
@@ -36,7 +39,9 @@
             <div class="filtro_db">
                 <div class="Identifier-Dashboard">
                     <div class="svg-contain">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24"><path fill="#000" d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24">
+                            <path fill="#000" d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                        </svg>
                     </div>
                     <div class="id-content">
                         <h1>Chats con colaboradores</h1>
@@ -49,12 +54,16 @@
                 <div class="rounded-xl border bg-white p-4 lg:col-span-1">
                     <h3 class="mb-3 text-lg font-semibold">Reservas</h3>
                     <div class="max-h-[540px] overflow-y-auto">
-                        <a th:each="reserva : ${reservas}" th:href="@{/cliente/chats/{idReserva}(idReserva=${reserva.idReserva})}" class="mb-2 block rounded-lg border p-3 hover:bg-slate-50">
+                        <a th:each="reserva : ${reservas}"
+                            th:href="@{/cliente/chats/{idReserva}(idReserva=${reserva.idReserva})}"
+                            class="mb-2 block rounded-lg border p-3 hover:bg-slate-50">
                             <p class="text-sm font-semibold" th:text="${reserva.actividad.titulo}"></p>
                             <p class="text-xs text-slate-500">Reserva #<span th:text="${reserva.idReserva}"></span></p>
-                            <p class="text-xs text-slate-500" th:text="${#temporals.format(reserva.fechaReserva, 'dd/MM/yyyy HH:mm')}"></p>
+                            <p class="text-xs text-slate-500"
+                                th:text="${#temporals.format(reserva.fechaReserva, 'dd/MM/yyyy HH:mm')}"></p>
                         </a>
-                        <p th:if="${reservas == null or #lists.isEmpty(reservas)}" class="text-sm text-slate-500">Aun no tienes reservas.</p>
+                        <p th:if="${reservas == null or #lists.isEmpty(reservas)}" class="text-sm text-slate-500">Aun no
+                            tienes reservas.</p>
                     </div>
                 </div>
 
@@ -62,8 +71,10 @@
                     th:attr="data-conversation-id=${conversacionSeleccionada != null ? conversacionSeleccionada.idConversacion : ''},data-user-email=${emailUsuario}">
                     <h3 class="mb-3 text-lg font-semibold">Conversación</h3>
 
-                    <div id="messagesContainer" class="mb-3 h-[420px] overflow-y-auto rounded-lg border bg-slate-50 p-3">
-                        <div th:if="${conversacionSeleccionada == null}" class="text-sm text-slate-500">Selecciona una reserva para iniciar o continuar chat.</div>
+                    <div id="messagesContainer"
+                        class="mb-3 h-[420px] overflow-y-auto rounded-lg border bg-slate-50 p-3">
+                        <div th:if="${conversacionSeleccionada == null}" class="text-sm text-slate-500">Selecciona una
+                            reserva para iniciar o continuar chat.</div>
 
                         <div th:each="mensaje : ${mensajes}" class="mb-2 flex"
                             th:classappend="${mensaje.remitente.email == emailUsuario} ? ' justify-end' : ' justify-start'">
@@ -71,13 +82,15 @@
                                 th:classappend="${mensaje.remitente.email == emailUsuario} ? ' bg-blue-600 text-white' : ' bg-white border text-slate-800'">
                                 <p class="text-xs opacity-80" th:text="${mensaje.remitente.nombre}"></p>
                                 <p class="text-sm" th:text="${mensaje.contenido}"></p>
-                                <p class="mt-1 text-[10px] opacity-70" th:text="${#temporals.format(mensaje.fechaEnvio, 'dd/MM HH:mm')}"></p>
+                                <p class="mt-1 text-[10px] opacity-70"
+                                    th:text="${#temporals.format(mensaje.fechaEnvio, 'dd/MM HH:mm')}"></p>
                             </div>
                         </div>
                     </div>
 
                     <form id="chatForm" class="flex gap-2" th:if="${conversacionSeleccionada != null}">
-                        <input id="chatInput" type="text" class="w-full rounded-lg border px-3 py-2" maxlength="2000" placeholder="Escribe un mensaje..." />
+                        <input id="chatInput" type="text" class="w-full rounded-lg border px-3 py-2" maxlength="2000"
+                            placeholder="Escribe un mensaje..." />
                         <button type="submit" class="rounded-lg bg-slate-900 px-4 py-2 text-white">Enviar</button>
                     </form>
                 </div>

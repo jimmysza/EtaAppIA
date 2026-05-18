@@ -22,6 +22,8 @@
 <body class="bg-gray-50">
     <div th:replace="~{componentes/navbar :: navbar}"></div>
 
+    <div class="pt-2 pb-12"></div>
+
     <main class="pt-24 pb-12">
         <!-- Header Section -->
         <div class="max-w-7xl mx-auto px-4 mb-8">
@@ -47,7 +49,7 @@
                 <!-- CTA Button -->
                 <div sec:authorize="isAuthenticated()">
                     <a th:href="${esCliente != null && esCliente} ? '/cliente/planes/crear' : '/colaborador/planes/crear'"
-                        class="inline-flex items-center gap-2 bg-orange-600 hover:bg-orange-700 text-white font-bold px-6 py-3 rounded-full transition-all shadow-lg hover:shadow-xl">
+                        class="cssbuttons-io-button ">
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
                             stroke="currentColor" stroke-width="2">
                             <line x1="12" y1="5" x2="12" y2="19"></line>
@@ -90,10 +92,10 @@
                     </div>
                 </div>
 
+
                 <!-- Lista de Planes -->
                 <div class="lg:col-span-7 space-y-6">
                     <h2 class="text-2xl font-bold text-gray-900 mb-4">Planes Destacados</h2>
-
                     <!-- Plan Card -->
                     <div th:each="plan, iterStat : ${topPlanes}" th:id="'plan-' + ${plan.id}"
                         class="plan-card bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all border-2 border-gray-200 hover:border-orange-500 overflow-hidden">
@@ -176,7 +178,7 @@
                                         <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
                                         <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
                                     </svg>
-                                    Creado por la Comunidad: <span th:text="${plan.nombreCreador}">Nombre</span>
+                                    Creado por: <span th:text="${plan.nombreCreador}">Nombre</span>
                                 </div>
                             </div>
 

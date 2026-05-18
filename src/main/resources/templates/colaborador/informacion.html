@@ -7,7 +7,7 @@
     <link rel="stylesheet" th:href="@{/css/global.css}">
     <link rel="stylesheet" th:href="@{/css/adminBd.css}">
     <link rel="stylesheet" th:href="@{/css/tailwind.css}">
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <link rel="icon" th:href="@{/images/logos/logo.webp}" type="image/x-icon" />
     <title>ETA | Informacion personal</title>
     <style>
@@ -62,12 +62,15 @@
         <main class="main-content min-h-screen profile-shell">
             <div class="header_db border-b border-slate-200">
                 <div class="flex gap-3 items-center">
-                    <svg id="hideBar" class="hidebar-dashboard cursor-pointer" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-                        <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                    <svg id="hideBar" class="hidebar-dashboard cursor-pointer" xmlns="http://www.w3.org/2000/svg"
+                        width="24" height="24" viewBox="0 0 24 24">
+                        <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                            stroke-width="1.5"
                             d="M15 3.5v17M3 9.4c0-2.24 0-3.36.436-4.216a4 4 0 0 1 1.748-1.748C6.04 3 7.16 3 9.4 3h5.2c2.24 0 3.36 0 4.216.436a4 4 0 0 1 1.748 1.748C21 6.04 21 7.16 21 9.4v5.2c0 2.24 0 3.36-.436 4.216a4 4 0 0 1-1.748 1.748C17.96 21 16.84 21 14.6 21H9.4c-2.24 0-3.36 0-4.216-.436a4 4 0 0 1-1.748-1.748C3 17.96 3 16.84 3 14.6z" />
                     </svg>
                     <nav aria-label="Breadcrumb">
-                        <ol class="breadcrumbs flex items-center gap-2 text-sm" itemscope itemtype="https://schema.org/BreadcrumbList">
+                        <ol class="breadcrumbs flex items-center gap-2 text-sm" itemscope
+                            itemtype="https://schema.org/BreadcrumbList">
                             <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
                                 <a itemprop="item" href="/" class="text-blue-600 hover:text-blue-800">
                                     <span itemprop="name">Inicio</span>
@@ -75,7 +78,8 @@
                                 <meta itemprop="position" content="1" />
                             </li>
                             <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
-                                <a itemprop="item" th:href="@{/colaborador/dashboard}" class="text-slate-600 hover:text-slate-900">
+                                <a itemprop="item" th:href="@{/colaborador/dashboard}"
+                                    class="text-slate-600 hover:text-slate-900">
                                     <span itemprop="name">Dashboard</span>
                                 </a>
                                 <meta itemprop="position" content="2" />
@@ -95,10 +99,12 @@
                 <div class="max-w-6xl mx-auto">
                     <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-5 mb-6">
                         <div>
-                            <p class="text-sm font-semibold uppercase tracking-wider text-sky-700 mb-2">Perfil del colaborador</p>
+                            <p class="text-sm font-semibold uppercase tracking-wider text-sky-700 mb-2">Perfil del
+                                colaborador</p>
                             <h1 class="text-3xl md:text-4xl font-black text-slate-950">Informacion personal</h1>
                             <p class="text-slate-600 mt-2 max-w-2xl">
-                                Actualiza tus datos principales y sube una foto para personalizar tu espacio de trabajo dentro del dashboard.
+                                Actualiza tus datos principales y sube una foto para personalizar tu espacio de trabajo
+                                dentro del dashboard.
                             </p>
                         </div>
 
@@ -108,16 +114,15 @@
                         </a>
                     </div>
 
-                    <form th:action="@{/colaborador/settings}" th:object="${perfilForm}" method="post" enctype="multipart/form-data"
-                        class="grid grid-cols-1 xl:grid-cols-3 gap-6">
+                    <form th:action="@{/colaborador/settings}" th:object="${perfilForm}" method="post"
+                        enctype="multipart/form-data" class="grid grid-cols-1 xl:grid-cols-3 gap-6">
 
                         <section class="profile-card rounded-3xl bg-white p-6">
                             <p class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3">Foto de perfil</p>
                             <div class="flex flex-col items-center text-center">
                                 <img id="previewFoto"
                                     th:if="${fotoPerfilActual != null and !#strings.isEmpty(fotoPerfilActual)}"
-                                    th:src="@{|/uploads/${fotoPerfilActual}|}"
-                                    alt="Foto de perfil del colaborador"
+                                    th:src="@{|/uploads/${fotoPerfilActual}|}" alt="Foto de perfil del colaborador"
                                     class="profile-avatar mb-4">
 
                                 <div id="placeholderFoto"
@@ -127,7 +132,8 @@
                                     E
                                 </div>
 
-                                <p class="text-lg font-bold text-slate-950" th:text="${nombreColaboradorSidebar}">Colaborador</p>
+                                <p class="text-lg font-bold text-slate-950" th:text="${nombreColaboradorSidebar}">
+                                    Colaborador</p>
                                 <p class="text-sm text-slate-500 mb-5" sec:authentication="name">correo@ejemplo.com</p>
 
                                 <label for="fotoPerfil"
@@ -145,25 +151,30 @@
                         <section class="profile-card rounded-3xl bg-white p-6 md:p-8 xl:col-span-2">
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                                 <div>
-                                    <label for="nombre" class="block text-sm font-semibold text-slate-700 mb-2">Nombre completo</label>
+                                    <label for="nombre" class="block text-sm font-semibold text-slate-700 mb-2">Nombre
+                                        completo</label>
                                     <input id="nombre" th:field="*{nombre}" type="text" required
                                         class="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-900 outline-none transition focus:border-sky-500 focus:bg-white focus:ring-4 focus:ring-sky-100">
                                 </div>
 
                                 <div>
-                                    <label for="telefono" class="block text-sm font-semibold text-slate-700 mb-2">Telefono</label>
+                                    <label for="telefono"
+                                        class="block text-sm font-semibold text-slate-700 mb-2">Telefono</label>
                                     <input id="telefono" th:field="*{telefono}" type="text" required
                                         class="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-900 outline-none transition focus:border-sky-500 focus:bg-white focus:ring-4 focus:ring-sky-100">
                                 </div>
 
                                 <div>
-                                    <label for="email" class="block text-sm font-semibold text-slate-700 mb-2">Correo principal</label>
+                                    <label for="email" class="block text-sm font-semibold text-slate-700 mb-2">Correo
+                                        principal</label>
                                     <input id="email" th:field="*{email}" type="email" required
                                         class="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-900 outline-none transition focus:border-sky-500 focus:bg-white focus:ring-4 focus:ring-sky-100">
                                 </div>
 
                                 <div>
-                                    <label for="correoSeguridad" class="block text-sm font-semibold text-slate-700 mb-2">Correo de seguridad</label>
+                                    <label for="correoSeguridad"
+                                        class="block text-sm font-semibold text-slate-700 mb-2">Correo de
+                                        seguridad</label>
                                     <input id="correoSeguridad" th:field="*{correoSeguridad}" type="email" required
                                         class="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-900 outline-none transition focus:border-sky-500 focus:bg-white focus:ring-4 focus:ring-sky-100">
                                 </div>
@@ -175,25 +186,29 @@
                                 </div>
 
                                 <div class="md:col-span-2 mt-4">
-                                    <p class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3">Información Bancaria para Pagos</p>
+                                    <p class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3">
+                                        Información Bancaria para Pagos</p>
                                 </div>
 
                                 <div>
-                                    <label for="banco" class="block text-sm font-semibold text-slate-700 mb-2">Banco</label>
-                                    <input id="banco" th:field="*{banco}" type="text" 
+                                    <label for="banco"
+                                        class="block text-sm font-semibold text-slate-700 mb-2">Banco</label>
+                                    <input id="banco" th:field="*{banco}" type="text"
                                         placeholder="Ej: Bancolombia, Davivienda"
                                         class="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-900 outline-none transition focus:border-sky-500 focus:bg-white focus:ring-4 focus:ring-sky-100">
                                 </div>
 
                                 <div>
-                                    <label for="numeroCuenta" class="block text-sm font-semibold text-slate-700 mb-2">Número de Cuenta</label>
-                                    <input id="numeroCuenta" th:field="*{numeroCuenta}" type="text" 
+                                    <label for="numeroCuenta"
+                                        class="block text-sm font-semibold text-slate-700 mb-2">Número de Cuenta</label>
+                                    <input id="numeroCuenta" th:field="*{numeroCuenta}" type="text"
                                         placeholder="Número de cuenta bancaria"
                                         class="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-900 outline-none transition focus:border-sky-500 focus:bg-white focus:ring-4 focus:ring-sky-100">
                                 </div>
 
                                 <div class="md:col-span-2">
-                                    <label for="tipoCuenta" class="block text-sm font-semibold text-slate-700 mb-2">Tipo de Cuenta</label>
+                                    <label for="tipoCuenta" class="block text-sm font-semibold text-slate-700 mb-2">Tipo
+                                        de Cuenta</label>
                                     <select id="tipoCuenta" th:field="*{tipoCuenta}"
                                         class="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-900 outline-none transition focus:border-sky-500 focus:bg-white focus:ring-4 focus:ring-sky-100">
                                         <option value="">Selecciona tipo de cuenta</option>
@@ -209,7 +224,8 @@
                             <div class="mt-8 rounded-3xl bg-slate-950 px-5 py-5 text-white">
                                 <p class="text-xs font-bold uppercase tracking-wider text-sky-200 mb-2">Tip</p>
                                 <p class="text-sm text-slate-200">
-                                    Si cambias el correo principal, la sesion se mantiene actualizada internamente para que sigas navegando sin volver a iniciar sesion.
+                                    Si cambias el correo principal, la sesion se mantiene actualizada internamente para
+                                    que sigas navegando sin volver a iniciar sesion.
                                 </p>
                             </div>
 

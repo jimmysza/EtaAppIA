@@ -186,6 +186,20 @@ public class ColaboradorServiceImpl implements ColaboradorService {
                     colaborador.setNit(nuevoNit);
                     colaborador.setCorreoSeguridad(nuevoCorreoSeguridad);
 
+                    if (form.getBanco() != null) {
+                        colaborador.setBanco(form.getBanco().trim());
+                    } else {
+                        colaborador.setBanco(null);
+                    }
+
+                    if (form.getNumeroCuenta() != null) {
+                        colaborador.setNumeroCuenta(form.getNumeroCuenta().trim());
+                    } else {
+                        colaborador.setNumeroCuenta(null);
+                    }
+
+                    colaborador.setTipoCuenta(form.getTipoCuenta());
+
                     if (fotoPerfil != null && !fotoPerfil.isBlank()) {
                         colaborador.setFotoPerfil(fotoPerfil);
                     }

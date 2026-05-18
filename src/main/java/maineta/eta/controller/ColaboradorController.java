@@ -826,7 +826,10 @@ public class ColaboradorController {
                 usuario.getEmail(),
                 usuario.getTelefono(),
                 colaborador.getNit(),
-                colaborador.getCorreoSeguridad());
+                colaborador.getCorreoSeguridad(),
+                colaborador.getBanco(),
+                colaborador.getNumeroCuenta(),
+                colaborador.getTipoCuenta());
     }
 
     private String construirEtiquetaDisponibilidad(Reserva reserva) {

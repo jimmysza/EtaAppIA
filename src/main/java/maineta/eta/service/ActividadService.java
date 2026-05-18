@@ -202,6 +202,11 @@ public interface ActividadService {
     List<Actividad> obtenerParaTi(Cliente cliente);
 
     /**
+     * Obtiene actividades similares por categoría e idioma
+     */
+    List<Actividad> obtenerActividadesSimilares(Long idCategoria, Long idIdioma, Long idActividad);
+
+    /**
      * Obtiene todas las actividades con más tendencia (paginado)
      * @param page número de página
      * @param size tamaño de página

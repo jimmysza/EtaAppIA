@@ -522,6 +522,11 @@ public class ActividadServiceImpl implements ActividadService {
     }
 
     @Override
+    public List<Actividad> obtenerActividadesSimilares(Long idCategoria, Long idIdioma, Long idActividad) {
+        return actividadRepository.findTop3ByCategoria_IdCategoriaAndIdioma_IdIdiomaAndIdActividadNotOrderByCalificacionDesc(idCategoria, idIdioma, idActividad);
+    }
+
+    @Override
     public Page<Actividad> obtenerTodasTendencias(int page, int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("totalTendencia").descending());
         return actividadRepository.findAll(pageable);

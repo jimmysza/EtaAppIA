@@ -8,7 +8,7 @@
     <link rel="stylesheet" th:href="@{/css/global.css}">
     <link rel="stylesheet" th:href="@{/css/adminBd.css}">
     <link rel="icon" th:href="@{/images/logos/logo.webp}" type="image/x-icon" />
-    <link rel="stylesheet" th:href="@{/css/tailwind.css}">  
+    <link rel="stylesheet" th:href="@{/css/tailwind.css}">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <title>ETA | Actividades</title>
 
@@ -107,7 +107,7 @@
                                 <meta itemprop="position" content="1" />
                             </li>
                             <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
-                                <a itemprop="item" href="/actividades">
+                                <a itemprop="item" href="/actividades" class="text-blue-600 font-bold">
                                     <span itemprop="name">Actividades</span>
                                 </a>
                                 <meta itemprop="position" content="2" />
@@ -263,7 +263,8 @@
                             </td>
                             <td class="text-gray-600 text-sm" th:text="${actividad.ubicacion}">Ubicación</td>
                             <td class="font-semibold text-blue-600"
-                                th:text="${'$' + #numbers.formatDecimal(actividad.precio, 0, 'POINT', 0, 'COMMA')}">$0</td>
+                                th:text="${'$' + #numbers.formatDecimal(actividad.precio, 0, 'POINT', 0, 'COMMA')}">$0
+                            </td>
                             <td class="text-gray-700 font-medium" th:text="${actividad.totalVistas}">0</td>
                             <td class="text-gray-700 font-medium" th:text="${actividad.totalTendencia}">0</td>
                             <td>

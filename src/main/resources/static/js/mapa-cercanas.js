@@ -132,8 +132,8 @@ function pintarUserMarker(lat, lon) {
 
     // Crear icono personalizado para el usuario
     const iconoUsuario = L.divIcon({
-        className: 'marker-usuario',
-        html: '<div class="marker-usuario"><svg width="24" height="24" fill="white" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/></svg></div>',
+        className: 'bg-transparent border-0',
+        html: '<div class="w-7 h-7 bg-blue-600 rounded-full flex items-center justify-center shadow-[0_0_15px_rgba(37,99,235,0.5)] border-[3px] border-white"><div class="w-2.5 h-2.5 bg-white rounded-full"></div></div>',
         iconSize: [28, 28],
         iconAnchor: [14, 14]
     });
@@ -207,10 +207,10 @@ function pintarMarcadores(actividades) {
 
         // Crear icono numerado
         const iconoNumero = L.divIcon({
-            className: 'marker-numero',
-            html: `<div class="marker-numero">${numero}</div>`,
-            iconSize: [28, 28],
-            iconAnchor: [14, 28]
+            className: 'bg-transparent border-0',
+            html: `<div class="w-8 h-8 bg-gray-900 rounded-full flex items-center justify-center text-white font-bold text-sm shadow-lg border-[3px] border-white transition-transform hover:scale-110 hover:bg-orange-600 cursor-pointer">${numero}</div>`,
+            iconSize: [32, 32],
+            iconAnchor: [16, 32]
         });
 
         const marker = L.marker([actividad.latitud, actividad.longitud], {
@@ -271,19 +271,13 @@ function renderizarTarjetas(actividades) {
                 <div class="flex gap-3 cursor-pointer" onclick="navegarADetalle('${urlDetalle}')">
                     <!-- Número -->
                     <div class="flex-shrink-0">
-                        <div class="marker-numero-tarjeta">${numero}</div>
+                        <div class="w-7 h-7 bg-gray-900 rounded-full flex items-center justify-center text-white font-bold text-xs shadow-md border-2 border-white">${numero}</div>
                     </div>
                     <!-- src="/images/${actividad.imagen || 'placeholder.jpg'}"  -->
                     <!-- Imagen -->
                     <div class="flex-shrink-0 w-24 h-24 rounded-lg overflow-hidden bg-gray-200">
                         <img 
-                            th:if="${actividad.imagen != null}"
-                            th:src="@{'/uploads/' + ${actividad.imagen}}"
-                            alt="${actividad.titulo}"
-                            class="w-full h-full object-cover">
-                        <img 
-                            th:if="${actividad.imagen == null}"
-                            src="/images/placeholder.jpg"
+                            src="${actividad.imagen ? '/uploads/' + actividad.imagen : '/images/placeholder.webp'}"
                             alt="${actividad.titulo}"
                             class="w-full h-full object-cover">
                     </div>

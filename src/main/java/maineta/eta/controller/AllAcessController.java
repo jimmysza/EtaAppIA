@@ -3,6 +3,7 @@ package maineta.eta.controller;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.YearMonth;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -133,8 +134,6 @@ public class AllAcessController {
                 model.addAttribute("actividad", actividad);
 
                 int pageSize = 3;
-                Page<Actividad> actividadesPage = actividadService.getActividadesWithPaginationMain(0, pageSize,
-                                nombre);
                 Page<Comentario> comentarioPage = comentarioService.listarComentarioPorIdYPaginacion(id,
                                 comentariosPage,
                                 pageSize);
@@ -181,8 +180,50 @@ public class AllAcessController {
                                         : null;
                 }
 
+                if (actividad.getColaborador() != null) {
+                        model.addAttribute("idColaborador", actividad.getColaborador().getIdColaborador());
+                }
+
+                List<Actividad> actividadesSimilares = new ArrayList<>();
+                if (actividad.getCategoria() != null && actividad.getIdioma() != null) {
+                        actividadesSimilares = actividadService.obtenerActividadesSimilares(
+                                        actividad.getCategoria().getIdCategoria(),
+                                        actividad.getIdioma().getIdIdioma(),
+                                        actividad.getIdActividad());
+                }
+
+                List<maineta.eta.dto.ActividadDTO> actividadesDTO = actividadesSimilares.stream()
+                                .map(a -> {
+                                        maineta.eta.dto.ActividadDTO dto = new maineta.eta.dto.ActividadDTO();
+                                        dto.setIdActividad(a.getIdActividad());
+                                        dto.setTitulo(a.getTitulo());
+                                        dto.setDescripcion(a.getDescripcion());
+                                        dto.setCalificacion(a.getCalificacion());
+                                        dto.setUbicacion(a.getUbicacion());
+                                        dto.setImagen(a.getImagen());
+                                        if (a.getIdioma() != null) {
+                                                dto.setIdIdioma(a.getIdioma().getIdIdioma());
+                                                dto.setNombreIdioma(a.getIdioma().getNombre());
+                                                dto.setCodigoIdioma(a.getIdioma().getCodigo());
+                                        }
+                                        if (a.getCategoria() != null) {
+                                                dto.setIdCategoria(a.getCategoria().getIdCategoria());
+                                                dto.setNombreCategoria(a.getCategoria().getNombre());
+                                        } else {
+                                                dto.setNombreCategoria("Sin categoría");
+                                        }
+                                        if (a.getColaborador() != null) {
+                                                dto.setIdColaborador(a.getColaborador().getIdColaborador());
+                                        }
+                                        dto.setCantidadComentario(0); // Optional, we can leave it 0 or calculate it
+                                        dto.setPrecio(a.getPrecio());
+                                        dto.setPrecioConsumidor(usuarioHelper.CalcularPrecioConsumidor(a.getPrecio()));
+                                        return dto;
+                                })
+                                .toList();
+
                 model.addAttribute("reservaDTO", new ReservaDTO());
-                model.addAttribute("actividades", actividadesPage);
+                model.addAttribute("actividades", actividadesDTO);
                 model.addAttribute("comentarios", comentarioPage);
                 model.addAttribute("currentPage", comentariosPage);
                 model.addAttribute("comentariosCurrentPage", comentariosPage);
@@ -204,11 +245,6 @@ public class AllAcessController {
                 model.addAttribute("comentariosTotalPages", comentarioPage.getTotalPages());
                 model.addAttribute("filtroNombre", nombre);
                 model.addAttribute("id", id);
-
-                List<Integer> pageNumbers = IntStream.range(0, actividadesPage.getTotalPages())
-                                .boxed()
-                                .collect(Collectors.toList());
-                model.addAttribute("pageNumbers", pageNumbers);
                 model.addAttribute("comentariosPageNumbers", IntStream.range(0, comentarioPage.getTotalPages())
                                 .boxed()
                                 .collect(Collectors.toList()));
@@ -228,20 +264,23 @@ public class AllAcessController {
                 // comentar
                 boolean esFavorito = false;
                 boolean puedeCommentar = false;
-                if (auth != null && auth.isAuthenticated() && !auth.getPrincipal().equals("anonymousUser")) {
-                        try {
-                                Usuario usuario = usuarioService.obtenerPorEmail(auth.getName());
-                                Optional<Cliente> clienteOpt = clienteService.obtenerPorUsuario(usuario);
-                                if (clienteOpt.isPresent()) {
-                                        Cliente clienteLogueado = clienteOpt.get();
-                                        esFavorito = favoritoService.esFavorito(clienteLogueado, actividad);
-                                        puedeCommentar = reservaService.existeReservaRealizada(
-                                                        clienteLogueado.getId(), id);
-                                }
-                        } catch (Exception e) {
-                                // No es cliente, ignorar
-                        }
-                }
+                /*
+                 * if (auth != null && auth.isAuthenticated() &&
+                 * !auth.getPrincipal().equals("anonymousUser")) {
+                 * try {
+                 * Usuario usuario = usuarioService.obtenerPorEmail(auth.getName());
+                 * Optional<Cliente> clienteOpt = clienteService.obtenerPorUsuario(usuario);
+                 * if (clienteOpt.isPresent()) {
+                 * Cliente clienteLogueado = clienteOpt.get();
+                 * esFavorito = favoritoService.esFavorito(clienteLogueado, actividad);
+                 * puedeCommentar = reservaService.existeReservaRealizada(
+                 * clienteLogueado.getId(), id);
+                 * }
+                 * } catch (Exception e) {
+                 * // No es cliente, ignorar
+                 * }
+                 * }
+                 */
                 model.addAttribute("esFavorito", esFavorito);
                 model.addAttribute("puedeCommentar", puedeCommentar);
 
