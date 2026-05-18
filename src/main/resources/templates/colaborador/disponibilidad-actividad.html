@@ -6,9 +6,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" th:href="@{/css/global.css}">
+    <link rel="icon" th:href="@{/images/logos/isotipo.webp}" type="image/x-icon" />
     <link rel="stylesheet" th:href="@{/css/colaborador/navColab.css}">
     <link rel="stylesheet" th:href="@{/css/tailwind.css}">
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <link rel="stylesheet" th:href="@{/css/componentes/modales.css}">
     <link rel="icon" th:href="@{/images/logos/logo.webp}" type="image/x-icon" />
     <style>
@@ -227,7 +228,8 @@
                 <div class="cal-grid" id="calendarGrid">
                     <!-- Celdas vacías antes del primer día -->
                     <th:block th:with="offset=${primerDiaSemana - 1}">
-                        <div th:if="${offset > 0}" th:each="i : ${#numbers.sequence(1, offset)}" class="cal-cell empty"></div>
+                        <div th:if="${offset > 0}" th:each="i : ${#numbers.sequence(1, offset)}" class="cal-cell empty">
+                        </div>
                     </th:block>
 
                     <!-- Días del mes -->
@@ -343,7 +345,7 @@
                             <div th:if="${slot.prediccion != null}" class="border-t pt-3">
                                 <div class="flex items-center justify-between mb-2">
                                     <span class="text-xs font-medium text-gray-600">Predicción de Demanda</span>
-                                    <span class="text-xs text-gray-500" 
+                                    <span class="text-xs text-gray-500"
                                         th:text="'Confianza: ' + ${#numbers.formatDecimal(slot.prediccion.confianza * 100, 0, 0)} + '%'"></span>
                                 </div>
                                 <div class="flex items-center gap-2">
@@ -353,9 +355,11 @@
                                                          slot.prediccion.nivelOcupacion == 'alta' ? 'bg-orange-100 text-orange-800 border border-orange-300' : 
                                                          'bg-red-100 text-red-800 border border-red-300'}">
                                         <span th:if="${slot.prediccion.nivelOcupacion == 'baja'}">🟢 Baja demanda</span>
-                                        <span th:if="${slot.prediccion.nivelOcupacion == 'media'}">🟡 Demanda moderada</span>
+                                        <span th:if="${slot.prediccion.nivelOcupacion == 'media'}">🟡 Demanda
+                                            moderada</span>
                                         <span th:if="${slot.prediccion.nivelOcupacion == 'alta'}">🟠 Alta demanda</span>
-                                        <span th:if="${slot.prediccion.nivelOcupacion == 'agotado'}">🔴 Se agotará</span>
+                                        <span th:if="${slot.prediccion.nivelOcupacion == 'agotado'}">🔴 Se
+                                            agotará</span>
                                     </div>
                                 </div>
                                 <div class="mt-2 text-xs text-gray-500 space-y-1">
@@ -373,7 +377,7 @@
                                     </div>
                                     <div class="flex justify-between">
                                         <span>Tipo día:</span>
-                                        <span class="font-medium" 
+                                        <span class="font-medium"
                                             th:text="${slot.prediccion.tipoDia == 'fin_semana' ? 'Fin de semana' : 'Entre semana'}"></span>
                                     </div>
                                 </div>
@@ -414,12 +418,11 @@
                                         Cambiar
                                     </button>
                                 </form>
-                                
+
                                 <!-- Cancelar Disponibilidad (cancela todas las reservas) -->
-                                <button th:if="${slot.estado != 'CANCELADO'}" 
-                                        type="button"
-                                        class="btn-cancelar-disponibilidad bg-red-500 hover:bg-red-600 text-white text-xs px-3 py-1.5 rounded font-medium transition w-full"
-                                        th:attr="data-id=${slot.idDisponibilidad}">
+                                <button th:if="${slot.estado != 'CANCELADO'}" type="button"
+                                    class="btn-cancelar-disponibilidad bg-red-500 hover:bg-red-600 text-white text-xs px-3 py-1.5 rounded font-medium transition w-full"
+                                    th:attr="data-id=${slot.idDisponibilidad}">
                                     ⚠️ Cancelar Disponibilidad (Cancela Reservas)
                                 </button>
                             </div>
@@ -431,26 +434,29 @@
     </main>
 
     <!-- Modal de Cancelación de Disponibilidad -->
-    <div id="modal-cancelar-disponibilidad" class="hidden fixed inset-0 bg-black/40 z-50 flex items-center justify-center">
+    <div id="modal-cancelar-disponibilidad"
+        class="hidden fixed inset-0 bg-black/40 z-50 flex items-center justify-center">
         <div class="bg-white rounded-xl shadow-xl w-full max-w-md p-6">
             <h2 class="text-lg font-bold text-red-600 mb-2">⚠️ Advertencia: Cancelar Disponibilidad</h2>
             <p class="text-sm text-gray-700 mb-4">
-                Esta acción cancelará <strong>TODAS las reservas confirmadas</strong> asociadas a esta disponibilidad. 
-                Los clientes recibirán reembolsos automáticos del 100% y tú recibirás una <strong>penalización</strong> 
+                Esta acción cancelará <strong>TODAS las reservas confirmadas</strong> asociadas a esta disponibilidad.
+                Los clientes recibirán reembolsos automáticos del 100% y tú recibirás una <strong>penalización</strong>
                 que afectará tu reputación.
             </p>
             <form id="form-cancelar-disponibilidad" action="" method="post" class="space-y-4">
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Motivo de Cancelación</label>
-                    <textarea name="motivo" required rows="3" 
+                    <textarea name="motivo" required rows="3"
                         class="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-red-500 focus:border-red-500"
                         placeholder="Explica el motivo de la cancelación..."></textarea>
                 </div>
                 <div class="flex gap-2">
-                    <button type="submit" class="flex-1 bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg font-medium">
+                    <button type="submit"
+                        class="flex-1 bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg font-medium">
                         Confirmar Cancelación
                     </button>
-                    <button type="button" id="btn-cerrar-modal-cancelar-disp" class="flex-1 bg-gray-300 hover:bg-gray-400 text-gray-700 px-4 py-2 rounded-lg font-medium">
+                    <button type="button" id="btn-cerrar-modal-cancelar-disp"
+                        class="flex-1 bg-gray-300 hover:bg-gray-400 text-gray-700 px-4 py-2 rounded-lg font-medium">
                         Cerrar
                     </button>
                 </div>
@@ -570,14 +576,14 @@
     <script th:src="@{/js/dashboard.js}"></script>
     <script>
         // Modal de cancelación de disponibilidad
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             const modal = document.getElementById('modal-cancelar-disponibilidad');
             const btnCerrar = document.getElementById('btn-cerrar-modal-cancelar-disp');
             const form = document.getElementById('form-cancelar-disponibilidad');
 
             // Abrir modal al hacer clic en botones de cancelar
             document.querySelectorAll('.btn-cancelar-disponibilidad').forEach(btn => {
-                btn.addEventListener('click', function() {
+                btn.addEventListener('click', function () {
                     const idDisponibilidad = this.getAttribute('data-id');
                     form.action = '/colaborador/disponibilidades/cancelar/' + idDisponibilidad;
                     modal.classList.remove('hidden');
@@ -585,12 +591,12 @@
             });
 
             // Cerrar modal
-            btnCerrar.addEventListener('click', function() {
+            btnCerrar.addEventListener('click', function () {
                 modal.classList.add('hidden');
             });
 
             // Cerrar modal al hacer clic fuera
-            modal.addEventListener('click', function(e) {
+            modal.addEventListener('click', function (e) {
                 if (e.target === modal) {
                     modal.classList.add('hidden');
                 }

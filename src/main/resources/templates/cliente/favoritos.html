@@ -7,11 +7,12 @@
     <title>Mis Favoritos</title>
 
     <link rel="stylesheet" th:href="@{/css/global.css}">
+    <link rel="icon" th:href="@{/images/logos/isotipo.webp}" type="image/x-icon" />
     <link rel="stylesheet" th:href="@{/css/cliente/dahsboard-cliente.css}">
     <link rel="stylesheet" th:href="@{/css/adminBd.css}">
 
     <link rel="stylesheet" th:href="@{/css/tailwind.css}">
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 
     <link rel="icon" th:href="@{/images/logos/logo.webp}" type="image/x-icon" />
 
@@ -19,9 +20,11 @@
         .card-image {
             transition: transform 0.3s ease;
         }
+
         .card:hover .card-image {
             transform: scale(1.05);
         }
+
         .card-calificacion {
             position: absolute;
             bottom: 8px;
@@ -29,7 +32,7 @@
             display: flex;
             align-items: center;
             gap: 4px;
-            background: rgba(255,255,255,0.95);
+            background: rgba(255, 255, 255, 0.95);
             padding: 4px 8px;
             border-radius: 8px;
             font-size: 0.85rem;
@@ -163,8 +166,7 @@
                                         stroke-width="0.2" stroke="#23AAE3" />
                                 </g>
                             </svg>
-                            <span class="text-sm font-semibold text-gray-900"
-                                th:text="${actividad.ubicacion}"></span>
+                            <span class="text-sm font-semibold text-gray-900" th:text="${actividad.ubicacion}"></span>
                         </div>
                     </div>
                 </a>
@@ -182,18 +184,18 @@
                     'Content-Type': 'application/json'
                 }
             })
-            .then(res => res.json())
-            .then(data => {
-                if (!data.favorito) {
-                    // Se eliminó: quitar la card del DOM
-                    const card = btn.closest('.card');
-                    card.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
-                    card.style.opacity = '0';
-                    card.style.transform = 'scale(0.95)';
-                    setTimeout(() => card.remove(), 300);
-                }
-            })
-            .catch(err => console.error('Error toggling favorito:', err));
+                .then(res => res.json())
+                .then(data => {
+                    if (!data.favorito) {
+                        // Se eliminó: quitar la card del DOM
+                        const card = btn.closest('.card');
+                        card.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+                        card.style.opacity = '0';
+                        card.style.transform = 'scale(0.95)';
+                        setTimeout(() => card.remove(), 300);
+                    }
+                })
+                .catch(err => console.error('Error toggling favorito:', err));
         }
     </script>
 

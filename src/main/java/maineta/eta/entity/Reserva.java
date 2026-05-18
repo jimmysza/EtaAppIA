@@ -116,4 +116,27 @@ public class Reserva {
         return fechaReserva;
     }
 
+    public BigDecimal getPrecioTotalSafe() {
+        BigDecimal unitPrice = getPrecioConsumidorSafe();
+        return unitPrice.multiply(new BigDecimal(Math.max(1, cantidad)));
+    }
+
+    public BigDecimal getPrecioConsumidorSafe() {
+        if (precioConsumidor != null) {
+            return precioConsumidor;
+        }
+        if (actividad != null && actividad.getPrecio() != null) {
+            return actividad.getPrecio().multiply(new BigDecimal("1.18"));
+        }
+        return BigDecimal.ZERO;
+    }
+
+    public BigDecimal getPrecioColaboradorSafe() {
+        return precioColaborador != null ? precioColaborador : BigDecimal.ZERO;
+    }
+
+    public BigDecimal getComisionEtaSafe() {
+        return comisionEta != null ? comisionEta : BigDecimal.ZERO;
+    }
+
 }

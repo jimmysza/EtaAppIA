@@ -2,7 +2,11 @@ package maineta.eta.controller;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -75,8 +79,17 @@ public class AdminController {
 
     @GetMapping("/dashboard")
     public String adminHome(Model model) {
-        Admin admin = adminService.obtenerAdminPrincipal();
-        BigDecimal porcentajeDecimal = admin.getPorcentajeComision().divide(new BigDecimal("100"));
+        Admin admin;
+        try {
+            admin = adminService.obtenerAdminPrincipal();
+        } catch (IllegalStateException e) {
+            admin = new Admin();
+            admin.setPorcentajeComision(new BigDecimal("18"));
+            admin.setHorasCancelacion(24);
+        }
+        
+        BigDecimal porcentajeComision = admin.getPorcentajeComision() != null ? admin.getPorcentajeComision() : new BigDecimal("18");
+        BigDecimal porcentajeDecimal = porcentajeComision.divide(new BigDecimal("100"));
 
         List<Actividad> actividades = actividadService.listarActividades();
 
@@ -101,15 +114,46 @@ public class AdminController {
             }
         }
 
-        model.addAttribute("porcentajeComision", admin.getPorcentajeComision());
+        model.addAttribute("porcentajeComision", porcentajeComision);
         model.addAttribute("plataGanada", plataGanada);
         model.addAttribute("CantidadCliente", clienteService.ContadorCliente());
         model.addAttribute("CantidadColaborador", colaboradorService.ContadorColaborador());
+        
+        // 1. Reservaciones recientes
+        List<Reserva> reservacionesRecientes = reservaService.obtenerTodasReservas(PageRequest.of(0, 5)).getContent();
+        model.addAttribute("reservacionesRecientes", reservacionesRecientes);
+        
+        // 2. Actividades recientes
+        List<Actividad> actividadesRecientes = actividades.stream()
+            .sorted(Comparator.comparing(Actividad::getCreatedAt, Comparator.nullsLast(Comparator.reverseOrder())))
+            .limit(5)
+            .collect(Collectors.toList());
+        model.addAttribute("actividadesRecientes", actividadesRecientes);
+
+        // 3. Top colaboradores
+        Map<maineta.eta.entity.Colaborador, BigDecimal> ingresosPorColaborador = new HashMap<>();
+        for (Actividad act : actividades) {
+            maineta.eta.entity.Colaborador colab = act.getColaborador();
+            BigDecimal precioBase = act.getPrecio();
+            if (precioBase == null) precioBase = BigDecimal.ZERO;
+            for (Reserva r : act.getReservas()) {
+                if ("Hecho".equals(r.getEstado()) || "COMPLETADA".equals(r.getEstado()) || "CONFIRMADA".equals(r.getEstado())) {
+                    BigDecimal totalReserva = precioBase.multiply(new BigDecimal(Math.max(1, r.getCantidad())));
+                    ingresosPorColaborador.merge(colab, totalReserva, BigDecimal::add);
+                }
+            }
+        }
+        List<Object[]> topColaboradores = ingresosPorColaborador.entrySet().stream()
+            .sorted((e1, e2) -> e2.getValue().compareTo(e1.getValue()))
+            .limit(4)
+            .map(e -> new Object[]{e.getKey(), e.getValue()})
+            .collect(Collectors.toList());
+        model.addAttribute("topColaboradores", topColaboradores);
         model.addAttribute("CantidadUsuarios", usuarioService.ContadorUsuario());
         model.addAttribute("CantidadReservacion", reservaService.ContadorReservas());
         model.addAttribute("CantidadActividad", actividadService.ContadorActividades());
         model.addAttribute("CantidadDisponibilidades", disponibilidadService.ContadorDisponibilidades());
-        model.addAttribute("horasCancelacion", admin.getHorasCancelacion());
+        model.addAttribute("horasCancelacion", admin.getHorasCancelacion() != null ? admin.getHorasCancelacion() : 24);
 
         return "admin/dashboard";
     }
@@ -121,8 +165,12 @@ public class AdminController {
             return "redirect:/admin/dashboard";
         }
 
-        adminService.actualizarPorcentajeComision(porcentajeComision);
-        redirectAttrs.addFlashAttribute("mensaje", "Porcentaje de comision actualizado correctamente.");
+        try {
+            adminService.actualizarPorcentajeComision(porcentajeComision);
+            redirectAttrs.addFlashAttribute("mensaje", "Porcentaje de comision actualizado correctamente.");
+        } catch (IllegalStateException e) {
+            redirectAttrs.addFlashAttribute("error", "No existe un administrador configurado para actualizar.");
+        }
         return "redirect:/admin/dashboard";
     }
 
@@ -320,6 +368,8 @@ public class AdminController {
         try {
             adminService.actualizarHorasCancelacion(horasCancelacion);
             redirectAttrs.addFlashAttribute("mensaje", "Configuración de cancelación actualizada: " + horasCancelacion + " horas");
+        } catch (IllegalStateException e) {
+            redirectAttrs.addFlashAttribute("error", "No existe un administrador configurado para actualizar.");
         } catch (Exception e) {
             redirectAttrs.addFlashAttribute("error", "Error: " + e.getMessage());
         }

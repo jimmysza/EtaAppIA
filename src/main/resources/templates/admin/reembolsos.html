@@ -7,6 +7,7 @@
     <title>ETA | Reembolsos Pendientes</title>
 
     <link rel="stylesheet" th:href="@{/css/global.css}">
+    <link rel="icon" th:href="@{/images/logos/isotipo.webp}" type="image/x-icon" />
     <link rel="stylesheet" th:href="@{/css/adminBd.css}">
     <link rel="stylesheet" th:href="@{/css/componentes/tabla.css}">
     <link rel="stylesheet" th:href="@{/css/tailwind.css}">
@@ -41,7 +42,8 @@
                 <div class="flex items-center justify-between mb-4">
                     <h2 class="text-xl font-bold">Reservas con Reembolso Pendiente</h2>
                     <span class="bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full text-sm font-semibold"
-                        th:text="${reembolsosPage != null ? reembolsosPage.totalElements : 0} + ' pendientes'">0 pendientes</span>
+                        th:text="${reembolsosPage != null ? reembolsosPage.totalElements : 0} + ' pendientes'">0
+                        pendientes</span>
                 </div>
 
                 <table class="w-full">

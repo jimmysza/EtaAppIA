@@ -27,4 +27,14 @@ public class ActividadDTO {
     private LocalDateTime createdAt;
     private long cantidadComentario;
          // ID del dueño
+
+    public BigDecimal getPrecioConsumidorSafe() {
+        if (precioConsumidor != null) {
+            return precioConsumidor;
+        }
+        if (precio == null) {
+            return BigDecimal.ZERO;
+        }
+        return precio.multiply(new BigDecimal("1.18"));
+    }
 }

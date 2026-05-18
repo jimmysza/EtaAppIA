@@ -7,6 +7,7 @@
     <title>Dashboard de Clientes</title>
 
     <link rel="stylesheet" th:href="@{/css/global.css}">
+    <link rel="icon" th:href="@{/images/logos/isotipo.webp}" type="image/x-icon" />
     <link rel="stylesheet" th:href="@{/css/cliente/dahsboard-cliente.css}">
     <link rel="stylesheet" th:href="@{/css/adminBd.css}">
     <link rel="stylesheet" th:href="@{/css/componentes/modales.css}">
@@ -33,7 +34,6 @@
         <main class="main-content">
 
             <div class="header_db">
-
                 <div class="flex gap-3">
                     <svg id="hideBar" class="hidebar-dashboard" xmlns="http://www.w3.org/2000/svg" width="24"
                         height="24" viewBox="0 0 24 24">
@@ -44,153 +44,184 @@
                     <nav aria-label="Breadcrumb">
                         <ol class="breadcrumbs" itemscope itemtype="https://schema.org/BreadcrumbList">
                             <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
-                                <a itemprop="item" href="/">
-                                    <span itemprop="name">Inicio</span>
-                                </a>
+                                <a itemprop="item" href="/"><span itemprop="name">Inicio</span></a>
                                 <meta itemprop="position" content="1" />
                             </li>
-
                             <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
-                                <a itemprop="item">
-                                    <span itemprop="name">Reservas</span>
-                                </a>
+                                <a itemprop="item" class="text-blue-600 font-bold"><span
+                                        itemprop="name">Reservas</span></a>
                                 <meta itemprop="position" content="2" />
                             </li>
-
                         </ol>
                     </nav>
-
                 </div>
             </div>
 
-            <div class="filtro_db">
-
-                <div class="Identifier-Dashboard">
-                    <div class="svg-contain">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24">
-                            <path fill="#000" fill-rule="evenodd"
-                                d="M12 1.25c-.605 0-1.162.15-1.771.402c-.589.244-1.273.603-2.124 1.05L6.037 3.787c-1.045.548-1.88.987-2.527 1.418c-.668.447-1.184.917-1.559 1.554c-.374.635-.542 1.323-.623 2.142c-.078.795-.078 1.772-.078 3.002v.194c0 1.23 0 2.207.078 3.002c.081.82.25 1.507.623 2.142c.375.637.89 1.107 1.56 1.554c.645.431 1.481.87 2.526 1.418l2.068 1.085c.851.447 1.535.806 2.124 1.05c.61.252 1.166.402 1.771.402s1.162-.15 1.771-.402c.589-.244 1.273-.603 2.124-1.05l2.068-1.084c1.045-.549 1.88-.988 2.526-1.419c.67-.447 1.185-.917 1.56-1.554c.374-.635.542-1.323.623-2.142c.078-.795.078-1.772.078-3.001v-.196c0-1.229 0-2.206-.078-3.001c-.081-.82-.25-1.507-.623-2.142c-.375-.637-.89-1.107-1.56-1.554c-.645-.431-1.481-.87-2.526-1.418l-2.068-1.085c-.851-.447-1.535-.806-2.124-1.05c-.61-.252-1.166-.402-1.771-.402M8.77 4.046c.89-.467 1.514-.793 2.032-1.007c.504-.209.859-.289 1.198-.289c.34 0 .694.08 1.198.289c.518.214 1.141.54 2.031 1.007l2 1.05c1.09.571 1.855.974 2.428 1.356c.282.189.503.364.683.54l-3.331 1.665l-8.5-4.474zm-1.825.958l-.174.092c-1.09.571-1.855.974-2.427 1.356a4.7 4.7 0 0 0-.683.54L12 11.162l3.357-1.68l-8.206-4.318a.8.8 0 0 1-.206-.16M2.938 8.307c-.05.214-.089.457-.117.74c-.07.714-.071 1.617-.071 2.894v.117c0 1.278 0 2.181.071 2.894c.069.697.2 1.148.423 1.528c.222.377.543.696 1.1 1.068c.572.382 1.337.785 2.427 1.356l2 1.05c.89.467 1.513.793 2.031 1.007q.244.101.448.165v-8.663zm9.812 12.818q.204-.063.448-.164c.518-.214 1.141-.54 2.031-1.007l2-1.05c1.09-.572 1.855-.974 2.428-1.356c.556-.372.877-.691 1.1-1.068c.223-.38.353-.83.422-1.528c.07-.713.071-1.616.071-2.893v-.117c0-1.278 0-2.181-.071-2.894a6 6 0 0 0-.117-.74L17.75 9.963V13a.75.75 0 0 1-1.5 0v-2.286l-3.5 1.75z"
-                                clip-rule="evenodd" stroke-width="0.5" stroke="#000" />
-                        </svg>
-                    </div>
-                    <div class="id-content">
-                        <h1>Reservas</h1>
-                        <p>Todas Tus Reservas</p>
-                    </div>
+            <!-- Header de sección -->
+            <div class="flex items-center justify-between gap-4 flex-wrap mb-5 px-1">
+                <div>
+                    <h1 class="text-2xl font-black text-gray-900 leading-tight">Mis reservas</h1>
+                    <p class="text-sm text-gray-500 mt-0.5"
+                        th:text="${reservas != null ? reservas.size() + ' reservas en total' : '0 reservas'}">
+                        0 reservas en total
+                    </p>
                 </div>
 
+                <!-- Filtros por estado -->
+                <div class="flex gap-2 flex-wrap" id="filtros-reserva">
+                    <button onclick="filtrarReservas(this,'all')"
+                        class="filter-chip active inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full border border-gray-900 bg-gray-900 text-white text-xs font-semibold transition-all">
+                        Todas
+                    </button>
+                    <button onclick="filtrarReservas(this,'Hecho')"
+                        class="filter-chip inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full border border-gray-200 bg-white text-gray-600 text-xs font-semibold hover:border-gray-400 transition-all">
+                        Hecho
+                    </button>
+                    <button onclick="filtrarReservas(this,'Pendiente')"
+                        class="filter-chip inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full border border-gray-200 bg-white text-gray-600 text-xs font-semibold hover:border-gray-400 transition-all">
+                        Pendientes
+                    </button>
+                    <button onclick="filtrarReservas(this,'CANCELADA_POR_CLIENTE')"
+                        class="filter-chip inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full border border-gray-200 bg-white text-gray-600 text-xs font-semibold hover:border-gray-400 transition-all">
+                        Canceladas Cliente
+                    </button>
+                    <button onclick="filtrarReservas(this,'Cancelada')"
+                        class="filter-chip inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full border border-gray-200 bg-white text-gray-600 text-xs font-semibold hover:border-gray-400 transition-all">
+                        Cancelada Colaborador
+                    </button>
+                </div>
             </div>
 
-            <table>
-                <thead>
-                    <tr>
-                        <th>ID Reserva</th>
-                        <th>Fecha Reserva</th>
-                        <th>Cantidad</th>
-                        <th>Actividad</th>
-                        <th>Ubicación</th>
-                        <th>Precio</th>
-                        <th>Estado</th>
-                        <th>Imagen</th>
-                        <th>Acciones</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr th:if="${reservas == null or #lists.isEmpty(reservas)}">
-                        <td colspan="9" class="text-center">Aún no hay reservaciones</td>
-                    </tr>
+            <!-- Lista de reservas en tarjetas -->
+            <div class="flex flex-col gap-3" id="lista-reservas">
 
-                    <tr th:each="reserva : ${reservas}">
-                        <td th:text="${reserva.idReserva}"></td>
-                        <td th:text="${#temporals.format(reserva.fechaReserva, 'dd/MM/yyyy HH:mm')}"></td>
-                        <td th:text="${reserva.cantidad}"></td>
-                        <td th:text="${reserva.actividad.titulo}"></td>
-                        <td th:text="${reserva.actividad.ubicacion}"></td>
-                        <td th:text="${'$' + #numbers.formatDecimal(reserva.actividad.precio, 0, 'POINT', 0, 'COMMA')}">
-                        </td>
-                        <td>
-                            <span class="badge"
-                                th:classappend="${reserva.estado == 'CONFIRMADA' ? 'badge-success' : (reserva.estado == 'CANCELADA' ? 'badge-danger' : 'badge-warning')}"
-                                th:text="${reserva.estado}"></span>
-                        </td>
-                        <td>
+                <!-- Estado vacío -->
+                <div th:if="${reservas == null or #lists.isEmpty(reservas)}"
+                    class="border border-dashed border-gray-200 rounded-2xl p-14 text-center">
+                    <svg class="w-10 h-10 mx-auto text-gray-300 mb-3" fill="none" stroke="currentColor"
+                        viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                            d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                    </svg>
+                    <p class="text-sm text-gray-400 font-semibold">Aún no tienes reservas</p>
+                </div>
+
+                <!-- Tarjeta por reserva -->
+                <div th:each="reserva : ${reservas}" th:attr="data-estado=${reserva.estado}"
+                    class="reserva-card bg-white border border-gray-100 rounded-2xl overflow-hidden hover:border-gray-300 transition-all">
+
+                    <div class="flex">
+
+                        <!-- Imagen -->
+                        <div class="shrink-0 w-404 sm:w-28">
                             <img th:if="${reserva.actividad.imagen != null}"
                                 th:src="@{'/uploads/' + ${reserva.actividad.imagen}}" alt="Imagen actividad"
-                                width="100" />
-                            <span th:if="${reserva.actividad.imagen == null}">Sin imagen</span>
-                        </td>
-                        <td>
-                            <a class="button-default bg-violet-600"
-                                th:href="@{/cliente/reservas/{idReserva}/recibo(idReserva=${reserva.idReserva})}"
-                                style="margin-right:8px; display:inline-flex; align-items:center; gap:6px;">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
-                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                    stroke-linejoin="round">
-                                    <path d="M9 12h6" />
-                                    <path d="M9 16h6" />
-                                    <path d="M9 8h6" />
-                                    <path d="M5 3h14a2 2 0 0 1 2 2v14l-4-2l-4 2l-4-2l-4 2V5a2 2 0 0 1 2-2z" />
+                                class="w-full h-full object-cover min-h-[96px]">
+                            <div th:if="${reserva.actividad.imagen == null}"
+                                class="w-full min-h-[96px] bg-gray-100 flex items-center justify-center">
+                                <svg class="w-6 h-6 text-gray-300" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                        d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                                 </svg>
-                                Ver mas
+                            </div>
+                        </div>
+
+                        <!-- Cuerpo -->
+                        <div class="flex-1 min-w-0 p-3 sm:p-4 flex flex-col gap-1.5">
+
+                            <!-- Badges y ID -->
+                            <div class="flex items-center gap-2 flex-wrap">
+                                <span th:text="${reserva.estado}" th:classappend="${reserva.estado == 'Hecho'} 
+    ? 'bg-green-50 text-green-800 border-green-200' 
+    : (${reserva.estado == 'CANCELADA_POR_CLIENTE'} 
+        ? 'bg-red-50 text-red-800 border-red-200' 
+        : (${reserva.estado == 'Cancelada'} 
+            ? 'bg-red-50 text-red-800 border-red-200' 
+            : 'bg-amber-50 text-amber-800 border-amber-200'))"
+                                    class="text-[11px] font-semibold border px-2.5 py-0.5 rounded-full">
+                                </span>
+                                <span class="text-[11px] font-mono text-gray-400"
+                                    th:text="'#' + ${reserva.idReserva}"></span>
+                            </div>
+
+                            <!-- Título -->
+                            <p class="font-bold text-gray-900 text-sm leading-tight truncate"
+                                th:text="${reserva.actividad.titulo}"></p>
+
+                            <!-- Meta -->
+                            <div class="flex items-center gap-3 flex-wrap">
+                                <span class="text-xs text-gray-400 inline-flex items-center gap-1">
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                                        <line x1="16" y1="2" x2="16" y2="6" />
+                                        <line x1="8" y1="2" x2="8" y2="6" />
+                                        <line x1="3" y1="10" x2="21" y2="10" />
+                                    </svg>
+                                    <span
+                                        th:text="${#temporals.format(reserva.fechaReserva, 'dd/MM/yyyy HH:mm')}"></span>
+                                </span>
+                                <span class="text-xs text-gray-400 inline-flex items-center gap-1">
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" />
+                                        <circle cx="9" cy="7" r="4" />
+                                    </svg>
+                                    <span
+                                        th:text="${reserva.cantidad + ' persona' + (reserva.cantidad > 1 ? 's' : '')}"></span>
+                                </span>
+                                <span class="text-xs text-gray-400 inline-flex items-center gap-1">
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M17.657 16.657L13.414 20.9a2 2 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                                    </svg>
+                                    <span th:text="${reserva.actividad.ubicacion}"></span>
+                                </span>
+                            </div>
+
+                            <!-- Precio -->
+                            <p class="text-sm font-black text-gray-900 mt-0.5"
+                                th:classappend="${reserva.estado == 'CANCELADA'} ? 'line-through text-gray-400' : ''"
+                                th:text="${'$' + #numbers.formatDecimal(reserva.precioConsumidorSafe, 0, 'POINT', 0, 'COMMA') + ' COP'}">
+                            </p>
+                        </div>
+
+                        <!-- Acciones -->
+                        <div class="flex flex-col items-stretch gap-2 p-3 justify-center shrink-0">
+                            <a th:href="@{/cliente/reservas/{id}/recibo(id=${reserva.idReserva})}"
+                                class="inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl bg-gray-900 text-white text-xs font-semibold hover:bg-gray-700 transition-colors whitespace-nowrap">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                </svg>
+                                Recibo
                             </a>
-                            <a class="button-default bgBlueMain"
-                                th:href="@{/cliente/chats/{idReserva}(idReserva=${reserva.idReserva})}"
-                                style="margin-right:8px; display:inline-flex; align-items:center; gap:6px;">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
-                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                    stroke-linejoin="round">
-                                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                            <a th:href="@{/cliente/chats/{id}(id=${reserva.idReserva})}"
+                                class="inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl border border-gray-200 bg-white text-gray-700 text-xs font-semibold hover:border-gray-400 transition-colors whitespace-nowrap">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" />
                                 </svg>
                                 Chat
                             </a>
-                            <button th:if="${reserva.estado == 'CONFIRMADA'}"
-                                class="button-default bg-orange-600 btn-cancelar-reserva"
-                                style="margin-right:8px; display:inline-flex; align-items:center; gap:6px;"
-                                th:attr="data-id=${reserva.idReserva}">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
-                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                    stroke-linejoin="round">
+                            <!-- class="button-default btn_delete text-open-delete" id="open-delete-modal" -->
+                            <button th:if="${reserva.estado != 'Hecho'}"
+                                class=" inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl border border-red-200 bg-red-50 text-red-700 text-xs font-semibold hover:bg-red-100 transition-colors whitespace-nowrap text-open-delete"
+                                id="open-delete-modal" th:attr="data-id=${reserva.idReserva}">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <circle cx="12" cy="12" r="10" />
                                     <line x1="15" y1="9" x2="9" y2="15" />
                                     <line x1="9" y1="9" x2="15" y2="15" />
                                 </svg>
                                 Cancelar
                             </button>
-                            <button class="button-default btn_delete text-open-delete" id="open-delete-modal"
-                                th:attr="data-id=${reserva.idReserva}">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24">
-                                    <g fill="none">
-                                        <path fill="#fff" d="M8 21h8a2 2 0 0 0 2-2V7H6v12a2 2 0 0 0 2 2"
-                                            opacity="0.16" />
-                                        <path stroke="#fff" stroke-linecap="round" stroke-linejoin="round"
-                                            stroke-width="2.5"
-                                            d="M14 11v6m-4-6v6M6 7v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V7M4 7h16M7 7l2-4h6l2 4" />
-                                    </g>
-                                </svg>
+                        </div>
 
-                                Eliminar
-                            </button>
-                            <button class="button-default btn_delete text-open-delete" id="open-delete-modal">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24">
-                                    <g fill="none">
-                                        <path fill="#fff" d="M8 21h8a2 2 0 0 0 2-2V7H6v12a2 2 0 0 0 2 2"
-                                            opacity="0.16" />
-                                        <path stroke="#fff" stroke-linecap="round" stroke-linejoin="round"
-                                            stroke-width="2.5"
-                                            d="M14 11v6m-4-6v6M6 7v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V7M4 7h16M7 7l2-4h6l2 4" />
-                                    </g>
-                                </svg>
-
-                                ver
-                            </button>
-                        </td>
-
-
-                    </tr>
-                </tbody>
-
-            </table>
-
+                    </div>
+                </div>
+            </div>
 
         </main>
     </section>
@@ -278,8 +309,22 @@
         }
     </style>
 
+
     <script>
-        // Script para manejar cancelación de reservas
+        function filtrarReservas(el, estado) {
+            document.querySelectorAll('.filter-chip').forEach(c => {
+                c.classList.remove('active', 'bg-gray-900', 'text-white', 'border-gray-900');
+                c.classList.add('bg-white', 'text-gray-600', 'border-gray-200');
+            });
+            el.classList.add('active', 'bg-gray-900', 'text-white', 'border-gray-900');
+            el.classList.remove('bg-white', 'text-gray-600', 'border-gray-200');
+
+            document.querySelectorAll('.reserva-card').forEach(card => {
+                card.style.display = (estado === 'all' || card.dataset.estado === estado) ? '' : 'none';
+            });
+        }
+
+        // Script cancelación (igual que antes)
         document.addEventListener('DOMContentLoaded', function () {
             const modal = document.getElementById('modal-cancelacion');
             const btnCerrar = document.getElementById('btn-cerrar-modal-cancelacion');
@@ -288,10 +333,8 @@
             const infoDiv = document.getElementById('modal-cancelacion-info');
             const montoSpan = document.getElementById('modal-cancelacion-monto');
             const horasSpan = document.getElementById('modal-cancelacion-horas');
-
             let idReservaActual = null;
 
-            // Abrir modal al hacer clic en botones de cancelar
             document.querySelectorAll('.btn-cancelar-reserva').forEach(btn => {
                 btn.addEventListener('click', function () {
                     idReservaActual = this.getAttribute('data-id');
@@ -299,64 +342,36 @@
                 });
             });
 
-            // Cerrar modal
-            btnCerrar.addEventListener('click', function () {
-                modal.style.display = 'none';
-                idReservaActual = null;
-            });
+            btnCerrar.addEventListener('click', () => { modal.style.display = 'none'; idReservaActual = null; });
 
-            // Confirmar cancelación
-            btnConfirmar.addEventListener('click', function () {
+            btnConfirmar.addEventListener('click', () => {
                 if (idReservaActual) {
-                    cancelarReserva(idReservaActual);
+                    const form = document.createElement('form');
+                    form.method = 'POST';
+                    form.action = '/cliente/reserva/cancelar/' + idReservaActual;
+                    document.body.appendChild(form);
+                    form.submit();
                 }
             });
 
-            // Función para abrir modal y validar cancelación
-            function abrirModalCancelacion(idReserva) {
+            function abrirModalCancelacion(id) {
                 modal.style.display = 'block';
                 mensaje.textContent = 'Cargando información...';
                 btnConfirmar.style.display = 'none';
                 infoDiv.style.display = 'none';
 
-                // Llamada AJAX para validar cancelación
-                fetch('/cliente/reserva/validar-cancelacion/' + idReserva, {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
-                })
-                    .then(response => response.json())
+                fetch('/cliente/reserva/validar-cancelacion/' + id)
+                    .then(r => r.json())
                     .then(data => {
+                        mensaje.textContent = data.mensaje;
                         if (data.puede) {
-                            mensaje.textContent = data.mensaje;
                             montoSpan.textContent = '$' + new Intl.NumberFormat('es-CO').format(data.montoReembolso);
                             horasSpan.textContent = data.horasRestantes;
                             infoDiv.style.display = 'block';
                             btnConfirmar.style.display = 'inline-block';
-                        } else {
-                            mensaje.textContent = data.mensaje;
-                            btnConfirmar.style.display = 'none';
                         }
                     })
-                    .catch(error => {
-                        console.error('Error:', error);
-                        mensaje.textContent = 'Error al cargar información de cancelación.';
-                        btnConfirmar.style.display = 'none';
-                    });
-            }
-
-            // Función para cancelar reserva
-            function cancelarReserva(idReserva) {
-                btnConfirmar.disabled = true;
-                btnConfirmar.textContent = 'Cancelando...';
-
-                // Crear formulario y enviarlo
-                const form = document.createElement('form');
-                form.method = 'POST';
-                form.action = '/cliente/reserva/cancelar/' + idReserva;
-                document.body.appendChild(form);
-                form.submit();
+                    .catch(() => { mensaje.textContent = 'Error al cargar información.'; });
             }
         });
     </script>

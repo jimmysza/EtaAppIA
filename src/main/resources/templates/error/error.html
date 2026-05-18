@@ -1,12 +1,15 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
     <title>Error</title>
     <link rel="icon" th:href="@{/images/logos/logo.webp}" type="image/x-icon" />
     <link rel="stylesheet" th:href="@{/css/error.css}">
     <link rel="stylesheet" th:href="@{/css/global.css}">
+    <link rel="icon" th:href="@{/images/logos/isotipo.webp}" type="image/x-icon" />
 </head>
+
 <body>
     <div class="error-modal">
         <h1 th:text="${statusCode} ?: 'Error'">Error</h1>
@@ -14,4 +17,5 @@
         <a href="/">Volver al inicio</a>
     </div>
 </body>
+
 </html>

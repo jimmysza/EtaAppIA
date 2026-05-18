@@ -5,11 +5,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Personaliza tu Experiencia - ETA</title>
-    
+
     <link rel="stylesheet" th:href="@{/css/global.css}">
+    <link rel="icon" th:href="@{/images/logos/isotipo.webp}" type="image/x-icon" />
     <link rel="stylesheet" th:href="@{/css/cliente/dahsboard-cliente.css}">
     <link rel="stylesheet" th:href="@{/css/tailwind.css}">
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <link rel="icon" th:href="@{/images/logos/logo.webp}" type="image/x-icon" />
 
     <style>
@@ -41,8 +42,15 @@
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .categoria-option {
@@ -64,7 +72,7 @@
             transition: all 0.3s;
         }
 
-        .categoria-checkbox:checked + .categoria-label {
+        .categoria-checkbox:checked+.categoria-label {
             background: #667eea;
             color: white;
             border-color: #667eea;
@@ -89,7 +97,7 @@
             transition: all 0.3s;
         }
 
-        .radio-input:checked + .radio-label {
+        .radio-input:checked+.radio-label {
             background: #667eea;
             color: white;
             border-color: #667eea;
@@ -124,25 +132,21 @@
             </div>
 
             <form th:action="@{/cliente/onboarding}" method="post" th:object="${form}">
-                
+
                 <!-- Paso 1: Categorías favoritas -->
                 <div class="paso activo" data-paso="1">
                     <h2 class="text-xl font-semibold mb-4">¿Qué tipo de actividades te gustan?</h2>
                     <p class="text-gray-600 mb-6">Selecciona una o más categorías</p>
-                    
+
                     <div class="text-center">
                         <div th:each="cat, iterStat : ${categorias}" class="categoria-option">
-                            <input type="checkbox" 
-                                   th:id="'categoriasIds' + ${iterStat.index}" 
-                                   th:value="${cat.idCategoria}" 
-                                   name="categoriasIds"
-                                   class="categoria-checkbox">
-                            <label th:for="'categoriasIds' + ${iterStat.index}" 
-                                   th:text="${cat.nombre}"
-                                   class="categoria-label"></label>
+                            <input type="checkbox" th:id="'categoriasIds' + ${iterStat.index}"
+                                th:value="${cat.idCategoria}" name="categoriasIds" class="categoria-checkbox">
+                            <label th:for="'categoriasIds' + ${iterStat.index}" th:text="${cat.nombre}"
+                                class="categoria-label"></label>
                         </div>
                     </div>
-                    
+
                     <div th:if="${#fields.hasErrors('categoriasIds')}" class="text-red-500 mt-4">
                         <p th:errors="*{categoriasIds}"></p>
                     </div>
@@ -152,32 +156,32 @@
                 <div class="paso" data-paso="2">
                     <h2 class="text-xl font-semibold mb-4">¿Con quién sueles salir?</h2>
                     <p class="text-gray-600 mb-6">Selecciona una opción</p>
-                    
+
                     <div class="radio-option">
                         <input type="radio" id="solo" value="SOLO" th:field="*{grupoViaje}" class="radio-input">
                         <label for="solo" class="radio-label">Solo</label>
                     </div>
-                    
+
                     <div class="radio-option">
                         <input type="radio" id="pareja" value="PAREJA" th:field="*{grupoViaje}" class="radio-input">
                         <label for="pareja" class="radio-label">En pareja</label>
                     </div>
-                    
+
                     <div class="radio-option">
                         <input type="radio" id="familia" value="FAMILIA" th:field="*{grupoViaje}" class="radio-input">
                         <label for="familia" class="radio-label">Con familia</label>
                     </div>
-                    
+
                     <div class="radio-option">
                         <input type="radio" id="amigos" value="AMIGOS" th:field="*{grupoViaje}" class="radio-input">
                         <label for="amigos" class="radio-label">Con amigos</label>
                     </div>
-                    
+
                     <div class="radio-option">
                         <input type="radio" id="varios" value="VARIOS" th:field="*{grupoViaje}" class="radio-input">
                         <label for="varios" class="radio-label">Varía</label>
                     </div>
-                    
+
                     <div th:if="${#fields.hasErrors('grupoViaje')}" class="text-red-500 mt-4">
                         <p th:errors="*{grupoViaje}"></p>
                     </div>
@@ -187,22 +191,24 @@
                 <div class="paso" data-paso="3">
                     <h2 class="text-xl font-semibold mb-4">¿Qué presupuesto manejas por actividad?</h2>
                     <p class="text-gray-600 mb-6">Selecciona una opción</p>
-                    
+
                     <div class="radio-option">
-                        <input type="radio" id="economico" value="ECONOMICO" th:field="*{rangoPrecio}" class="radio-input">
+                        <input type="radio" id="economico" value="ECONOMICO" th:field="*{rangoPrecio}"
+                            class="radio-input">
                         <label for="economico" class="radio-label">Económico (< $50k)</label>
                     </div>
-                    
+
                     <div class="radio-option">
-                        <input type="radio" id="moderado" value="MODERADO" th:field="*{rangoPrecio}" class="radio-input">
+                        <input type="radio" id="moderado" value="MODERADO" th:field="*{rangoPrecio}"
+                            class="radio-input">
                         <label for="moderado" class="radio-label">Moderado ($50k–$150k)</label>
                     </div>
-                    
+
                     <div class="radio-option">
                         <input type="radio" id="premium" value="PREMIUM" th:field="*{rangoPrecio}" class="radio-input">
                         <label for="premium" class="radio-label">Premium (> $150k)</label>
                     </div>
-                    
+
                     <div th:if="${#fields.hasErrors('rangoPrecio')}" class="text-red-500 mt-4">
                         <p th:errors="*{rangoPrecio}"></p>
                     </div>
@@ -212,35 +218,41 @@
                 <div class="paso" data-paso="4">
                     <h2 class="text-xl font-semibold mb-4">¿Cuándo haces más actividades?</h2>
                     <p class="text-gray-600 mb-6">Selecciona una opción</p>
-                    
+
                     <div class="radio-option">
-                        <input type="radio" id="finde" value="FINDE" th:field="*{disponibilidadSemana}" class="radio-input">
+                        <input type="radio" id="finde" value="FINDE" th:field="*{disponibilidadSemana}"
+                            class="radio-input">
                         <label for="finde" class="radio-label">Fines de semana</label>
                     </div>
-                    
+
                     <div class="radio-option">
-                        <input type="radio" id="entreSemana" value="ENTRE_SEMANA" th:field="*{disponibilidadSemana}" class="radio-input">
+                        <input type="radio" id="entreSemana" value="ENTRE_SEMANA" th:field="*{disponibilidadSemana}"
+                            class="radio-input">
                         <label for="entreSemana" class="radio-label">Entre semana</label>
                     </div>
-                    
+
                     <div class="radio-option">
-                        <input type="radio" id="ambos" value="AMBOS" th:field="*{disponibilidadSemana}" class="radio-input">
+                        <input type="radio" id="ambos" value="AMBOS" th:field="*{disponibilidadSemana}"
+                            class="radio-input">
                         <label for="ambos" class="radio-label">Ambos</label>
                     </div>
-                    
+
                     <div th:if="${#fields.hasErrors('disponibilidadSemana')}" class="text-red-500 mt-4">
                         <p th:errors="*{disponibilidadSemana}"></p>
                     </div>
                 </div>
 
                 <div class="flex justify-between mt-8">
-                    <button type="button" id="btnAnterior" class="px-6 py-2 bg-gray-200 rounded-lg hover:bg-gray-300 transition"
-                            style="display: none;">Anterior</button>
-                    <button type="button" id="btnSiguiente" class="px-6 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition ml-auto">
+                    <button type="button" id="btnAnterior"
+                        class="px-6 py-2 bg-gray-200 rounded-lg hover:bg-gray-300 transition"
+                        style="display: none;">Anterior</button>
+                    <button type="button" id="btnSiguiente"
+                        class="px-6 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition ml-auto">
                         Siguiente
                     </button>
-                    <button type="submit" id="btnFinalizar" class="px-6 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition ml-auto"
-                            style="display: none;">Finalizar</button>
+                    <button type="submit" id="btnFinalizar"
+                        class="px-6 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition ml-auto"
+                        style="display: none;">Finalizar</button>
                 </div>
             </form>
 
@@ -294,7 +306,7 @@
 
         function validarPasoActual() {
             const pasoElement = pasos[pasoActual];
-            
+
             if (pasoActual === 0) {
                 // Validar que al menos una categoría esté seleccionada
                 const checkboxes = pasoElement.querySelectorAll('input[type="checkbox"]');
@@ -312,7 +324,7 @@
                     return false;
                 }
             }
-            
+
             return true;
         }
 

@@ -13,6 +13,7 @@
 
     <link rel="stylesheet" th:href="@{/fonts/fonts.css}">
     <link rel="stylesheet" th:href="@{/css/global.css}">
+    <link rel="icon" th:href="@{/images/logos/isotipo.webp}" type="image/x-icon" />
     <link rel="stylesheet" th:href="@{/css/componentes/navbar.css}">
     <link rel="stylesheet" th:href="@{/css/componentes/footer.css}">
     <link rel="stylesheet" th:href="@{/css/componentes/busqueda.css}">
@@ -181,7 +182,7 @@
         }
 
         .filters-modal-close {
-            
+
             border-radius: 14px;
             border: 1px solid rgba(17, 24, 39, 0.08);
             background: #f9fafb;
@@ -262,7 +263,7 @@
                 grid-template-columns: 1fr;
             }
 
-            
+
             .filters-modal-footer {
                 flex-direction: column;
                 align-items: flex-start;
@@ -608,20 +609,27 @@
     </div>
 
     <!-- Modal de Filtros Avanzados -->
-    <div id="filtersModal" aria-hidden="true" class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm px-2 sm:px-0 overflow-y-auto">
+    <div id="filtersModal" aria-hidden="true"
+        class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm px-2 sm:px-0 overflow-y-auto">
 
-        <div class="filters-modal-dialog w-full max-w-md mx-auto bg-white rounded-2xl shadow-2xl overflow-y-auto max-h-[90vh] sm:max-h-[80vh] flex flex-col">
+        <div
+            class="filters-modal-dialog w-full max-w-md mx-auto bg-white rounded-2xl shadow-2xl overflow-y-auto max-h-[90vh] sm:max-h-[80vh] flex flex-col">
             <!-- Modal Header -->
 
-            <div class="filters-modal-header h-fit flex flex-row items-center justify-between px-2 py-2 sm:px-4 sm:py-3">
+            <div
+                class="filters-modal-header h-fit flex flex-row items-center justify-between px-2 py-2 sm:px-4 sm:py-3">
 
                 <div class="w-[80%] md:w-full">
                     <h3 class="filters-modal-title text-xs sm:text-lg font-semibold">Filtros Avanzados</h3>
-                    <p class="filters-modal-subtitle text-xs sm:text-sm">Ajusta lo necesario y aplica cuando estes listo.</p>
+                    <p class="filters-modal-subtitle text-xs sm:text-sm">Ajusta lo necesario y aplica cuando estes
+                        listo.</p>
                 </div>
-                <button id="closeFiltersModal" class="filters-modal-close w-6 h-6 md:w-8 md:h-8 p-1 sm:w-10 sm:h-10 sm:p-2 flex items-center justify-center" aria-label="Cerrar filtros">
-                    <svg xmlns="http://www.w3.org/2000/svg" class=" w-2 h-2 md:w-6 md:h-6" viewBox="0 0 24 24" fill="none"
-                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <button id="closeFiltersModal"
+                    class="filters-modal-close w-6 h-6 md:w-8 md:h-8 p-1 sm:w-10 sm:h-10 sm:p-2 flex items-center justify-center"
+                    aria-label="Cerrar filtros">
+                    <svg xmlns="http://www.w3.org/2000/svg" class=" w-2 h-2 md:w-6 md:h-6" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
                         <line x1="18" y1="6" x2="6" y2="18"></line>
                         <line x1="6" y1="6" x2="18" y2="18"></line>
                     </svg>
@@ -630,7 +638,8 @@
             </div>
 
             <!-- Modal Content -->
-            <form th:action="@{/actividades/buscar}" method="get" id="filtersForm" class="flex-1 flex flex-col overflow-y-auto">
+            <form th:action="@{/actividades/buscar}" method="get" id="filtersForm"
+                class="flex-1 flex flex-col overflow-y-auto">
                 <!-- Mantener búsqueda por nombre -->
                 <input type="hidden" name="nombre" th:value="${filtroNombre}" id="filterNombre" />
 
@@ -638,7 +647,8 @@
                     <!-- Filtro por Categoría -->
                     <div class="filter-field flex flex-col gap-1">
                         <label class="text-xs sm:text-sm">Categoría</label>
-                        <select name="categoriaId" id="filterCategoria" class="text-xs sm:text-sm px-2 py-1 rounded border border-gray-300">
+                        <select name="categoriaId" id="filterCategoria"
+                            class="text-xs sm:text-sm px-2 py-1 rounded border border-gray-300">
                             <option value="">Todas las categorías</option>
                             <option th:each="categoria : ${categorias}" th:value="${categoria.idCategoria}"
                                 th:text="${categoria.nombre}"
@@ -650,7 +660,8 @@
                     <!-- Filtro por Idioma -->
                     <div class="filter-field flex flex-col gap-1">
                         <label class="text-xs sm:text-sm">Idioma</label>
-                        <select name="idiomaId" id="filterIdioma" class="text-xs sm:text-sm px-2 py-1 rounded border border-gray-300">
+                        <select name="idiomaId" id="filterIdioma"
+                            class="text-xs sm:text-sm px-2 py-1 rounded border border-gray-300">
                             <option value="">Todos los idiomas</option>
                             <option th:each="idioma : ${idiomas}" th:value="${idioma.idIdioma}"
                                 th:text="${idioma.nombre}"
@@ -703,11 +714,14 @@
                 </div>
 
                 <!-- Botones de acción -->
-                <div class="filters-modal-footer pt-2 pb-1 px-1 sm:px-0 bg-white sticky bottom-0 z-10 flex flex-col gap-1">
+                <div
+                    class="filters-modal-footer pt-2 pb-1 px-1 sm:px-0 bg-white sticky bottom-0 z-10 flex flex-col gap-1">
                     <span class="text-xs text-slate-500">Pulsa aplicar para buscar con estos filtros.</span>
                     <div class="filters-actions flex gap-2">
-                        <a th:href="@{/actividades/buscar}" class="filters-btn-secondary text-xs px-2 py-1 rounded">Limpiar filtros</a>
-                        <button type="submit" class="filters-btn-primary text-xs px-2 py-1 rounded">Aplicar filtros</button>
+                        <a th:href="@{/actividades/buscar}"
+                            class="filters-btn-secondary text-xs px-2 py-1 rounded">Limpiar filtros</a>
+                        <button type="submit" class="filters-btn-primary text-xs px-2 py-1 rounded">Aplicar
+                            filtros</button>
                     </div>
                 </div>
             </form>

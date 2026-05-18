@@ -11,9 +11,10 @@
 
 
   <link rel="stylesheet" th:href="@{/css/tailwind.css}">
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 
   <link rel="stylesheet" th:href="@{/css/global.css}">
+  <link rel="icon" th:href="@{/images/logos/isotipo.webp}" type="image/x-icon" />
   <link rel="stylesheet" th:href="@{/css/auth/register.css}">
 
   <link rel="stylesheet" th:href="@{/fonts/fonts.css}">
@@ -28,42 +29,43 @@
     <span th:text="${error}"></span>
   </div>
 
-  
-    <div class=" hidden md:flex md:w-[40%] lg:w-[45%] bg-[#23aae2] relative items-center justify-center p-12 overflow-hidden">
-      <div class="content">
-        <a th:href="@{/}"
-          class="absolute top-8 left-8 flex items-center gap-2 bg-white/20 backdrop-blur-md border border-white/30 text-white px-6 py-3 rounded-2xl font-bold hover:bg-white/30 transition-all active:scale-95 group">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-            <path fill="currentColor"
-              d="m4 10l-.707.707L2.586 10l.707-.707zm17 8a1 1 0 1 1-2 0zM8.293 15.707l-5-5l1.414-1.414l5 5zm-5-6.414l5-5l1.414 1.414l-5 5zM4 9h10v2H4zm17 7v2h-2v-2zm-7-7a7 7 0 0 1 7 7h-2a5 5 0 0 0-5-5z" />
-          </svg>
-          <span>Anterior pagina</span>
-        </a>
+
+  <div
+    class=" hidden md:flex md:w-[40%] lg:w-[45%] bg-[#23aae2] relative items-center justify-center p-12 overflow-hidden">
+    <div class="content">
+      <a th:href="@{/}"
+        class="absolute top-8 left-8 flex items-center gap-2 bg-white/20 backdrop-blur-md border border-white/30 text-white px-6 py-3 rounded-2xl font-bold hover:bg-white/30 transition-all active:scale-95 group">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+          <path fill="currentColor"
+            d="m4 10l-.707.707L2.586 10l.707-.707zm17 8a1 1 0 1 1-2 0zM8.293 15.707l-5-5l1.414-1.414l5 5zm-5-6.414l5-5l1.414 1.414l-5 5zM4 9h10v2H4zm17 7v2h-2v-2zm-7-7a7 7 0 0 1 7 7h-2a5 5 0 0 0-5-5z" />
+        </svg>
+        <span>Anterior pagina</span>
+      </a>
 
 
-        <div class="relative z-10 text-white max-w-sm">
-          <h1 class="text-6xl font-black tracking-tighter mb-6">eta<span class="text-xl align-top">®</span></h1>
-          <p class="text-xl font-medium text-blue-50 leading-relaxed">
-            Descubre la magia de Cartagena con la red de colaboradores más grande del Caribe.
-          </p>
-          <div class="mt-12 space-y-4">
-            <div class="flex items-center gap-4 bg-white/10 p-4 rounded-3xl border border-white/10">
-              <div class="w-12 h-12 bg-white/20 rounded-2xl flex items-center justify-center font-black">01</div>
-              <p class="font-bold">Acceso a precios exclusivos</p>
-            </div>
-            <div class="flex items-center gap-4 bg-white/10 p-4 rounded-3xl border border-white/10">
-              <div class="w-12 h-12 bg-white/20 rounded-2xl flex items-center justify-center font-black">02</div>
-              <p class="font-bold">Soporte 24/7 en tus rutas</p>
-            </div>
+      <div class="relative z-10 text-white max-w-sm">
+        <h1 class="text-6xl font-black tracking-tighter mb-6">eta<span class="text-xl align-top">®</span></h1>
+        <p class="text-xl font-medium text-blue-50 leading-relaxed">
+          Descubre la magia de Cartagena con la red de colaboradores más grande del Caribe.
+        </p>
+        <div class="mt-12 space-y-4">
+          <div class="flex items-center gap-4 bg-white/10 p-4 rounded-3xl border border-white/10">
+            <div class="w-12 h-12 bg-white/20 rounded-2xl flex items-center justify-center font-black">01</div>
+            <p class="font-bold">Acceso a precios exclusivos</p>
+          </div>
+          <div class="flex items-center gap-4 bg-white/10 p-4 rounded-3xl border border-white/10">
+            <div class="w-12 h-12 bg-white/20 rounded-2xl flex items-center justify-center font-black">02</div>
+            <p class="font-bold">Soporte 24/7 en tus rutas</p>
           </div>
         </div>
       </div>
-
     </div>
+
+  </div>
 
   <div class="login-root relative">
 
-    
+
 
     <h1 class="p-bold">Registrate con tu email</h1>
     <p class="text-sma">Bienvenido, Conviertete en un Colaborador</p>
@@ -87,8 +89,10 @@
       <!--Cedula-->
       <div class="input div2">
         <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 15 15">
-                <path fill="#BFC2CF" fill-rule="evenodd" d="M0 3.5A1.5 1.5 0 0 1 1.5 2h12A1.5 1.5 0 0 1 15 3.5v8a1.5 1.5 0 0 1-1.5 1.5h-12A1.5 1.5 0 0 1 0 11.5zM3 6a2 2 0 1 1 4 0a2 2 0 0 1-4 0m9 0H9V5h3zm0 3H9V8h3zM5 9a2.93 2.93 0 0 0-2.618 1.618l-.33.658A.5.5 0 0 0 2.5 12h5a.5.5 0 0 0 .447-.724l-.329-.658A2.93 2.93 0 0 0 5 9" clip-rule="evenodd" stroke-width="0.2" stroke="#000" />
-            </svg>
+          <path fill="#BFC2CF" fill-rule="evenodd"
+            d="M0 3.5A1.5 1.5 0 0 1 1.5 2h12A1.5 1.5 0 0 1 15 3.5v8a1.5 1.5 0 0 1-1.5 1.5h-12A1.5 1.5 0 0 1 0 11.5zM3 6a2 2 0 1 1 4 0a2 2 0 0 1-4 0m9 0H9V5h3zm0 3H9V8h3zM5 9a2.93 2.93 0 0 0-2.618 1.618l-.33.658A.5.5 0 0 0 2.5 12h5a.5.5 0 0 0 .447-.724l-.329-.658A2.93 2.93 0 0 0 5 9"
+            clip-rule="evenodd" stroke-width="0.2" stroke="#000" />
+        </svg>
         <input type="number" id="nit" name="nit" th:value="${colaborador.nit}" placeholder="Nit" required min="0">
       </div>
 
@@ -108,8 +112,7 @@
             d="m19.23 15.26l-2.54-.29a1.99 1.99 0 0 0-1.64.57l-1.84 1.84a15.05 15.05 0 0 1-6.59-6.59l1.85-1.85c.43-.43.64-1.03.57-1.64l-.29-2.52a2 2 0 0 0-1.99-1.77H5.03c-1.13 0-2.07.94-2 2.07c.53 8.54 7.36 15.36 15.89 15.89c1.13.07 2.07-.87 2.07-2v-1.73c.01-1.01-.75-1.86-1.76-1.98"
             stroke-width="0.5" stroke="#BFC2CF" />
         </svg>
-        <input placeholder="Telefono" type="number" th:field="*{usuario.telefono}" required  min="7"
-            max="100000000000">
+        <input placeholder="Telefono" type="number" th:field="*{usuario.telefono}" required min="7" max="100000000000">
       </div>
 
       <!--Direccion-->
@@ -175,22 +178,23 @@
 
       <!--9 submit-->
       <button type="submit" class="login-button div9 ">Unete</button>
-      
+
       <!--10 -->
-      <p class="text-slate-500 font-medium pt-4 text-center div10">¿ya tienes una cuenta? <a th:href="@{/login?role=colaborador}" class="ColorBlue">inicia sesion</a></p>
-      
+      <p class="text-slate-500 font-medium pt-4 text-center div10">¿ya tienes una cuenta? <a
+          th:href="@{/login?role=colaborador}" class="ColorBlue">inicia sesion</a></p>
+
       <a th:href="@{/}"
-          class="div7 mt-10 relative w-full flex items-center gap-2 bg-black/20 backdrop-blur-md border border-black/30 text-black px-2 py-2 rounded-2xl font-bold hover:bg-black/30 transition-all active:scale-95 group lg:hidden">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-            <path fill="currentColor"
-              d="m4 10l-.707.707L2.586 10l.707-.707zm17 8a1 1 0 1 1-2 0zM8.293 15.707l-5-5l1.414-1.414l5 5zm-5-6.414l5-5l1.414 1.414l-5 5zM4 9h10v2H4zm17 7v2h-2v-2zm-7-7a7 7 0 0 1 7 7h-2a5 5 0 0 0-5-5z" />
-          </svg>
-          <span>Anterior pagina</span>
-        </a>
+        class="div7 mt-10 relative w-full flex items-center gap-2 bg-black/20 backdrop-blur-md border border-black/30 text-black px-2 py-2 rounded-2xl font-bold hover:bg-black/30 transition-all active:scale-95 group lg:hidden">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+          <path fill="currentColor"
+            d="m4 10l-.707.707L2.586 10l.707-.707zm17 8a1 1 0 1 1-2 0zM8.293 15.707l-5-5l1.414-1.414l5 5zm-5-6.414l5-5l1.414 1.414l-5 5zM4 9h10v2H4zm17 7v2h-2v-2zm-7-7a7 7 0 0 1 7 7h-2a5 5 0 0 0-5-5z" />
+        </svg>
+        <span>Anterior pagina</span>
+      </a>
 
 
     </form>
-    
+
   </div>
 </main>
 <script th:src="@{/js/contraseñaMostrar.js}"></script>

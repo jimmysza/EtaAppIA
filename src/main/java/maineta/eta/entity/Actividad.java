@@ -120,4 +120,11 @@ public class Actividad {
     @Column(name = "total_tendencia", nullable = false)
     private int totalTendencia = 0;
 
+    public BigDecimal getPrecioConsumidorSafe() {
+        if (precio == null) {
+            return BigDecimal.ZERO;
+        }
+        return precio.multiply(new BigDecimal("1.18"));
+    }
+
 }

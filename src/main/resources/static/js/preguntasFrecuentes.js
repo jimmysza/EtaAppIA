@@ -29,10 +29,4 @@
             }
         }
 
-        // Auto-expand first item on load (optional)
-        document.addEventListener('DOMContentLoaded', () => {
-            const firstButton = document.querySelector('.faq-item button');
-            if (firstButton) {
-                toggleFAQ(firstButton);
-            }
-        });
+        

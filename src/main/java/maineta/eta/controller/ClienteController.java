@@ -103,7 +103,7 @@ public class ClienteController {
 
         // Obtener todas las reservas del cliente
         List<Reserva> reservas = reservaService.getReservasCliente(cliente);
-
+        
         // Pasarlas al modelo
         model.addAttribute("reservas", reservas);
 
@@ -475,10 +475,8 @@ public class ClienteController {
     }
 
     private void cargarModeloRecibo(Model model, Reserva reserva, boolean nuevaReserva) {
-        BigDecimal precioUnitario = reserva.getActividad() != null && reserva.getActividad().getPrecio() != null
-                ? reserva.getActividad().getPrecio()
-                : BigDecimal.ZERO;
-        BigDecimal totalReserva = precioUnitario.multiply(BigDecimal.valueOf(reserva.getCantidad()));
+        BigDecimal precioUnitario = reserva.getPrecioConsumidorSafe();
+        BigDecimal totalReserva = reserva.getPrecioTotalSafe();
 
         model.addAttribute("reserva", reserva);
         model.addAttribute("precioUnitario", precioUnitario);

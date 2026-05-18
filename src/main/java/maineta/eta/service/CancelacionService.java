@@ -212,7 +212,8 @@ public class CancelacionService {
 
         // Si es SIEMPRE_GRATUITA, siempre puede
         if (politica == PoliticaCancelacion.SIEMPRE_GRATUITA) {
-            return new CancelacionInfo(true, reserva.getPrecioConsumidor(), "Cancelación gratuita siempre", 999999);
+            BigDecimal precioConsumidor = obtenerPrecioConsumidorSeguro(reserva);
+            return new CancelacionInfo(true, precioConsumidor, "Cancelación gratuita siempre", 999999);
         }
 
         // Calcular horas restantes
@@ -248,11 +249,12 @@ public class CancelacionService {
         reserva.setCanceladoPor(canceladoPor);
         reserva.setMontoReembolso(montoReembolso);
 
-        if (montoReembolso.compareTo(BigDecimal.ZERO) > 0) {
+        if (montoReembolso != null && montoReembolso.compareTo(BigDecimal.ZERO) > 0) {
             reserva.setEstadoReembolso(EstadoReembolso.PENDIENTE_REEMBOLSO);
             
             // RN-02: Si hay reembolso total, no se paga al colaborador
-            if (montoReembolso.compareTo(reserva.getPrecioConsumidor()) == 0) {
+            BigDecimal precioConsumidor = obtenerPrecioConsumidorSeguro(reserva);
+            if (montoReembolso.compareTo(precioConsumidor) >= 0) {
                 reserva.setEstadoPagoColaborador(EstadoPagoColaborador.NO_APLICA);
             }
             // Si es parcial, el colaborador puede recibir la diferencia
@@ -268,8 +270,18 @@ public class CancelacionService {
         disponibilidadRepository.save(disponibilidad);
     }
 
+    private BigDecimal obtenerPrecioConsumidorSeguro(Reserva reserva) {
+        if (reserva.getPrecioConsumidor() != null) {
+            return reserva.getPrecioConsumidor();
+        }
+        if (reserva.getActividad() != null && reserva.getActividad().getPrecio() != null) {
+            return reserva.getActividad().getPrecio().multiply(new BigDecimal(Math.max(1, reserva.getCantidad())));
+        }
+        return BigDecimal.ZERO;
+    }
+
     private BigDecimal calcularMontoReembolso(Reserva reserva, PoliticaCancelacion politica) {
-        BigDecimal precioConsumidor = reserva.getPrecioConsumidor();
+        BigDecimal precioConsumidor = obtenerPrecioConsumidorSeguro(reserva);
         
         switch (politica) {
             case SIN_REEMBOLSO:
