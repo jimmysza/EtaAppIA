@@ -1,17 +1,21 @@
-# Imagen base segura y version
-FROM eclipse-temurin:17-jdk-alpine
+FROM node:20-alpine AS frontend-build
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci
+COPY tailwind.config.js postcss.config.js ./
+COPY src ./src
+RUN npm run build:css
 
-#argumentos - direcion de archivo jar
-#al compilar se crea ejecutable .jar (mediante java es ejecuta)
+FROM maven:3.9.6-eclipse-temurin-17 AS build
+WORKDIR /app
+COPY pom.xml .
+RUN mvn dependency:go-offline -B
+COPY --from=frontend-build /app/src ./src
+RUN mvn clean package -DskipTests
 
-#variable de entorno = target/{artifactId - version que quieras}
-ARG JAR_FILE=target/eta-0.0.1-SNAPSHOT.jar
-
-#copia de jarfile 
-COPY ${JAR_FILE} etaApp.jar
-
-#al levantarlo, se expone en el 8080 en docker
+FROM eclipse-temurin:17-jre-alpine
+WORKDIR /app
+RUN mkdir -p /app/uploads
+COPY --from=build /app/target/*.jar app.jar
 EXPOSE 8080
-
-#usamos java, .jar
-ENTRYPOINT ["java","-jar","etaApp.jar"]
+ENTRYPOINT ["java","-Dspring.profiles.active=docker","-jar","app.jar"]
