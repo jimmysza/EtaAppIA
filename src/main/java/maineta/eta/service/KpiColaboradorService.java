@@ -41,4 +41,9 @@ public interface KpiColaboradorService {
      * Obtiene los ingresos brutos y netos de los últimos N meses
      */
     List<IngresoMensualDTO> obtenerIngresosMensuales(Long idColaborador, int meses);
+
+    /**
+     * Obtiene estadísticas consolidadas del colaborador para el administrador
+     */
+    maineta.eta.dto.ColaboradorEstadisticasAdminDTO obtenerEstadisticasAdmin(Long idColaborador);
 }

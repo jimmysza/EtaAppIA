@@ -12,6 +12,12 @@ import java.util.Locale;
 
 import org.springframework.stereotype.Service;
 
+import java.time.temporal.ChronoUnit;
+import maineta.eta.dto.ColaboradorEstadisticasAdminDTO;
+import maineta.eta.entity.Colaborador;
+import maineta.eta.repository.ColaboradorRepository;
+import maineta.eta.entity.Admin;
+
 import maineta.eta.dto.EstadosReservaDTO;
 import maineta.eta.dto.IngresoMensualDTO;
 import maineta.eta.dto.KpiActividadDTO;
@@ -34,6 +40,7 @@ public class KpiColaboradorServiceImpl implements KpiColaboradorService {
     private final DisponibilidadRepository disponibilidadRepository;
     private final FavoritoRepository favoritoRepository;
     private final AdminRepository adminRepository;
+    private final ColaboradorRepository colaboradorRepository;
 
     public KpiColaboradorServiceImpl(
             ReservaRepository reservaRepository,
@@ -41,13 +48,15 @@ public class KpiColaboradorServiceImpl implements KpiColaboradorService {
             ComentarioRepository comentarioRepository,
             DisponibilidadRepository disponibilidadRepository,
             FavoritoRepository favoritoRepository,
-            AdminRepository adminRepository) {
+            AdminRepository adminRepository,
+            ColaboradorRepository colaboradorRepository) {
         this.reservaRepository = reservaRepository;
         this.actividadRepository = actividadRepository;
         this.comentarioRepository = comentarioRepository;
         this.disponibilidadRepository = disponibilidadRepository;
         this.favoritoRepository = favoritoRepository;
         this.adminRepository = adminRepository;
+        this.colaboradorRepository = colaboradorRepository;
     }
 
     @Override
@@ -226,6 +235,14 @@ public class KpiColaboradorServiceImpl implements KpiColaboradorService {
                 idColaborador, inicioDateTime, finDateTime, "Cancelada");
         estados.setCancelada(cancelada != null ? cancelada.intValue() : 0);
 
+        Long noShowCliente = reservaRepository.contarReservasPorColaboradorYEstado(
+                idColaborador, inicioDateTime, finDateTime, "NO_SHOW_CLIENTE");
+        estados.setNoShowCliente(noShowCliente != null ? noShowCliente.intValue() : 0);
+
+        Long noShowColaborador = reservaRepository.contarReservasPorColaboradorYEstado(
+                idColaborador, inicioDateTime, finDateTime, "NO_SHOW_COLABORADOR");
+        estados.setNoShowColaborador(noShowColaborador != null ? noShowColaborador.intValue() : 0);
+
         // Tasa de conversión Pendiente -> Confirmada
         if (estados.getPendiente() > 0) {
             estados.setTasaConversionPendienteConfirmada(
@@ -292,5 +309,78 @@ public class KpiColaboradorServiceImpl implements KpiColaboradorService {
         }
 
         return ingresos;
+    }
+
+    @Override
+    public ColaboradorEstadisticasAdminDTO obtenerEstadisticasAdmin(Long idColaborador) {
+        Colaborador colab = colaboradorRepository.findByIdColaborador(idColaborador)
+                .orElseThrow(() -> new IllegalArgumentException("Colaborador no encontrado"));
+
+        ColaboradorEstadisticasAdminDTO dto = new ColaboradorEstadisticasAdminDTO();
+        dto.setIdColaborador(colab.getIdColaborador());
+        dto.setNombre(colab.getUsuario().getNombre());
+        dto.setEmail(colab.getUsuario().getEmail());
+        dto.setNit(colab.getNit());
+        
+        long meses = ChronoUnit.MONTHS.between(colab.getUsuario().getCreatedAt().toLocalDate(), LocalDate.now());
+        dto.setAntiguedadMeses((int) meses);
+
+        Long actividadesCount = actividadRepository.contarActividadesPorColaborador(idColaborador);
+        dto.setTotalActividades(actividadesCount != null ? actividadesCount.intValue() : 0);
+
+        List<maineta.eta.entity.Actividad> actividades = actividadRepository.findByColaborador_IdColaboradorOrderByCreatedAtDesc(idColaborador);
+        int popularidadGlobal = 0;
+        for (maineta.eta.entity.Actividad act : actividades) {
+            popularidadGlobal += act.getTotalVistas() + act.getTotalTendencia();
+        }
+        dto.setPopularidadGlobal(popularidadGlobal);
+
+        Double calificacionPromedio = comentarioRepository.calcularCalificacionPromedioColaborador(idColaborador);
+        dto.setCalificacionPromedio(calificacionPromedio != null ? calificacionPromedio : 0.0);
+
+        LocalDateTime inicioDateTime = colab.getUsuario().getCreatedAt();
+        LocalDateTime finDateTime = LocalDateTime.now();
+
+        Long totalReservas = reservaRepository.contarTodasReservasPorColaborador(idColaborador, inicioDateTime, finDateTime);
+        dto.setTotalReservas(totalReservas != null ? totalReservas.intValue() : 0);
+
+        Long hecho = reservaRepository.contarReservasPorColaboradorYEstado(idColaborador, inicioDateTime, finDateTime, "Hecho");
+        if (totalReservas != null && totalReservas > 0) {
+            dto.setTasaCumplimiento((hecho != null ? hecho : 0) * 100.0 / totalReservas);
+        } else {
+            dto.setTasaCumplimiento(0.0);
+        }
+
+        Long canceladas = reservaRepository.contarReservasPorColaboradorYEstado(idColaborador, inicioDateTime, finDateTime, "Cancelada");
+        if (totalReservas != null && totalReservas > 0) {
+            dto.setTasaCancelacion((canceladas != null ? canceladas : 0) * 100.0 / totalReservas);
+        } else {
+            dto.setTasaCancelacion(0.0);
+        }
+
+        Long noShowColaborador = reservaRepository.contarReservasPorColaboradorYEstado(idColaborador, inicioDateTime, finDateTime, "NO_SHOW_COLABORADOR");
+        dto.setPenalizacionesNoShow(colab.getPenalizaciones() + (noShowColaborador != null ? noShowColaborador.intValue() : 0));
+
+        LocalDate inicioDate = colab.getUsuario().getCreatedAt().toLocalDate();
+        LocalDate finDate = LocalDate.now();
+        Long disponible = disponibilidadRepository.contarDisponibilidadesPorColaboradorYEstado(idColaborador, inicioDate, finDate, "DISPONIBLE");
+        Long completado = disponibilidadRepository.contarDisponibilidadesPorColaboradorYEstado(idColaborador, inicioDate, finDate, "COMPLETADO");
+        Long totalDisp = (disponible != null ? disponible : 0) + (completado != null ? completado : 0);
+        if (totalDisp > 0) {
+            dto.setTasaOcupacionPromedio((completado != null ? completado : 0) * 100.0 / totalDisp);
+        } else {
+            dto.setTasaOcupacionPromedio(0.0);
+        }
+
+        BigDecimal ingresoBruto = reservaRepository.calcularIngresoBrutoPorColaborador(idColaborador, inicioDateTime, finDateTime, "Hecho");
+        dto.setIngresosGenerados(ingresoBruto != null ? ingresoBruto : BigDecimal.ZERO);
+
+        BigDecimal comisionAdmin = adminRepository.findTopByOrderByIdAdminDesc()
+                .map(Admin::getPorcentajeComision)
+                .orElse(BigDecimal.valueOf(18.00));
+        
+        dto.setComisionesEta(dto.getIngresosGenerados().multiply(comisionAdmin).divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_UP));
+
+        return dto;
     }
 }

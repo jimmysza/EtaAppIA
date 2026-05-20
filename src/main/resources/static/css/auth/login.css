@@ -11,10 +11,10 @@ body {
 
 main {
     position: relative;
-    background: #1ab6d9;
+
     /* background: linear-gradient(39deg, rgba(26, 182, 217, 1) 0%, rgba(56, 149, 199, 1) 44%, rgba(79, 158, 207, 1) 59%, rgba(141, 181, 227, 1) 100%); */
     
-    background-color: #ffffff;
+    /* background-color: #ffffff; */
     min-height: 100vh;
     overflow: hidden;
 }
@@ -54,7 +54,7 @@ nav {
     z-index: 2;
     display: none;
     object-fit: cover;
-    width: 100px;
+    width: 60px;
     margin-left: 60px;
     height: 35px;
 }
@@ -330,7 +330,7 @@ input {
 
     .logo {
         display: block;
-        width: 80px;
+        width: 40px;
         margin-left: 0;
     }
 
@@ -345,6 +345,7 @@ input {
     }
 
     .login-root {
+        max-width: 100vh;
         min-width: 100px;
         padding: 0;
         padding-bottom: 50px;
@@ -353,7 +354,7 @@ input {
 }
 
 
-@media screen and (max-width: 550px) {
+@media screen and (max-width: 350px) {
 
     .alinear {
         z-index: 1;
@@ -368,12 +369,12 @@ input {
     }
 
     .login-root {
-        max-width: 620px;
+        max-width: 320px;
         z-index: 1;
         padding-top: 100px;
         border-radius: 0px;
         padding: 0px 20px;
-        height: 100vh;
+        height: 80vh;
         min-width: 320px;
     }
 

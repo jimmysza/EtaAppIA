@@ -89,6 +89,11 @@
                         class="filter-chip inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full border border-gray-200 bg-white text-gray-600 text-xs font-semibold hover:border-gray-400 transition-all">
                         Cancelada Colaborador
                     </button>
+                    <button onclick="filtrarReservas(this,'NO_SHOW_CLIENTE')"
+                        class="filter-chip inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full border border-gray-200 bg-white text-gray-600 text-xs font-semibold hover:border-gray-400 transition-all">
+                        NO SHOW
+                    </button>
+                    
                 </div>
             </div>
 
@@ -132,11 +137,11 @@
 
                             <!-- Badges y ID -->
                             <div class="flex items-center gap-2 flex-wrap">
-                                <span th:text="${reserva.estado}" th:classappend="${reserva.estado == 'Hecho'} 
+                                <span th:text="${reserva.estado == 'NO_SHOW_CLIENTE' || reserva.estado == 'NO_SHOW_COLABORADOR' ? 'No Show' : reserva.estado}" th:classappend="${reserva.estado == 'Hecho'} 
     ? 'bg-green-50 text-green-800 border-green-200' 
     : (${reserva.estado == 'CANCELADA_POR_CLIENTE'} 
         ? 'bg-red-50 text-red-800 border-red-200' 
-        : (${reserva.estado == 'Cancelada'} 
+        : (${reserva.estado == 'Cancelada' || reserva.estado == 'NO_SHOW_CLIENTE' || reserva.estado == 'NO_SHOW_COLABORADOR'} 
             ? 'bg-red-50 text-red-800 border-red-200' 
             : 'bg-amber-50 text-amber-800 border-amber-200'))"
                                     class="text-[11px] font-semibold border px-2.5 py-0.5 rounded-full">
@@ -207,7 +212,7 @@
                                 Chat
                             </a>
                             <!-- class="button-default btn_delete text-open-delete" id="open-delete-modal" -->
-                            <button th:if="${reserva.estado != 'Hecho'}"
+                            <button th:if="${reserva.estado == 'Pendiente'}"
                                 class=" inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl border border-red-200 bg-red-50 text-red-700 text-xs font-semibold hover:bg-red-100 transition-colors whitespace-nowrap text-open-delete"
                                 id="open-delete-modal" th:attr="data-id=${reserva.idReserva}">
                                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

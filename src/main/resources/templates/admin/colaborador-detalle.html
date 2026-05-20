@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" th:href="@{/css/global.css}">
+    <link rel="icon" th:href="@{/images/logos/isotipo.webp}" type="image/x-icon" />
+    <link rel="stylesheet" th:href="@{/css/adminBd.css}">
+    <link rel="stylesheet" th:href="@{/css/tailwind.css}">
+    <title>ETA | Detalle de Colaborador</title>
+</head>
+
+<body class="bg-slate-50">
+    <section class="container-manager">
+        <!-- Sidebar -->
+        <div th:replace="~{componentes/sidebarAdmin :: sidebarAdmin}"></div>
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="header_db   py-4 px-6 mb-6">
+                <div class="flex gap-3 items-center">
+                    <svg id="hideBar" class="hidebar-dashboard cursor-pointer" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                        <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 3.5v17M3 9.4c0-2.24 0-3.36.436-4.216a4 4 0 0 1 1.748-1.748C6.04 3 7.16 3 9.4 3h5.2c2.24 0 3.36 0 4.216.436a4 4 0 0 1 1.748 1.748C21 6.04 21 7.16 21 9.4v5.2c0 2.24 0 3.36-.436 4.216a4 4 0 0 1-1.748 1.748C17.96 21 16.84 21 14.6 21H9.4c-2.24 0-3.36 0-4.216-.436a4 4 0 0 1-1.748-1.748C3 17.96 3 16.84 3 14.6z" />
+                    </svg>
+                    <nav aria-label="Breadcrumb">
+                        <ol class="flex items-center space-x-2 text-sm text-slate-600">
+                            <li><a href="/admin/colaboradores" class="hover:text-blue-600 transition">Colaboradores</a></li>
+                            <li><span class="mx-2">/</span></li>
+                            <li><span class="text-slate-900 font-semibold" th:text="${estadisticas.nombre}"></span></li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+
+            <!-- Profile Header -->
+            <div class="bg-white p-8 rounded-3xl shadow-sm border border-slate-100">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center">
+                    <div>
+                        <h2 class="text-3xl font-bold text-slate-800 tracking-tight" th:text="${estadisticas.nombre}"></h2>
+                        <div class="mt-2 flex flex-wrap items-center gap-4 text-sm text-slate-500">
+                            <span class="flex items-center gap-1">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
+                                <span th:text="${estadisticas.email}"></span>
+                            </span>
+                            <span class="flex items-center gap-1">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0m-5 8a2 2 0 100-4 2 2 0 000 4zm0 0c1.306 0 2.417.835 2.83 2M9 14a3.001 3.001 0 00-2.83 2M15 11h3m-3 4h2" /></svg>
+                                <span th:text="'NIT: ' + ${estadisticas.nit}"></span>
+                            </span>
+                            <span class="flex items-center gap-1 bg-slate-100 px-3 py-1 rounded-full text-slate-700 font-medium">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                                <span th:text="${estadisticas.antiguedadMeses + ' meses activo'}"></span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- KPI Cards -->
+            <div class="mt-6 grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-4">
+                <div class="flex items-center gap-4 rounded-2xl border border-slate-100 bg-white p-6 shadow-sm transition hover:shadow-md">
+                    <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                    </div>
+                    <div>
+                        <p class="text-sm font-medium text-slate-500">Tasa Cumplimiento</p>
+                        <span class="block text-2xl font-bold tracking-tight" 
+                              th:classappend="${estadisticas.tasaCumplimiento >= 80 ? 'text-emerald-600' : 'text-slate-800'}"
+                              th:text="${#numbers.formatDecimal(estadisticas.tasaCumplimiento, 1, 1)} + '%'"></span>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-4 rounded-2xl border border-slate-100 bg-white p-6 shadow-sm transition hover:shadow-md">
+                    <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-amber-50 text-amber-600">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                    </div>
+                    <div>
+                        <p class="text-sm font-medium text-slate-500">Tasa Cancelación</p>
+                        <span class="block text-2xl font-bold tracking-tight text-amber-600"
+                              th:text="${#numbers.formatDecimal(estadisticas.tasaCancelacion, 1, 1)} + '%'"></span>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-4 rounded-2xl border border-rose-200 bg-rose-50 p-6 shadow-sm transition hover:shadow-md">
+                    <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-rose-100 text-rose-600">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                    </div>
+                    <div>
+                        <p class="text-sm font-medium text-rose-800">No Show (Faltas)</p>
+                        <span class="block text-2xl font-bold tracking-tight text-rose-700"
+                              th:text="${estadisticas.penalizacionesNoShow}"></span>
+                    </div>
+                </div>
+                
+                <div class="flex items-center gap-4 rounded-2xl border border-slate-100 bg-white p-6 shadow-sm transition hover:shadow-md">
+                    <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-indigo-50 text-indigo-600">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" /></svg>
+                    </div>
+                    <div>
+                        <p class="text-sm font-medium text-slate-500">Calificación Promedio</p>
+                        <span class="block text-2xl font-bold tracking-tight text-slate-800"
+                              th:text="${#numbers.formatDecimal(estadisticas.calificacionPromedio, 1, 1)} + ' / 5.0'"></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Detailed Stats -->
+            <div class="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-2">
+                <!-- Oferta -->
+                <div class="bg-white p-8 rounded-3xl shadow-sm border border-slate-100">
+                    <h3 class="text-xl font-bold text-slate-800 mb-6 flex items-center gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" /></svg>
+                        Métricas de Oferta y Actividad
+                    </h3>
+                    
+                    <div class="space-y-4">
+                        <div class="flex justify-between items-center p-4 bg-slate-50 rounded-xl">
+                            <span class="text-slate-600 font-medium">Actividades Creadas Totales</span>
+                            <span class="text-xl font-bold text-slate-800" th:text="${estadisticas.totalActividades}"></span>
+                        </div>
+                        
+                        <div class="flex justify-between items-center p-4 bg-slate-50 rounded-xl">
+                            <span class="text-slate-600 font-medium">Índice de Popularidad Global</span>
+                            <span class="text-xl font-bold text-slate-800" th:text="${estadisticas.popularidadGlobal}"></span>
+                        </div>
+                        
+                        <div class="flex justify-between items-center p-4 bg-slate-50 rounded-xl">
+                            <span class="text-slate-600 font-medium">Ocupación Promedio de Cupos</span>
+                            <span class="text-xl font-bold text-slate-800" th:text="${#numbers.formatDecimal(estadisticas.tasaOcupacionPromedio, 1, 1) + '%'}"></span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Finanzas -->
+                <div class="bg-white p-8 rounded-3xl shadow-sm border border-slate-100">
+                    <h3 class="text-xl font-bold text-slate-800 mb-6 flex items-center gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                        Rendimiento Financiero
+                    </h3>
+                    
+                    <div class="space-y-4">
+                        <div class="flex justify-between items-center p-4 bg-slate-50 rounded-xl">
+                            <span class="text-slate-600 font-medium">Reservas Históricas Procesadas</span>
+                            <span class="text-xl font-bold text-slate-800" th:text="${estadisticas.totalReservas}"></span>
+                        </div>
+                        
+                        <div class="flex justify-between items-center p-4 bg-emerald-50 rounded-xl border border-emerald-100">
+                            <span class="text-emerald-800 font-medium">Ingresos Generados (Ventas)</span>
+                            <span class="text-2xl font-bold text-emerald-600 tracking-tight" th:text="${'$' + #numbers.formatDecimal(estadisticas.ingresosGenerados, 0, 'POINT', 0, 'COMMA')}"></span>
+                        </div>
+                        
+                        <div class="flex justify-between items-center p-4 bg-sky-50 rounded-xl border border-sky-100">
+                            <span class="text-sky-800 font-medium">Comisiones Retenidas (Plataforma ETA)</span>
+                            <span class="text-2xl font-bold text-sky-600 tracking-tight" th:text="${'$' + #numbers.formatDecimal(estadisticas.comisionesEta, 0, 'POINT', 0, 'COMMA')}"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </section>
+    <script th:src="@{/js/dashboard.js}"></script>
+</body>
+</html>

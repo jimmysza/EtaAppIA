@@ -264,23 +264,20 @@ public class AllAcessController {
                 // comentar
                 boolean esFavorito = false;
                 boolean puedeCommentar = false;
-                /*
-                 * if (auth != null && auth.isAuthenticated() &&
-                 * !auth.getPrincipal().equals("anonymousUser")) {
-                 * try {
-                 * Usuario usuario = usuarioService.obtenerPorEmail(auth.getName());
-                 * Optional<Cliente> clienteOpt = clienteService.obtenerPorUsuario(usuario);
-                 * if (clienteOpt.isPresent()) {
-                 * Cliente clienteLogueado = clienteOpt.get();
-                 * esFavorito = favoritoService.esFavorito(clienteLogueado, actividad);
-                 * puedeCommentar = reservaService.existeReservaRealizada(
-                 * clienteLogueado.getId(), id);
-                 * }
-                 * } catch (Exception e) {
-                 * // No es cliente, ignorar
-                 * }
-                 * }
-                 */
+                if (auth != null && auth.isAuthenticated() && !auth.getPrincipal().equals("anonymousUser")) {
+                        try {
+                                Usuario usuario = usuarioService.obtenerPorEmail(auth.getName());
+                                Optional<Cliente> clienteOpt = clienteService.obtenerPorUsuario(usuario);
+                                if (clienteOpt.isPresent()) {
+                                        Cliente clienteLogueado = clienteOpt.get();
+                                        esFavorito = favoritoService.esFavorito(clienteLogueado, actividad);
+                                        puedeCommentar = reservaService.existeReservaRealizada(
+                                                        clienteLogueado.getId(), id);
+                                }
+                        } catch (Exception e) {
+                                // No es cliente, ignorar
+                        }
+                }
                 model.addAttribute("esFavorito", esFavorito);
                 model.addAttribute("puedeCommentar", puedeCommentar);
 

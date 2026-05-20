@@ -34,35 +34,6 @@
     padding-top: 20px;
 }
 
-.breadcrumbs {
-    list-style: none;
-    display: flex;
-    flex-wrap: wrap;
-    gap: .5rem;
-    padding: 0;
-    margin: 0;
-    font-size: 0.95rem;
-}
-
-.breadcrumbs li {
-    display: inline-flex;
-    align-items: center;
-    gap: .5rem;
-}
-
-.breadcrumbs li+li::before {
-    content: "/";
-    opacity: .6;
-}
-
-.breadcrumbs a {
-    text-decoration: none;
-}
-
-.breadcrumbs [aria-current="page"] {
-    font-weight: 600;
-    pointer-events: none;
-}
 
 .translate-bar {
     position: absolute;
@@ -832,7 +803,7 @@
 /* Top Colaboradores */
 .collaborators-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     gap: 15px;
     margin-top: 15px;
 }
@@ -1993,77 +1964,188 @@ Tablet
         background: #F2F2F4;
         height: 100vh;
         padding: 0;
+        padding-bottom: 70px;
         display: flex;
+        flex-direction: column;
+        margin: 0;
+        overflow: hidden;
+    }
 
-        flex-direction: column-reverse;
-        padding-top: 8px;
+    .main-content {
+        padding: 15px;
+        border-radius: 0;
+        border-top: none;
+        height: 100%;
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
+
+    /* Reglas para el nuevo sistema de sidebar (.sb-root) */
+    .sb-root {
+        flex-direction: row;
+        height: 70px;
+        min-width: unset;
+        width: 100%;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        background-color: #ffffff;
+        z-index: 1000;
+        box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
+        border-top: 1px solid #e5e2e2;
+        padding: 0;
+        align-items: center;
+        justify-content: space-around;
+        gap: 0;
+    }
+
+    .sb-logo, .sb-section-title, .sb-user-card, .sb-spacer {
+        display: none;
+    }
+
+    .sb-nav {
+        flex-direction: row;
+        gap: 0;
+        justify-content: space-around;
+        align-items: center;
+        width: 100%;
+        height: 100%;
+    }
+
+    .sb-bottom {
+        display: flex;
+        flex-direction: row;
+        border: none;
+        padding-top: 0;
+        gap: 0;
+        justify-content: space-around;
+        align-items: center;
+    }
+
+    .sb-link {
+        flex-direction: column;
+        justify-content: center;
+        padding: 8px;
+        gap: 4px;
+        width: 100%;
+        height: 100%;
+        border-radius: 0;
+    }
+
+    .sb-link span {
+        display: none;
+    }
+    
+    .sb-link svg {
+        min-width: 24px;
+        min-height: 24px;
         margin: 0;
     }
 
+    /* Reglas heredadas por si algún dashboard usa el sistema antiguo */
     .side-bar {
         flex-direction: row;
-        height: fit-content;
+        height: 70px;
         padding: 0;
-        max-width: 700px;
         width: 100%;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        background-color: #ffffff;
+        z-index: 1000;
+        box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
+        border-top: 1px solid #e5e2e2;
+        align-items: center;
+        justify-content: center;
     }
 
     .logo-manager {
         display: none;
     }
 
+    .info {
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        padding: 0;
+    }
+
     .menu {
         display: flex;
-        padding: 10px 0px;
+        width: 100%;
+        height: 100%;
+        padding: 0;
+        margin: 0;
+        align-items: center;
+        justify-content: center;
     }
 
     .menu ul {
         margin: 0;
+        padding: 0;
         flex-direction: row;
-        height: fit-content;
+        height: 100%;
         width: 100%;
-        justify-content: space-between;
+        justify-content: space-around;
+        align-items: center;
+    }
+
+    .menu ul li {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+    }
+
+    .menu-link {
+        border: none;
+        background: transparent;
+        height: 100%;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .menu-link a, .menu-link button {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 8px;
+        gap: 4px;
+        width: 100%;
+        height: 100%;
+    }
+
+    .menu-link a p, .containt-text-bar p, .menu-link button p {
+        display: none;
+    }
+    
+    .menu-link a svg, .menu-link button svg {
+        min-width: 24px;
+        min-height: 24px;
+        margin: 0;
+    }
+
+    .menu-link a:hover p {
+        display: none;
     }
 
     .title-bar {
         display: none;
     }
 
-    .menu-link a {
-        display: flex;
-        flex-direction: column;
-        position: relative;
+    .btn-salir-admin {
+        margin-top: 0;
+        width: 40px;
+        height: 40px;
     }
-
-    .menu-link a p {
-        display: none;
-        position: absolute;
-        top: -69px;
-        background-color: #f3f3f3;
-        color: var(--color-medium-blue);
-        font-weight: bold;
-        text-align: center;
-        text-wrap: pretty;
-
-
-        padding: 6px;
-        border-radius: 8px;
-        left: 0;
-        font-size: 14px;
-        z-index: 20;
-    }
-
-    .menu-link:hover {
-        background: #F2F2F4;
-
-    }
-
-    .menu-link a:hover p {
-        display: block;
-    }
-
-    .info {
-        width: 100%;
+    
+    .menu-link7 {
+        position: static;
+        width: auto;
     }
 
     .Actividades-Container {
@@ -2072,5 +2154,12 @@ Tablet
 
     .hidebar-dashboard {
         display: none;
+    }
+    
+    .table-responsive {
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        margin-bottom: 1rem;
     }
 }

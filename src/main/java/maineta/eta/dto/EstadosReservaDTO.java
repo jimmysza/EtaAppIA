@@ -12,5 +12,7 @@ public class EstadosReservaDTO {
     private int confirmada;
     private int hecho;
     private int cancelada;
+    private int noShowCliente;
+    private int noShowColaborador;
     private double tasaConversionPendienteConfirmada;
 }

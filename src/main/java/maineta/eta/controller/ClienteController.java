@@ -103,6 +103,18 @@ public class ClienteController {
 
         // Obtener todas las reservas del cliente
         List<Reserva> reservas = reservaService.getReservasCliente(cliente);
+
+        LocalDate hoy = LocalDate.now();
+        boolean actualizadas = false;
+        for (Reserva r : reservas) {
+            if ("Pendiente".equalsIgnoreCase(r.getEstado()) && r.getDisponibilidad() != null) {
+                if (r.getDisponibilidad().getFecha().isBefore(hoy)) {
+                    r.setEstado("NO_SHOW_CLIENTE");
+                    reservaService.guardarReserva(r);
+                    actualizadas = true;
+                }
+            }
+        }
         
         // Pasarlas al modelo
         model.addAttribute("reservas", reservas);

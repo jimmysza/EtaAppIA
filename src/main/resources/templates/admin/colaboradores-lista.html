@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" th:href="@{/css/global.css}">
+    <link rel="icon" th:href="@{/images/logos/isotipo.webp}" type="image/x-icon" />
+    <link rel="stylesheet" th:href="@{/css/adminBd.css}">
+    <link rel="stylesheet" th:href="@{/css/tailwind.css}">
+    <title>ETA | Gestión de Colaboradores</title>
+</head>
+
+<body>
+    <section class="container-manager">
+        <!-- Sidebar -->
+        <div th:replace="~{componentes/sidebarAdmin :: sidebarAdmin}"></div>
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="header_db">
+                <div class="flex gap-3">
+                    <svg id="hideBar" class="hidebar-dashboard" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                        <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 3.5v17M3 9.4c0-2.24 0-3.36.436-4.216a4 4 0 0 1 1.748-1.748C6.04 3 7.16 3 9.4 3h5.2c2.24 0 3.36 0 4.216.436a4 4 0 0 1 1.748 1.748C21 6.04 21 7.16 21 9.4v5.2c0 2.24 0 3.36-.436 4.216a4 4 0 0 1-1.748 1.748C17.96 21 16.84 21 14.6 21H9.4c-2.24 0-3.36 0-4.216-.436a4 4 0 0 1-1.748-1.748C3 17.96 3 16.84 3 14.6z" />
+                    </svg>
+                    <nav aria-label="Breadcrumb bg-transparent">
+                        <ol class="breadcrumbs bg-transparent">
+                            <li><a href="/">Inicio</a></li>
+                            <li><a class="text-blue-600 font-bold">Colaboradores</a></li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+
+            <div class="dashboard-section mt-6">
+                <div class="section-title">Lista de Colaboradores y Estadísticas</div>
+                <div class="recent-reservations-table overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="bg-slate-100">
+                                <th class="p-4 border-b font-semibold text-slate-700">Nombre</th>
+                                <th class="p-4 border-b font-semibold text-slate-700">NIT</th>
+                                <th class="p-4 border-b font-semibold text-slate-700">Antigüedad</th>
+                                <th class="p-4 border-b font-semibold text-slate-700">Actividades</th>
+                                <th class="p-4 border-b font-semibold text-slate-700">Reservas</th>
+                                <th class="p-4 border-b font-semibold text-slate-700">Cumplimiento</th>
+                                <th class="p-4 border-b font-semibold text-slate-700">Penalizaciones</th>
+                                <th class="p-4 border-b font-semibold text-slate-700">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:if="${#lists.isEmpty(estadisticas)}">
+                                <td colspan="8" class="p-4 text-center text-slate-500">No hay colaboradores registrados</td>
+                            </tr>
+                            <tr th:each="stat : ${estadisticas}" class="hover:bg-slate-50 transition">
+                                <td class="p-4 border-b" th:text="${stat.nombre}"></td>
+                                <td class="p-4 border-b" th:text="${stat.nit}"></td>
+                                <td class="p-4 border-b" th:text="${stat.antiguedadMeses + ' meses'}"></td>
+                                <td class="p-4 border-b text-center" th:text="${stat.totalActividades}"></td>
+                                <td class="p-4 border-b text-center" th:text="${stat.totalReservas}"></td>
+                                <td class="p-4 border-b">
+                                    <span th:class="${stat.tasaCumplimiento >= 80 ? 'text-emerald-600 font-bold' : (stat.tasaCumplimiento >= 50 ? 'text-amber-500 font-bold' : 'text-rose-600 font-bold')}" 
+                                          th:text="${#numbers.formatDecimal(stat.tasaCumplimiento, 1, 1) + '%'}"></span>
+                                </td>
+                                <td class="p-4 border-b text-center">
+                                    <span th:if="${stat.penalizacionesNoShow > 0}" class="text-rose-600 font-bold bg-rose-100 px-2 py-1 rounded-full text-xs" th:text="${stat.penalizacionesNoShow}"></span>
+                                    <span th:if="${stat.penalizacionesNoShow == 0}" class="text-slate-400">0</span>
+                                </td>
+                                <td class="p-4 border-b">
+                                    <a th:href="@{'/admin/colaboradores/' + ${stat.idColaborador}}" class="rounded-lg bg-slate-900 px-4 py-2 text-sm font-semibold text-white transition hover:bg-slate-700 shadow-sm">Ver Detalle</a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </section>
+    <script th:src="@{/js/dashboard.js}"></script>
+</body>
+</html>

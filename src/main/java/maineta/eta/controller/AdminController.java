@@ -39,6 +39,9 @@ import maineta.eta.service.IUploadFileService;
 import maineta.eta.service.IdiomaService;
 import maineta.eta.service.ReservaService;
 import maineta.eta.service.UsuarioService;
+import maineta.eta.service.KpiColaboradorService;
+import maineta.eta.dto.ColaboradorEstadisticasAdminDTO;
+import maineta.eta.entity.Colaborador;
 
 @Controller
 @RequestMapping("/admin")
@@ -56,6 +59,7 @@ public class AdminController {
     private final ColaboradorService colaboradorService;
     private final DisponibilidadService disponibilidadService;
     private final CancelacionService cancelacionService;
+    private final KpiColaboradorService kpiColaboradorService;
 
     /* @Autowired */
     public AdminController(AdminService adminService, IUploadFileService uploadFileService, CategoriaService categoriaService, IdiomaService idiomaService,
@@ -63,7 +67,7 @@ public class AdminController {
             UsuarioService usuarioService, ColaboradorService colaboradorService,
             ReservaService reservaService,
             ClienteService clienteService, DisponibilidadService disponibilidadService,
-            CancelacionService cancelacionService) {
+            CancelacionService cancelacionService, KpiColaboradorService kpiColaboradorService) {
         this.adminService = adminService;
         this.uploadFileService = uploadFileService;
         this.categoriaService = categoriaService;
@@ -75,6 +79,7 @@ public class AdminController {
         this.reservaService = reservaService;
         this.colaboradorService = colaboradorService;
         this.cancelacionService = cancelacionService;
+        this.kpiColaboradorService = kpiColaboradorService;
     }
 
     @GetMapping("/dashboard")
@@ -414,6 +419,27 @@ public class AdminController {
         model.addAttribute("pagina", "ingresos");
 
         return "admin/ingresos";
+    }
+
+    // ===== GESTIÓN Y ESTADÍSTICAS DE COLABORADORES =====
+
+    @GetMapping("/colaboradores")
+    public String listarColaboradores(Model model) {
+        List<Colaborador> colaboradores = colaboradorService.findAll();
+        List<ColaboradorEstadisticasAdminDTO> estadisticas = colaboradores.stream()
+            .map(c -> kpiColaboradorService.obtenerEstadisticasAdmin(c.getIdColaborador()))
+            .collect(Collectors.toList());
+        model.addAttribute("estadisticas", estadisticas);
+        model.addAttribute("pagina", "colaboradores");
+        return "admin/colaboradores-lista";
+    }
+
+    @GetMapping("/colaboradores/{id}")
+    public String verDetalleColaborador(@PathVariable Long id, Model model) {
+        ColaboradorEstadisticasAdminDTO estadisticas = kpiColaboradorService.obtenerEstadisticasAdmin(id);
+        model.addAttribute("estadisticas", estadisticas);
+        model.addAttribute("pagina", "colaboradores");
+        return "admin/colaborador-detalle";
     }
 
 }

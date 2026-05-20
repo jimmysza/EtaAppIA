@@ -23,72 +23,86 @@
                 display: none;
             }
         }
+
+        /* Custom scrollbar hide for cleaner mobile look */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
     </style>
 </head>
 
-<body class="relative md:overflow-y-hidden">
+<body class="relative min-h-screen bg-gradient-to-br from-[#08b6aa] via-[#4ebfd7] to-[#7fece3] md:overflow-y-hidden">
 
-    <div th:if="${param.registrarse}" class="alert alert-info">
-        Debes registrarte o iniciar sesión para acceder.
-    </div>
+    <!-- Alerts Container - Mobile Optimized -->
+    <div class="fixed top-0 left-0 right-0 z-[2000] px-4 pt-4 space-y-2 pointer-events-none">
+        <div th:if="${param.registrarse}" class="alert alert-info pointer-events-auto mx-auto max-w-md">
+            Debes registrarte o iniciar sesión para acceder.
+        </div>
 
-    <div th:if="${param.pendingVerification}" class="alert alert-info alert-info-big">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-            stroke="currentColor" stroke-width="2" style="flex-shrink:0;">
-            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
-            <polyline points="22,6 12,13 2,6"></polyline>
-        </svg>
-        <div>
-            <strong>¡Registro exitoso!</strong><br>
-            Hemos enviado un correo de verificación a tu email. Por favor, revisa tu bandeja de entrada (y spam) y haz
-            clic en el enlace para activar tu cuenta.
+        <div th:if="${param.pendingVerification}" class="alert alert-info alert-info-big pointer-events-auto mx-auto max-w-md">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" style="flex-shrink:0;">
+                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                <polyline points="22,6 12,13 2,6"></polyline>
+            </svg>
+            <div>
+                <strong>¡Registro exitoso!</strong><br>
+                Hemos enviado un correo de verificación a tu email. Por favor, revisa tu bandeja de entrada (y spam) y haz
+                clic en el enlace para activar tu cuenta.
+            </div>
+        </div>
+
+        <div th:if="${param.verified}" class="alert alert-success pointer-events-auto mx-auto max-w-md">
+            Tu cuenta fue verificada correctamente. Ya puedes iniciar sesión.
+        </div>
+
+        <div th:if="${param.notVerified}" class="alert alert-danger pointer-events-auto mx-auto max-w-md">
+            Tu cuenta aún no está verificada. Revisa tu correo y abre el enlace de verificación.
+        </div>
+
+        <div th:if="${param.expiredToken}" class="alert alert-danger pointer-events-auto mx-auto max-w-md">
+            El enlace de verificación expiró.
+        </div>
+
+        <div th:if="${param.invalidToken}" class="alert alert-danger pointer-events-auto mx-auto max-w-md">
+            El enlace de verificación no es válido.
+        </div>
+
+        <div th:if="${param.error}" class="alert alert-danger pointer-events-auto mx-auto max-w-md">
+            Credenciales inválidas.
+        </div>
+
+        <div th:if="${exito}" class="alert alert-success pointer-events-auto mx-auto max-w-md">
+            <span th:text="${exito}"></span>
+        </div>
+
+        <div th:if="${error}" class="alert alert-danger pointer-events-auto mx-auto max-w-md">
+            <span th:text="${error}"></span>
+        </div>
+
+        <div th:if="${param.expired}" class="alert alert-info pointer-events-auto mx-auto max-w-md">
+            La Sesión expiró
         </div>
     </div>
 
-    <div th:if="${param.verified}" class="alert alert-success">
-        Tu cuenta fue verificada correctamente. Ya puedes iniciar sesión.
-    </div>
-
-    <div th:if="${param.notVerified}" class="alert alert-danger">
-        Tu cuenta aún no está verificada. Revisa tu correo y abre el enlace de verificación.
-    </div>
-
-    <div th:if="${param.expiredToken}" class="alert alert-danger">
-        El enlace de verificación expiró.
-    </div>
-
-    <div th:if="${param.invalidToken}" class="alert alert-danger">
-        El enlace de verificación no es válido.
-    </div>
-
-    <div th:if="${param.error}" class="alert alert-danger">
-        Credenciales inválidas.
-    </div>
-
-    <!-- Mensajes flash -->
-    <div th:if="${exito}" class="alert alert-success">
-        <span th:text="${exito}"></span>
-    </div>
-
-    <div th:if="${error}" class="alert alert-danger">
-        <span th:text="${error}"></span>
-    </div>
-
-    <div th:if="${param.expired}">
-        <div class="alert alert-info">La Sesión expiró</div>
-    </div>
+    <!-- Desktop Back Button -->
     <a th:href="@{/}"
-        class="hidden md:flex absolute top-[-16px] left-5 items-center gap-2 bg-white/20 border border-white/30 text-white px-3 py-3 rounded-2xl font-bold hover:bg-white/30 z-[1000]">
+        class="hidden md:flex absolute top-4 left-5 items-center gap-2 bg-white/20 border border-white/30 text-white px-3 py-3 rounded-2xl font-bold hover:bg-white/30 z-[1000] transition-all duration-300 hover:scale-105">
         <svg class="back-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24">
             <path fill="currentColor"
                 d="m4 10l-.707.707L2.586 10l.707-.707zm17 8a1 1 0 1 1-2 0zM8.293 15.707l-5-5l1.414-1.414l5 5zm-5-6.414l5-5l1.414 1.414l-5 5zM4 9h10v2H4zm17 7v2h-2v-2zm-7-7a7 7 0 0 1 7 7h-2a5 5 0 0 0-5-5z" />
         </svg>
     </a>
 
-    <div class="container-100 sm:hidden">
-        <nav>
+    <!-- Mobile Header / Nav -->
+    <div class="w-full md:hidden">
+        <nav class="flex items-center justify-between px-4 py-3">
             <a th:href="@{/}"
-                class=" md:hidden lg:hidden absolute top-50% left-5 flex items-center gap-2 bg-white/20  border border-white/30 text-white px-3 py-3 rounded-2xl font-bold hover:bg-white/30 z-1000">
+                class="flex items-center gap-2 bg-white/20 border border-white/30 text-white px-3 py-2.5 rounded-xl font-bold hover:bg-white/30 transition-all duration-300">
                 <svg class="back-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24">
                     <path fill="currentColor"
                         d="m4 10l-.707.707L2.586 10l.707-.707zm17 8a1 1 0 1 1-2 0zM8.293 15.707l-5-5l1.414-1.414l5 5zm-5-6.414l5-5l1.414 1.414l-5 5zM4 9h10v2H4zm17 7v2h-2v-2zm-7-7a7 7 0 0 1 7 7h-2a5 5 0 0 0-5-5z" />
@@ -96,77 +110,96 @@
             </a>
 
             <a class="flex justify-center items-center cursor-pointer" th:href="@{/}">
-                <img th:src="@{/images/logos/logo.webp}" class="logo" alt="logo" loading="lazy" />
+                <img th:src="@{/images/logos/logo.webp}" class="h-8 w-auto object-contain" alt="logo" loading="lazy" />
             </a>
+
+            <!-- Spacer for centering -->
+            <div class="w-10"></div>
         </nav>
     </div>
 
-    <div class="login-root">
-        <div class="login-icon">
-            <!-- <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-                <path fill="#000"
-                    d="M12 21v-2h7V5h-7V3h7q.825 0 1.413.588T21 5v14q0 .825-.587 1.413T19 21zm-2-4l-1.375-1.45l2.55-2.55H3v-2h8.175l-2.55-2.55L10 7l5 5z" />
-            </svg> -->
-            <img th:src="@{/images/logos/isotipo.webp}" alt="etaApp" class="w-20 h-20 rounded-2xl" />
-        </div>
+    <!-- Main Content Area -->
+    <main class="relative min-h-[calc(100vh-60px)] md:min-h-screen flex items-center justify-center px-4 py-6 md:py-0">
 
-        <h1 class="p-bold">Ingresa con tu usuario</h1>
-        <p class="text-sma">Disfruta de todas las actividades</p>
+        <!-- Login Card -->
+        <div class="w-full max-w-[420px] bg-white rounded-3xl shadow-2xl px-6 py-8 md:px-10 md:py-12 flex flex-col items-center gap-4 relative z-20">
 
-        <form th:action="@{/login}" method="post">
-            <div class="input">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-                    <path fill="#BFC2CF"
-                        d="M22 6c0-1.1-.9-2-2-2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2zm-2 0l-8 5l-8-5zm0 12H4V8l8 5l8-5z" />
-                </svg>
-                <input type="text" placeholder="Email" id="username" name="username" autofocus="autofocus" required />
+            <!-- Logo Icon -->
+            <div class="w-16 h-16 md:w-20 md:h-20 bg-gray-100 rounded-2xl shadow-lg flex items-center justify-center mb-2">
+                <img th:src="@{/images/logos/isotipo.webp}" alt="etaApp" class="w-12 h-12 md:w-16 md:h-16 rounded-xl object-contain" />
             </div>
 
-            <div class="input relative">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-                    <path fill="#BFC2Cf"
-                        d="M20 12c0-1.103-.897-2-2-2h-1V7c0-2.757-2.243-5-5-5S7 4.243 7 7v3H6c-1.103 0-2 .897-2 2v8c0 1.103.897 2 2 2h12c1.103 0 2-.897 2-2zM9 7c0-1.654 1.346-3 3-3s3 1.346 3 3v3H9z" />
-                </svg>
-
-                <input type="password" placeholder="Contraseña" required id="password" name="password"
-                    autofocus="autofocus" />
-                <!-- Botón para mostrar/ocultar contraseña -->
-                <button type="button" id="togglePassLogin"
-                    class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 password-toggle ">
-
-
-                    <!-- Ojo cerrado -->
-                    <svg id="eyeClosedLogin" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 " fill="none"
-                        viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.542-7a10.05 10.05 0 011.658-3.248M9.88 9.88A3 3 0 0114.12 14.12M20.12 20.12L3.88 3.88" />
-                    </svg>
-                </button>
-            </div>
-            <!-- <div class="forgot-password">
-                <a href="#">olvidaste la contraseña?</a>
-            </div> -->
-
-            <button type="submit" class="login-button">Unete</button>
-
-            <p class="register">¿no tienes una cuenta?
-                <a th:if="${role == 'cliente'}" th:href="@{/registro/cliente}">registrarse</a>
-                <a th:if="${role == 'colaborador'}" th:href="@{/registro/colaborador}">registrarse</a>
-                <a th:if="${role == null}" th:href="@{/registro/cliente}">registrarse</a>
+            <h1 class="text-xl md:text-[22px] font-semibold text-center text-[var(--color-medium-blue)] px-2">
+                Ingresa con tu usuario
+            </h1>
+            <p class="text-xs md:text-[11px] text-gray-500 text-center px-4">
+                Disfruta de todas las actividades
             </p>
-            <div class="relative mt-8">
-                <div class="absolute inset-0 flex items-center">
-                    <div class="w-full h-1 border-t border-slate-400"></div>
-                </div>
-                <div
-                    class="relative flex justify-center text-[10px] uppercase tracking-[0.4em] font-black text-slate-500">
-                    <span class="bg-white px-6">O utiliza Google</span>
-                </div>
-            </div>
-            <div class="social-login">
-                <a href="/oauth2/authorization/google" class="log-Auth">
 
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 48 48">
+            <form th:action="@{/login}" method="post" class="w-full mt-2 space-y-4">
+
+                <!-- Email Input -->
+                <div class="flex items-center gap-3 bg-[#F8FAFC] border border-gray-200/70 rounded-xl px-3 py-3 md:px-4 md:py-3.5 w-full transition-all duration-200 focus-within:border-[var(--color-main)] focus-within:ring-2 focus-within:ring-[var(--color-main)]/20">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" class="flex-shrink-0 text-gray-400">
+                        <path fill="#BFC2CF"
+                            d="M22 6c0-1.1-.9-2-2-2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2zm-2 0l-8 5l-8-5zm0 12H4V8l8 5l8-5z" />
+                    </svg>
+                    <input type="text" placeholder="Email" id="username" name="username" autofocus="autofocus" required
+                        class="flex-1 bg-transparent border-none outline-none text-sm text-gray-700 placeholder-gray-400 w-full" />
+                </div>
+
+                <!-- Password Input -->
+                <div class="flex items-center gap-3 bg-[#F8FAFC] border border-gray-200/70 rounded-xl px-3 py-3 md:px-4 md:py-3.5 w-full relative transition-all duration-200 focus-within:border-[var(--color-main)] focus-within:ring-2 focus-within:ring-[var(--color-main)]/20">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" class="flex-shrink-0 text-gray-400">
+                        <path fill="#BFC2Cf"
+                            d="M20 12c0-1.103-.897-2-2-2h-1V7c0-2.757-2.243-5-5-5S7 4.243 7 7v3H6c-1.103 0-2 .897-2 2v8c0 1.103.897 2 2 2h12c1.103 0 2-.897 2-2zM9 7c0-1.654 1.346-3 3-3s3 1.346 3 3v3H9z" />
+                    </svg>
+
+                    <input type="password" placeholder="Contraseña" required id="password" name="password"
+                        autofocus="autofocus"
+                        class="flex-1 bg-transparent border-none outline-none text-sm text-gray-700 placeholder-gray-400 w-full pr-10" />
+
+                    <!-- Toggle Password Button -->
+                    <button type="button" id="togglePassLogin"
+                        class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 password-toggle p-1 rounded-lg hover:bg-gray-100 transition-colors">
+                        <svg id="eyeClosedLogin" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
+                            viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.542-7a10.05 10.05 0 011.658-3.248M9.88 9.88A3 3 0 0114.12 14.12M20.12 20.12L3.88 3.88" />
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" 
+                    class="w-full mt-4 bg-[var(--color-main)] text-white font-bold py-3.5 rounded-xl text-sm hover:opacity-90 active:scale-[0.98] transition-all duration-200 shadow-lg shadow-[var(--color-main)]/30">
+                    Únete
+                </button>
+
+                <!-- Register Link -->
+                <p class="text-center text-sm text-gray-500 mt-4">
+                    ¿No tienes una cuenta?
+                    <a th:if="${role == 'cliente'}" th:href="@{/registro/cliente}" class="text-[var(--color-medium-blue)] font-semibold hover:underline">Registrarse</a>
+                    <a th:if="${role == 'colaborador'}" th:href="@{/registro/colaborador}" class="text-[var(--color-medium-blue)] font-semibold hover:underline">Registrarse</a>
+                    <a th:if="${role == null}" th:href="@{/registro/cliente}" class="text-[var(--color-medium-blue)] font-semibold hover:underline">Registrarse</a>
+                </p>
+
+                <!-- Divider -->
+                <div class="relative mt-6">
+                    <div class="absolute inset-0 flex items-center">
+                        <div class="w-full h-px bg-gray-300"></div>
+                    </div>
+                    <div class="relative flex justify-center">
+                        <span class="bg-white px-4 text-[10px] uppercase tracking-[0.3em] font-bold text-gray-400">
+                            O utiliza Google
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Google Login -->
+                <a href="/oauth2/authorization/google" 
+                    class="flex items-center justify-center gap-3 w-full bg-white border border-gray-200 rounded-xl py-3 px-4 shadow-md hover:shadow-lg hover:border-gray-300 transition-all duration-200 active:scale-[0.98]">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 48 48">
                         <path fill="#ffc107"
                             d="M43.611 20.083H42V20H24v8h11.303c-1.649 4.657-6.08 8-11.303 8c-6.627 0-12-5.373-12-12s5.373-12 12-12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4C12.955 4 4 12.955 4 24s8.955 20 20 20s20-8.955 20-20c0-1.341-.138-2.65-.389-3.917" />
                         <path fill="#ff3d00"
@@ -175,35 +208,35 @@
                             d="M24 44c5.166 0 9.86-1.977 13.409-5.192l-6.19-5.238A11.9 11.9 0 0 1 24 36c-5.202 0-9.619-3.317-11.283-7.946l-6.522 5.025C9.505 39.556 16.227 44 24 44" />
                         <path fill="#1976d2"
                             d="M43.611 20.083H42V20H24v8h11.303a12.04 12.04 0 0 1-4.087 5.571l.003-.002l6.19 5.238C36.971 39.205 44 34 44 24c0-1.341-.138-2.65-.389-3.917" />
-                    </svg>Google</a>
-            </div>
-        </form>
-    </div>
+                    </svg>
+                    <span class="text-sm font-medium text-gray-700">Continuar con Google</span>
+                </a>
+            </form>
+        </div>
+    </main>
 
-    <div class="absolute disapear top-12 left-30 -rotate-6 z-10  md:block lg:block esconderCell">
-        <div class="w-[130px] h-[130px] rounded-2xl overflow-hidden shadow-2xl ring-[3px] ring-white">
+    <!-- Decorative Images - Hidden on mobile, shown on md+ -->
+    <div class="absolute disapear top-12 left-8 md:left-16 lg:left-30 -rotate-6 z-10 hidden md:block">
+        <div class="w-[100px] h-[100px] lg:w-[130px] lg:h-[130px] rounded-2xl overflow-hidden shadow-2xl ring-[3px] ring-white">
             <img th:src="@{/images/shares/share1.webp}" alt="actividad" class="w-full h-full object-cover">
         </div>
     </div>
 
-    <!-- Foto izquierda abajo — rotada hacia la derecha -->
-    <div class="absolute disapear bottom-14 left-23 rotate-[5deg] z-10 sm:hidden md:block lg:block esconderCell">
-        <div class="w-[140px] h-[140px] rounded-2xl overflow- shadow-xl ring-[3px] ring-white">
+    <div class="absolute disapear bottom-14 left-6 md:left-16 lg:left-23 rotate-[5deg] z-10 hidden md:block">
+        <div class="w-[110px] h-[110px] lg:w-[140px] lg:h-[140px] rounded-2xl overflow-hidden shadow-xl ring-[3px] ring-white">
             <img th:src="@{/images/shares/share2.webp}" alt="experiencia"
                 class="w-full h-full object-cover rounded-2xl">
         </div>
     </div>
 
-    <!-- Foto derecha arriba — rotada hacia la derecha -->
-    <div class="absolute disapear top-8 right-18 rotate-[7deg] z-10  md:block lg:block esconderCell">
-        <div class="w-[160px] h-[160px] rounded-2xl overflow- shadow-2xl ring-[3px] ring-white">
+    <div class="absolute disapear top-8 right-6 md:right-12 lg:right-18 rotate-[7deg] z-10 hidden md:block">
+        <div class="w-[120px] h-[120px] lg:w-[160px] lg:h-[160px] rounded-2xl overflow-hidden shadow-2xl ring-[3px] ring-white">
             <img th:src="@{/images/shares/share3.webp}" alt="tour" class="w-full h-full object-cover rounded-2xl">
         </div>
     </div>
 
-    <!-- Foto derecha abajo — rotada hacia la izquierda -->
-    <div class="absolute disapear bottom-18 right-17 -rotate-[4deg] z-10  md:block lg:block esconderCell">
-        <div class="w-[120px] h-[120px] rounded-xl overflow- shadow-xl  ">
+    <div class="absolute disapear bottom-18 right-6 md:right-10 lg:right-17 -rotate-[4deg] z-10 hidden md:block">
+        <div class="w-[90px] h-[90px] lg:w-[120px] lg:h-[120px] rounded-xl overflow-hidden shadow-xl">
             <img th:src="@{/images/shares/share4.webp}" alt="gastronomia"
                 class="w-full h-full object-cover rounded-2xl">
         </div>
