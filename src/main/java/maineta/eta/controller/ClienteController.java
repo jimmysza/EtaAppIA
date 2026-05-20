@@ -109,13 +109,13 @@ public class ClienteController {
         for (Reserva r : reservas) {
             if ("Pendiente".equalsIgnoreCase(r.getEstado()) && r.getDisponibilidad() != null) {
                 if (r.getDisponibilidad().getFecha().isBefore(hoy)) {
-                    r.setEstado("NO_SHOW_CLIENTE");
+                    r.setEstado("Pendiente");
                     reservaService.guardarReserva(r);
                     actualizadas = true;
                 }
             }
         }
-        
+
         // Pasarlas al modelo
         model.addAttribute("reservas", reservas);
 
@@ -161,7 +161,8 @@ public class ClienteController {
 
         ReservaDTO reservaDTO = new ReservaDTO();
         reservaDTO.setIdDisponibilidad(disponibilidad.getIdDisponibilidad());
-        cargarModeloCheckout(model, disponibilidad.getActividad(), disponibilidad.getFecha(), disponibilidad, reservaDTO, null, cliente);
+        cargarModeloCheckout(model, disponibilidad.getActividad(), disponibilidad.getFecha(), disponibilidad,
+                reservaDTO, null, cliente);
 
         return "cliente/checkout";
     }
@@ -284,7 +285,8 @@ public class ClienteController {
             model.addAttribute("reservaDTO", reservaDTO);
             model.addAttribute("pagina", "checkout");
             if (disponibilidad != null) {
-                cargarModeloCheckout(model, actividad, disponibilidad.getFecha(), disponibilidad, reservaDTO, null, cliente);
+                cargarModeloCheckout(model, actividad, disponibilidad.getFecha(), disponibilidad, reservaDTO, null,
+                        cliente);
             }
             model.addAttribute("error", "❌ Error al realizar la reserva: " + e.getMessage());
 
@@ -309,7 +311,8 @@ public class ClienteController {
     }
 
     @GetMapping("/cancelar/reserva/{id}")
-    public String cancelarReservacion(@PathVariable Long id, RedirectAttributes redirectAttributes, Authentication authentication) {
+    public String cancelarReservacion(@PathVariable Long id, RedirectAttributes redirectAttributes,
+            Authentication authentication) {
         // Obtener el cliente autenticado
         String email = authentication.getName();
         Usuario usuario = usuarioService.obtenerPorEmail(email);
@@ -319,20 +322,21 @@ public class ClienteController {
         try {
             // Usar el servicio de cancelación que aplica las políticas correctas
             cancelacionService.cancelarPorCliente(id, cliente.getId());
-            
-            redirectAttributes.addFlashAttribute("exito", "Reserva cancelada correctamente. El reembolso será procesado según la política de la actividad.");
+
+            redirectAttributes.addFlashAttribute("exito",
+                    "Reserva cancelada correctamente. El reembolso será procesado según la política de la actividad.");
             return "redirect:/cliente/dashboard";
-            
+
         } catch (CancelacionFueraDeTiempoException e) {
             // Fuera de la ventana de cancelación permitida
             redirectAttributes.addFlashAttribute("error", e.getMessage());
             return "redirect:/cliente/dashboard";
-            
+
         } catch (IllegalArgumentException e) {
             // Otros errores de validación
             redirectAttributes.addFlashAttribute("error", e.getMessage());
             return "redirect:/cliente/dashboard";
-            
+
         } catch (Exception e) {
             // Error inesperado
             redirectAttributes.addFlashAttribute("error", "Error al cancelar la reserva: " + e.getMessage());
@@ -503,11 +507,13 @@ public class ClienteController {
 
     private void cargarModeloCheckout(Model model, Actividad actividad, LocalDate fechaSeleccionada,
             Disponibilidad disponibilidadSeleccionada, ReservaDTO reservaDTO, String error, Cliente cliente) {
-        List<Disponibilidad> disponibilidadesDelDia = disponibilidadService.obtenerPorActividad(actividad.getIdActividad())
+        List<Disponibilidad> disponibilidadesDelDia = disponibilidadService
+                .obtenerPorActividad(actividad.getIdActividad())
                 .stream()
                 .filter(disponibilidad -> "DISPONIBLE".equalsIgnoreCase(disponibilidad.getEstado()))
                 .filter(disponibilidad -> disponibilidad.getCuposDisponibles() > 0)
-                .filter(disponibilidad -> fechaSeleccionada != null && fechaSeleccionada.equals(disponibilidad.getFecha()))
+                .filter(disponibilidad -> fechaSeleccionada != null
+                        && fechaSeleccionada.equals(disponibilidad.getFecha()))
                 .toList();
 
         Disponibilidad disponibilidadActiva = disponibilidadSeleccionada;
@@ -526,10 +532,11 @@ public class ClienteController {
         model.addAttribute("reservaDTO", reservaDTO);
         model.addAttribute("precioUnitario", precioUnitario);
         model.addAttribute("pagina", "checkout");
-        
+
         // ✅ Ya no necesitamos pasar datos de Wompi ni del cliente al frontend
-        // El formulario simplemente redirige a /cliente/pago/iniciar con los parámetros necesarios
-        
+        // El formulario simplemente redirige a /cliente/pago/iniciar con los parámetros
+        // necesarios
+
         if (error != null) {
             model.addAttribute("error", error);
         }
@@ -546,7 +553,7 @@ public class ClienteController {
             String email = principal.getName();
             Usuario usuario = usuarioService.obtenerPorEmail(email);
             Cliente cliente = clienteService.obtenerPorUsuario(usuario)
-                .orElseThrow(() -> new IllegalStateException("Cliente no encontrado"));
+                    .orElseThrow(() -> new IllegalStateException("Cliente no encontrado"));
 
             CancelacionService.CancelacionInfo info = cancelacionService.validarCancelacion(idReserva, cliente.getId());
 
@@ -569,19 +576,20 @@ public class ClienteController {
      * Endpoint para cancelar una reserva
      */
     @PostMapping("/reserva/cancelar/{idReserva}")
-    public String cancelarReserva(@PathVariable Long idReserva, 
-                                  Principal principal,
-                                  RedirectAttributes redirectAttributes) {
+    public String cancelarReserva(@PathVariable Long idReserva,
+            Principal principal,
+            RedirectAttributes redirectAttributes) {
         try {
             String email = principal.getName();
             Usuario usuario = usuarioService.obtenerPorEmail(email);
             Cliente cliente = clienteService.obtenerPorUsuario(usuario)
-                .orElseThrow(() -> new IllegalStateException("Cliente no encontrado"));
+                    .orElseThrow(() -> new IllegalStateException("Cliente no encontrado"));
 
             cancelacionService.cancelarPorCliente(idReserva, cliente.getId());
 
-            redirectAttributes.addFlashAttribute("mensajeExito", "Reserva cancelada exitosamente. El reembolso será procesado en los próximos días.");
-            
+            redirectAttributes.addFlashAttribute("mensajeExito",
+                    "Reserva cancelada exitosamente. El reembolso será procesado en los próximos días.");
+
         } catch (CancelacionFueraDeTiempoException e) {
             redirectAttributes.addFlashAttribute("mensajeError", e.getMessage());
         } catch (Exception e) {

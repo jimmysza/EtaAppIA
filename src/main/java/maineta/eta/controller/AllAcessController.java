@@ -157,10 +157,8 @@ public class AllAcessController {
                         calendarioReserva = YearMonth.of(anioReserva, mesReserva);
                 } else if (fechaReservaSeleccionada != null) {
                         calendarioReserva = YearMonth.from(fechaReservaSeleccionada);
-                } else if (!fechasDisponibles.isEmpty()) {
-                        calendarioReserva = YearMonth.from(fechasDisponibles.first());
                 } else {
-                        calendarioReserva = YearMonth.now();
+                        calendarioReserva = YearMonth.now(); // ← Siempre mayo (mes actual) por defecto
                 }
 
                 Locale localeEs = Locale.forLanguageTag("es-CO");
