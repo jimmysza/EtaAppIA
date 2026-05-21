@@ -1,50 +1,72 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" lang="es">
 
-
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description"
+    content="Regístrate en Eta - La red de colaboradores más grande del Caribe para eventos, tours y actividades en Cartagena." />
 
-
-
-  <link rel="icon" th:href="@{/images/logos/logo.webp}" type="image/x-icon" />
-
-
+  <link rel="icon" th:href="@{/images/logos/isotipo.webp}" type="image/x-icon" />
 
   <link rel="stylesheet" th:href="@{/css/global.css}">
-  <link rel="icon" th:href="@{/images/logos/isotipo.webp}" type="image/x-icon" />
   <link rel="stylesheet" th:href="@{/css/auth/register.css}">
   <link rel="stylesheet" th:href="@{/fonts/fonts.css}">
 
   <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 
-  <title>Eta - Registro - Cliente - Eventos Toures Actividades</title>
+  <title>Eta - Registro Cliente | Eventos, Tours y Actividades</title>
 
   <style>
-    .onboarding-section {
-      grid-column: 1 / -1;
-      background: #f9fafb;
-      padding: 2rem;
-      border-radius: 1rem;
-      margin-top: 1rem;
+    /* ===== RESET & BASE ===== */
+    *,
+    *::before,
+    *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
     }
 
-    .paso-onboarding {
-      width: 100%;
-      height: 100vh;
-      display: none;
+    :root {
+      --color-primary: #23aae2;
+      --color-primary-dark: #1a8fc4;
+      --color-primary-light: #e0f4fd;
+      --color-secondary: #0f172a;
+      --color-accent: #f59e0b;
+      --color-success: #10b981;
+      --color-error: #ef4444;
+      --color-bg: #f8fafc;
+      --color-surface: #ffffff;
+      --color-text: #1e293b;
+      --color-text-muted: #64748b;
+      --color-border: #e2e8f0;
+      --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+      --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+      --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+      --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+      --radius-xl: 24px;
+      --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+      --transition-base: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+      --transition-slow: 350ms cubic-bezier(0.4, 0, 0.2, 1);
     }
 
-    .paso-onboarding.activo {
-      display: block;
-      animation: fadeIn 0.5s;
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--color-bg);
+      color: var(--color-text);
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
     }
 
-    @keyframes fadeIn {
+    /* ===== ANIMATIONS ===== */
+    @keyframes fadeInUp {
       from {
         opacity: 0;
-        transform: translateY(10px);
+        transform: translateY(20px);
       }
 
       to {
@@ -53,565 +75,1552 @@
       }
     }
 
-    .categoria-option {
-      display: inline-block;
-      margin: 0.5rem;
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+
+      to {
+        opacity: 1;
+      }
     }
 
-    .categoria-checkbox {
-      display: none;
+    @keyframes slideInRight {
+      from {
+        opacity: 0;
+        transform: translateX(30px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
     }
 
-    .categoria-label {
-      display: inline-block;
-      padding: 0.75rem 1.5rem;
-      background: white;
-      border: 2px solid #e5e7eb;
-      border-radius: 0.5rem;
-      cursor: pointer;
-      transition: all 0.3s;
-      font-weight: 500;
+    @keyframes pulse-soft {
+
+      0%,
+      100% {
+        transform: scale(1);
+      }
+
+      50% {
+        transform: scale(1.02);
+      }
     }
 
-    .categoria-checkbox:checked+.categoria-label {
-      background: #23aae2;
-      color: white;
-      border-color: #23aae2;
+    @keyframes float {
+
+      0%,
+      100% {
+        transform: translateY(0px);
+      }
+
+      50% {
+        transform: translateY(-10px);
+      }
     }
 
-    .radio-option-onboard {
-      margin: 0.75rem 0;
+    @keyframes shimmer {
+      0% {
+        background-position: -200% 0;
+      }
+
+      100% {
+        background-position: 200% 0;
+      }
     }
 
-    .radio-input-onboard {
-      display: none;
+    @keyframes checkmark {
+      0% {
+        transform: scale(0);
+      }
+
+      50% {
+        transform: scale(1.2);
+      }
+
+      100% {
+        transform: scale(1);
+      }
     }
 
-    .radio-label-onboard {
-      display: block;
-      padding: 1rem;
-      background: white;
-      border: 2px solid #e5e7eb;
-      border-radius: 0.5rem;
-      cursor: pointer;
-      transition: all 0.3s;
-      font-weight: 500;
+    .animate-fade-in-up {
+      animation: fadeInUp 0.6s var(--transition-base) forwards;
     }
 
-    .radio-input-onboard:checked+.radio-label-onboard {
-      background: #23aae2;
-      color: white;
-      border-color: #23aae2;
+    .animate-fade-in {
+      animation: fadeIn 0.4s ease-out forwards;
     }
 
-    .progress-bar-onboard {
-      height: 6px;
-      background: #e5e7eb;
-      border-radius: 3px;
-      margin-bottom: 1.5rem;
+    .animate-slide-in {
+      animation: slideInRight 0.5s var(--transition-base) forwards;
+    }
+
+    /* ===== MAIN LAYOUT ===== */
+    main.registro {
+      display: flex;
+      min-height: 100vh;
+      min-width: 100%;
+      width: 100%;
+      padding: 0;
+      background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 50%, #f0f9ff 100%);
+      position: relative;
+      margin: 0px;
       overflow: hidden;
     }
 
-    .progress-fill-onboard {
-      height: 100%;
-      background: #23aae2;
-      transition: width 0.5s;
-    }
 
-    .btn-onboard {
-      padding: 0.75rem 1.5rem;
-      border-radius: 0.5rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.3s;
-      border: none;
-    }
 
-    .btn-anterior {
-      background: #e5e7eb;
-      color: #374151;
-    }
-
-    .btn-anterior:hover {
-      background: #d1d5db;
-    }
-
-    .btn-siguiente {
-      background: #23aae2;
+    /* ===== LEFT PANEL (Hero) ===== */
+    .hero-panel {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 3rem;
+      background: linear-gradient(160deg, #0ea5e9 0%, #0284c7 50%, #0369a1 100%);
       color: white;
+      overflow: hidden;
+      z-index: 1;
     }
 
-    .btn-siguiente:hover {
-      background: #1e96c8;
+    .hero-panel::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at 20% 80%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.08) 0%, transparent 50%);
+      pointer-events: none;
+    }
+
+    .hero-panel::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+      opacity: 0.4;
+      pointer-events: none;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      max-width: 480px;
+      width: 100%;
+    }
+
+    .hero-back-btn {
+      position: absolute;
+      top: 2rem;
+      left: 2rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1.25rem;
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: var(--radius-lg);
+      color: white;
+      font-weight: 600;
+      font-size: 0.875rem;
+      text-decoration: none;
+      transition: all var(--transition-base);
+      cursor: pointer;
+    }
+
+    .hero-back-btn:hover {
+      background: rgba(255, 255, 255, 0.25);
+      transform: translateX(-4px);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    .hero-back-btn:active {
+      transform: translateX(-4px) scale(0.98);
+    }
+
+    .hero-brand {
+      margin-bottom: 2.5rem;
+    }
+
+    .hero-brand h1 {
+      font-size: 4rem;
+      font-weight: 900;
+      letter-spacing: -0.04em;
+      line-height: 1;
+      margin-bottom: 1rem;
+      background: linear-gradient(135deg, #ffffff 0%, #e0f2fe 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-brand .brand-tag {
+      display: inline-block;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+      padding: 0.375rem 0.875rem;
+      background: rgba(255, 255, 255, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      border-radius: 999px;
+      backdrop-filter: blur(8px);
+    }
+
+    .hero-description {
+      font-size: 1.25rem;
+      font-weight: 500;
+      line-height: 1.6;
+      color: rgba(255, 255, 255, 0.9);
+      margin-bottom: 3rem;
+    }
+
+    .hero-features {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .hero-feature {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 1.25rem;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: var(--radius-lg);
+      backdrop-filter: blur(8px);
+      transition: all var(--transition-base);
+    }
+
+    .hero-feature:hover {
+      background: rgba(255, 255, 255, 0.12);
+      transform: translateX(8px);
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    .hero-feature-icon {
+      flex-shrink: 0;
+      width: 48px;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255, 255, 255, 0.15);
+      border-radius: var(--radius-md);
+      font-weight: 800;
+      font-size: 1.125rem;
+    }
+
+    .hero-feature-text {
+      font-weight: 600;
+      font-size: 0.9375rem;
+    }
+
+    .hero-stats {
+      display: flex;
+      gap: 2rem;
+      margin-top: 3rem;
+      padding-top: 2rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.15);
+    }
+
+    .hero-stat {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .hero-stat-number {
+      font-size: 2rem;
+      font-weight: 800;
+      line-height: 1;
+    }
+
+    .hero-stat-label {
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: rgba(255, 255, 255, 0.7);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-top: 0.25rem;
+    }
+
+    /* ===== RIGHT PANEL (Form) ===== */
+    .form-panel {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      position: relative;
+      z-index: 1;
+      overflow-y: auto;
+    }
+
+    .form-container {
+      width: 100%;
+      max-width: 520px;
+
+      padding: 2.5rem;
+      padding-top: 1.5rem;
+      position: relative;
+    }
+
+    .mobile-back-btn {
+      display: none;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.625rem 1rem;
+      background: var(--color-primary-light);
+      color: var(--color-primary);
+      border-radius: var(--radius-lg);
+      font-weight: 600;
+      font-size: 0.875rem;
+      text-decoration: none;
+      margin-bottom: 1.5rem;
+      width: fit-content;
+      transition: all var(--transition-fast);
+    }
+
+    .mobile-back-btn:hover {
+      background: #bae6fd;
+    }
+
+    .form-header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .form-logo {
+      width: 64px;
+      height: 64px;
+      background: linear-gradient(135deg, var(--color-primary-light) 0%, #e0f2fe 100%);
+      border-radius: var(--radius-lg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1.25rem;
+      box-shadow: 0 4px 12px rgba(35, 170, 226, 0.2);
+    }
+
+    .form-logo img {
+      width: 80px;
+      height: 80px;
+      object-fit: contain;
+      border-radius: var(--radius-lg);
+    }
+
+    .form-title {
+      font-size: 1.75rem;
+      font-weight: 800;
+      color: var(--color-text);
+      margin-bottom: 0.5rem;
+      letter-spacing: -0.02em;
+    }
+
+    .form-subtitle {
+      font-size: 0.9375rem;
+      color: var(--color-text-muted);
+      font-weight: 500;
+    }
+
+    /* ===== ALERTS ===== */
+    .alert {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 1rem 1.25rem;
+      border-radius: var(--radius-md);
+      margin-bottom: 1.5rem;
+      font-size: 0.875rem;
+      font-weight: 500;
+      animation: fadeInUp 0.4s ease-out;
+    }
+
+    .alert-danger {
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      color: #dc2626;
+    }
+
+    .alert-success {
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      color: #16a34a;
+    }
+
+    .alert svg {
+      flex-shrink: 0;
+      width: 20px;
+      height: 20px;
+    }
+
+    /* ===== FORM GRID ===== */
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .form-field {
+      margin-top: 0.75rem;
+      position: relative;
+    }
+
+    .form-field.full-width {
+      grid-column: 1 / -1;
+    }
+
+    .form-field.half-width {
+      grid-column: span 1;
+    }
+
+    /* ===== INPUTS ===== */
+    .input-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+      background: #f8fafc;
+      border: 2px solid #e2e8f0;
+      border-radius: var(--radius-md);
+      padding: 0 1rem;
+      height: 52px;
+      transition: all var(--transition-fast);
+    }
+
+    .input-wrapper:hover {
+      border-color: #cbd5e1;
+      background: #f1f5f9;
+    }
+
+    .input-wrapper:focus-within {
+      border-color: var(--color-primary);
+      background: white;
+      box-shadow: 0 0 0 4px rgba(35, 170, 226, 0.1);
+    }
+
+    .input-wrapper svg {
+      flex-shrink: 0;
+      width: 20px;
+      height: 20px;
+      color: #94a3b8;
+      transition: color var(--transition-fast);
+    }
+
+    .input-wrapper:focus-within svg {
+      color: var(--color-primary);
+    }
+
+    .input-wrapper input,
+    .input-wrapper textarea {
+      flex: 1;
+      border: none;
+      outline: none;
+      background: transparent;
+      padding: 0 0.75rem;
+      font-size: 0.9375rem;
+      color: var(--color-text);
+      height: 100%;
+      width: 100%;
+      font-family: inherit;
+    }
+
+    .input-wrapper input::placeholder,
+    .input-wrapper textarea::placeholder {
+      color: #94a3b8;
+      font-weight: 400;
+    }
+
+    .input-wrapper input[type="number"]::-webkit-inner-spin-button,
+    .input-wrapper input[type="number"]::-webkit-outer-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
+    .input-wrapper input[type="number"] {
+      -moz-appearance: textfield;
+    }
+
+    /* Password toggle */
+    .password-toggle {
+      position: absolute;
+      right: 0.75rem;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0.25rem;
+      color: #94a3b8;
+      transition: all var(--transition-fast);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .password-toggle:hover {
+      color: var(--color-text);
+      transform: translateY(-50%) scale(1.1);
+    }
+
+    .password-toggle svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    /* ===== FORGOT PASSWORD ===== */
+    .forgot-link {
+      text-align: right;
+      margin: 0.75rem 0 1.25rem;
+    }
+
+    .forgot-link a {
+      font-size: 0.8125rem;
+      font-weight: 600;
+      color: var(--color-primary);
+      text-decoration: none;
+      transition: color var(--transition-fast);
+    }
+
+    .forgot-link a:hover {
+      color: var(--color-primary-dark);
+      text-decoration: underline;
+    }
+
+    /* ===== BUTTONS ===== */
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      width: 100%;
+      padding: 0.875rem 1.5rem;
+      background: linear-gradient(135deg, var(--color-primary) 0%, #0ea5e9 100%);
+      color: white;
+      font-weight: 700;
+      font-size: 1rem;
+      border: none;
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      transition: all var(--transition-base);
+      box-shadow: 0 4px 14px rgba(35, 170, 226, 0.35);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn-primary::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      transition: left 0.5s;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(35, 170, 226, 0.45);
+    }
+
+    .btn-primary:hover::before {
+      left: 100%;
+    }
+
+    .btn-primary:active {
+      transform: translateY(0);
+    }
+
+    .btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1.5rem;
+      background: #f1f5f9;
+      color: var(--color-text);
+      font-weight: 600;
+      font-size: 0.9375rem;
+      border: 2px solid #e2e8f0;
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      transition: all var(--transition-fast);
+    }
+
+    .btn-secondary:hover {
+      background: #e2e8f0;
+      border-color: #cbd5e1;
+    }
+
+    /* ===== SOCIAL LOGIN ===== */
+    .social-divider {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin: 1.5rem 0;
+      color: var(--color-text-muted);
+      font-size: 0.8125rem;
+      font-weight: 500;
+    }
+
+    .social-divider::before,
+    .social-divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, #e2e8f0, transparent);
+    }
+
+    .social-login {
+      display: flex;
+      justify-content: center;
+    }
+
+    .social-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.75rem;
+      width: 100%;
+      padding: 0.75rem 1.5rem;
+      background: white;
+      border: 2px solid #e2e8f0;
+      border-radius: var(--radius-md);
+      font-weight: 600;
+      font-size: 0.9375rem;
+      color: var(--color-text);
+      text-decoration: none;
+      transition: all var(--transition-fast);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .social-btn:hover {
+      border-color: #cbd5e1;
+      background: #f8fafc;
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .social-btn svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    /* ===== FOOTER LINK ===== */
+    .form-footer {
+      text-align: center;
+      margin-top: 1.5rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid #f1f5f9;
+    }
+
+    .form-footer p {
+      font-size: 0.9375rem;
+      color: var(--color-text-muted);
+      font-weight: 500;
+    }
+
+    .form-footer a {
+      color: var(--color-primary);
+      font-weight: 700;
+      text-decoration: none;
+      transition: color var(--transition-fast);
+    }
+
+    .form-footer a:hover {
+      color: var(--color-primary-dark);
+      text-decoration: underline;
+    }
+
+    /* ===== ONBOARDING MODAL ===== */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      background: rgba(15, 23, 42, 0.6);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+      animation: fadeIn 0.3s ease-out;
+    }
+
+    .modal-overlay.active {
+      display: flex;
+    }
+
+    .modal-container {
+      background: var(--color-surface);
+      border-radius: var(--radius-xl);
+      width: 100%;
+      max-width: 560px;
+      max-height: 90vh;
+      overflow: hidden;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+      display: flex;
+      flex-direction: column;
+      animation: fadeInUp 0.4s ease-out;
+      position: relative;
+    }
+
+    .modal-header {
+      padding: 1.5rem 1.5rem 0;
+      position: relative;
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #f1f5f9;
+      border: none;
+      border-radius: var(--radius-md);
+      color: #64748b;
+      font-size: 1.25rem;
+      cursor: pointer;
+      transition: all var(--transition-fast);
+      z-index: 10;
+    }
+
+    .modal-close:hover {
+      background: #e2e8f0;
+      color: var(--color-text);
+      transform: rotate(90deg);
+    }
+
+    .modal-progress {
+      padding: 0 1.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .modal-progress-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.75rem;
+    }
+
+    .modal-step-label {
+      font-size: 0.8125rem;
+      font-weight: 700;
+      color: var(--color-primary);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .modal-step-count {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--color-text-muted);
+    }
+
+    .progress-track {
+      height: 6px;
+      background: #e2e8f0;
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--color-primary) 0%, #0ea5e9 100%);
+      border-radius: 999px;
+      transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .modal-body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 0 1.5rem 1rem;
+    }
+
+    .modal-step-title {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--color-text);
+      margin-bottom: 0.5rem;
+      letter-spacing: -0.02em;
+    }
+
+    .modal-step-subtitle {
+      font-size: 0.9375rem;
+      color: var(--color-text-muted);
+      margin-bottom: 1.5rem;
+      font-weight: 500;
+    }
+
+    /* Category pills */
+    .category-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.625rem;
+      justify-content: center;
+    }
+
+    .category-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.375rem;
+      padding: 0.625rem 1.125rem;
+      background: white;
+      border: 2px solid #e2e8f0;
+      border-radius: 999px;
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--color-text);
+      cursor: pointer;
+      transition: all var(--transition-fast);
+      user-select: none;
+    }
+
+    .category-pill:hover {
+      border-color: #cbd5e1;
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .category-pill.selected {
+      background: linear-gradient(135deg, var(--color-primary) 0%, #0ea5e9 100%);
+      border-color: var(--color-primary);
+      color: white;
+      box-shadow: 0 4px 12px rgba(35, 170, 226, 0.3);
+    }
+
+    .category-pill.selected:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 16px rgba(35, 170, 226, 0.4);
+    }
+
+    /* Radio options */
+    .option-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .option-card {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 1rem 1.25rem;
+      background: white;
+      border: 2px solid #e2e8f0;
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      transition: all var(--transition-fast);
+      text-align: left;
+      width: 100%;
+    }
+
+    .option-card:hover {
+      border-color: #cbd5e1;
+      background: #f8fafc;
+      transform: translateX(4px);
+    }
+
+    .option-card.selected {
+      background: linear-gradient(135deg, rgba(35, 170, 226, 0.05) 0%, rgba(14, 165, 233, 0.05) 100%);
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 3px rgba(35, 170, 226, 0.1);
+    }
+
+    .option-emoji {
+      font-size: 1.5rem;
+      flex-shrink: 0;
+    }
+
+    .option-content {
+      flex: 1;
+    }
+
+    .option-title {
+      font-weight: 700;
+      font-size: 0.9375rem;
+      color: var(--color-text);
+      display: block;
+    }
+
+    .option-desc {
+      font-size: 0.8125rem;
+      color: var(--color-text-muted);
+      margin-top: 0.125rem;
+    }
+
+    .option-check {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      border: 2px solid #e2e8f0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all var(--transition-fast);
+      flex-shrink: 0;
+    }
+
+    .option-card.selected .option-check {
+      background: var(--color-primary);
+      border-color: var(--color-primary);
+    }
+
+    .option-card.selected .option-check::after {
+      content: '✓';
+      color: white;
+      font-size: 0.75rem;
+      font-weight: 700;
+      animation: checkmark 0.3s ease-out;
+    }
+
+    .modal-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      padding: 1rem 1.5rem 1.5rem;
+      border-top: 1px solid #f1f5f9;
+    }
+
+    .modal-footer .btn-primary,
+    .modal-footer .btn-secondary {
+      width: auto;
+      min-width: 120px;
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 1024px) {
+      .hero-panel {
+        display: none;
+      }
+
+      .form-panel {
+        padding: 1.5rem;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .form-container {
+        padding: 1.5rem;
+        border-radius: var(--radius-lg);
+      }
+
+      .mobile-back-btn {
+        display: inline-flex;
+      }
+
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .form-field.half-width {
+        grid-column: 1 / -1;
+      }
+
+      .form-title {
+        font-size: 1.5rem;
+      }
+
+      .modal-container {
+        max-height: 95vh;
+        border-radius: var(--radius-lg);
+      }
+
+      .modal-header,
+      .modal-progress,
+      .modal-body,
+      .modal-footer {
+        padding-left: 1rem;
+        padding-right: 1rem;
+      }
+    }
+
+    @media (max-width: 400px) {
+      .form-container {
+        padding: 1.25rem;
+      }
+
+      .input-wrapper {
+        height: 48px;
+      }
+    }
+
+    /* ===== UTILITY ===== */
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border-width: 0;
     }
   </style>
-
 </head>
-
 
 <body>
   <main class="registro">
 
-    <div th:if="${error}" class="alert alert-danger">
-      <span th:text="${error}"></span>
-    </div>
-
-
-    <div
-      class=" hidden md:flex md:w-[40%] lg:w-[45%] bg-[#23aae2] relative items-center justify-center p-12 overflow-hidden">
-      <div class="content">
-        <a th:href="@{/}"
-          class=" absolute top-8 left-8 flex items-center gap-2 bg-white/20 backdrop-blur-md border border-white/30 text-white px-6 py-3 rounded-2xl font-bold hover:bg-white/30 transition-all active:scale-95 group">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-            <path fill="currentColor"
-              d="m4 10l-.707.707L2.586 10l.707-.707zm17 8a1 1 0 1 1-2 0zM8.293 15.707l-5-5l1.414-1.414l5 5zm-5-6.414l5-5l1.414 1.414l-5 5zM4 9h10v2H4zm17 7v2h-2v-2zm-7-7a7 7 0 0 1 7 7h-2a5 5 0 0 0-5-5z" />
-          </svg>
-          <span>Anterior pagina</span>
-        </a>
-
-
-        <div class="relative z-10 text-white max-w-sm">
-          <h1 class="text-6xl font-black tracking-tighter mb-6">eta<span class="text-xl align-top">®</span></h1>
-          <p class="text-xl font-medium text-blue-50 leading-relaxed">
-            Descubre la magia de Cartagena con la red de colaboradores más grande del Caribe.
-          </p>
-          <div class="mt-12 space-y-4">
-            <div class="flex items-center gap-4 bg-white/10 p-4 rounded-3xl border border-white/10">
-              <div class="w-12 h-12 bg-white/20 rounded-2xl flex items-center justify-center font-black">01</div>
-              <p class="font-bold">Acceso a precios exclusivos</p>
-            </div>
-            <div class="flex items-center gap-4 bg-white/10 p-4 rounded-3xl border border-white/10">
-              <div class="w-12 h-12 bg-white/20 rounded-2xl flex items-center justify-center font-black">02</div>
-              <p class="font-bold">Soporte 24/7 en tus rutas</p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-    </div>
-
-    <div class="login-root">
-
-      <a th:href="@{/}" class="return rt-2 lg:hidden">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-          <path fill="currentColor"
-            d="m4 10l-.707.707L2.586 10l.707-.707zm17 8a1 1 0 1 1-2 0zM8.293 15.707l-5-5l1.414-1.414l5 5zm-5-6.414l5-5l1.414 1.414l-5 5zM4 9h10v2H4zm17 7v2h-2v-2zm-7-7a7 7 0 0 1 7 7h-2a5 5 0 0 0-5-5z" />
+    <!-- ===== LEFT PANEL (Hero) - Desktop Only ===== -->
+    <div class="hero-panel hidden md:flex md:w-[42%] lg:w-[45%]">
+      <a th:href="@{/}" class="hero-back-btn group">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="m15 18-6-6 6-6" />
         </svg>
-        <span>Anterior pagina</span>
+        <span>Volver al inicio</span>
       </a>
 
-      <div class="login-icon">
-        <img th:src="@{/images/logos/Logo.webp}" class="logo" alt="logo" loading="lazy" />
+      <div class="hero-content">
+        <div class="hero-brand animate-fade-in-up">
+          <div class="brand-tag">Bienvenido a</div>
+          <h1>eta<span style="font-size:1.5rem; vertical-align:super; opacity:0.8;">®</span></h1>
+        </div>
+
+        <p class="hero-description animate-fade-in-up" style="animation-delay:0.1s;">
+          Descubre la magia de Cartagena con la red de colaboradores más grande del Caribe. Experiencias únicas que
+          transformarán tu forma de viajar.
+        </p>
+
+        <div class="hero-features">
+          <div class="hero-feature animate-fade-in-up" style="animation-delay:0.2s;">
+            <div class="hero-feature-icon">01</div>
+            <span class="hero-feature-text">Acceso a precios exclusivos solo para miembros</span>
+          </div>
+          <div class="hero-feature animate-fade-in-up" style="animation-delay:0.3s;">
+            <div class="hero-feature-icon">02</div>
+            <span class="hero-feature-text">Soporte 24/7 durante todas tus rutas y actividades</span>
+          </div>
+          <div class="hero-feature animate-fade-in-up" style="animation-delay:0.4s;">
+            <div class="hero-feature-icon">03</div>
+            <span class="hero-feature-text">Experiencias personalizadas según tus preferencias</span>
+          </div>
+        </div>
+
+        <div class="hero-stats animate-fade-in-up" style="animation-delay:0.5s;">
+          <div class="hero-stat">
+            <span class="hero-stat-number">500+</span>
+            <span class="hero-stat-label">Actividades</span>
+          </div>
+          <div class="hero-stat">
+            <span class="hero-stat-number">50k+</span>
+            <span class="hero-stat-label">Viajeros</span>
+          </div>
+          <div class="hero-stat">
+            <span class="hero-stat-number">4.9</span>
+            <span class="hero-stat-label">Rating</span>
+          </div>
+        </div>
       </div>
+    </div>
 
-      <h1 class="p-bold">Registrate con tu email</h1>
-      <p class="text-sma">Bienvenido, ingresa como Cliente</p>
+    <!-- ===== RIGHT PANEL (Form) ===== -->
+    <div class="form-panel">
+      <div class="form-container animate-fade-in-up">
 
-
-      <div th:if="${param.exito}" class="alert alert-success" id="mensajeExito">
-        <span th:text="${exito}"></span>
-      </div>
-
-      <form th:action="@{/registro/cliente}" th:object="${cliente}" method="post">
-
-
-        <!--nombre-->
-        <div class="input  div1">
-
-          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 26 26">
-            <path fill="#BFC2CF"
-              d="M16.563 15.9c-.159-.052-1.164-.505-.536-2.414h-.009c1.637-1.686 2.888-4.399 2.888-7.07c0-4.107-2.731-6.26-5.905-6.26c-3.176 0-5.892 2.152-5.892 6.26c0 2.682 1.244 5.406 2.891 7.088c.642 1.684-.506 2.309-.746 2.397c-3.324 1.202-7.224 3.393-7.224 5.556v.811c0 2.947 5.714 3.617 11.002 3.617c5.296 0 10.938-.67 10.938-3.617v-.811c0-2.228-3.919-4.402-7.407-5.557"
-              stroke-width="0.5" stroke="#BFC2CF" />
+        <!-- Mobile Back Button -->
+        <a th:href="@{/}" class="mobile-back-btn lg:hidden">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="m15 18-6-6 6-6" />
           </svg>
-          <input type="text" autocomplete="name" placeholder="nombre" id="nombre" th:field="*{usuario.nombre}" required>
-        </div>
-        <!--Cedula-->
-        <div class="input div2">
-          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 15 15">
-            <path fill="#BFC2CF" fill-rule="evenodd"
-              d="M0 3.5A1.5 1.5 0 0 1 1.5 2h12A1.5 1.5 0 0 1 15 3.5v8a1.5 1.5 0 0 1-1.5 1.5h-12A1.5 1.5 0 0 1 0 11.5zM3 6a2 2 0 1 1 4 0a2 2 0 0 1-4 0m9 0H9V5h3zm0 3H9V8h3zM5 9a2.93 2.93 0 0 0-2.618 1.618l-.33.658A.5.5 0 0 0 2.5 12h5a.5.5 0 0 0 .447-.724l-.329-.658A2.93 2.93 0 0 0 5 9"
-              clip-rule="evenodd" stroke-width="0.2" stroke="#000" />
-          </svg>
-          <input type="number" autocomplete="id" id="cedula" name="cedula" th:value="${cliente.cedula}"
-            placeholder="cedula" required min="0" max="100000000000">
+          <span>Volver</span>
+        </a>
+
+        <!-- Form Header -->
+        <div class="form-header">
+          <div class="form-logo">
+            <img th:src="@{/images/logos/Logo.webp}" alt="Eta Logo" loading="lazy" />
+          </div>
+          <h1 class="form-title">Crea tu cuenta</h1>
+          <p class="form-subtitle">Únete como cliente y descubre experiencias únicas</p>
         </div>
 
-        <!--email-->
-        <div class="div3 input">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-            <path fill="#BFC2CF"
-              d="M22 6c0-1.1-.9-2-2-2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2zm-2 0l-8 5l-8-5zm0 12H4V8l8 5l8-5z" />
+        <!-- Error Alert -->
+        <div th:if="${error}" class="alert alert-danger">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
+            stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round"
+              d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z" />
           </svg>
-          <input type="email" autocomplete="email" id="email" th:field="*{usuario.email}" placeholder="email" required>
+          <span th:text="${error}"></span>
         </div>
 
-        <!--telefono-->
-        <div class="input div4">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-            <path fill="#BFC2CF"
-              d="m19.23 15.26l-2.54-.29a1.99 1.99 0 0 0-1.64.57l-1.84 1.84a15.05 15.05 0 0 1-6.59-6.59l1.85-1.85c.43-.43.64-1.03.57-1.64l-.29-2.52a2 2 0 0 0-1.99-1.77H5.03c-1.13 0-2.07.94-2 2.07c.53 8.54 7.36 15.36 15.89 15.89c1.13.07 2.07-.87 2.07-2v-1.73c.01-1.01-.75-1.86-1.76-1.98"
-              stroke-width="0.5" stroke="#BFC2CF" />
+        <!-- Success Alert -->
+        <div th:if="${param.exito}" class="alert alert-success" id="mensajeExito">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
+            stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round"
+              d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
           </svg>
-          <input placeholder="Telefono" autocomplete="tel" type="number" th:field="*{usuario.telefono}" required min="7"
-            max="100000000000">
+          <span th:text="${exito}"></span>
         </div>
 
-        <!--Direccion-->
-        <div class="input div5">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-            <path fill="#BFC2CF"
-              d="M12 11.5A2.5 2.5 0 0 1 9.5 9A2.5 2.5 0 0 1 12 6.5A2.5 2.5 0 0 1 14.5 9a2.5 2.5 0 0 1-2.5 2.5M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7"
-              stroke-width="0.5" stroke="#BFC2CF" />
-          </svg>
-          <input type="text" id="direccion" autocomplete="address-level1" name="direccion"
-            th:value="${cliente.direccion}" placeholder="Direccion" required>
-        </div>
+        <!-- Registration Form -->
+        <form th:action="@{/registro/cliente}" th:object="${cliente}" method="post" id="registroForm">
 
-        <!--Imagen-->
-        <!-- <div class=" div6 input-img">
-          <label for="file" class="file-upload-label">
-            <div class="file-upload-design">
-              <svg viewBox="0 0 640 512" height="1em">
-                <path
-                  d="M144 480C64.5 480 0 415.5 0 336c0-62.8 40.2-116.2 96.2-135.9c-.1-2.7-.2-5.4-.2-8.1c0-88.4 71.6-160 160-160c59.3 0 111 32.2 138.7 80.2C409.9 102 428.3 96 448 96c53 0 96 43 96 96c0 12.2-2.3 23.8-6.4 34.6C596 238.4 640 290.1 640 352c0 70.7-57.3 128-128 128H144zm79-217c-9.4 9.4-9.4 24.6 0 33.9s24.6 9.4 33.9 0l39-39V392c0 13.3 10.7 24 24 24s24-10.7 24-24V257.9l39 39c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-80-80c-9.4-9.4-24.6-9.4-33.9 0l-80 80z">
-                </path>
+          <!-- Name -->
+          <div class="form-field half-width">
+            <div class="input-wrapper">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                <circle cx="12" cy="7" r="4" />
               </svg>
-              <div class="flex">
-
-
-                <p class="bold">Arrastra y suelta</p>
-                <p>o</p>
-                <span class="browse-button">Buscar archivo</span>
-              </div>
-            </div>
-            <input id="file" type="file" />
-          </label>
-        </div> -->
-
-        <!-- 
-        <div class="input div6">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-            <g fill="none">
-              <path fill="#BFC2CF"
-                d="M17.36 20H8V10c.625 0 1.208-.312 1.555-.832l2.554-3.832A3 3 0 0 1 14.606 4h.213a1 1 0 0 1 .987 1.164L15 10h3.56a2 2 0 0 1 1.962 2.392l-1.2 6A2 2 0 0 1 17.36 20"
-                opacity="0.16" />
-              <path fill="#BFC2CF"
-                d="m15 10l-.986-.164A1 1 0 0 0 15 11zM4 10V9a1 1 0 0 0-1 1zm16.522 2.392l.98.196zM6 21h11.36v-2H6zM18.56 9H15v2h3.56zm-2.574 1.164l.806-4.835L14.82 5l-.805 4.836zM14.82 3h-.213v2h.213zm-3.542 1.781L8.762 8.555l1.664 1.11L12.94 5.89zM7.93 9H4v2h3.93zM3 10v8h2v-8zm17.302 8.588l1.2-6l-1.961-.392l-1.2 6zM8.762 8.555A1 1 0 0 1 7.93 9v2a3 3 0 0 0 2.496-1.336zm8.03-3.226A2 2 0 0 0 14.82 3v2zM18.56 11a1 1 0 0 1 .981 1.196l1.961.392A3 3 0 0 0 18.56 9zm-1.2 10a3 3 0 0 0 2.942-2.412l-1.961-.392a1 1 0 0 1-.98.804zM14.606 3a4 4 0 0 0-3.329 1.781l1.665 1.11A2 2 0 0 1 14.606 5zM6 19a1 1 0 0 1-1-1H3a3 3 0 0 0 3 3z" />
-              <path stroke="#BFC2CF" stroke-width="2" d="M8 10v10" />
-            </g>
-          </svg>
-          <textarea id="preferencias" placeholder="preferencias" name="preferencias" th:text="${cliente.preferencias}"
-            required></textarea>
-
-        </div>
- -->
-
-        <!--password-->
-
-        <div class="input div7">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-            <path fill="#BFC2Cf"
-              d="M20 12c0-1.103-.897-2-2-2h-1V7c0-2.757-2.243-5-5-5S7 4.243 7 7v3H6c-1.103 0-2 .897-2 2v8c0 1.103.897 2 2 2h12c1.103 0 2-.897 2-2zM9 7c0-1.654 1.346-3 3-3s3 1.346 3 3v3H9z" />
-          </svg>
-
-          <input type="password" th:field="*{usuario.password}" placeholder="Contraseña" required id="password"
-            autofocus="autofocus" />
-          <!-- Botón para mostrar/ocultar contraseña -->
-          <button type="button" id="togglePassLogin"
-            class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 password-toggle ">
-
-
-            <!-- Ojo cerrado -->
-            <svg id="eyeClosedLogin" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 " fill="none" viewBox="0 0 24 24"
-              stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.542-7a10.05 10.05 0 011.658-3.248M9.88 9.88A3 3 0 0114.12 14.12M20.12 20.12L3.88 3.88" />
-            </svg>
-          </button>
-        </div>
-
-
-        <!--forgot-->
-        <div class="forgot-password div8">
-          <a href="#">Olvidaste la Contraseña?</a>
-        </div>
-
-        <!-- ======================================== -->
-        <!--  SECCIÓN DE ONBOARDING (4 PASOS - OCULTA) -->
-        <!-- ======================================== -->
-        <div class="onboarding-section" style="display:none;">
-          <h3 class="text-2xl font-bold text-gray-800 mb-2">Personaliza tu experiencia</h3>
-          <p class="text-gray-600 mb-4">Ayúdanos a conocer tus preferencias</p>
-
-          <div class="progress-bar-onboard">
-            <div class="progress-fill-onboard" id="progressBarOnboard" style="width: 25%"></div>
-          </div>
-
-          <!-- Paso 1: Categorías favoritas -->
-          <div class="paso-onboarding activo" data-paso="1">
-            <h4 class="text-lg font-semibold mb-3">¿Qué tipo de actividades te gustan?</h4>
-            <p class="text-gray-600 mb-4 text-sm">Selecciona una o más categorías</p>
-
-            <div class="text-center">
-              <div th:each="cat, iterStat : ${categorias}" class="categoria-option">
-                <input type="checkbox" th:id="'categoriasIds' + ${iterStat.index}" th:value="${cat.idCategoria}"
-                  name="categoriasIds" class="categoria-checkbox">
-                <label th:for="'categoriasIds' + ${iterStat.index}" th:text="${cat.nombre}"
-                  class="categoria-label"></label>
-              </div>
+              <input type="text" autocomplete="name" placeholder="Nombre completo" id="nombre"
+                th:field="*{usuario.nombre}" required>
             </div>
           </div>
 
-          <!-- Paso 2: Grupo de viaje -->
-          <div class="paso-onboarding" data-paso="2">
-            <h4 class="text-lg font-semibold mb-3">¿Con quién sueles salir?</h4>
-            <p class="text-gray-600 mb-4 text-sm">Selecciona una opción</p>
-            <div class=" grid grid-cols-2 gap-4">
-              <div class="radio-option-onboard">
-                <input type="radio" id="solo" value="SOLO" name="grupoViaje" class="radio-input-onboard">
-                <label for="solo" class="radio-label-onboard">🧍 Solo</label>
-              </div>
-
-              <div class="radio-option-onboard">
-                <input type="radio" id="pareja" value="PAREJA" name="grupoViaje" class="radio-input-onboard">
-                <label for="pareja" class="radio-label-onboard">💑 En pareja</label>
-              </div>
-
-              <div class="radio-option-onboard">
-                <input type="radio" id="familia" value="FAMILIA" name="grupoViaje" class="radio-input-onboard">
-                <label for="familia" class="radio-label-onboard">👨‍👩‍👧‍👦 Con familia</label>
-              </div>
-
-              <div class="radio-option-onboard">
-                <input type="radio" id="amigos" value="AMIGOS" name="grupoViaje" class="radio-input-onboard">
-                <label for="amigos" class="radio-label-onboard">👥 Con amigos</label>
-              </div>
-
-              <div class="radio-option-onboard">
-                <input type="radio" id="varios" value="VARIOS" name="grupoViaje" class="radio-input-onboard">
-                <label for="varios" class="radio-label-onboard">🔄 Varía</label>
-              </div>
+          <!-- ID -->
+          <div class="form-field half-width">
+            <div class="input-wrapper">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect width="18" height="12" x="3" y="6" rx="2" />
+                <path d="M6 10h.01M6 14h.01" />
+                <path d="M10 10h4M10 14h4" />
+              </svg>
+              <input type="number" autocomplete="id" id="cedula" name="cedula" th:value="${cliente.cedula}"
+                placeholder="Número de cédula" required min="0" max="100000000000">
             </div>
           </div>
 
-          <!-- Paso 3: Rango de precio -->
-          <div class="paso-onboarding" data-paso="3">
-            <h4 class="text-lg font-semibold mb-3">¿Qué presupuesto manejas por actividad?</h4>
-            <p class="text-gray-600 mb-4 text-sm">Selecciona una opción</p>
+          <!-- Email -->
+          <div class="form-field half-width">
+            <div class="input-wrapper">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect width="20" height="16" x="2" y="4" rx="2" />
+                <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
+              </svg>
+              <input type="email" autocomplete="email" id="email" th:field="*{usuario.email}"
+                placeholder="Correo electrónico" required>
+            </div>
+          </div>
+
+          <!-- Phone -->
+          <div class="form-field half-width">
+            <div class="input-wrapper">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path
+                  d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
+              </svg>
+              <input type="number" autocomplete="tel" th:field="*{usuario.telefono}" placeholder="Teléfono" required
+                min="7" max="100000000000">
+            </div>
+          </div>
+
+          <!-- Address -->
+          <div class="form-field full-width">
+            <div class="input-wrapper">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" />
+                <circle cx="12" cy="10" r="3" />
+              </svg>
+              <input type="text" id="direccion" autocomplete="address-level1" name="direccion"
+                th:value="${cliente.direccion}" placeholder="Dirección" required>
+            </div>
+          </div>
+
+          <!-- Password -->
+          <div class="form-field full-width">
+            <div class="input-wrapper">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect width="18" height="11" x="3" y="11" rx="2" ry="2" />
+                <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+              </svg>
+              <input type="password" th:field="*{usuario.password}" placeholder="Crea una contraseña segura" required
+                id="password" autofocus="autofocus" />
+              <button type="button" id="togglePassLogin" class="password-toggle"
+                aria-label="Mostrar u ocultar contraseña">
+                <svg id="eyeClosedLogin" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                  fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M9.88 9.88a3 3 0 1 0 4.24 4.24" />
+                  <path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68" />
+                  <path d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61" />
+                  <line x1="2" x2="22" y1="2" y2="22" />
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          <!-- Forgot Password -->
+          <div class="forgot-link full-width">
+            <a href="#">¿Olvidaste tu contraseña?</a>
+          </div>
+
+          <!-- Hidden Onboarding Section (for data binding) -->
+          <div class="onboarding-section" style="display:none;">
+            <div th:each="cat, iterStat : ${categorias}" class="categoria-option">
+              <input type="checkbox" th:id="'categoriasIds' + ${iterStat.index}" th:value="${cat.idCategoria}"
+                name="categoriasIds" class="categoria-checkbox">
+              <label th:for="'categoriasIds' + ${iterStat.index}" th:text="${cat.nombre}"
+                class="categoria-label"></label>
+            </div>
+
+            <div class="radio-option-onboard">
+              <input type="radio" id="solo" value="SOLO" name="grupoViaje" class="radio-input-onboard">
+              <label for="solo" class="radio-label-onboard">Solo</label>
+            </div>
+            <div class="radio-option-onboard">
+              <input type="radio" id="pareja" value="PAREJA" name="grupoViaje" class="radio-input-onboard">
+              <label for="pareja" class="radio-label-onboard">En pareja</label>
+            </div>
+            <div class="radio-option-onboard">
+              <input type="radio" id="familia" value="FAMILIA" name="grupoViaje" class="radio-input-onboard">
+              <label for="familia" class="radio-label-onboard">Con familia</label>
+            </div>
+            <div class="radio-option-onboard">
+              <input type="radio" id="amigos" value="AMIGOS" name="grupoViaje" class="radio-input-onboard">
+              <label for="amigos" class="radio-label-onboard">Con amigos</label>
+            </div>
+            <div class="radio-option-onboard">
+              <input type="radio" id="varios" value="VARIOS" name="grupoViaje" class="radio-input-onboard">
+              <label for="varios" class="radio-label-onboard">Varía</label>
+            </div>
 
             <div class="radio-option-onboard">
               <input type="radio" id="economico" value="ECONOMICO" name="rangoPrecio" class="radio-input-onboard">
-              <label for="economico" class="radio-label-onboard">💰 Económico (< $50k)</label>
+              <label for="economico" class="radio-label-onboard">Económico</label>
             </div>
-
             <div class="radio-option-onboard">
               <input type="radio" id="moderado" value="MODERADO" name="rangoPrecio" class="radio-input-onboard">
-              <label for="moderado" class="radio-label-onboard">💵 Moderado ($50k–$150k)</label>
+              <label for="moderado" class="radio-label-onboard">Moderado</label>
             </div>
-
             <div class="radio-option-onboard">
               <input type="radio" id="premium" value="PREMIUM" name="rangoPrecio" class="radio-input-onboard">
-              <label for="premium" class="radio-label-onboard">💎 Premium (> $150k)</label>
+              <label for="premium" class="radio-label-onboard">Premium</label>
             </div>
-          </div>
-
-          <!-- Paso 4: Disponibilidad -->
-          <div class="paso-onboarding" data-paso="4">
-            <h4 class="text-lg font-semibold mb-3">¿Cuándo haces más actividades?</h4>
-            <p class="text-gray-600 mb-4 text-sm">Selecciona una opción</p>
 
             <div class="radio-option-onboard">
               <input type="radio" id="finde" value="FINDE" name="disponibilidadSemana" class="radio-input-onboard">
-              <label for="finde" class="radio-label-onboard">🎉 Fines de semana</label>
+              <label for="finde" class="radio-label-onboard">Fines de semana</label>
             </div>
-
             <div class="radio-option-onboard">
               <input type="radio" id="entreSemana" value="ENTRE_SEMANA" name="disponibilidadSemana"
                 class="radio-input-onboard">
-              <label for="entreSemana" class="radio-label-onboard">📅 Entre semana</label>
+              <label for="entreSemana" class="radio-label-onboard">Entre semana</label>
             </div>
-
             <div class="radio-option-onboard">
               <input type="radio" id="ambos" value="AMBOS" name="disponibilidadSemana" class="radio-input-onboard">
-              <label for="ambos" class="radio-label-onboard">⭐ Ambos</label>
+              <label for="ambos" class="radio-label-onboard">Ambos</label>
             </div>
           </div>
 
-          <!-- Botones de navegación -->
-          <div class="flex justify-between mt-6">
-            <button type="button" id="btnAnteriorOnboard" class="btn-onboard btn-anterior" style="display: none;">
-              Anterior
-            </button>
-            <button type="button" id="btnSiguienteOnboard" class="btn-onboard btn-siguiente ml-auto">
-              Siguiente
-            </button>
+          <!-- Submit Button (Hidden - triggered by modal) -->
+          <button type="submit" id="btnSubmitReal" style="display:none;">Enviar</button>
+
+          <!-- Main Action Button -->
+          <button type="button" class="btn-primary" onclick="abrirModalOnboarding()">
+            <span>Crear cuenta</span>
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M5 12h14" />
+              <path d="m12 5 7 7-7 7" />
+            </svg>
+          </button>
+
+          <!-- Social Divider -->
+          <div class="social-divider">
+            <span>O regístrate con</span>
+          </div>
+
+          <!-- Google Login -->
+          <div class="social-login">
+            <a href="/oauth2/authorization/google" class="social-btn">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 48 48">
+                <path fill="#FFC107"
+                  d="M43.611 20.083H42V20H24v8h11.303c-1.649 4.657-6.08 8-11.303 8c-6.627 0-12-5.373-12-12s5.373-12 12-12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4C12.955 4 4 12.955 4 24s8.955 20 20 20s20-8.955 20-20c0-1.341-.138-2.65-.389-3.917" />
+                <path fill="#FF3D00"
+                  d="m6.306 14.691l6.571 4.819C14.655 15.108 18.961 12 24 12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4C16.318 4 9.656 8.337 6.306 14.691" />
+                <path fill="#4CAF50"
+                  d="M24 44c5.166 0 9.86-1.977 13.409-5.192l-6.19-5.238A11.9 11.9 0 0 1 24 36c-5.202 0-9.619-3.317-11.283-7.946l-6.522 5.025C9.505 39.556 16.227 44 24 44" />
+                <path fill="#1976D2"
+                  d="M43.611 20.083H42V20H24v8h11.303a12.04 12.04 0 0 1-4.087 5.571l.003-.002l6.19 5.238C36.971 39.205 44 34 44 24c0-1.341-.138-2.65-.389-3.917" />
+              </svg>
+              Continuar con Google
+            </a>
+          </div>
+
+          <!-- Footer Link -->
+          <div class="form-footer">
+            <p>¿Ya tienes una cuenta? <a th:href="@{/login?role=cliente}">Inicia sesión</a></p>
+          </div>
+          <div class="form-footer">
+            <p style="text-align: center;"><a th:href="@{/}">volver al inicio</a></p>
+          </div>
+
+        </form>
+      </div>
+    </div>
+
+    <!-- ===== ONBOARDING MODAL ===== -->
+    <div id="modalOnboarding" class="modal-overlay">
+      <div class="modal-container">
+
+        <!-- Modal Header -->
+        <div class="modal-header">
+          <button onclick="cerrarModal()" class="modal-close" aria-label="Cerrar modal">✕</button>
+        </div>
+
+        <!-- Progress -->
+        <div class="modal-progress">
+          <div class="modal-progress-header">
+            <span class="modal-step-label" id="stepLabel">Paso 1 de 4</span>
+            <span class="modal-step-count" id="stepCount">Personalización</span>
+          </div>
+          <div class="progress-track">
+            <div class="progress-fill" id="progressFill" style="width:25%"></div>
           </div>
         </div>
 
-        <!--9 submit - botón real oculto-->
-        <button type="submit" id="btnSubmitReal" class="login-button div9" style="display:none;">Enviar</button>
-
-        <!--9 botón visible que abre modal-->
-        <button type="button" class="login-button div9" onclick="abrirModalOnboarding()">Siguiente</button>
-
-        <div class="social-login div7">
-          <a href="/oauth2/authorization/google" class="log-Auth">
-
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 48 48">
-              <path fill="#ffc107"
-                d="M43.611 20.083H42V20H24v8h11.303c-1.649 4.657-6.08 8-11.303 8c-6.627 0-12-5.373-12-12s5.373-12 12-12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4C12.955 4 4 12.955 4 24s8.955 20 20 20s20-8.955 20-20c0-1.341-.138-2.65-.389-3.917" />
-              <path fill="#ff3d00"
-                d="m6.306 14.691l6.571 4.819C14.655 15.108 18.961 12 24 12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4C16.318 4 9.656 8.337 6.306 14.691" />
-              <path fill="#4caf50"
-                d="M24 44c5.166 0 9.86-1.977 13.409-5.192l-6.19-5.238A11.9 11.9 0 0 1 24 36c-5.202 0-9.619-3.317-11.283-7.946l-6.522 5.025C9.505 39.556 16.227 44 24 44" />
-              <path fill="#1976d2"
-                d="M43.611 20.083H42V20H24v8h11.303a12.04 12.04 0 0 1-4.087 5.571l.003-.002l6.19 5.238C36.971 39.205 44 34 44 24c0-1.341-.138-2.65-.389-3.917" />
-            </svg>Google</a>
-        </div>
-        <!--10 -->
-        <p class="text-slate-500 font-medium pt-4 text-center div10">¿ya tienes una cuenta? <a
-            th:href="@{/login?role=cliente}" class="ColorBlue">inicia sesion</a></p>
-
-      </form>
-    </div>
-
-    <!-- MODAL ONBOARDING - fuera del form -->
-    <div id="modalOnboarding" style="display:none; position:fixed; inset:0; z-index:9999;
-      background:rgba(0,0,0,0.6); align-items:center; justify-content:center;">
-
-      <div
-        style="background:var(--color-background-primary, #fff); border-radius:16px;
-        padding:2.5rem; width:100%; max-width:100vw; height: 100vh; position:relative; box-shadow: 0 20px 60px rgba(0,0,0,0.3);">
-
-        <button onclick="cerrarModal()" style="position:absolute; top:1rem; right:1rem;
-          background:none; border:none; font-size:1.5rem; cursor:pointer; color:#9ca3af;
-          transition:color 0.2s;" onmouseover="this.style.color='#374151'"
-          onmouseout="this.style.color='#9ca3af'">✕</button>
-
-        <p id="stepLabel" style="font-size:13px; color:#6b7280; margin-bottom:4px; font-weight:500;">Paso 1 de 4</p>
-
-        <div style="height:5px; background:#e5e7eb; border-radius:3px; margin-bottom:1.5rem; overflow:hidden;">
-          <div id="progressFill" style="height:100%; background:#23aae2; transition:width 0.4s; width:25%;"></div>
+        <!-- Modal Body -->
+        <div class="modal-body" id="modalStepContent">
+          <!-- Content injected by JS -->
         </div>
 
-        <div id="modalStepContent"></div>
-
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-top:1.5rem; gap:12px">
-          <button id="btnAnteriorModal" onclick="pasoAnterior()" class="btn-onboard btn-anterior"
-            style="display:none;">Anterior</button>
-          <button id="btnSiguienteModal" onclick="pasoSiguiente()" class="btn-onboard btn-siguiente"
-            style="margin-left:auto;">
-            Siguiente
+        <!-- Modal Footer -->
+        <div class="modal-footer">
+          <button id="btnAnteriorModal" onclick="pasoAnterior()" class="btn-secondary" style="display:none;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="m15 18-6-6 6-6" />
+            </svg>
+            Anterior
           </button>
-          <button id="btnUneteFinal" onclick="submitFormFinal()" class="login-button"
-            style="display:none; margin-left:auto;">Únete</button>
+          <button id="btnSiguienteModal" onclick="pasoSiguiente()" class="btn-primary" style="margin-left:auto;">
+            Siguiente
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="m9 18 6-6-6-6" />
+            </svg>
+          </button>
+          <button id="btnUneteFinal" onclick="submitFormFinal()" class="btn-primary"
+            style="display:none; margin-left:auto;">
+            ¡Únete ahora!
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M20 6 9 17l-5-5" />
+            </svg>
+          </button>
         </div>
       </div>
     </div>
+
   </main>
+
+  <!-- Scripts -->
   <script th:src="@{/js/contraseñaMostrar.js}"></script>
   <script th:src="@{/js/alert.js}"></script>
 
   <script>
-    // Script para modal de onboarding
+    // ===== ONBOARDING MODAL LOGIC =====
     const pasosData = [
-      { titulo: '¿Qué actividades te gustan?', subtitulo: 'Selecciona una o más', tipo: 'checkbox', nombre: 'categoriasIds' },
       {
-        titulo: '¿Con quién sueles salir?', subtitulo: 'Selecciona una opción', tipo: 'radio', nombre: 'grupoViaje',
-        opciones: [{ v: 'SOLO', l: '🧍 Solo', emoji: '🧍' }, { v: 'PAREJA', l: '💑 En pareja', emoji: '💑' }, { v: 'FAMILIA', l: '👨‍👩‍👧‍👦 Con familia', emoji: '👨‍👩‍👧‍👦' }, { v: 'AMIGOS', l: '👥 Con amigos', emoji: '👥' }, { v: 'VARIOS', l: '🔄 Varía', emoji: '🔄' }]
+        titulo: '¿Qué actividades te gustan?',
+        subtitulo: 'Selecciona una o más categorías que te interesen',
+        tipo: 'checkbox',
+        nombre: 'categoriasIds',
+        stepName: 'Intereses'
       },
       {
-        titulo: '¿Qué presupuesto manejas?', subtitulo: 'Por actividad', tipo: 'radio', nombre: 'rangoPrecio',
-        opciones: [{ v: 'ECONOMICO', l: '💰 Económico', desc: '< $50k' }, { v: 'MODERADO', l: '💵 Moderado', desc: '$50k–$150k' }, { v: 'PREMIUM', l: '💎 Premium', desc: '> $150k' }]
+        titulo: '¿Con quién sueles salir?',
+        subtitulo: 'Esto nos ayuda a recomendarte las mejores experiencias',
+        tipo: 'radio',
+        nombre: 'grupoViaje',
+        stepName: 'Compañía',
+        opciones: [
+          { v: 'SOLO', l: 'Solo', emoji: '🧍', desc: 'Para una aventura personal' },
+          { v: 'PAREJA', l: 'En pareja', emoji: '💑', desc: 'Momentos románticos' },
+          { v: 'FAMILIA', l: 'Con familia', emoji: '👨‍👩‍👧‍👦', desc: 'Diversión para todos' },
+          { v: 'AMIGOS', l: 'Con amigos', emoji: '👥', desc: 'Experiencias grupales' },
+          { v: 'VARIOS', l: 'Varía', emoji: '🔄', desc: 'Depende del momento' }
+        ]
       },
       {
-        titulo: '¿Cuándo haces más actividades?', subtitulo: 'Selecciona una opción', tipo: 'radio', nombre: 'disponibilidadSemana',
-        opciones: [{ v: 'FINDE', l: '🎉 Fines de semana' }, { v: 'ENTRE_SEMANA', l: '📅 Entre semana' }, { v: 'AMBOS', l: '⭐ Ambos' }]
+        titulo: '¿Qué presupuesto manejas?',
+        subtitulo: 'Por actividad aproximadamente',
+        tipo: 'radio',
+        nombre: 'rangoPrecio',
+        stepName: 'Presupuesto',
+        opciones: [
+          { v: 'ECONOMICO', l: 'Económico', emoji: '💰', desc: 'Menos de $50.000 COP' },
+          { v: 'MODERADO', l: 'Moderado', emoji: '💵', desc: '$50.000 - $150.000 COP' },
+          { v: 'PREMIUM', l: 'Premium', emoji: '💎', desc: 'Más de $150.000 COP' }
+        ]
+      },
+      {
+        titulo: '¿Cuándo prefieres actividades?',
+        subtitulo: 'Tu disponibilidad nos ayuda a planificar mejor',
+        tipo: 'radio',
+        nombre: 'disponibilidadSemana',
+        stepName: 'Horario',
+        opciones: [
+          { v: 'FINDE', l: 'Fines de semana', emoji: '🎉', desc: 'Sábados y domingos' },
+          { v: 'ENTRE_SEMANA', l: 'Entre semana', emoji: '📅', desc: 'Lunes a viernes' },
+          { v: 'AMBOS', l: 'Ambos', emoji: '⭐', desc: 'Cualquier día' }
+        ]
       }
     ];
 
     let pasoActual = 0;
 
     function abrirModalOnboarding() {
-      // Validar que el form principal esté completo
-      const form = document.querySelector('form');
+      // Validar formulario principal
+      const form = document.getElementById('registroForm');
       const inputs = form.querySelectorAll('input[required]:not([type="checkbox"]):not([type="radio"])');
       for (const inp of inputs) {
         if (!inp.value.trim()) {
           inp.focus();
-          alert('Por favor completa todos los campos requeridos');
+          inp.closest('.input-wrapper')?.style.setProperty('border-color', '#ef4444');
+          setTimeout(() => {
+            inp.closest('.input-wrapper')?.style.removeProperty('border-color');
+          }, 2000);
+
+          // Crear toast notification en lugar de alert
+          mostrarToast('Por favor completa todos los campos requeridos', 'error');
           return;
         }
       }
+
       pasoActual = 0;
-      document.getElementById('modalOnboarding').style.display = 'flex';
+      document.getElementById('modalOnboarding').classList.add('active');
+      document.body.style.overflow = 'hidden';
       renderPaso();
     }
 
     function cerrarModal() {
-      document.getElementById('modalOnboarding').style.display = 'none';
+      document.getElementById('modalOnboarding').classList.remove('active');
+      document.body.style.overflow = '';
+    }
+
+    function mostrarToast(mensaje, tipo) {
+      // Remover toast anterior si existe
+      const prevToast = document.querySelector('.toast-notification');
+      if (prevToast) prevToast.remove();
+
+      const toast = document.createElement('div');
+      toast.className = 'toast-notification';
+      toast.style.cssText = `
+        position: fixed;
+        bottom: 2rem;
+        left: 50%;
+        transform: translateX(-50%) translateY(100px);
+        background: ${tipo === 'error' ? '#ef4444' : '#10b981'};
+        color: white;
+        padding: 1rem 1.5rem;
+        border-radius: 12px;
+        font-weight: 600;
+        font-size: 0.9375rem;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        z-index: 10000;
+        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      `;
+      toast.innerHTML = `
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          ${tipo === 'error'
+          ? '<circle cx="12" cy="12" r="10"/><line x1="15" x2="9" y1="9" y2="15"/><line x1="9" x2="15" y1="9" y2="15"/>'
+          : '<path d="M20 6 9 17l-5-5"/>'}
+        </svg>
+        ${mensaje}
+      `;
+      document.body.appendChild(toast);
+
+      requestAnimationFrame(() => {
+        toast.style.transform = 'translateX(-50%) translateY(0)';
+      });
+
+      setTimeout(() => {
+        toast.style.transform = 'translateX(-50%) translateY(100px)';
+        setTimeout(() => toast.remove(), 300);
+      }, 3000);
     }
 
     function renderPaso() {
       const paso = pasosData[pasoActual];
       document.getElementById('stepLabel').textContent = `Paso ${pasoActual + 1} de ${pasosData.length}`;
+      document.getElementById('stepCount').textContent = paso.stepName;
       document.getElementById('progressFill').style.width = `${((pasoActual + 1) / pasosData.length) * 100}%`;
 
-      let html = `<h3 style="font-size:22px;font-weight:600;margin-bottom:6px;color:#111827;">${paso.titulo}</h3>
-                  <p style="font-size:14px;color:#6b7280;margin-bottom:1.5rem;">${paso.subtitulo}</p>`;
+      let html = `
+        <h3 class="modal-step-title">${paso.titulo}</h3>
+        <p class="modal-step-subtitle">${paso.subtitulo}</p>
+      `;
 
       if (paso.tipo === 'checkbox') {
-        html += `<div style="display:flex;flex-wrap:wrap;gap:10px;justify-content:center;">`;
+        html += `<div class="category-grid">`;
         const checkboxes = document.querySelectorAll('input[name="categoriasIds"]');
         checkboxes.forEach(cb => {
           const label = cb.nextElementSibling?.textContent || cb.value;
           const checked = cb.checked;
-          const bgColor = checked ? '#23aae2' : 'white';
-          const textColor = checked ? 'white' : '#374151';
-          const borderColor = checked ? '#23aae2' : '#e5e7eb';
-          html += `<div onclick="toggleCat('${cb.id}')" id="pill_${cb.id}"
-            style="padding:10px 18px;border:2px solid ${borderColor};border-radius:999px;cursor:pointer;
-            font-weight:500;font-size:14px;transition:all 0.2s;background:${bgColor};color:${textColor};
-            user-select:none;">${label}</div>`;
+          html += `
+            <div onclick="toggleCat('${cb.id}')" id="pill_${cb.id}" 
+              class="category-pill ${checked ? 'selected' : ''}">
+              ${checked ? '✓ ' : ''}${label}
+            </div>`;
         });
         html += `</div>`;
       } else {
-        html += `<div style="display:flex;flex-direction:column;gap:10px;">`;
+        html += `<div class="option-list">`;
         paso.opciones.forEach(op => {
           const existing = document.querySelector(`input[name="${paso.nombre}"][value="${op.v}"]`);
           const checked = existing?.checked;
-          const bgColor = checked ? '#23aae2' : 'white';
-          const textColor = checked ? 'white' : '#374151';
-          const borderColor = checked ? '#23aae2' : '#e5e7eb';
-          const descHtml = op.desc ? `<span style="font-size:12px;opacity:0.85;">${op.desc}</span>` : '';
-          html += `<button type="button" onclick="selectOpcion('${paso.nombre}','${op.v}',this)"
-            style="padding:14px 18px;text-align:left;border:2px solid ${borderColor};
-            border-radius:10px;font-size:15px;font-weight:500;cursor:pointer;
-            background:${bgColor};color:${textColor};transition:all 0.2s;
-            display:flex;align-items:center;justify-content:space-between;">
-            <span>${op.l}</span>${descHtml}</button>`;
+          html += `
+            <button type="button" onclick="selectOpcion('${paso.nombre}','${op.v}',this)" 
+              class="option-card ${checked ? 'selected' : ''}">
+              <span class="option-emoji">${op.emoji}</span>
+              <div class="option-content">
+                <span class="option-title">${op.l}</span>
+                <span class="option-desc">${op.desc}</span>
+              </div>
+              <div class="option-check"></div>
+            </button>`;
         });
         html += `</div>`;
       }
 
       document.getElementById('modalStepContent').innerHTML = html;
-      document.getElementById('btnAnteriorModal').style.display = pasoActual > 0 ? 'inline-block' : 'none';
-      document.getElementById('btnSiguienteModal').style.display = pasoActual < pasosData.length - 1 ? 'inline-block' : 'none';
-      document.getElementById('btnUneteFinal').style.display = pasoActual === pasosData.length - 1 ? 'inline-block' : 'none';
+      document.getElementById('btnAnteriorModal').style.display = pasoActual > 0 ? 'inline-flex' : 'none';
+      document.getElementById('btnSiguienteModal').style.display = pasoActual < pasosData.length - 1 ? 'inline-flex' : 'none';
+      document.getElementById('btnUneteFinal').style.display = pasoActual === pasosData.length - 1 ? 'inline-flex' : 'none';
     }
 
     function toggleCat(id) {
       const cb = document.getElementById(id);
       cb.checked = !cb.checked;
       const pill = document.getElementById('pill_' + id);
+
       if (cb.checked) {
-        pill.style.background = '#23aae2';
-        pill.style.color = 'white';
-        pill.style.borderColor = '#23aae2';
+        pill.classList.add('selected');
+        pill.innerHTML = '✓ ' + pill.innerHTML.replace('✓ ', '');
       } else {
-        pill.style.background = 'white';
-        pill.style.color = '#374151';
-        pill.style.borderColor = '#e5e7eb';
+        pill.classList.remove('selected');
+        pill.innerHTML = pill.innerHTML.replace('✓ ', '');
       }
     }
 
@@ -619,29 +1628,26 @@
       const radio = document.querySelector(`input[name="${nombre}"][value="${valor}"]`);
       if (radio) radio.checked = true;
 
-      // Actualizar visual
-      btn.parentElement.querySelectorAll('button').forEach(b => {
-        b.style.background = 'white';
-        b.style.color = '#374151';
-        b.style.borderColor = '#e5e7eb';
+      // Update visual state
+      const list = btn.closest('.option-list');
+      list.querySelectorAll('.option-card').forEach(card => {
+        card.classList.remove('selected');
       });
-      btn.style.background = '#23aae2';
-      btn.style.color = 'white';
-      btn.style.borderColor = '#23aae2';
+      btn.classList.add('selected');
     }
 
     function validarPasoModal() {
       if (pasoActual === 0) {
         const alguno = Array.from(document.querySelectorAll('input[name="categoriasIds"]')).some(c => c.checked);
         if (!alguno) {
-          alert('Por favor selecciona al menos una categoría');
+          mostrarToast('Selecciona al menos una categoría', 'error');
           return false;
         }
       } else {
         const nombre = pasosData[pasoActual].nombre;
         const alguno = document.querySelector(`input[name="${nombre}"]:checked`);
         if (!alguno) {
-          alert('Por favor selecciona una opción');
+          mostrarToast('Selecciona una opción para continuar', 'error');
           return false;
         }
       }
@@ -665,23 +1671,31 @@
     function submitFormFinal() {
       if (!validarPasoModal()) return;
       cerrarModal();
-      // Enviar el formulario directamente
-      const form = document.querySelector('form');
+      const form = document.getElementById('registroForm');
       if (form) {
+        // Mostrar loading state
+        const btn = document.getElementById('btnUneteFinal');
+        btn.innerHTML = `
+          <svg class="animate-spin" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10" stroke-dasharray="60" stroke-dashoffset="20"/>
+          </svg>
+          Creando cuenta...
+        `;
+        btn.disabled = true;
         form.submit();
       }
     }
 
-    // Permitir cerrar modal con ESC
+    // Keyboard support
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') {
         const modal = document.getElementById('modalOnboarding');
-        if (modal.style.display === 'flex') cerrarModal();
+        if (modal.classList.contains('active')) cerrarModal();
       }
     });
 
-    // Cerrar modal si se hace clic fuera
-    document.getElementById('modalOnboarding')?.addEventListener('click', (e) => {
+    // Click outside to close
+    document.getElementById('modalOnboarding').addEventListener('click', (e) => {
       if (e.target.id === 'modalOnboarding') cerrarModal();
     });
   </script>

@@ -4,248 +4,1091 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description"
+        content="Inicia sesión en Eta - La red de colaboradores más grande del Caribe para eventos, tours y actividades en Cartagena." />
 
-    <link rel="icon" th:href="@{/images/logos/logo.webp}" type="image/x-icon" />
-
-
-    <!-- CSS con rutas Thymeleaf -->
-    <link rel="stylesheet" th:href="@{/css/global.css}">
     <link rel="icon" th:href="@{/images/logos/isotipo.webp}" type="image/x-icon" />
+
+    <link rel="stylesheet" th:href="@{/css/global.css}">
     <link rel="stylesheet" th:href="@{/fonts/fonts.css}">
     <link rel="stylesheet" th:href="@{/css/auth/login.css}">
 
-    <title>Eta - Inicio Sesion - Cliente - Eventos Toures Actividades</title>
+    <title>Eta - Inicio de Sesión | Eventos, Tours y Actividades</title>
 
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+
     <style>
-        @media screen and (max-width: 767px) {
-            .disapear {
-                display: none;
+        /* ===== DESIGN SYSTEM ===== */
+        :root {
+            --color-primary: #0ea5e9;
+            --color-primary-dark: #0284c7;
+            --color-primary-light: #e0f4fd;
+            --color-accent: #f59e0b;
+            --color-success: #10b981;
+            --color-error: #ef4444;
+            --color-warning: #f59e0b;
+            --color-info: #3b82f6;
+            --color-surface: #ffffff;
+            --color-text: #0f172a;
+            --color-text-muted: #64748b;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+            --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+            --shadow-glow: 0 0 40px rgba(14, 165, 233, 0.15);
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --radius-xl: 24px;
+            --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-base: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-slow: 350ms cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* ===== ANIMATIONS ===== */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
             }
         }
 
-        /* Custom scrollbar hide for cleaner mobile look */
-        .no-scrollbar::-webkit-scrollbar {
-            display: none;
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
         }
-        .no-scrollbar {
-            -ms-overflow-style: none;
-            scrollbar-width: none;
+
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0px) rotate(var(--rotation, 0deg));
+            }
+
+            50% {
+                transform: translateY(-15px) rotate(var(--rotation, 0deg));
+            }
+        }
+
+        @keyframes pulse-glow {
+
+            0%,
+            100% {
+                box-shadow: 0 0 20px rgba(14, 165, 233, 0.2);
+            }
+
+            50% {
+                box-shadow: 0 0 40px rgba(14, 165, 233, 0.4);
+            }
+        }
+
+        @keyframes shimmer {
+            0% {
+                background-position: -200% 0;
+            }
+
+            100% {
+                background-position: 200% 0;
+            }
+        }
+
+        @keyframes scaleIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes blob {
+
+            0%,
+            100% {
+                border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+            }
+
+            25% {
+                border-radius: 30% 60% 70% 40% / 50% 60% 30% 60%;
+            }
+
+            50% {
+                border-radius: 50% 60% 30% 60% / 30% 60% 70% 40%;
+            }
+
+            75% {
+                border-radius: 60% 40% 60% 30% / 70% 30% 50% 60%;
+            }
+        }
+
+        .animate-fade-in-up {
+            animation: fadeInUp 0.6s var(--transition-base) forwards;
+        }
+
+        .animate-fade-in {
+            animation: fadeIn 0.4s ease-out forwards;
+        }
+
+        .animate-slide-in-left {
+            animation: slideInLeft 0.5s var(--transition-base) forwards;
+        }
+
+        .animate-slide-in-right {
+            animation: slideInRight 0.5s var(--transition-base) forwards;
+        }
+
+        .animate-scale-in {
+            animation: scaleIn 0.5s var(--transition-base) forwards;
+        }
+
+        /* ===== BACKGROUND ===== */
+        .login-bg {
+            position: fixed;
+            inset: 0;
+            background: linear-gradient(135deg, #0c4a6e 0%, #075985 25%, #0369a1 50%, #0ea5e9 75%, #38bdf8 100%);
+            overflow: hidden;
+            z-index: 0;
+        }
+
+        .login-bg::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background:
+                radial-gradient(circle at 20% 80%, rgba(56, 189, 248, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(14, 165, 233, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 50% 50%, rgba(2, 132, 199, 0.08) 0%, transparent 60%);
+        }
+
+        /* Animated blobs */
+        .blob {
+            position: absolute;
+            filter: blur(60px);
+            opacity: 0.4;
+            animation: blob 20s ease-in-out infinite;
+        }
+
+        .blob-1 {
+            width: 400px;
+            height: 400px;
+            background: rgba(56, 189, 248, 0.3);
+            top: -10%;
+            left: -10%;
+            animation-delay: 0s;
+        }
+
+        .blob-2 {
+            width: 350px;
+            height: 350px;
+            background: rgba(14, 165, 233, 0.25);
+            bottom: -10%;
+            right: -5%;
+            animation-delay: -5s;
+        }
+
+        .blob-3 {
+            width: 300px;
+            height: 300px;
+            background: rgba(2, 132, 199, 0.2);
+            top: 40%;
+            left: 30%;
+            animation-delay: -10s;
+        }
+
+        /* Grid pattern overlay */
+        .grid-pattern {
+            position: absolute;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 60px 60px;
+            pointer-events: none;
+        }
+
+        /* ===== ALERTS SYSTEM ===== */
+        .alerts-container {
+            position: fixed;
+            top: 1rem;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 2000;
+            width: 100%;
+            max-width: 480px;
+            padding: 0 1rem;
+            pointer-events: none;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .alert-toast {
+            pointer-events: auto;
+            display: flex;
+            align-items: flex-start;
+            gap: 0.875rem;
+            padding: 1rem 1.25rem;
+            border-radius: var(--radius-lg);
+            font-size: 0.875rem;
+            font-weight: 500;
+            line-height: 1.5;
+            box-shadow: var(--shadow-lg);
+            animation: fadeInUp 0.4s ease-out, fadeIn 0.4s ease-out;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid;
+        }
+
+        .alert-toast.alert-info {
+            background: rgba(59, 130, 246, 0.95);
+            border-color: rgba(96, 165, 250, 0.5);
+            color: white;
+        }
+
+        .alert-toast.alert-success {
+            background: rgba(16, 185, 129, 0.95);
+            border-color: rgba(52, 211, 153, 0.5);
+            color: white;
+        }
+
+        .alert-toast.alert-danger {
+            background: rgba(239, 68, 68, 0.95);
+            border-color: rgba(248, 113, 113, 0.5);
+            color: white;
+        }
+
+        .alert-toast svg {
+            flex-shrink: 0;
+            width: 20px;
+            height: 20px;
+            margin-top: 0.125rem;
+        }
+
+        .alert-toast strong {
+            font-weight: 700;
+            display: block;
+            margin-bottom: 0.25rem;
+        }
+
+        /* ===== BACK BUTTON ===== */
+        .back-btn {
+            position: fixed;
+            top: 1.5rem;
+            left: 1.5rem;
+            z-index: 1000;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.25rem;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: var(--radius-lg);
+            color: white;
+            font-weight: 600;
+            font-size: 0.875rem;
+            text-decoration: none;
+            transition: all var(--transition-base);
+            cursor: pointer;
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateX(-4px);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .back-btn:active {
+            transform: translateX(-4px) scale(0.98);
+        }
+
+        /* ===== MOBILE NAV ===== */
+        .mobile-nav {
+            display: none;
+            position: relative;
+            z-index: 100;
+            padding: 0.75rem 1rem;
+        }
+
+        .mobile-nav-inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .mobile-back {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            border-radius: var(--radius-md);
+            color: white;
+            transition: all var(--transition-fast);
+        }
+
+        .mobile-back:hover {
+            background: rgba(255, 255, 255, 0.25);
+        }
+
+        .mobile-logo {
+            height: 32px;
+            width: auto;
+            object-fit: contain;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+        }
+
+        /* ===== LOGIN CARD ===== */
+        .login-card {
+            position: relative;
+            z-index: 20;
+            width: 100%;
+            max-width: 440px;
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: var(--radius-xl);
+            padding: 2.5rem;
+            box-shadow:
+                0 25px 50px -12px rgba(0, 0, 0, 0.25),
+                0 0 0 1px rgba(255, 255, 255, 0.1),
+                var(--shadow-glow);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            animation: scaleIn 0.5s var(--transition-base) forwards;
+        }
+
+
+        /* Card header */
+        .card-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .card-logo {
+            width: 72px;
+            height: 72px;
+            background: linear-gradient(135deg, #e0f4fd 0%, #e0f2fe 100%);
+            border-radius: var(--radius-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.25rem;
+            box-shadow: 0 4px 16px rgba(14, 165, 233, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card-logo::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, transparent 0%, rgba(255, 255, 255, 0.4) 100%);
+        }
+
+        .card-logo img {
+            width: 44px;
+            height: 44px;
+            object-fit: contain;
+            position: relative;
+            z-index: 1;
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--color-text);
+            margin-bottom: 0.375rem;
+            letter-spacing: -0.02em;
+        }
+
+        .card-subtitle {
+            font-size: 0.9375rem;
+            color: var(--color-text-muted);
+            font-weight: 500;
+        }
+
+        /* ===== FORM INPUTS ===== */
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .input-field {
+            position: relative;
+            display: flex;
+            align-items: center;
+            background: #f8fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: var(--radius-md);
+            padding: 0 1rem;
+            height: 52px;
+            transition: all var(--transition-fast);
+        }
+
+        .input-field:hover {
+            border-color: #cbd5e1;
+            background: #f1f5f9;
+        }
+
+        .input-field:focus-within {
+            border-color: var(--color-primary);
+            background: white;
+            box-shadow: 0 0 0 4px rgba(14, 165, 233, 0.1);
+        }
+
+        .input-field svg {
+            flex-shrink: 0;
+            width: 20px;
+            height: 20px;
+            color: #94a3b8;
+            transition: color var(--transition-fast);
+        }
+
+        .input-field:focus-within svg {
+            color: var(--color-primary);
+        }
+
+        .input-field input {
+            flex: 1;
+            border: none;
+            outline: none;
+            background: transparent;
+            padding: 0 0.75rem;
+            font-size: 0.9375rem;
+            color: var(--color-text);
+            height: 100%;
+            width: 100%;
+            font-family: inherit;
+        }
+
+        .input-field input::placeholder {
+            color: #94a3b8;
+            font-weight: 400;
+        }
+
+        /* Password toggle */
+        .password-toggle {
+            position: absolute;
+            right: 0.75rem;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0.375rem;
+            color: #94a3b8;
+            transition: all var(--transition-fast);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: var(--radius-sm);
+        }
+
+        .password-toggle:hover {
+            color: var(--color-text);
+            background: #f1f5f9;
+        }
+
+        .password-toggle svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        /* ===== SUBMIT BUTTON ===== */
+        .btn-submit {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            width: 100%;
+            padding: 0.875rem 1.5rem;
+            background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);
+            color: white;
+            font-weight: 700;
+            font-size: 1rem;
+            border: none;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: all var(--transition-base);
+            box-shadow: 0 4px 14px rgba(14, 165, 233, 0.35);
+            position: relative;
+            overflow: hidden;
+            margin-top: 0.5rem;
+        }
+
+        .btn-submit::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.6s;
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(14, 165, 233, 0.45);
+        }
+
+        .btn-submit:hover::before {
+            left: 100%;
+        }
+
+        .btn-submit:active {
+            transform: translateY(0);
+        }
+
+        /* ===== DIVIDER ===== */
+        .divider-modern {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin: 1.5rem 0;
+            color: var(--color-text-muted);
+            font-size: 0.8125rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .divider-modern::before,
+        .divider-modern::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, #e2e8f0, transparent);
+        }
+
+        /* ===== SOCIAL LOGIN ===== */
+        .social-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            width: 100%;
+            padding: 0.875rem 1.5rem;
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: var(--radius-md);
+            font-weight: 600;
+            font-size: 0.9375rem;
+            color: var(--color-text);
+            text-decoration: none;
+            transition: all var(--transition-fast);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .social-btn:hover {
+            border-color: #cbd5e1;
+            background: #f8fafc;
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .social-btn svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        /* ===== FOOTER LINKS ===== */
+        .form-footer {
+            text-align: center;
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #f1f5f9;
+        }
+
+        .form-footer p {
+            font-size: 0.9375rem;
+            color: var(--color-text-muted);
+            font-weight: 500;
+        }
+
+        .form-footer a {
+            color: var(--color-primary);
+            font-weight: 700;
+            text-decoration: none;
+            transition: color var(--transition-fast);
+            position: relative;
+        }
+
+        .form-footer a::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--color-primary);
+            transition: width var(--transition-base);
+        }
+
+        .form-footer a:hover {
+            color: var(--color-primary-dark);
+        }
+
+        .form-footer a:hover::after {
+            width: 100%;
+        }
+
+        /* ===== DECORATIVE IMAGES ===== */
+        .deco-image {
+            position: absolute;
+            z-index: 10;
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            border: 3px solid rgba(255, 255, 255, 0.2);
+            animation: float 6s ease-in-out infinite;
+            transition: transform var(--transition-base);
+        }
+
+        .deco-image:hover {
+            transform: scale(1.05) !important;
+            z-index: 20;
+        }
+
+        .deco-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .deco-1 {
+            width: 120px;
+            height: 120px;
+            top: 10%;
+            left: 5%;
+            --rotation: -6deg;
+            animation-delay: 0s;
+        }
+
+        .deco-2 {
+            width: 140px;
+            height: 140px;
+            bottom: 15%;
+            left: 8%;
+            --rotation: 5deg;
+            animation-delay: -2s;
+        }
+
+        .deco-3 {
+            width: 160px;
+            height: 160px;
+            top: 8%;
+            right: 5%;
+            --rotation: 7deg;
+            animation-delay: -4s;
+        }
+
+        .deco-4 {
+            width: 110px;
+            height: 110px;
+            bottom: 20%;
+            right: 8%;
+            --rotation: -4deg;
+            animation-delay: -1s;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 1024px) {
+            .deco-image {
+                display: none !important;
+            }
+
+            .back-btn {
+                display: none !important;
+            }
+
+            .mobile-nav {
+                display: block;
+            }
+
+            .login-bg {
+                background: linear-gradient(160deg, #0c4a6e 0%, #075985 50%, #0369a1 100%);
+            }
+        }
+
+        @media (max-width: 640px) {
+            .login-card {
+                padding: 1.75rem;
+                border-radius: var(--radius-lg);
+                margin: 0 0.5rem;
+            }
+
+            .card-logo {
+                width: 60px;
+                height: 60px;
+            }
+
+            .card-logo img {
+                width: 36px;
+                height: 36px;
+            }
+
+            .card-title {
+                font-size: 1.25rem;
+            }
+
+            .input-field {
+                height: 48px;
+            }
+
+            .alerts-container {
+                top: 0.5rem;
+                padding: 0 0.75rem;
+            }
+
+            .alert-toast {
+                padding: 0.875rem 1rem;
+                font-size: 0.8125rem;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .login-card {
+                padding: 1.5rem;
+            }
+
+            .btn-submit,
+            .social-btn {
+                padding: 0.75rem 1rem;
+                font-size: 0.9375rem;
+            }
+        }
+
+        /* ===== UTILITY ===== */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border-width: 0;
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 3px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+
+        /* Focus visible */
+        *:focus-visible {
+            outline: 2px solid var(--color-primary);
+            outline-offset: 2px;
+        }
+
+        /* Selection */
+        ::selection {
+            background: rgba(14, 165, 233, 0.2);
+            color: var(--color-text);
         }
     </style>
 </head>
 
-<body class="relative min-h-screen bg-gradient-to-br from-[#08b6aa] via-[#4ebfd7] to-[#7fece3] md:overflow-y-hidden">
+<body>
 
-    <!-- Alerts Container - Mobile Optimized -->
-    <div class="fixed top-0 left-0 right-0 z-[2000] px-4 pt-4 space-y-2 pointer-events-none">
-        <div th:if="${param.registrarse}" class="alert alert-info pointer-events-auto mx-auto max-w-md">
-            Debes registrarte o iniciar sesión para acceder.
+    <!-- ===== ANIMATED BACKGROUND ===== -->
+    <div class="login-bg">
+        <div class="grid-pattern"></div>
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+    </div>
+
+    <!-- ===== ALERTS SYSTEM ===== -->
+    <div class="alerts-container">
+        <div th:if="${param.registrarse}" class="alert-toast alert-info animate-fade-in-up">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                    d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
+            </svg>
+            <span>Debes registrarte o iniciar sesión para acceder.</span>
         </div>
 
-        <div th:if="${param.pendingVerification}" class="alert alert-info alert-info-big pointer-events-auto mx-auto max-w-md">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                stroke="currentColor" stroke-width="2" style="flex-shrink:0;">
-                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
-                <polyline points="22,6 12,13 2,6"></polyline>
+        <div th:if="${param.pendingVerification}" class="alert-toast alert-info animate-fade-in-up">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                    d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
             </svg>
             <div>
-                <strong>¡Registro exitoso!</strong><br>
-                Hemos enviado un correo de verificación a tu email. Por favor, revisa tu bandeja de entrada (y spam) y haz
-                clic en el enlace para activar tu cuenta.
+                <strong>¡Registro exitoso!</strong>
+                Hemos enviado un correo de verificación. Revisa tu bandeja de entrada (y spam) y haz clic en el enlace
+                para activar tu cuenta.
             </div>
         </div>
 
-        <div th:if="${param.verified}" class="alert alert-success pointer-events-auto mx-auto max-w-md">
-            Tu cuenta fue verificada correctamente. Ya puedes iniciar sesión.
+        <div th:if="${param.verified}" class="alert-toast alert-success animate-fade-in-up">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                    d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <span>Tu cuenta fue verificada correctamente. Ya puedes iniciar sesión.</span>
         </div>
 
-        <div th:if="${param.notVerified}" class="alert alert-danger pointer-events-auto mx-auto max-w-md">
-            Tu cuenta aún no está verificada. Revisa tu correo y abre el enlace de verificación.
+        <div th:if="${param.notVerified}" class="alert-toast alert-danger animate-fade-in-up">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                    d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
+            </svg>
+            <span>Tu cuenta aún no está verificada. Revisa tu correo y abre el enlace de verificación.</span>
         </div>
 
-        <div th:if="${param.expiredToken}" class="alert alert-danger pointer-events-auto mx-auto max-w-md">
-            El enlace de verificación expiró.
+        <div th:if="${param.expiredToken}" class="alert-toast alert-danger animate-fade-in-up">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                    d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <span>El enlace de verificación expiró.</span>
         </div>
 
-        <div th:if="${param.invalidToken}" class="alert alert-danger pointer-events-auto mx-auto max-w-md">
-            El enlace de verificación no es válido.
+        <div th:if="${param.invalidToken}" class="alert-toast alert-danger animate-fade-in-up">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+            <span>El enlace de verificación no es válido.</span>
         </div>
 
-        <div th:if="${param.error}" class="alert alert-danger pointer-events-auto mx-auto max-w-md">
-            Credenciales inválidas.
+        <div th:if="${param.error}" class="alert-toast alert-danger animate-fade-in-up">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                    d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
+            </svg>
+            <span>Credenciales inválidas.</span>
         </div>
 
-        <div th:if="${exito}" class="alert alert-success pointer-events-auto mx-auto max-w-md">
+        <div th:if="${exito}" class="alert-toast alert-success animate-fade-in-up">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                    d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
             <span th:text="${exito}"></span>
         </div>
 
-        <div th:if="${error}" class="alert alert-danger pointer-events-auto mx-auto max-w-md">
+        <div th:if="${error}" class="alert-toast alert-danger animate-fade-in-up">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                    d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
+            </svg>
             <span th:text="${error}"></span>
         </div>
 
-        <div th:if="${param.expired}" class="alert alert-info pointer-events-auto mx-auto max-w-md">
-            La Sesión expiró
+        <div th:if="${param.expired}" class="alert-toast alert-info animate-fade-in-up">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                    d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <span>La sesión expiró.</span>
         </div>
     </div>
 
-    <!-- Desktop Back Button -->
-    <a th:href="@{/}"
-        class="hidden md:flex absolute top-4 left-5 items-center gap-2 bg-white/20 border border-white/30 text-white px-3 py-3 rounded-2xl font-bold hover:bg-white/30 z-[1000] transition-all duration-300 hover:scale-105">
-        <svg class="back-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24">
-            <path fill="currentColor"
-                d="m4 10l-.707.707L2.586 10l.707-.707zm17 8a1 1 0 1 1-2 0zM8.293 15.707l-5-5l1.414-1.414l5 5zm-5-6.414l5-5l1.414 1.414l-5 5zM4 9h10v2H4zm17 7v2h-2v-2zm-7-7a7 7 0 0 1 7 7h-2a5 5 0 0 0-5-5z" />
+    <!-- ===== DESKTOP BACK BUTTON ===== -->
+    <a th:href="@{/}" class="back-btn hidden md:inline-flex">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="m15 18-6-6 6-6" />
         </svg>
+        <span>Volver al inicio</span>
     </a>
 
-    <!-- Mobile Header / Nav -->
-    <div class="w-full md:hidden">
-        <nav class="flex items-center justify-between px-4 py-3">
-            <a th:href="@{/}"
-                class="flex items-center gap-2 bg-white/20 border border-white/30 text-white px-3 py-2.5 rounded-xl font-bold hover:bg-white/30 transition-all duration-300">
-                <svg class="back-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24">
-                    <path fill="currentColor"
-                        d="m4 10l-.707.707L2.586 10l.707-.707zm17 8a1 1 0 1 1-2 0zM8.293 15.707l-5-5l1.414-1.414l5 5zm-5-6.414l5-5l1.414 1.414l-5 5zM4 9h10v2H4zm17 7v2h-2v-2zm-7-7a7 7 0 0 1 7 7h-2a5 5 0 0 0-5-5z" />
+    <!-- ===== MOBILE NAV ===== -->
+    <div class="mobile-nav md:hidden">
+        <div class="mobile-nav-inner">
+            <a th:href="@{/}" class="mobile-back">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="m15 18-6-6 6-6" />
                 </svg>
             </a>
-
-            <a class="flex justify-center items-center cursor-pointer" th:href="@{/}">
-                <img th:src="@{/images/logos/logo.webp}" class="h-8 w-auto object-contain" alt="logo" loading="lazy" />
+            <a th:href="@{/}">
+                <img th:src="@{/images/logos/logo.webp}" class="mobile-logo" alt="Eta Logo" loading="lazy" />
             </a>
-
-            <!-- Spacer for centering -->
             <div class="w-10"></div>
-        </nav>
+        </div>
     </div>
 
-    <!-- Main Content Area -->
-    <main class="relative min-h-[calc(100vh-60px)] md:min-h-screen flex items-center justify-center px-4 py-6 md:py-0">
+    <!-- ===== MAIN CONTENT ===== -->
+    <main class="relative min-h-screen flex items-center justify-center px-4 py-8 md:py-0">
 
-        <!-- Login Card -->
-        <div class="w-full max-w-[420px] bg-white rounded-3xl shadow-2xl px-6 py-8 md:px-10 md:py-12 flex flex-col items-center gap-4 relative z-20">
+        <!-- ===== DECORATIVE IMAGES (Desktop Only) ===== -->
+        <div class="deco-image deco-1 hidden lg:block animate-slide-in-left">
+            <img th:src="@{/images/shares/share1.webp}" alt="Actividad" loading="lazy">
+        </div>
+        <div class="deco-image deco-2 hidden lg:block animate-slide-in-left" style="animation-delay:0.2s">
+            <img th:src="@{/images/shares/share2.webp}" alt="Experiencia" loading="lazy">
+        </div>
+        <div class="deco-image deco-3 hidden lg:block animate-slide-in-right" style="animation-delay:0.1s">
+            <img th:src="@{/images/shares/share3.webp}" alt="Tour" loading="lazy">
+        </div>
+        <div class="deco-image deco-4 hidden lg:block animate-slide-in-right" style="animation-delay:0.3s">
+            <img th:src="@{/images/shares/share4.webp}" alt="Gastronomía" loading="lazy">
+        </div>
 
-            <!-- Logo Icon -->
-            <div class="w-16 h-16 md:w-20 md:h-20 bg-gray-100 rounded-2xl shadow-lg flex items-center justify-center mb-2">
-                <img th:src="@{/images/logos/isotipo.webp}" alt="etaApp" class="w-12 h-12 md:w-16 md:h-16 rounded-xl object-contain" />
+        <!-- ===== LOGIN CARD ===== -->
+        <div class="login-card animate-scale-in">
+
+            <!-- Card Header -->
+            <div class="card-header">
+                <div class="card-logo">
+                    <img th:src="@{/images/logos/isotipo.webp}" alt="Eta App" loading="lazy" />
+                </div>
+                <h1 class="card-title">Bienvenido de vuelta</h1>
+                <p class="card-subtitle">Ingresa para descubrir experiencias únicas</p>
             </div>
 
-            <h1 class="text-xl md:text-[22px] font-semibold text-center text-[var(--color-medium-blue)] px-2">
-                Ingresa con tu usuario
-            </h1>
-            <p class="text-xs md:text-[11px] text-gray-500 text-center px-4">
-                Disfruta de todas las actividades
-            </p>
-
-            <form th:action="@{/login}" method="post" class="w-full mt-2 space-y-4">
+            <!-- Login Form -->
+            <form th:action="@{/login}" method="post" class="space-y-4">
 
                 <!-- Email Input -->
-                <div class="flex items-center gap-3 bg-[#F8FAFC] border border-gray-200/70 rounded-xl px-3 py-3 md:px-4 md:py-3.5 w-full transition-all duration-200 focus-within:border-[var(--color-main)] focus-within:ring-2 focus-within:ring-[var(--color-main)]/20">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" class="flex-shrink-0 text-gray-400">
-                        <path fill="#BFC2CF"
-                            d="M22 6c0-1.1-.9-2-2-2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2zm-2 0l-8 5l-8-5zm0 12H4V8l8 5l8-5z" />
-                    </svg>
-                    <input type="text" placeholder="Email" id="username" name="username" autofocus="autofocus" required
-                        class="flex-1 bg-transparent border-none outline-none text-sm text-gray-700 placeholder-gray-400 w-full" />
+                <div class="form-group">
+                    <div class="input-field">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                            stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
+                        </svg>
+                        <input type="text" placeholder="Correo electrónico" id="username" name="username"
+                            autofocus="autofocus" required autocomplete="email" />
+                    </div>
                 </div>
 
                 <!-- Password Input -->
-                <div class="flex items-center gap-3 bg-[#F8FAFC] border border-gray-200/70 rounded-xl px-3 py-3 md:px-4 md:py-3.5 w-full relative transition-all duration-200 focus-within:border-[var(--color-main)] focus-within:ring-2 focus-within:ring-[var(--color-main)]/20">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" class="flex-shrink-0 text-gray-400">
-                        <path fill="#BFC2Cf"
-                            d="M20 12c0-1.103-.897-2-2-2h-1V7c0-2.757-2.243-5-5-5S7 4.243 7 7v3H6c-1.103 0-2 .897-2 2v8c0 1.103.897 2 2 2h12c1.103 0 2-.897 2-2zM9 7c0-1.654 1.346-3 3-3s3 1.346 3 3v3H9z" />
-                    </svg>
-
-                    <input type="password" placeholder="Contraseña" required id="password" name="password"
-                        autofocus="autofocus"
-                        class="flex-1 bg-transparent border-none outline-none text-sm text-gray-700 placeholder-gray-400 w-full pr-10" />
-
-                    <!-- Toggle Password Button -->
-                    <button type="button" id="togglePassLogin"
-                        class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 password-toggle p-1 rounded-lg hover:bg-gray-100 transition-colors">
-                        <svg id="eyeClosedLogin" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
-                            viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.542-7a10.05 10.05 0 011.658-3.248M9.88 9.88A3 3 0 0114.12 14.12M20.12 20.12L3.88 3.88" />
+                <div class="form-group">
+                    <div class="input-field">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                            stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
                         </svg>
-                    </button>
+                        <input type="password" placeholder="Contraseña" required id="password" name="password"
+                            autocomplete="current-password" />
+                        <button type="button" id="togglePassLogin" class="password-toggle"
+                            aria-label="Mostrar u ocultar contraseña">
+                            <svg id="eyeClosedLogin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                stroke-width="1.5" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M3.98 8.223A10.477 10.477 0 001.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.45 10.45 0 0112 4.5c4.756 0 8.773 3.162 10.065 7.498a10.523 10.523 0 01-4.293 5.774M6.228 6.228L3 3m3.228 3.228l3.65 3.65m7.894 7.894L21 21m-3.228-3.228l-3.65-3.65m0 0a3 3 0 10-4.243-4.243m4.242 4.242L9.88 9.88" />
+                            </svg>
+                        </button>
+                    </div>
                 </div>
 
                 <!-- Submit Button -->
-                <button type="submit" 
-                    class="w-full mt-4 bg-[var(--color-main)] text-white font-bold py-3.5 rounded-xl text-sm hover:opacity-90 active:scale-[0.98] transition-all duration-200 shadow-lg shadow-[var(--color-main)]/30">
-                    Únete
+                <button type="submit" class="btn-submit">
+                    <span>Iniciar sesión</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M5 12h14" />
+                        <path d="m12 5 7 7-7 7" />
+                    </svg>
                 </button>
 
                 <!-- Register Link -->
-                <p class="text-center text-sm text-gray-500 mt-4">
-                    ¿No tienes una cuenta?
-                    <a th:if="${role == 'cliente'}" th:href="@{/registro/cliente}" class="text-[var(--color-medium-blue)] font-semibold hover:underline">Registrarse</a>
-                    <a th:if="${role == 'colaborador'}" th:href="@{/registro/colaborador}" class="text-[var(--color-medium-blue)] font-semibold hover:underline">Registrarse</a>
-                    <a th:if="${role == null}" th:href="@{/registro/cliente}" class="text-[var(--color-medium-blue)] font-semibold hover:underline">Registrarse</a>
-                </p>
+                <div class="form-footer" style="margin-top:1rem; padding-top:1rem; border-top:none;">
+                    <p>¿No tienes una cuenta?
+                        <a th:if="${role == 'cliente'}" th:href="@{/registro/cliente}">Regístrate</a>
+                        <a th:if="${role == 'colaborador'}" th:href="@{/registro/colaborador}">Regístrate</a>
+                        <a th:if="${role == null}" th:href="@{/registro/cliente}">Regístrate</a>
+                    </p>
+                </div>
 
                 <!-- Divider -->
-                <div class="relative mt-6">
-                    <div class="absolute inset-0 flex items-center">
-                        <div class="w-full h-px bg-gray-300"></div>
-                    </div>
-                    <div class="relative flex justify-center">
-                        <span class="bg-white px-4 text-[10px] uppercase tracking-[0.3em] font-bold text-gray-400">
-                            O utiliza Google
-                        </span>
-                    </div>
+                <div class="divider-modern">
+                    <span>O</span>
                 </div>
 
                 <!-- Google Login -->
-                <a href="/oauth2/authorization/google" 
-                    class="flex items-center justify-center gap-3 w-full bg-white border border-gray-200 rounded-xl py-3 px-4 shadow-md hover:shadow-lg hover:border-gray-300 transition-all duration-200 active:scale-[0.98]">
+                <a href="/oauth2/authorization/google" class="social-btn">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 48 48">
-                        <path fill="#ffc107"
+                        <path fill="#FFC107"
                             d="M43.611 20.083H42V20H24v8h11.303c-1.649 4.657-6.08 8-11.303 8c-6.627 0-12-5.373-12-12s5.373-12 12-12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4C12.955 4 4 12.955 4 24s8.955 20 20 20s20-8.955 20-20c0-1.341-.138-2.65-.389-3.917" />
-                        <path fill="#ff3d00"
+                        <path fill="#FF3D00"
                             d="m6.306 14.691l6.571 4.819C14.655 15.108 18.961 12 24 12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4C16.318 4 9.656 8.337 6.306 14.691" />
-                        <path fill="#4caf50"
+                        <path fill="#4CAF50"
                             d="M24 44c5.166 0 9.86-1.977 13.409-5.192l-6.19-5.238A11.9 11.9 0 0 1 24 36c-5.202 0-9.619-3.317-11.283-7.946l-6.522 5.025C9.505 39.556 16.227 44 24 44" />
-                        <path fill="#1976d2"
+                        <path fill="#1976D2"
                             d="M43.611 20.083H42V20H24v8h11.303a12.04 12.04 0 0 1-4.087 5.571l.003-.002l6.19 5.238C36.971 39.205 44 34 44 24c0-1.341-.138-2.65-.389-3.917" />
                     </svg>
-                    <span class="text-sm font-medium text-gray-700">Continuar con Google</span>
+                    <span>Continuar con Google</span>
                 </a>
+
             </form>
         </div>
     </main>
 
-    <!-- Decorative Images - Hidden on mobile, shown on md+ -->
-    <div class="absolute disapear top-12 left-8 md:left-16 lg:left-30 -rotate-6 z-10 hidden md:block">
-        <div class="w-[100px] h-[100px] lg:w-[130px] lg:h-[130px] rounded-2xl overflow-hidden shadow-2xl ring-[3px] ring-white">
-            <img th:src="@{/images/shares/share1.webp}" alt="actividad" class="w-full h-full object-cover">
-        </div>
-    </div>
-
-    <div class="absolute disapear bottom-14 left-6 md:left-16 lg:left-23 rotate-[5deg] z-10 hidden md:block">
-        <div class="w-[110px] h-[110px] lg:w-[140px] lg:h-[140px] rounded-2xl overflow-hidden shadow-xl ring-[3px] ring-white">
-            <img th:src="@{/images/shares/share2.webp}" alt="experiencia"
-                class="w-full h-full object-cover rounded-2xl">
-        </div>
-    </div>
-
-    <div class="absolute disapear top-8 right-6 md:right-12 lg:right-18 rotate-[7deg] z-10 hidden md:block">
-        <div class="w-[120px] h-[120px] lg:w-[160px] lg:h-[160px] rounded-2xl overflow-hidden shadow-2xl ring-[3px] ring-white">
-            <img th:src="@{/images/shares/share3.webp}" alt="tour" class="w-full h-full object-cover rounded-2xl">
-        </div>
-    </div>
-
-    <div class="absolute disapear bottom-18 right-6 md:right-10 lg:right-17 -rotate-[4deg] z-10 hidden md:block">
-        <div class="w-[90px] h-[90px] lg:w-[120px] lg:h-[120px] rounded-xl overflow-hidden shadow-xl">
-            <img th:src="@{/images/shares/share4.webp}" alt="gastronomia"
-                class="w-full h-full object-cover rounded-2xl">
-        </div>
-    </div>
-
-
+    <!-- ===== SCRIPTS ===== -->
     <script th:src="@{/js/ingreso.js}"></script>
     <script th:src="@{/js/contraseñaMostrar.js}"></script>
     <script th:src="@{/js/alert.js}"></script>
+
 </body>
 
 </html>
