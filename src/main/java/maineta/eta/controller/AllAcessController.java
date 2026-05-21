@@ -527,8 +527,9 @@ public class AllAcessController {
 
         // Pagina de terminos y condiciones
         @GetMapping("/terminos-condiciones")
-        public String showTerminos(Model model) {
+        public String showTerminos(Model model, Authentication auth) {
                 model.addAttribute("pagina", "terminos");
+                usuarioHelper.agregarInfoUsuarioModel(model, auth);
                 return "componentes/terminos-condiciones";
         }
 
