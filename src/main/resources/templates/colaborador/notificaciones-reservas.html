@@ -83,7 +83,7 @@
                         </div>
 
                         <a th:href="@{/colaborador/dashboard}"
-                            class="inline-flex items-center justify-center rounded-2xl bg-slate-950 px-5 py-3 text-sm font-semibold text-white transition hover:bg-slate-800">
+                            class="inline-flex w-full sm:w-auto sm:min-w-64 items-center justify-center rounded-2xl bg-slate-950 px-6 py-3 text-sm font-semibold text-white whitespace-nowrap transition hover:bg-slate-800">
                             Volver al dashboard
                         </a>
                     </div>
@@ -136,7 +136,7 @@
 
                                     <div class="mt-4" th:if="${reserva.actividad != null}">
                                         <a th:href="@{/colaborador/reservas/{idActividad}(idActividad=${reserva.actividad.idActividad})}"
-                                            class="inline-flex items-center justify-center rounded-xl bg-slate-950 px-4 py-2 text-sm font-semibold text-white transition hover:bg-slate-800">
+                                            class="inline-flex w-full sm:w-auto sm:min-w-72 items-center justify-center rounded-xl bg-slate-950 px-5 py-2.5 text-sm font-semibold text-white text-center transition hover:bg-slate-800">
                                             Ver reserva de esta actividad
                                         </a>
                                     </div>
@@ -164,7 +164,7 @@
                                     <div class="mb-3"
                                         th:if="${!#lists.isEmpty(entry.value) and entry.value[0].actividad != null}">
                                         <a th:href="@{/colaborador/reservas/{idActividad}(idActividad=${entry.value[0].actividad.idActividad})}"
-                                            class="inline-flex items-center justify-center rounded-xl border border-emerald-200 text-white bg-emerald-500 px-4 py-2 text-sm font-semibold  transition hover:bg-emerald-100">
+                                            class="inline-flex w-full sm:w-auto sm:min-w-72 items-center justify-center rounded-xl border border-emerald-200 text-white bg-emerald-500 px-5 py-2.5 text-sm font-semibold text-center transition hover:bg-emerald-100">
                                             Ir a reservas de esta actividad
                                         </a>
                                     </div>

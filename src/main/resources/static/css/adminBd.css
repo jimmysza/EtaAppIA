@@ -1250,6 +1250,15 @@ Tablet
     padding-top: 10px;
 }
 
+.sb-bottom > a,
+.sb-bottom > form {
+    width: 100%;
+}
+
+.sb-bottom > form > button {
+    width: 100%;
+}
+
 .breadcrumbs {
     list-style: none;
     display: flex;

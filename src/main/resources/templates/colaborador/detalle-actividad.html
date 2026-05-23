@@ -16,113 +16,6 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <!-- Leaflet JS -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <style>
-        /* Estilos para las secciones del formulario */
-        .form-edit {
-            display: none;
-            animation: fadeIn 0.3s ease;
-        }
-
-        .form-edit.active {
-            display: block;
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        /* Estilos para el contenedor principal */
-        main {
-            padding: 2rem;
-        }
-
-        .form-container {
-            background: white;
-            border-radius: 0.75rem;
-            padding: 2rem;
-        }
-
-        .form-edit label {
-            display: block;
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-            font-size: 1.125rem;
-        }
-
-        .form-edit input[type="text"],
-        .form-edit input[type="number"],
-        .form-edit textarea {
-            width: 100%;
-            padding: 0.75rem;
-            border: 1px solid #d1d5db;
-            border-radius: 0.5rem;
-            margin-bottom: 1rem;
-            font-size: 1rem;
-        }
-
-        .form-edit input[type="text"]:focus,
-        .form-edit input[type="number"]:focus {
-            outline: none;
-            border-color: #111827;
-            box-shadow: 0 0 0 3px rgba(17, 24, 39, 0.1);
-        }
-
-        .info-display {
-            background-color: #f9fafb;
-            border-radius: 0.5rem;
-            padding: 1rem;
-            margin-bottom: 1rem;
-        }
-
-        .info-display p {
-            margin: 0.5rem 0;
-            font-size: 1rem;
-            color: #374151;
-        }
-
-        .button-default {
-            background-color: #111827;
-            color: white;
-            padding: 0.875rem 1.5rem;
-            border-radius: 0.5rem;
-            font-weight: 600;
-            cursor: pointer;
-            border: none;
-            transition: background-color 0.2s;
-            margin-top: 1rem;
-        }
-
-        .button-default:hover {
-            background-color: #000000;
-        }
-
-        /* Mapa estilos */
-        #map-wrapper-detail {
-            width: 100%;
-            height: 300px;
-            border-radius: 10px;
-            overflow: hidden;
-            border: 1px solid #d1d5db;
-            margin-bottom: 1rem;
-            position: relative;
-        }
-
-        #mapDetailColab {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100% !important;
-            height: 100% !important;
-        }
-    </style>
 </head>
 
 <body class="mx-0 my-0">
@@ -133,7 +26,7 @@
         <span th:text="${message}"></span>
     </div>
 
-    <div class="flex mx-auto">
+    <div class="flex mx-auto detalle-editor">
 
         <!-- SIDEBAR MEJORADO CON TAILWIND CSS -->
         <aside class="w-[280px] bg-white border-r border-gray-200 flex flex-col 
@@ -293,7 +186,7 @@
             </div>
         </aside>
 
-        <main class="w-full overflow-y-scroll max-h-[90vh]">
+        <main class="w-full overflow-y-scroll max-h-[90vh] detail-editor-main">
             <div class="form-container">
                 <div class="flex flex-col">
 

@@ -1,5 +1,5 @@
 .nav_secciones {
-    padding: 20px 0px;
+    padding: 1rem 0;
     display: flex;
 }
 
@@ -7,120 +7,269 @@
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    gap: 20px;
+    gap: 0.85rem;
     width: 100%;
-    padding: 20px 100px;
-    margin: 0px auto;
+    padding: 1rem 1.5rem;
+    margin: 0 auto;
 }
 
-.form-edit {
+.nav_secciones ul li a:hover {
+    text-decoration: none;
+    background-color: #f3f4f6;
+}
+
+.nav_secciones ul li a.btnEdicion {
+    min-height: 48px;
+}
+
+.nav_secciones ul li a.btnEdicion.active {
+    background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+}
+
+.detalle-editor {
+    min-height: calc(100vh - 64px);
+    background:
+        radial-gradient(circle at top left, rgba(35, 170, 226, 0.07), transparent 28%),
+        radial-gradient(circle at bottom right, rgba(15, 23, 42, 0.05), transparent 24%),
+        #f8fafc;
+}
+
+.detalle-editor > main,
+.detalle-editor .detail-editor-main {
+    padding: 1.25rem;
+}
+
+.detalle-editor .form-container {
+    width: 100%;
+    max-width: none;
+    margin: 0 auto;
+}
+
+.detalle-editor .form-container > div {
+    align-items: center;
+    gap: 1rem;
+}
+
+.detalle-editor .form-edit {
     display: none;
     width: 100%;
+    max-width: 920px;
+    margin: 0 auto;
     flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    border-radius: 14px;
-    padding: 7px 10px;
+    align-items: stretch;
+    gap: 1rem;
+    padding: 1.5rem;
+    border-radius: 1.25rem;
+    background: rgba(255, 255, 255, 0.92);
+    border: 1px solid rgba(226, 232, 240, 0.9);
+    box-shadow: 0 16px 35px rgba(15, 23, 42, 0.06);
+    backdrop-filter: blur(10px);
 }
 
-
-.form-edit.active {
+.detalle-editor .form-edit.active {
     display: flex;
 }
-.nav_secciones ul li a:hover {
-    text-decoration: underline;
-    background-color: #eeeeee;
-}
 
-
-input {
-    margin-top: 20px;
-    padding: 10px 20px;
-    display: flex;
-    justify-content: flex-start;
-    color: #77787a;
-    background-color: #e3e7eb;
-    border-radius: 12px;
+.detalle-editor .form-edit > * {
     width: 100%;
-    gap: 15px;
-    align-items: center;
 }
 
+.detalle-editor .form-edit label {
+    display: block;
+    font-size: 0.78rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #475569;
+    margin: 0;
+}
 
+.detalle-editor .form-edit input[type="text"],
+.detalle-editor .form-edit input[type="number"],
+.detalle-editor .form-edit input[type="email"],
+.detalle-editor .form-edit input[type="tel"],
+.detalle-editor .form-edit select,
+.detalle-editor .form-edit textarea {
+    width: 100% !important;
+    padding: 0.95rem 1rem !important;
+    border: 1px solid #dbe3ee !important;
+    border-radius: 0.9rem !important;
+    background: #fff !important;
+    color: #0f172a !important;
+    font-size: 0.97rem !important;
+    line-height: 1.45 !important;
+    box-shadow: none !important;
+    transition: border-color 150ms ease, box-shadow 150ms ease, transform 150ms ease, background-color 150ms ease;
+}
 
+.detalle-editor .form-edit input[type="text"]:focus,
+.detalle-editor .form-edit input[type="number"]:focus,
+.detalle-editor .form-edit input[type="email"]:focus,
+.detalle-editor .form-edit input[type="tel"]:focus,
+.detalle-editor .form-edit select:focus,
+.detalle-editor .form-edit textarea:focus {
+    outline: none;
+    border-color: #23aae2 !important;
+    box-shadow: 0 0 0 4px rgba(35, 170, 226, 0.12) !important;
+    transform: translateY(-1px);
+}
 
-/*type submit*/
+.detalle-editor .form-edit textarea {
+    min-height: 170px;
+    resize: vertical;
+}
+
+.detalle-editor .form-edit .info-display {
+    background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
+    border: 1px solid #e2e8f0;
+    border-radius: 1rem;
+    padding: 1rem 1.1rem;
+    margin: 0;
+    color: #334155;
+}
+
+.detalle-editor .form-edit .info-display p {
+    margin: 0.35rem 0;
+    font-size: 0.95rem;
+    color: #475569;
+}
+
+.detalle-editor .form-edit .button-default {
+    align-self: flex-end;
+    margin-top: 0.25rem;
+    background: linear-gradient(135deg, #111827 0%, #0f172a 100%);
+    color: white;
+    padding: 0.9rem 1.25rem;
+    border-radius: 0.95rem;
+    font-weight: 700;
+    cursor: pointer;
+    border: none;
+    transition: transform 150ms ease, box-shadow 150ms ease, filter 150ms ease;
+    box-shadow: 0 12px 24px rgba(15, 23, 42, 0.15);
+}
+
+.detalle-editor .form-edit .button-default:hover {
+    transform: translateY(-1px);
+    filter: brightness(1.02);
+}
+
+.detalle-editor .form-edit .button-default svg {
+    flex-shrink: 0;
+}
+
+.detalle-editor #seccionMasInformacion > div[style] {
+    margin-top: 0 !important;
+    padding: 1rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 1rem;
+    background: #ffffff;
+}
+
+.detalle-editor #faqRows {
+    gap: 0.9rem !important;
+}
+
+.detalle-editor .faq-editor-row {
+    border: 1px solid #e2e8f0 !important;
+    border-radius: 1rem !important;
+    padding: 1rem !important;
+    background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%) !important;
+    box-shadow: 0 10px 22px rgba(15, 23, 42, 0.04);
+}
+
+.detalle-editor #agregarFaqBtn {
+    border: 1px solid #23aae2 !important;
+    color: #0b76a6 !important;
+    background: #effbff !important;
+    border-radius: 999px !important;
+    padding: 0.65rem 1rem !important;
+    font-weight: 700 !important;
+}
+
+.detalle-editor #agregarFaqBtn:hover {
+    background: #dff6ff !important;
+}
+
+.detalle-editor .remove-faq-btn {
+    border: none !important;
+    background: transparent !important;
+    color: #dc2626 !important;
+    font-weight: 700 !important;
+}
+
+.detalle-editor #map-wrapper-detail {
+    width: 100%;
+    height: 280px;
+    border-radius: 1rem;
+    overflow: hidden;
+    border: 1px solid #dbe3ee;
+    margin-bottom: 0;
+    position: relative;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6);
+}
+
+.detalle-editor #mapDetailColab {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100% !important;
+    height: 100% !important;
+}
+
+.detalle-editor .grid.grid-cols-2 > div,
+.detalle-editor .grid.grid-cols-1 > div {
+    min-width: 0;
+}
+
+.detalle-editor .grid.gap-4 {
+    gap: 1rem;
+}
+
+.detalle-editor .sticky {
+    top: 4rem;
+}
 
 button.button-default[type="submit"] {
-    margin: 20px auto 0px auto;
+    margin: 0;
 }
 
+@media screen and (max-width: 1200px) {
+    .detalle-editor .grid.grid-cols-2 {
+        grid-template-columns: 1fr;
+    }
+}
 
 @media screen and (max-width: 1000px) {
-
     .nav_secciones ul {
         flex-direction: column;
+        padding: 1rem;
     }
 
+    .detalle-editor {
+        min-height: auto;
+    }
 
-    .form-edit {
-        max-width: 500px;
-        margin: auto;
-        display: none;
+    .detalle-editor > main,
+    .detalle-editor .detail-editor-main {
+        padding: 1rem;
+    }
+
+    .detalle-editor .form-edit {
+        padding: 1.25rem;
+    }
+
+    .detalle-editor .form-edit .button-default {
+        width: 100%;
+        justify-content: center;
     }
 }
 
+@media screen and (max-width: 720px) {
+    .detalle-editor .form-edit {
+        border-radius: 1rem;
+    }
 
-
-
-input select:focus,
-input textarea:focus,
-input input:focus {
-    border: none;
-    outline: none;
-
-    flex: 1;
-    /* Hace que el input use todo el espacio disponible */
-    color: #474748;
-    text-align: left;
-    width: 10%;
-    min-width: 50%;
-}
-
-input select::placeholder,
-input textarea::placeholder,
-input input::placeholder {
-    color: #8d8f91;
-}
-
-input select:hover,
-input textarea:hover,
-input input:hover {
-    text-align: left;
-}
-
-input textarea {
-    resize: none;
-    max-height: 24px;
-    /* Bloquea el redimensionamiento en todas las direcciones */
-}
-
-
-
-.btns {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 20px;
-    font-weight: bold;
-    padding: 40px;
-}
-
-
-
-.btn-secondary {
-    background-color: var(--color-medium-blue);
-    color: var(--color-white);
-    padding: 8px 14px;
-    border-radius: 14px;
+    .detalle-editor #map-wrapper-detail {
+        height: 240px;
+    }
 }
