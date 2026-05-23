@@ -63,9 +63,9 @@
             </div>
 
             <!-- Info del creador -->
-            <div class="mb-8">
+            <div class="mb-8 flex flex-wrap items-stretch gap-4">
                 <div th:if="${plan.rolCreador == 'COLABORADOR'}"
-                    class="inline-flex items-center gap-3 px-6 py-3 rounded-xl bg-blue-100 text-blue-700">
+                    class="flex w-full min-h-[92px] min-w-[280px] flex-1 items-center gap-3 px-6 py-3 rounded-xl bg-blue-100 text-blue-700">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                         fill="currentColor">
                         <path
@@ -79,7 +79,7 @@
                 </div>
 
                 <div th:if="${plan.rolCreador == 'CLIENTE'}"
-                    class="inline-flex items-center gap-3 px-6 py-3 rounded-xl bg-green-100 text-green-700">
+                    class="flex w-full min-h-[92px] min-w-[280px] flex-1 items-center gap-3 px-6 py-3 rounded-xl bg-green-100 text-green-700">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                         stroke="currentColor" stroke-width="2">
                         <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
@@ -91,6 +91,19 @@
                         <p class="text-sm font-semibold">Comunidad</p>
                         <p class="text-xs opacity-80">Creado por <span th:text="${plan.nombreCreador}"
                                 class="font-bold">Nombre</span></p>
+                    </div>
+                </div>
+
+                <div class="flex w-full min-h-[92px] min-w-[280px] flex-1 items-center gap-3 px-6 py-3 rounded-xl bg-orange-50 text-orange-700 border border-orange-100">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="9"></circle>
+                        <path d="M8 15h6a2 2 0 0 0 0-4H10a2 2 0 0 1 0-4h6"></path>
+                        <path d="M12 7v10"></path>
+                    </svg>
+                    <div>
+                        <p class="text-sm font-semibold leading-none">Precio por actividad</p>
+                        <p class="text-xs opacity-80">Calculado con comisión incluida</p>
                     </div>
                 </div>
             </div>
@@ -150,19 +163,22 @@
                                         <div th:if="${actividad.notaPersonalizada != null && !actividad.notaPersonalizada.isEmpty()}"
                                             class="bg-amber-50 border-l-4 border-amber-400 p-3 rounded-lg mb-3">
                                             <p class="text-sm text-amber-900 italic"
-                                                th:text="'💡 ' + ${actividad.notaPersonalizada}">Nota...</p>
+                                                th:text="' ' + ${actividad.notaPersonalizada}">Nota...</p>
                                         </div>
 
                                         <!-- Precio -->
-                                        <div class="flex items-center gap-4">
-                                            <span class="text-2xl font-black text-orange-600">
-                                                $<span
-                                                    th:text="${#numbers.formatDecimal(precioConsumidor, 0, 'POINT', 0, 'COMMA')}">50,000</span>
-                                            </span>
+                                        <div class="flex w-full flex-wrap items-stretch gap-4">
+                                            <div class="inline-flex min-w-[220px] flex-1 items-center gap-2 rounded-2xl bg-orange-50 px-4 py-3 border border-orange-100">
+                                                <span class="text-sm font-semibold text-orange-700 uppercase tracking-[0.18em]">Precio</span>
+                                                <span class="text-2xl font-black text-orange-600">
+                                                    $<span
+                                                        th:text="${actividad.precioConsumidor != null ? #numbers.formatDecimal(actividad.precioConsumidor, 0, 'POINT', 0, 'COMMA') : '—'}">50,000</span>
+                                                </span>
+                                            </div>
                                             <a target="_blank"
                                                 th:href="@{'/actividad/' + ${actividad.slugActividad} + '-' + ${actividad.idActividad}}"
-                                                class="px-4 py-2 bg-orange-600 hover:bg-orange-700 text-white font-semibold rounded-lg transition-all">
-                                                Ver Detalles →
+                                                class="flex min-w-[220px] flex-1 items-center justify-center px-6 py-4 bg-orange-600 hover:bg-orange-700 text-white font-semibold rounded-xl transition-all text-center">
+                                                Ver Detalles
                                             </a>
                                         </div>
                                     </div>
@@ -174,9 +190,9 @@
             </div>
 
             <!-- Botón volver -->
-            <div class="mt-12 text-center mb-12 ">
+            <div class="mt-12 mb-12">
                 <a href="/planes"
-                    class="inline-flex items-center gap-2 px-6 py-3 bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold rounded-xl transition-all">
+                    class="flex w-full items-center justify-center gap-2 px-6 py-3 bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold rounded-xl transition-all">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
                         stroke="currentColor" stroke-width="2">
                         <line x1="19" y1="12" x2="5" y2="12"></line>

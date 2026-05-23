@@ -101,11 +101,12 @@
             color: var(--checkout-ink);
         }
 
-        .checkout-page {
+        main.checkout-page {
             padding: 42px 22px 72px;
+            display: block;
         }
 
-        .checkout-form {
+        main.checkout-page > form.checkout-form {
             width: min(1180px, 100%);
             margin: 0 auto;
             display: grid;
@@ -123,6 +124,8 @@
             box-shadow: var(--checkout-shadow);
         }
 
+        
+
         .checkout-primary-card {
             padding: 34px;
         }
@@ -131,11 +134,13 @@
             padding: 28px;
             position: sticky;
             top: 110px;
+            width: 100%;
+            align-self: start;
         }
 
         .checkout-topbar {
             display: flex;
-            align-items: flex-start;
+            align-items: center;
             justify-content: space-between;
             gap: 20px;
             margin-bottom: 26px;
@@ -175,6 +180,7 @@
             align-items: center;
             justify-content: center;
             gap: 8px;
+            min-width: 230px;
             padding: 12px 18px;
             border-radius: 999px;
             background: #fff;
@@ -182,6 +188,8 @@
             color: var(--checkout-ink);
             font-weight: 700;
             text-decoration: none;
+            text-align: center;
+            white-space: nowrap;
             transition: transform .18s ease, box-shadow .18s ease;
         }
 
@@ -333,11 +341,20 @@
         }
 
         .checkout-total-box {
+            width: 100%;
+            box-sizing: border-box;
+            overflow: hidden;
             border-radius: 24px;
             background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%);
             color: #fff;
             padding: 22px;
             margin-bottom: 20px;
+            transition: transform .2s ease, box-shadow .2s ease, padding .2s ease;
+        }
+
+        .checkout-total-box.is-boosted {
+            transform: translateY(-6px);
+            box-shadow: 0 24px 44px rgba(15, 23, 42, 0.22);
         }
 
         .checkout-total-box small {
@@ -360,6 +377,46 @@
             margin: 0;
             font-size: .92rem;
             color: rgba(255, 255, 255, 0.76);
+        }
+
+        .checkout-total-summary {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            gap: 16px;
+            margin-top: 8px;
+        }
+
+        .checkout-total-summary strong {
+            margin-bottom: 0;
+        }
+
+        .checkout-total-hint {
+            max-width: 180px;
+            text-align: right;
+            font-size: .88rem;
+            color: rgba(255, 255, 255, 0.82);
+        }
+
+        .checkout-total-breakdown {
+            display: grid;
+            gap: 10px;
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid rgba(255, 255, 255, 0.14);
+        }
+
+        .checkout-total-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            font-size: .95rem;
+        }
+
+        .checkout-total-row span:last-child {
+            font-weight: 800;
+            text-align: right;
         }
 
         .checkout-confirm {
@@ -407,7 +464,7 @@
         }
 
         @media (max-width: 980px) {
-            .checkout-form {
+            main.checkout-page > form.checkout-form {
                 grid-template-columns: 1fr;
             }
 
@@ -417,6 +474,13 @@
 
             .checkout-topbar {
                 flex-direction: column;
+                align-items: stretch;
+            }
+
+            .checkout-back {
+                min-width: 0;
+                width: 100%;
+                white-space: normal;
             }
         }
 
@@ -433,13 +497,20 @@
 
             .checkout-slot-row,
             .checkout-qty-grid,
-            .checkout-summary-row {
+            .checkout-summary-row,
+            .checkout-total-summary,
+            .checkout-total-row {
                 grid-template-columns: 1fr;
                 display: grid;
             }
 
             .checkout-stock {
                 min-width: 0;
+            }
+
+            .checkout-total-hint {
+                max-width: none;
+                text-align: left;
             }
         }
     </style>
@@ -465,8 +536,10 @@
                 th:value="${disponibilidad != null ? disponibilidad.idDisponibilidad : ''}">
             <input type="hidden" name="idActividad" th:value="${actividad.idActividad}">
             <input type="hidden" name="cantidad" id="cantidadHiddenForm" value="1">
+            <!-- Enviar también el valor unitario por cupo para que el backend lo reciba explícitamente -->
+            <input type="hidden" name="precioUnitario" id="precioUnitarioHidden" th:value="${precioUnitario}">
 
-            <section class="productos checkout-primary-card">
+            <section class="checkout-primary-card">
                 <div class="checkout-topbar">
                     <div>
                         <span class="checkout-eyebrow">Paso final de reserva</span>
@@ -540,7 +613,7 @@
                     <div class="checkout-qty-grid">
                         <div class="checkout-input-wrap">
                             <label for="cantidadReserva">Cantidad</label>
-                            <input id="cantidadReserva" class="checkout-qty" type="number" name="cantidad" min="1"
+                            <input id="cantidadReserva" class="checkout-qty" type="number" min="1"
                                 th:max="${disponibilidad != null ? disponibilidad.cuposDisponibles : 1}"
                                 th:value="${reservaDTO != null and reservaDTO.cantidad > 0 ? reservaDTO.cantidad : 1}"
                                 required />
@@ -555,7 +628,7 @@
             </section>
 
 
-            <aside class="resumen checkout-summary-card">
+            <aside class="checkout-summary-card">
                 <div class="checkout-summary-top">
                     <span class="checkout-summary-eyebrow">Resumen</span>
                     <h2 class="checkout-summary-title">Todo listo para confirmar</h2>
@@ -587,10 +660,27 @@
                     </div> -->
                 </div>
 
-                <div class="checkout-total-box">
+                <div class="checkout-total-box" id="checkoutTotalBox">
                     <small>Total estimado</small>
-                    <strong id="total">$0</strong>
-                    
+                    <div class="checkout-total-summary">
+                        <strong id="total">$0</strong>
+                        <p class="checkout-total-hint" id="checkoutTotalHint">1 cupo seleccionado</p>
+                    </div>
+
+                    <div class="checkout-total-breakdown">
+                        <div class="checkout-total-row">
+                            <span>Cupos</span>
+                            <span id="checkoutTotalQty">1</span>
+                        </div>
+                        <div class="checkout-total-row">
+                            <span>Valor por cupo</span>
+                            <span id="checkoutUnitPrice">$0</span>
+                        </div>
+                        <div class="checkout-total-row">
+                            <span>Subtotal</span>
+                            <span id="checkoutSubtotal">$0</span>
+                        </div>
+                    </div>
                 </div>
 
 
@@ -608,10 +698,16 @@
         // ✅ Datos de Thymeleaf (solo necesitamos el precio para calcular total)
         const precio = /*[[${precioUnitario}]]*/ 0;
 
-        const inputCupos = document.querySelector("[name='cantidad']");
+        const inputCupos = document.getElementById("cantidadReserva");
         const totalSpan = document.getElementById("total");
+        const checkoutTotalBox = document.getElementById("checkoutTotalBox");
+        const checkoutTotalHint = document.getElementById("checkoutTotalHint");
+        const checkoutTotalQty = document.getElementById("checkoutTotalQty");
+        const checkoutUnitPrice = document.getElementById("checkoutUnitPrice");
+        const checkoutSubtotal = document.getElementById("checkoutSubtotal");
         const hiddenDisponibilidad = document.getElementById("idDisponibilidadHidden");
         const hiddenCantidad = document.getElementById("cantidadHiddenForm");
+        const hiddenPrecioUnitario = document.getElementById("precioUnitarioHidden");
         const cuposCheckout = document.getElementById("cuposCheckout");
         const checkoutSlotSelected = document.getElementById("checkoutSlotSelected");
         const checkoutSlotSelectedText = document.getElementById("checkoutSlotSelectedText");
@@ -646,21 +742,80 @@
         function actualizarTotal() {
             const cantidad = parseInt(inputCupos.value) || 0;
             const total = cantidad * precio;
-            totalSpan.textContent = total.toLocaleString('es-CO', {
+            const totalFormateado = total.toLocaleString('es-CO', {
                 style: 'currency',
                 currency: 'COP'
             });
+
+            const precioFormateado = precio.toLocaleString('es-CO', {
+                style: 'currency',
+                currency: 'COP'
+            });
+
+            totalSpan.textContent = totalFormateado;
+
+            if (checkoutUnitPrice) {
+                checkoutUnitPrice.textContent = precioFormateado;
+            }
+
+            if (checkoutSubtotal) {
+                checkoutSubtotal.textContent = totalFormateado;
+            }
+
+            if (checkoutTotalQty) {
+                checkoutTotalQty.textContent = cantidad;
+            }
+
+            if (checkoutTotalHint) {
+                checkoutTotalHint.textContent = cantidad > 1
+                    ? `${cantidad} cupos seleccionados`
+                    : '1 cupo seleccionado';
+            }
+
+            if (checkoutTotalBox) {
+                checkoutTotalBox.classList.toggle('is-boosted', cantidad > 1);
+            }
 
             // Actualizar hidden input para enviar la cantidad correcta
             if (hiddenCantidad) {
                 hiddenCantidad.value = cantidad;
             }
+            // Mantener precio unitario sincronizado (valor bruto, sin formato)
+            if (hiddenPrecioUnitario) {
+                try {
+                    // precio ya viene como número desde Thymeleaf en la variable `precio`
+                    hiddenPrecioUnitario.value = precio;
+                } catch (err) {
+                    hiddenPrecioUnitario.value = '';
+                }
+            }
         }
 
         // ✅ Validación antes de enviar el formulario
+        function syncHiddenCantidad() {
+            // sanitize and sync visible input to hidden
+            let cantidadVal = parseInt(inputCupos.value, 10);
+            if (!cantidadVal || cantidadVal < 1) cantidadVal = 1;
+            // enforce max if available
+            try {
+                const max = parseInt(inputCupos.max, 10);
+                if (max && cantidadVal > max) cantidadVal = max;
+            } catch (err) {}
+            inputCupos.value = cantidadVal;
+            if (hiddenCantidad) hiddenCantidad.value = cantidadVal;
+            actualizarTotal();
+        }
+
+        // keep hidden in sync on change/blur
+        if (inputCupos) {
+            inputCupos.addEventListener('change', syncHiddenCantidad);
+            inputCupos.addEventListener('blur', syncHiddenCantidad);
+        }
+
         checkoutForm.addEventListener("submit", function (e) {
+            syncHiddenCantidad();
             const idDisponibilidad = hiddenDisponibilidad.value;
-            const cantidad = parseInt(inputCupos.value) || 0;
+            const cantidad = parseInt(hiddenCantidad.value, 10) || 0;
 
             if (!idDisponibilidad) {
                 e.preventDefault();
@@ -674,8 +829,7 @@
                 return false;
             }
 
-            // Si todo está OK, el formulario se envía normalmente (GET a /cliente/pago/iniciar)
-            // El backend generará la URL de Wompi y redirigirá al cliente
+            // If all good, form will submit (GET to /cliente/pago/iniciar)
         });
 
         // ✅ Detectar parámetros de URL y mostrar alertas

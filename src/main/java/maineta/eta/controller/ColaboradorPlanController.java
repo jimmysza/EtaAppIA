@@ -13,12 +13,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import jakarta.validation.Valid;
+import maineta.eta.config.UsuarioHelper;
 import maineta.eta.dto.CrearPlanFormDTO;
 import maineta.eta.dto.PlanDTO;
 import maineta.eta.entity.Colaborador;
 import maineta.eta.entity.Plan;
 import maineta.eta.entity.Usuario;
-import maineta.eta.service.ActividadService;
 import maineta.eta.service.ColaboradorService;
 import maineta.eta.service.PlanService;
 import maineta.eta.service.UsuarioService;
@@ -37,14 +37,14 @@ public class ColaboradorPlanController {
 
     private final PlanService planService;
     private final ColaboradorService colaboradorService;
-    private final ActividadService actividadService;
     private final UsuarioService usuarioService;
+    private final UsuarioHelper usuarioHelper;
 
-    public ColaboradorPlanController(PlanService planService, ColaboradorService colaboradorService, ActividadService actividadService, UsuarioService usuarioService) {
+    public ColaboradorPlanController(PlanService planService, ColaboradorService colaboradorService, UsuarioService usuarioService, UsuarioHelper usuarioHelper) {
         this.planService = planService;
         this.colaboradorService = colaboradorService;
-        this.actividadService = actividadService;
         this.usuarioService = usuarioService;
+        this.usuarioHelper = usuarioHelper;
     }
 
     /**
@@ -54,6 +54,8 @@ public class ColaboradorPlanController {
     public String mostrarFormularioCrear(Model model, Authentication authentication) {
         model.addAttribute("form", new CrearPlanFormDTO());
         model.addAttribute("rolActual", "COLABORADOR");
+        model.addAttribute("formAction", "/colaborador/planes/crear");
+        usuarioHelper.agregarInfoUsuarioModel(model, authentication);
         
         // Obtener colaborador para validaciones futuras
         Usuario usuario = usuarioService.obtenerPorEmail(authentication.getName());
@@ -86,10 +88,10 @@ public class ColaboradorPlanController {
                 .orElseThrow(() -> new RuntimeException("Colaborador no encontrado"));
             
             // Crear  plan (convertir idColaborador de Integer a Long)
-            Plan plan = planService.crearPlan(form, Long.valueOf(colaborador.getIdColaborador()), "COLABORADOR");
+            Plan plan = planService.crearPlan(form, colaborador.getIdColaborador(), "COLABORADOR");
             
             redirectAttributes.addFlashAttribute("success", "Plan creado exitosamente");
-            return "redirect:/planes/" + plan.getId();
+            return "redirect:/planes/" + plan.getId().toString();
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", "Error al crear el plan: " + e.getMessage());
             return "redirect:/colaborador/planes/crear";
@@ -107,7 +109,7 @@ public class ColaboradorPlanController {
             .orElseThrow(() -> new RuntimeException("Colaborador no encontrado"));
         
         // Obtener planes del colaborador (convertir Integer a Long)
-        List<PlanDTO> planes = planService.obtenerPlanesPorColaborador(Long.valueOf(colaborador.getIdColaborador()));
+        List<PlanDTO> planes = planService.obtenerPlanesPorColaborador(colaborador.getIdColaborador());
         model.addAttribute("planes", planes);
         model.addAttribute("rolCreador", "COLABORADOR");
 

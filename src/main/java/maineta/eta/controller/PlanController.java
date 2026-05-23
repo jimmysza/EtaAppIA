@@ -76,6 +76,8 @@ public class PlanController {
         PlanDTO plan = planService.obtenerPorId(id);
         model.addAttribute("plan", plan);
 
+        usuarioHelper.agregarInfoUsuarioModel(model, authentication);
+
         // Verificar si el usuario está autenticado
         if (authentication != null && authentication.isAuthenticated()) {
             Usuario usuario = usuarioService.obtenerPorEmail(authentication.getName());

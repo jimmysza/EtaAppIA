@@ -13,12 +13,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import jakarta.validation.Valid;
+import maineta.eta.config.UsuarioHelper;
 import maineta.eta.dto.CrearPlanFormDTO;
 import maineta.eta.dto.PlanDTO;
 import maineta.eta.entity.Cliente;
 import maineta.eta.entity.Plan;
 import maineta.eta.entity.Usuario;
-import maineta.eta.service.ActividadService;
 import maineta.eta.service.ClienteService;
 import maineta.eta.service.PlanService;
 import maineta.eta.service.UsuarioService;
@@ -37,14 +37,14 @@ public class ClientePlanController {
 
     private final PlanService planService;
     private final ClienteService clienteService;
-    private final ActividadService actividadService;
     private final UsuarioService usuarioService;
+    private final UsuarioHelper usuarioHelper;
 
-    public ClientePlanController(PlanService planService, ClienteService clienteService, ActividadService actividadService, UsuarioService usuarioService) {
+    public ClientePlanController(PlanService planService, ClienteService clienteService, UsuarioService usuarioService, UsuarioHelper usuarioHelper) {
         this.planService = planService;
         this.clienteService = clienteService;
-        this.actividadService = actividadService;
         this.usuarioService = usuarioService;
+        this.usuarioHelper = usuarioHelper;
     }
 
     /**
@@ -54,6 +54,8 @@ public class ClientePlanController {
     public String mostrarFormularioCrear(Model model, Authentication authentication) {
         model.addAttribute("form", new CrearPlanFormDTO());
         model.addAttribute("rolActual", "CLIENTE");
+        model.addAttribute("formAction", "/cliente/planes/crear");
+        usuarioHelper.agregarInfoUsuarioModel(model, authentication);
         
         // Obtener cliente para validaciones futuras
         Usuario usuario = usuarioService.obtenerPorEmail(authentication.getName());

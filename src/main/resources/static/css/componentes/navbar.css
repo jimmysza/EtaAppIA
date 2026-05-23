@@ -24,7 +24,7 @@ body {
 .navbar {
     position: relative;
     z-index: 90;
-    min-height: 86px;
+    min-height: 76px;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -39,8 +39,8 @@ body {
 .brand-pill {
     display: inline-flex;
     align-items: center;
-    gap: 12px;
-    padding: 10px 14px;
+    gap: 10px;
+    padding: 8px 12px;
     background: rgba(255, 255, 255, 0.9);
     border: 1px solid rgba(17, 24, 39, 0.06);
     border-radius: 999px;
@@ -48,10 +48,10 @@ body {
 }
 
     .brand-mark {
-        width: 38px;
-        height: 38px;
+        width: 32px;
+        height: 32px;
         object-fit: contain;
-        border-radius: 12px;
+        border-radius: 10px;
     }
 
     .brand-copy {
@@ -61,14 +61,14 @@ body {
     }
 
     .brand-name {
-        font-size: 1.02rem;
+        font-size: 0.94rem;
         font-weight: 800;
         color: #111827;
         letter-spacing: -0.04em;
     }
 
     .brand-tag {
-        font-size: 0.72rem;
+        font-size: 0.66rem;
         color: #6b7280;
     }
 
@@ -77,8 +77,8 @@ body {
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        width: 46px;
-        height: 46px;
+        width: 42px;
+        height: 42px;
         border: 1px solid rgba(17, 24, 39, 0.08);
         border-radius: 14px;
         background: rgba(255, 255, 255, 0.92);
@@ -333,7 +333,7 @@ body {
         }
 
         .navbar {
-            min-height: 92px;
+            min-height: 80px;
             gap: 24px;
         }
 
@@ -352,8 +352,8 @@ body {
         .menu-shell {
             flex-direction: row;
             align-items: center;
-            gap: 18px;
-            padding: 10px 12px 10px 18px;
+            gap: 12px;
+            padding: 6px 8px 6px 10px;
             border-radius: 999px;
             background: rgba(255, 255, 255, 0.94);
         }
@@ -361,14 +361,14 @@ body {
         .menu-links {
             flex-direction: row;
             align-items: center;
-            gap: 4px;
+            gap: 2px;
         }
 
         .menu-link {
             width: auto;
-            padding: 10px 14px;
+            padding: 8px 10px;
             border-radius: 999px;
-            font-size: 0.88rem;
+            font-size: 0.84rem;
         }
 
         .menu-actions {
@@ -379,6 +379,7 @@ body {
         .btn-auth {
             width: auto;
             white-space: nowrap;
+            padding: 8px 12px;
         }
 
         .desktopView {
@@ -393,8 +394,8 @@ body {
             position: absolute;
             top: calc(100% + 12px);
             right: 0;
-            min-width: 220px;
-            padding: 12px;
+            min-width: 200px;
+            padding: 10px;
             background: rgba(255, 255, 255, 0.98);
             border: 1px solid rgba(17, 24, 39, 0.08);
             border-radius: 20px;
