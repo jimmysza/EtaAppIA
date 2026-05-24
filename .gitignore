@@ -31,7 +31,8 @@ build/
 
 /webapp_logs
 /webapp_logs.zip
-/application.properties
+/src/main/resources/application.properties
+/src/main/resources/application-docker.properties
 ### VS Code ###
 .vscode/
 !.vscode/settings.json

@@ -166,16 +166,16 @@
                 <h1 class="text-2xl font-bold text-gray-800">Disponibilidades</h1>
                 <p class="text-gray-500" th:text="'Actividad: ' + ${actividad.titulo}"></p>
             </div>
-            <div class="flex gap-2">
+            <div class="inline-flex gap-2">
                 <button onclick="document.getElementById('modalAgregar').classList.remove('hidden')"
-                    class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 text-sm font-medium transition">
+                    class="w-60 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center justify-center gap-2 text-sm font-medium transition">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
                     </svg>
                     Agregar Individual
                 </button>
                 <button onclick="document.getElementById('modalPatron').classList.remove('hidden')"
-                    class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 text-sm font-medium transition">
+                    class="w-60 bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg flex items-center justify-center gap-2 text-sm font-medium transition">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
@@ -384,28 +384,30 @@
                             </div>
 
                             <!-- Acciones -->
-                            <div class="flex flex-col gap-2">
+                            <div class="flex flex-col gap-2 w-full">
                                 <!-- Editar cupos -->
                                 <form th:action="@{/colaborador/disponibilidades/editar-cupos}" method="post"
-                                    class="flex items-center gap-2 flex-1">
+                                    class="grid grid-cols-2 gap-2 w-full">
                                     <input type="hidden" name="idDisponibilidad" th:value="${slot.idDisponibilidad}" />
                                     <input type="hidden" name="idActividad" th:value="${actividad.idActividad}" />
                                     <input type="hidden" name="fecha" th:value="${fechaSeleccionada}" />
                                     <input type="number" name="nuevosCuposTotales" th:value="${slot.cuposTotales}"
-                                        min="1" max="9999" class="w-20 border rounded px-2 py-1 text-sm text-center" />
+                                        min="1" max="9999"
+                                        class="w-full border rounded px-2 py-1 text-sm text-center" />
                                     <button type="submit"
-                                        class="bg-blue-500 hover:bg-blue-600 text-white text-xs px-3 py-1.5 rounded font-medium transition">
+                                        class="w-full bg-blue-500 hover:bg-blue-600 text-white text-xs px-3 py-1.5 rounded font-medium transition">
                                         Guardar
                                     </button>
                                 </form>
 
                                 <!-- Cambiar estado -->
                                 <form th:action="@{/colaborador/disponibilidades/cambiar-estado}" method="post"
-                                    class="flex items-center gap-1">
+                                    class="grid grid-cols-2 gap-2 w-full">
                                     <input type="hidden" name="idDisponibilidad" th:value="${slot.idDisponibilidad}" />
                                     <input type="hidden" name="idActividad" th:value="${actividad.idActividad}" />
                                     <input type="hidden" name="fecha" th:value="${fechaSeleccionada}" />
-                                    <select name="nuevoEstado" class="border rounded px-2 py-1 text-xs">
+                                    <select name="nuevoEstado"
+                                        class="w-full border rounded px-2 py-1 text-xs">
                                         <option value="DISPONIBLE" th:selected="${slot.estado == 'DISPONIBLE'}">
                                             DISPONIBLE</option>
                                         <option value="CANCELADO" th:selected="${slot.estado == 'CANCELADO'}">CANCELADO
@@ -414,7 +416,7 @@
                                             COMPLETADO</option>
                                     </select>
                                     <button type="submit"
-                                        class="bg-gray-500 hover:bg-gray-600 text-white text-xs px-3 py-1.5 rounded font-medium transition">
+                                        class="w-full bg-gray-500 hover:bg-gray-600 text-white text-xs px-3 py-1.5 rounded font-medium transition">
                                         Cambiar
                                     </button>
                                 </form>

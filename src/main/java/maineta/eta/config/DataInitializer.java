@@ -1,6 +1,7 @@
 package maineta.eta.config;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Optional;
@@ -17,8 +18,10 @@ import maineta.eta.entity.Usuario;
 import maineta.eta.repository.AdminRepository;
 import maineta.eta.repository.CategoriaRepository;
 import maineta.eta.repository.IdiomaRepository;
+import maineta.eta.repository.ReservaRepository;
 import maineta.eta.repository.RolRepository;
 import maineta.eta.repository.UsuarioRepository;
+import maineta.eta.service.AdminService;
 
 /**
  * Esta clase inicializa datos en la base de datos al arrancar la aplicación. En
@@ -33,6 +36,8 @@ public class DataInitializer implements CommandLineRunner {
     private final AdminRepository adminRepository;
     private final PasswordEncoder passwordEncoder;
     private final CategoriaRepository categoriaRepository;
+    private final ReservaRepository reservaRepository;
+    private final AdminService adminService;
 
     /**
      * Inyecta el repositorio de roles para interactuar con la base de datos.
@@ -41,13 +46,16 @@ public class DataInitializer implements CommandLineRunner {
      */
     public DataInitializer(PasswordEncoder passwordEncoder, AdminRepository adminRepository,
             RolRepository rolRepository, IdiomaRepository idiomaRepository, UsuarioRepository usuarioRepository,
-            CategoriaRepository categoriaRepository) {
+            CategoriaRepository categoriaRepository, ReservaRepository reservaRepository,
+            AdminService adminService) {
         this.rolRepository = rolRepository;
         this.idiomaRepository = idiomaRepository;
         this.usuarioRepository = usuarioRepository;
         this.adminRepository = adminRepository;
         this.passwordEncoder = passwordEncoder;
         this.categoriaRepository = categoriaRepository;
+        this.reservaRepository = reservaRepository;
+        this.adminService = adminService;
     }
 
     /**
@@ -165,7 +173,59 @@ public class DataInitializer implements CommandLineRunner {
         } else {
             System.out.println("El administrador ya existe.");
         }
+
+        rellenarSnapshotsReservasExistentes();
+
         // Mensaje final de confirma
         System.out.println("Inicialización de roles completada");
+    }
+
+    private void rellenarSnapshotsReservasExistentes() {
+        if (reservaRepository == null) {
+            return;
+        }
+
+        BigDecimal porcentajeComision = adminService.obtenerAdminPrincipal().getPorcentajeComision();
+        if (porcentajeComision == null) {
+            porcentajeComision = new BigDecimal("18.00");
+        }
+
+        BigDecimal factorConsumidor = BigDecimal.ONE.add(
+                porcentajeComision.divide(new BigDecimal("100"), 4, RoundingMode.HALF_UP));
+
+        var reservas = reservaRepository.findAllConActividad();
+        boolean huboCambios = false;
+
+        for (var reserva : reservas) {
+            if (reserva.getActividad() == null || reserva.getActividad().getPrecio() == null) {
+                continue;
+            }
+
+            boolean necesitaSnapshot = reserva.getPrecioColaborador() == null
+                    || reserva.getPrecioConsumidor() == null
+                    || reserva.getComisionPorcentaje() == null
+                    || reserva.getComisionEta() == null;
+
+            if (!necesitaSnapshot) {
+                continue;
+            }
+
+            BigDecimal precioColaborador = reserva.getActividad().getPrecio().setScale(2, RoundingMode.HALF_UP);
+            BigDecimal precioConsumidor = precioColaborador.multiply(factorConsumidor).setScale(2, RoundingMode.HALF_UP);
+            BigDecimal comisionEta = precioConsumidor.subtract(precioColaborador)
+                    .multiply(new BigDecimal(Math.max(1, reserva.getCantidad())))
+                    .setScale(2, RoundingMode.HALF_UP);
+
+            reserva.setPrecioColaborador(precioColaborador);
+            reserva.setPrecioConsumidor(precioConsumidor);
+            reserva.setComisionPorcentaje(porcentajeComision.setScale(2, RoundingMode.HALF_UP));
+            reserva.setComisionEta(comisionEta);
+            huboCambios = true;
+        }
+
+        if (huboCambios) {
+            reservaRepository.saveAll(reservas);
+            System.out.println("Reservas antiguas actualizadas con snapshot financiero");
+        }
     }
 }

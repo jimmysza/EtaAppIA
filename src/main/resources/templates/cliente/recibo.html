@@ -377,13 +377,13 @@
                                 </div>
                                 <div class="rounded-2xl bg-white px-5 py-4 shadow-sm border border-slate-100">
                                     <span class="block text-slate-400 font-semibold mb-1">P. Unitario</span>
-                                    <strong class="text-slate-950 text-xl" th:text="${'$' + #numbers.formatDecimal(precioUnitario, 0, 'COMMA', 0, 'POINT')}">$ 11,800</strong>
+                                    <strong class="text-slate-950 text-lg md:text-xl whitespace-nowrap" th:text="${'$' + #numbers.formatDecimal(precioUnitario, 0, 'POINT', 0, 'COMMA')}">$ 11,800</strong>
                                 </div>
                                 <div class="rounded-2xl bg-white px-5 py-4 shadow-sm border border-slate-100 col-span-2 lg:col-span-2">
                                     <span class="block text-slate-400 font-semibold mb-1">Salida programada</span>
-                                    <strong class="text-slate-950 text-xl"
-                                            th:text="${reserva.disponibilidad != null and reserva.disponibilidad.fecha != null ? #temporals.format(reserva.disponibilidad.fecha, 'dd MMM yyyy • HH:mm') : '—'}">
-                                            29 may 2026 • 00:00
+                                    <strong class="text-slate-950 text-lg md:text-xl whitespace-nowrap"
+                                            th:text="${salidaProgramadaTexto}">
+                                            29 may 2026 • 09:00
                                     </strong>
                                 </div>
                             </div>

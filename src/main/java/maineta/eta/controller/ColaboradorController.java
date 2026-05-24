@@ -653,12 +653,14 @@ public class ColaboradorController {
         int totalReservas = reservas.size();
         int totalPersonasReservadas = reservas.stream().mapToInt(Reserva::getCantidad).sum();
 
-        // Calcular ingresos por disponibilidad (cantidad * precio de la actividad)
-        BigDecimal precioActividad = actividad.getPrecio() != null ? actividad.getPrecio() : BigDecimal.ZERO;
+        // Calcular ingresos por disponibilidad usando el precio congelado en cada reserva
         Map<Long, BigDecimal> ingresosPorDisponibilidad = new LinkedHashMap<>();
         for (Map.Entry<Long, List<Reserva>> entry : reservasPorDisponibilidad.entrySet()) {
-            int totalCantidad = entry.getValue().stream().mapToInt(Reserva::getCantidad).sum();
-            ingresosPorDisponibilidad.put(entry.getKey(), precioActividad.multiply(BigDecimal.valueOf(totalCantidad)));
+            BigDecimal totalIngresos = entry.getValue().stream()
+                    .filter(this::esReservaContabilizable)
+                    .map(reserva -> reserva.getPrecioColaboradorSafe().multiply(BigDecimal.valueOf(Math.max(1, reserva.getCantidad()))))
+                    .reduce(BigDecimal.ZERO, BigDecimal::add);
+            ingresosPorDisponibilidad.put(entry.getKey(), totalIngresos);
         }
 
         // Calcular ingreso total
@@ -700,6 +702,15 @@ public class ColaboradorController {
         model.addAttribute("ingresosPorDia", ingresosPorDia);
         model.addAttribute("etiquetasDia", etiquetasDia);
         return "colaborador/reservaciones-actividad";
+    }
+
+    private boolean esReservaContabilizable(Reserva reserva) {
+        if (reserva == null || reserva.getEstado() == null) {
+            return false;
+        }
+        return "Hecho".equalsIgnoreCase(reserva.getEstado())
+                || "COMPLETADA".equalsIgnoreCase(reserva.getEstado())
+                || "CONFIRMADA".equalsIgnoreCase(reserva.getEstado());
     }
 
     // 🔹 Actualizar estado de una reserva

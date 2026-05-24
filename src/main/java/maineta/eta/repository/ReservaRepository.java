@@ -24,6 +24,8 @@ public interface ReservaRepository extends JpaRepository<Reserva, Long> {
     List<Reserva> findByCliente(Cliente cliente);
     List<Reserva> findByActividad_IdActividad(Long idActividad);
     List<Reserva> findByActividad_Colaborador_IdColaboradorOrderByFechaReservaDesc(Long idColaborador);
+    @Query("SELECT r FROM Reserva r JOIN FETCH r.actividad")
+    List<Reserva> findAllConActividad();
     List<Reserva> findByCliente_IdAndActividad_IdActividad(Long idCliente, Long idActividad);
     Optional<Reserva> findByIdReservaAndCliente_Usuario_Email(Long idReserva, String email);
     Optional<Reserva> findByIdReservaAndActividad_Colaborador_Usuario_Email(Long idReserva, String email);
@@ -37,7 +39,7 @@ public interface ReservaRepository extends JpaRepository<Reserva, Long> {
     // Queries para KPIs
 
     @Query("""
-        SELECT SUM(r.cantidad * r.actividad.precio)
+        SELECT SUM(r.cantidad * r.precioColaborador)
         FROM Reserva r
         WHERE r.actividad.colaborador.idColaborador = :idColaborador
         AND r.estado = :estado

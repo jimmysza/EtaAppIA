@@ -1,5 +1,7 @@
 package maineta.eta.service;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -9,6 +11,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import maineta.eta.config.UsuarioHelper;
 import maineta.eta.entity.Actividad;
 import maineta.eta.entity.Cliente;
 import maineta.eta.entity.Disponibilidad;
@@ -24,15 +27,21 @@ public class ReservaServiceImpl implements ReservaService {
     private final ActividadService actividadService;
     private final ClienteService clienteService;
     private final DisponibilidadService disponibilidadService;
+    private final UsuarioHelper usuarioHelper;
+    private final AdminService adminService;
 
     public ReservaServiceImpl(ReservaRepository reservaRepository, 
                              ActividadService actividadService,
                              ClienteService clienteService,
-                             DisponibilidadService disponibilidadService) {
+                             DisponibilidadService disponibilidadService,
+                             UsuarioHelper usuarioHelper,
+                             AdminService adminService) {
         this.reservaRepository = reservaRepository;
         this.actividadService = actividadService;
         this.clienteService = clienteService;
         this.disponibilidadService = disponibilidadService;
+        this.usuarioHelper = usuarioHelper;
+        this.adminService = adminService;
     }
 
     @Override
@@ -63,6 +72,7 @@ public class ReservaServiceImpl implements ReservaService {
         reserva.setDisponibilidad(disponibilidad);
         reserva.setCantidad(cantidad);
         reserva.setFechaReserva(LocalDateTime.now());
+        completarDatosEconomicosReserva(reserva, actividad, cantidad);
 
         // Reducir cupos
         disponibilidad.setCuposDisponibles(disponibilidad.getCuposDisponibles() - cantidad);
@@ -149,6 +159,7 @@ public class ReservaServiceImpl implements ReservaService {
         reserva.setFechaReserva(LocalDateTime.now());
         reserva.setEstado("Confirmada"); // Estado confirmado porque el pago fue exitoso
         reserva.setRefPayco(refPayco);
+        completarDatosEconomicosReserva(reserva, actividad, cantidad);
 
         // Reducir cupos
         disponibilidad.setCuposDisponibles(disponibilidad.getCuposDisponibles() - cantidad);
@@ -195,6 +206,7 @@ public class ReservaServiceImpl implements ReservaService {
         reserva.setEstado("Confirmada"); // Estado confirmado porque el pago fue exitoso
         reserva.setRefWompi(reference); // Referencia de Wompi
         reserva.setWompiTransactionId(wompiTransactionId); // ID de transacción de Wompi
+        completarDatosEconomicosReserva(reserva, actividad, cantidad);
 
         // Reducir cupos
         disponibilidad.setCuposDisponibles(disponibilidad.getCuposDisponibles() - cantidad);
@@ -227,5 +239,24 @@ public class ReservaServiceImpl implements ReservaService {
     @Override
     public Optional<Reserva> obtenerPorId(Long idReserva) {
         return reservaRepository.findById(idReserva);
+    }
+
+    private void completarDatosEconomicosReserva(Reserva reserva, Actividad actividad, int cantidad) {
+        BigDecimal precioColaborador = actividad.getPrecio() != null ? actividad.getPrecio() : BigDecimal.ZERO;
+        BigDecimal precioConsumidor = usuarioHelper.CalcularPrecioConsumidor(precioColaborador);
+        BigDecimal porcentajeComision = adminService.obtenerAdminPrincipal().getPorcentajeComision();
+
+        if (porcentajeComision == null) {
+            porcentajeComision = new BigDecimal("18.00");
+        }
+
+        BigDecimal comisionEta = precioConsumidor.subtract(precioColaborador)
+                .multiply(BigDecimal.valueOf(Math.max(1, cantidad)))
+                .setScale(2, RoundingMode.HALF_UP);
+
+        reserva.setPrecioColaborador(precioColaborador.setScale(2, RoundingMode.HALF_UP));
+        reserva.setPrecioConsumidor(precioConsumidor.setScale(2, RoundingMode.HALF_UP));
+        reserva.setComisionPorcentaje(porcentajeComision.setScale(2, RoundingMode.HALF_UP));
+        reserva.setComisionEta(comisionEta);
     }
 }

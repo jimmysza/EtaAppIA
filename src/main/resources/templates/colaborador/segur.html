@@ -510,7 +510,7 @@
                 <tr th:each="actividad : ${actividades}">
                     <td th:text="${actividad.titulo}">Título</td>
                     <td>
-                        <span class="badge bg-success" th:text="'$' + ${actividad.precio}">$0</span>
+                        <span class="badge bg-success" th:text="'$' + ${#numbers.formatDecimal(actividad.precio, 0, 'POINT', 0, 'COMMA')}">$0</span>
                     </td>
                     <td th:text="${actividad.ubicacion}">Ubicación</td>
                     <td>

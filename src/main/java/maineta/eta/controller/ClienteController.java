@@ -3,8 +3,11 @@ package maineta.eta.controller;
 import java.math.BigDecimal;
 import java.security.Principal;
 import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -493,16 +496,33 @@ public class ClienteController {
     private void cargarModeloRecibo(Model model, Reserva reserva, boolean nuevaReserva) {
         BigDecimal precioUnitario = reserva.getPrecioConsumidorSafe();
         BigDecimal totalReserva = reserva.getPrecioTotalSafe();
+        String salidaProgramadaTexto = formatearSalidaProgramada(reserva);
 
         model.addAttribute("reserva", reserva);
         model.addAttribute("precioUnitario", precioUnitario);
         model.addAttribute("totalReserva", totalReserva);
+        model.addAttribute("salidaProgramadaTexto", salidaProgramadaTexto);
         model.addAttribute("nuevaReserva", nuevaReserva);
         model.addAttribute("tituloRecibo", nuevaReserva ? "Thank you!" : "Detalle de tu reserva");
         model.addAttribute("subtituloRecibo",
                 nuevaReserva
                         ? "Tu reserva fue emitida correctamente y ya tienes tu recibo digital."
                         : "Aqui tienes el recibo de la reserva que seleccionaste desde tu dashboard.");
+    }
+
+    private String formatearSalidaProgramada(Reserva reserva) {
+        if (reserva == null || reserva.getDisponibilidad() == null || reserva.getDisponibilidad().getFecha() == null) {
+            return "—";
+        }
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd MMM yyyy • HH:mm", Locale.forLanguageTag("es-CO"));
+        LocalTime horaInicio = reserva.getDisponibilidad().getHoraInicio();
+
+        if (horaInicio == null) {
+            return reserva.getDisponibilidad().getFecha().format(DateTimeFormatter.ofPattern("dd MMM yyyy", Locale.forLanguageTag("es-CO")));
+        }
+
+        return reserva.getDisponibilidad().getFecha().atTime(horaInicio).format(formatter);
     }
 
     private void cargarModeloCheckout(Model model, Actividad actividad, LocalDate fechaSeleccionada,
