@@ -111,4 +111,18 @@ public class DisponibilidadServiceImpl implements DisponibilidadService {
         disp.setEstado(nuevoEstado);
         return disponibilidadRepository.save(disp);
     }
+
+    @Override
+    @Transactional
+    public void eliminarDisponibilidad(Long idDisponibilidad) {
+        Disponibilidad disp = disponibilidadRepository.findById(idDisponibilidad)
+                .orElseThrow(() -> new RuntimeException("Disponibilidad no encontrada"));
+        
+        // Verifica que no tenga reservas asignadas.
+        if (disp.getCuposTotales() != disp.getCuposDisponibles()) {
+            throw new RuntimeException("No se puede eliminar la disponibilidad porque tiene reservas asignadas.");
+        }
+        
+        disponibilidadRepository.delete(disp);
+    }
 }

@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verifica tu cuenta en ETA</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 600px;
+            margin: 20px auto;
+            background-color: #ffffff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .header {
+            background: linear-gradient(135deg, #23aae2 0%, #1c96c9 100%);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 28px;
+            font-weight: 600;
+        }
+        .success-icon {
+            font-size: 48px;
+            margin-bottom: 10px;
+        }
+        .content {
+            padding: 40px 30px;
+            color: #333;
+        }
+        .greeting {
+            font-size: 18px;
+            color: #23aae2;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+        .message {
+            font-size: 16px;
+            line-height: 1.6;
+            margin-bottom: 30px;
+            color: #555;
+        }
+        .button {
+            display: inline-block;
+            background-color: #23aae2;
+            color: white;
+            text-decoration: none;
+            padding: 14px 32px;
+            border-radius: 6px;
+            font-weight: 600;
+            margin: 20px 0;
+            text-align: center;
+        }
+        .button:hover {
+            background-color: #1c96c9;
+        }
+        .info-section {
+            background-color: #e0f4fd;
+            border-left: 4px solid #23aae2;
+            padding: 15px;
+            margin: 25px 0;
+            border-radius: 4px;
+        }
+        .info-section p {
+            margin: 5px 0;
+            color: #0369a1;
+            font-size: 14px;
+        }
+        .footer {
+            background-color: #f9fafb;
+            padding: 30px;
+            text-align: center;
+            color: #6b7280;
+            font-size: 14px;
+        }
+        .footer a {
+            color: #23aae2;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div class="success-icon">👋</div>
+            <h1>¡Bienvenido a ETA!</h1>
+        </div>
+
+        <!-- Content -->
+        <div class="content">
+            <p class="greeting">Hola <span th:text="${nombreUsuario}">Usuario</span>,</p>
+            
+            <p class="message">
+                Estamos muy felices de que te unas a la comunidad más grande de eventos, tours y actividades del Caribe. Para comenzar a explorar y reservar tus experiencias favoritas, necesitamos verificar tu correo electrónico.
+            </p>
+
+            <!-- Botón CTA -->
+            <div style="text-align: center;">
+                <a th:href="${enlaceVerificacion}" class="button">
+                    Verificar mi cuenta
+                </a>
+            </div>
+
+            <!-- Información importante -->
+            <div class="info-section">
+                <p><strong>📌 Importante:</strong></p>
+                <p>• Este enlace expirará en <span th:text="${horasVigencia}">24</span> horas por motivos de seguridad.</p>
+                <p>• Si no solicitaste esta cuenta, simplemente ignora este mensaje.</p>
+            </div>
+
+            <p style="margin-top: 30px; color: #6b7280; font-size: 14px;">
+                Si el botón no funciona, copia y pega el siguiente enlace en tu navegador:<br>
+                <a th:href="${enlaceVerificacion}" style="color: #23aae2; word-break: break-all;" th:text="${enlaceVerificacion}"></a>
+            </p>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <p><strong>ETA - Experiencias Turísticas Auténticas</strong></p>
+            <p>Cartagena de Indias, Colombia</p>
+            <p>
+                <a th:href="${appBaseUrl}">Visitar ETA</a> | 
+                <a th:href="${appBaseUrl + '/terminos-condiciones'}">Términos y Condiciones</a>
+            </p>
+            <p style="margin-top: 15px; font-size: 12px; color: #9ca3af;">
+                Este es un correo automático, por favor no responder.
+            </p>
+        </div>
+    </div>
+</body>
+</html>

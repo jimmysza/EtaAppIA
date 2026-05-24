@@ -10,6 +10,12 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
+import org.springframework.mail.javamail.MimeMessageHelper;
+import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.context.Context;
+
 import maineta.eta.entity.Usuario;
 import maineta.eta.repository.UsuarioRepository;
 
@@ -27,6 +33,7 @@ public class VerificacionCorreoService {
 
     private final UsuarioRepository usuarioRepository;
     private final JavaMailSender mailSender;
+    private final TemplateEngine templateEngine;
 
     @Value("${app.base-url:http://localhost:8080}")
     private String appBaseUrl;
@@ -40,9 +47,10 @@ public class VerificacionCorreoService {
     @Value("${spring.mail.password:}")
     private String smtpPassword;
 
-    public VerificacionCorreoService(UsuarioRepository usuarioRepository, JavaMailSender mailSender) {
+    public VerificacionCorreoService(UsuarioRepository usuarioRepository, JavaMailSender mailSender, TemplateEngine templateEngine) {
         this.usuarioRepository = usuarioRepository;
         this.mailSender = mailSender;
+        this.templateEngine = templateEngine;
     }
 
     public void prepararVerificacion(Usuario usuario) {
@@ -64,23 +72,26 @@ public class VerificacionCorreoService {
 
         String link = appBaseUrl + "/registro/verificar?token=" + usuario.getTokenVerificacion();
 
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setFrom(mailFrom);
-        message.setTo(usuario.getEmail());
-        message.setSubject("Verifica tu cuenta en ETA");
-        message.setText(
-                "Hola " + usuario.getNombre() + ",\n\n"
-                        + "Gracias por registrarte. Para activar tu cuenta, haz clic en este enlace:\n"
-                        + link + "\n\n"
-                        + "Este enlace expirara en " + HORAS_VIGENCIA_TOKEN + " horas.\n\n"
-                        + "Si no solicitaste esta cuenta, ignora este mensaje.");
-
         try {
+            MimeMessage message = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+
+            helper.setFrom(mailFrom);
+            helper.setTo(usuario.getEmail());
+            helper.setSubject("Verifica tu cuenta en ETA");
+
+            Context context = new Context();
+            context.setVariable("nombreUsuario", usuario.getNombre());
+            context.setVariable("enlaceVerificacion", link);
+            context.setVariable("horasVigencia", HORAS_VIGENCIA_TOKEN);
+            context.setVariable("appBaseUrl", appBaseUrl);
+
+            String htmlContent = templateEngine.process("emails/verificacion-cuenta", context);
+            helper.setText(htmlContent, true);
+
             mailSender.send(message);
-        } catch (MailException e) {
-            String detalle = e.getMostSpecificCause() != null && e.getMostSpecificCause().getMessage() != null
-                    ? e.getMostSpecificCause().getMessage()
-                    : e.getMessage();
+        } catch (MessagingException | MailException e) {
+            String detalle = e.getMessage();
             throw new RuntimeException(
                     "No se pudo enviar el correo de verificacion. Revisa SMTP (host/puerto/usuario/clave). Detalle: "
                             + detalle,

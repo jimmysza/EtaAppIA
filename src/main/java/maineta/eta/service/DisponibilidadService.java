@@ -36,4 +36,9 @@ public interface DisponibilidadService {
      * Cambiar el estado de una disponibilidad (DISPONIBLE, CANCELADO, COMPLETADO).
      */
     Disponibilidad cambiarEstado(Long idDisponibilidad, String nuevoEstado);
+
+    /**
+     * Eliminar una disponibilidad por id.
+     */
+    void eliminarDisponibilidad(Long idDisponibilidad);
 }

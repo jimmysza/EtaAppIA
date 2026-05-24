@@ -620,6 +620,27 @@ public class ColaboradorController {
         return redirect;
     }
 
+    // Eliminar una disponibilidad
+    @PostMapping("/disponibilidades/eliminar")
+    public String eliminarDisponibilidad(
+            @RequestParam Long idDisponibilidad,
+            @RequestParam Long idActividad,
+            @RequestParam(required = false) String fecha,
+            RedirectAttributes redirectAttrs) {
+        try {
+            disponibilidadService.eliminarDisponibilidad(idDisponibilidad);
+            redirectAttrs.addFlashAttribute("mensaje", "Disponibilidad eliminada correctamente.");
+        } catch (Exception e) {
+            redirectAttrs.addFlashAttribute("error", e.getMessage());
+        }
+        String redirect = "redirect:/colaborador/disponibilidades/" + idActividad;
+        if (fecha != null && !fecha.isEmpty()) {
+            LocalDate f = LocalDate.parse(fecha);
+            redirect += "?anio=" + f.getYear() + "&mes=" + f.getMonthValue() + "&fecha=" + fecha;
+        }
+        return redirect;
+    }
+
     @GetMapping("/reservas/{idActividad}")
     public String verReservas(@PathVariable Long idActividad, Model model) {
         Actividad actividad = actividadService.obtenerPorId(idActividad);

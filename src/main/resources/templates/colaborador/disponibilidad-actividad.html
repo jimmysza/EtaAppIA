@@ -420,12 +420,23 @@
                                     </button>
                                 </form>
 
-                                <!-- Cancelar Disponibilidad (cancela todas las reservas) -->
-                                <!-- <button th:if="${slot.estado != 'CANCELADO'}" type="button"
-                                    class="btn-cancelar-disponibilidad bg-red-500 hover:bg-red-600 text-white text-xs px-3 py-1.5 rounded font-medium transition w-full"
-                                    th:attr="data-id=${slot.idDisponibilidad}">
-                                    ⚠️ Cancelar Disponibilidad (Cancela Reservas)
-                                </button> -->
+                                <!-- Eliminar Disponibilidad (solo si no tiene reservas) -->
+                                <form th:if="${slot.cuposTotales == slot.cuposDisponibles}"
+                                    th:action="@{/colaborador/disponibilidades/eliminar}" method="post" class="w-full">
+                                    <input type="hidden" name="idDisponibilidad" th:value="${slot.idDisponibilidad}" />
+                                    <input type="hidden" name="idActividad" th:value="${actividad.idActividad}" />
+                                    <input type="hidden" name="fecha" th:value="${fechaSeleccionada}" />
+                                    <button type="submit"
+                                        onclick="return confirm('¿Estás seguro de eliminar esta disponibilidad?');"
+                                        class="w-full bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 text-xs px-3 py-1.5 rounded font-medium transition flex items-center justify-center gap-1.5">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <path d="M3 6h18"></path>
+                                            <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path>
+                                            <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path>
+                                        </svg>
+                                        Eliminar
+                                    </button>
+                                </form>
                             </div>
                         </div>
                     </div>
