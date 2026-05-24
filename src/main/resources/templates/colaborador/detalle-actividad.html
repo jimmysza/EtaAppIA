@@ -757,24 +757,24 @@
             fileInput.addEventListener('change', function (e) {
                 if (this.files && this.files[0]) {
                     fileName.textContent = this.files[0].name;
-                    dropZone.classList.add('border-blue-400', 'bg-blue-50');
+                    dropZone.classList.add('border-[#23aae2]', 'bg-[#effbff]');
                 }
             });
 
             // Drag and drop
             dropZone.addEventListener('dragover', function (e) {
                 e.preventDefault();
-                this.classList.add('border-blue-400', 'bg-blue-50');
+                this.classList.add('border-[#23aae2]', 'bg-[#effbff]');
             });
 
             dropZone.addEventListener('dragleave', function (e) {
                 e.preventDefault();
-                this.classList.remove('border-blue-400', 'bg-blue-50');
+                this.classList.remove('border-[#23aae2]', 'bg-[#effbff]');
             });
 
             dropZone.addEventListener('drop', function (e) {
                 e.preventDefault();
-                this.classList.remove('border-blue-400', 'bg-blue-50');
+                this.classList.remove('border-[#23aae2]', 'bg-[#effbff]');
 
                 const files = e.dataTransfer.files;
                 if (files.length > 0) {
@@ -798,23 +798,23 @@
                 fileInputExtra.addEventListener('change', function () {
                     if (this.files && this.files.length > 0) {
                         fileNameExtra.textContent = this.files.length + ' archivo(s) seleccionado(s)';
-                        dropZoneExtra.classList.add('border-blue-400', 'bg-blue-50');
+                        dropZoneExtra.classList.add('border-[#23aae2]', 'bg-[#effbff]');
                     }
                 });
 
                 dropZoneExtra.addEventListener('dragover', function (e) {
                     e.preventDefault();
-                    this.classList.add('border-blue-400', 'bg-blue-50');
+                    this.classList.add('border-[#23aae2]', 'bg-[#effbff]');
                 });
 
                 dropZoneExtra.addEventListener('dragleave', function (e) {
                     e.preventDefault();
-                    this.classList.remove('border-blue-400', 'bg-blue-50');
+                    this.classList.remove('border-[#23aae2]', 'bg-[#effbff]');
                 });
 
                 dropZoneExtra.addEventListener('drop', function (e) {
                     e.preventDefault();
-                    this.classList.remove('border-blue-400', 'bg-blue-50');
+                    this.classList.remove('border-[#23aae2]', 'bg-[#effbff]');
                     const files = e.dataTransfer.files;
                     if (files.length > 0) {
                         fileInputExtra.files = files;

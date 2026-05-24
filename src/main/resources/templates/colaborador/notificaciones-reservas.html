@@ -59,7 +59,7 @@
                                 <meta itemprop="position" content="2" />
                             </li>
                             <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
-                                <a itemprop="item" class="text-blue-600 font-bold">
+                                <a itemprop="item" class="text-[#23aae2] font-bold">
                                     <span itemprop="name">Notificaciones reservas</span>
                                 </a>
                                 <meta itemprop="position" content="3" />
@@ -83,7 +83,7 @@
                         </div>
 
                         <a th:href="@{/colaborador/dashboard}"
-                            class="inline-flex w-full sm:w-auto sm:min-w-64 items-center justify-center rounded-2xl bg-slate-950 px-6 py-3 text-sm font-semibold text-white whitespace-nowrap transition hover:bg-slate-800">
+                            class="inline-flex w-full sm:w-auto sm:min-w-64 items-center justify-center rounded-2xl bg-[#23aae2] px-6 py-3 text-sm font-semibold text-white whitespace-nowrap transition hover:bg-[#1c96c9]">
                             Volver al dashboard
                         </a>
                     </div>
@@ -97,7 +97,7 @@
                         <section class="notification-card w-full rounded-3xl bg-white p-6">
                             <div class="flex items-center justify-between mb-5">
                                 <div>
-                                    <p class="text-xs font-bold uppercase tracking-wider text-sky-600 mb-2">Timeline</p>
+                                    <p class="text-xs font-bold uppercase tracking-wider text-[#23aae2] mb-2">Timeline</p>
                                     <h2 class="text-xl font-black text-slate-950">3 mas recientes</h2>
                                 </div>
                                 <span class="text-sm font-semibold text-slate-400"
@@ -136,7 +136,7 @@
 
                                     <div class="mt-4" th:if="${reserva.actividad != null}">
                                         <a th:href="@{/colaborador/reservas/{idActividad}(idActividad=${reserva.actividad.idActividad})}"
-                                            class="inline-flex w-full sm:w-auto sm:min-w-72 items-center justify-center rounded-xl bg-slate-950 px-5 py-2.5 text-sm font-semibold text-white text-center transition hover:bg-slate-800">
+                                            class="inline-flex w-full sm:w-auto sm:min-w-72 items-center justify-center rounded-xl bg-[#23aae2] px-5 py-2.5 text-sm font-semibold text-white text-center transition hover:bg-[#1c96c9]">
                                             Ver reserva de esta actividad
                                         </a>
                                     </div>

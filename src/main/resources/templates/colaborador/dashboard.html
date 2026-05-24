@@ -62,7 +62,7 @@
                             </li>
                             <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
                                 <!-- <span class="text-gray-400">/</span> -->
-                                <a itemprop="item" class="text-blue-600 font-bold">
+                                <a itemprop="item" class="text-[#23aae2] font-bold">
                                     <span itemprop="name">Dashboard</span>
                                 </a>
                                 <meta itemprop="position" content="2" />
@@ -95,7 +95,7 @@
                         <input type="month" id="periodo" name="periodo" th:value="${periodoSeleccionado}"
                             class="border border-gray-300 rounded-md px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                         <button type="submit"
-                            class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition">
+                            class="bg-[#23aae2] text-white px-4 py-2 rounded-md hover:bg-[#1c96c9] transition">
                             Filtrar
                         </button>
                     </form>
@@ -108,7 +108,7 @@
                             <p class="text-gray-600 mt-1">Tus 3 movimientos mas recientes para reaccionar rapido.</p>
                         </div>
                         <a th:href="@{/colaborador/notificaciones-reservas}"
-                            class="inline-flex items-center justify-center rounded-xl bg-slate-900 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-800 transition">
+                            class="inline-flex items-center justify-center rounded-xl bg-[#23aae2] px-4 py-2 text-sm font-semibold text-white hover:bg-[#1c96c9] transition">
                             Ver todas las notificaciones
                         </a>
                     </div>
@@ -123,7 +123,7 @@
                             class="bg-white rounded-2xl shadow-sm border border-gray-200 p-5">
                             <div class="flex items-start justify-between gap-4">
                                 <div>
-                                    <p class="text-xs uppercase tracking-wider font-semibold text-sky-600 mb-2">Reserva
+                                    <p class="text-xs uppercase tracking-wider font-semibold text-[#23aae2] mb-2">Reserva
                                         reciente</p>
                                     <h3 class="text-lg font-bold text-gray-900"
                                         th:text="${reserva.actividad != null ? reserva.actividad.titulo : 'Actividad'}">
@@ -274,7 +274,7 @@
                                     </div>
                                     <div class="w-full bg-gray-200 rounded-full h-3">
                                         <div th:with="maxReservas=${kpisPorActividad[0].reservas}"
-                                            class="bg-blue-600 h-3 rounded-full transition-all duration-300"
+                                            class="bg-[#23aae2] h-3 rounded-full transition-all duration-300"
                                             th:style="'width: ' + ${maxReservas > 0 ? (kpi.reservas * 100.0 / maxReservas) : 0} + '%'">
                                         </div>
                                     </div>
@@ -365,9 +365,9 @@
                         <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
                             <h3 class="text-lg font-semibold text-gray-900 mb-4">Resumen de Slots</h3>
                             <div class="space-y-4">
-                                <div class="flex justify-between items-center p-3 bg-blue-50 rounded">
+                                <div class="flex justify-between items-center p-3 bg-[#effbff] rounded">
                                     <span class="text-sm font-medium text-gray-700">Disponible</span>
-                                    <span class="text-2xl font-bold text-blue-600"
+                                    <span class="text-2xl font-bold text-[#23aae2]"
                                         th:text="${ocupacion.disponible}">0</span>
                                 </div>
                                 <div class="flex justify-between items-center p-3 bg-green-50 rounded">
@@ -416,7 +416,7 @@
                                 </div>
                                 <div class="flex justify-between items-center pb-2 border-b">
                                     <span class="text-sm font-medium text-gray-700">Confirmada</span>
-                                    <span class="text-lg font-bold text-blue-600"
+                                    <span class="text-lg font-bold text-[#23aae2]"
                                         th:text="${estadosReserva.confirmada}">0</span>
                                 </div>
                                 <div class="flex justify-between items-center pb-2 border-b">
@@ -431,7 +431,7 @@
                                 </div>
                                 <div class="pt-3 mt-3 border-t">
                                     <span class="text-xs text-gray-600">Conversión Pendiente → Confirmada: </span>
-                                    <span class="text-sm font-bold text-blue-600"
+                                    <span class="text-sm font-bold text-[#23aae2]"
                                         th:text="${#numbers.formatDecimal(estadosReserva.tasaConversionPendienteConfirmada, 1, 1)} + '%'">0.0%</span>
                                 </div>
                             </div>
