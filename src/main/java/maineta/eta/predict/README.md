@@ -100,7 +100,7 @@ controller/
   └── PrediccionController.java      # REST Controller
 
 resources/
-  └── modeloPredictivo.model         # Modelo entrenado de Weka
+  └── ETA_modelo_predictivo.model         # Modelo entrenado de Weka
 ```
 
 ### Flujo de Predicción

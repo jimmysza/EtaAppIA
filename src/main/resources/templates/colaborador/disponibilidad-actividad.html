@@ -350,15 +350,15 @@
                                 </div>
                                 <div class="flex items-center gap-2">
                                     <div class="flex-1 px-3 py-2 rounded-lg text-center font-semibold text-sm"
-                                        th:classappend="${slot.prediccion.nivelOcupacion == 'baja' ? 'bg-green-100 text-green-800 border border-green-300' : 
-                                                         slot.prediccion.nivelOcupacion == 'media' ? 'bg-yellow-100 text-yellow-800 border border-yellow-300' : 
-                                                         slot.prediccion.nivelOcupacion == 'alta' ? 'bg-orange-100 text-orange-800 border border-orange-300' : 
+                                        th:classappend="${slot.prediccion.nivelOcupacion == 'Baja' ? 'bg-green-100 text-green-800 border border-green-300' : 
+                                                         slot.prediccion.nivelOcupacion == 'Media' ? 'bg-yellow-100 text-yellow-800 border border-yellow-300' : 
+                                                         slot.prediccion.nivelOcupacion == 'Alta' ? 'bg-orange-100 text-orange-800 border border-orange-300' : 
                                                          'bg-red-100 text-red-800 border border-red-300'}">
-                                        <span th:if="${slot.prediccion.nivelOcupacion == 'baja'}">🟢 Baja demanda</span>
-                                        <span th:if="${slot.prediccion.nivelOcupacion == 'media'}">🟡 Demanda
+                                        <span th:if="${slot.prediccion.nivelOcupacion == 'Baja'}">🟢 Baja demanda</span>
+                                        <span th:if="${slot.prediccion.nivelOcupacion == 'Media'}">🟡 Demanda
                                             moderada</span>
-                                        <span th:if="${slot.prediccion.nivelOcupacion == 'alta'}">🟠 Alta demanda</span>
-                                        <span th:if="${slot.prediccion.nivelOcupacion == 'agotado'}">🔴 Se
+                                        <span th:if="${slot.prediccion.nivelOcupacion == 'Alta'}">🟠 Alta demanda</span>
+                                        <span th:if="${slot.prediccion.nivelOcupacion == 'Agotado'}">🔴 Se
                                             agotará</span>
                                     </div>
                                 </div>
@@ -406,8 +406,7 @@
                                     <input type="hidden" name="idDisponibilidad" th:value="${slot.idDisponibilidad}" />
                                     <input type="hidden" name="idActividad" th:value="${actividad.idActividad}" />
                                     <input type="hidden" name="fecha" th:value="${fechaSeleccionada}" />
-                                    <select name="nuevoEstado"
-                                        class="w-full border rounded px-2 py-1 text-xs">
+                                    <select name="nuevoEstado" class="w-full border rounded px-2 py-1 text-xs">
                                         <option value="DISPONIBLE" th:selected="${slot.estado == 'DISPONIBLE'}">
                                             DISPONIBLE</option>
                                         <option value="CANCELADO" th:selected="${slot.estado == 'CANCELADO'}">CANCELADO

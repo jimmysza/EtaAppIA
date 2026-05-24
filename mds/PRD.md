@@ -875,14 +875,14 @@ Esta versión representa un salto significativo en funcionalidades avanzadas, ag
 - ✅ **Servicio de Predicción**: `PrediccionService` con algoritmo basado en Apache Commons Math
 - ✅ **Visualización de predicciones**: Dashboard colaborador muestra ocupación esperada (baja/media/alta)
 - ✅ **DTO especializado**: `PrediccionOcupacionDTO` con múltiples métricas
-- ✅ **Archivo de modelo entrenado**: `modeloPredictivo.model` (190KB)
+- ✅ **Archivo de modelo entrenado**: `ETA_modelo_predictivo.model` (190KB)
 - ✅ **Documentación técnica**: `mds/creaccionDelModelo.md` (100 líneas)
 
 **Archivos Clave:**
 - `service/PrediccionService.java` + `PrediccionServiceImpl.java` (292 líneas)
 - `dto/PrediccionOcupacionDTO.java`
 - `static/js/prediccion.js` (242 líneas de visualización)
-- `resources/modeloPredictivo.model`
+- `resources/ETA_modelo_predictivo.model`
 - `predict/README.md` (201 líneas de explicación del algoritmo)
 - Actualización de `mds/db.md` (120 líneas) y `mds/PRD.md`
 

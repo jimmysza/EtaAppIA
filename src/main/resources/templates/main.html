@@ -623,7 +623,7 @@
     <!--hero-->
     <section
         class="relative hero-shell h-[120vh]
-        lg:h-[90vh]  flex items-center justify-center sm:py-16 md:py-30 pt-20 lg:py-30 px-4 sm:px-6 lg:px-8 overflow-hidden min-h-[700px] md:h-[600px]">
+        lg:h-[98vh]  flex items-center justify-center sm:py-16 md:py-30 pt-20 lg:py-30 px-4 sm:px-6 lg:px-8 overflow-hidden min-h-[700px] md:h-[600px]">
 
         <!-- Foto izquierda arriba — rotada hacia la izquierda -->
         <div class="absolute top-5 left-4 -rotate-6 z-10  md:block lg:block esconderCell">
@@ -663,7 +663,14 @@
         </div>
 
 
-        <div class=" max-w-6xl mx-auto lg:pt-18 pt-12 md:pt-18 pb-12  ">
+        <div class=" max-w-6xl mx-auto  pb-12  ">
+
+            <!-- Logo -->
+            <div class="flex justify-center mb-2">
+                <img th:src="@{/images/logos/LogoNo.png}" alt="ETA Logo"
+                    class="w-56 h-56 md:w-60 md:h-60 object-contain opacity-85 drop-shadow-lg">
+            </div>
+
             <div class="flex justify-center mb-6">
                 <div class="hero-badge">
                     <span class="h-2.5 w-2.5 rounded-full bg-emerald-500"></span>
@@ -672,10 +679,6 @@
                 </div>
             </div>
 
-            <!-- Logo -->
-            <div class="flex justify-center mb-2">
-                <img th:src="@{/images/logos/LogoNo.png}" alt="ETA Logo" class="w-56 h-56 md:w-60 md:h-60 object-contain opacity-85 drop-shadow-lg">
-            </div>
 
             <h1 class="text-5xl md:text-7xl font-black tracking-tight text-center text-slate-950 mb-5">
                 Experiences, travels <span class="hero-pill">&</span> adventures
@@ -898,7 +901,9 @@
                 <div data-carousel-track
                     class="grid auto-cols-[100%] sm:auto-cols-[calc(50%-8px)] md:auto-cols-[calc(33.333%-16px)] lg:auto-cols-[calc(25%-12px)] grid-flow-col gap-4 overflow-x-auto hide-scrollbar scroll-container pb-2">
                     <th:block th:each="actividad : ${tendencias}">
-                        <th:block th:replace="~{componentes/actividad-card :: actividadCard(actividad=${actividad}, favoritosIds=${favoritosIds}, mostrarFavorito=${true}, categoriaTexto=${actividad.categoria != null ? actividad.categoria.nombre : 'Sin categoría'}, idiomaTexto=${actividad.idioma != null ? actividad.idioma.nombre : 'Sin idioma'})}"></th:block>
+                        <th:block
+                            th:replace="~{componentes/actividad-card :: actividadCard(actividad=${actividad}, favoritosIds=${favoritosIds}, mostrarFavorito=${true}, categoriaTexto=${actividad.categoria != null ? actividad.categoria.nombre : 'Sin categoría'}, idiomaTexto=${actividad.idioma != null ? actividad.idioma.nombre : 'Sin idioma'})}">
+                        </th:block>
                     </th:block>
                 </div>
             </div>
@@ -933,7 +938,9 @@
                 <div data-carousel-track
                     class="grid auto-cols-[100%] sm:auto-cols-[calc(50%-8px)] md:auto-cols-[calc(33.333%-16px)] lg:auto-cols-[calc(25%-12px)] grid-flow-col gap-4 overflow-x-auto hide-scrollbar scroll-container pb-2">
                     <th:block th:each="actividad : ${masVistas}">
-                        <th:block th:replace="~{componentes/actividad-card :: actividadCard(actividad=${actividad}, favoritosIds=${favoritosIds}, mostrarFavorito=${true}, categoriaTexto=${actividad.categoria != null ? actividad.categoria.nombre : 'Sin categoría'}, idiomaTexto=${actividad.idioma != null ? actividad.idioma.nombre : 'Sin idioma'})}"></th:block>
+                        <th:block
+                            th:replace="~{componentes/actividad-card :: actividadCard(actividad=${actividad}, favoritosIds=${favoritosIds}, mostrarFavorito=${true}, categoriaTexto=${actividad.categoria != null ? actividad.categoria.nombre : 'Sin categoría'}, idiomaTexto=${actividad.idioma != null ? actividad.idioma.nombre : 'Sin idioma'})}">
+                        </th:block>
                     </th:block>
                 </div>
             </div>
@@ -969,7 +976,9 @@
                 <div data-carousel-track
                     class="grid auto-cols-[100%] sm:auto-cols-[calc(50%-8px)] md:auto-cols-[calc(33.333%-16px)] lg:auto-cols-[calc(25%-12px)] grid-flow-col gap-4 overflow-x-auto hide-scrollbar scroll-container pb-2">
                     <th:block th:each="actividad : ${masReservadas}">
-                        <th:block th:replace="~{componentes/actividad-card :: actividadCard(actividad=${actividad}, favoritosIds=${favoritosIds}, mostrarFavorito=${true}, categoriaTexto=${actividad.categoria != null ? actividad.categoria.nombre : 'Sin categoría'}, idiomaTexto=${actividad.idioma != null ? actividad.idioma.nombre : 'Sin idioma'})}"></th:block>
+                        <th:block
+                            th:replace="~{componentes/actividad-card :: actividadCard(actividad=${actividad}, favoritosIds=${favoritosIds}, mostrarFavorito=${true}, categoriaTexto=${actividad.categoria != null ? actividad.categoria.nombre : 'Sin categoría'}, idiomaTexto=${actividad.idioma != null ? actividad.idioma.nombre : 'Sin idioma'})}">
+                        </th:block>
                     </th:block>
                 </div>
             </div>
@@ -1005,7 +1014,9 @@
                 <div data-carousel-track
                     class="grid auto-cols-[100%] sm:auto-cols-[calc(50%-8px)] md:auto-cols-[calc(33.333%-16px)] lg:auto-cols-[calc(25%-12px)] grid-flow-col gap-4 overflow-x-auto hide-scrollbar scroll-container pb-2">
                     <th:block th:each="actividad : ${paraTi}">
-                        <th:block th:replace="~{componentes/actividad-card :: actividadCard(actividad=${actividad}, favoritosIds=${favoritosIds}, mostrarFavorito=${true}, categoriaTexto=${actividad.categoria != null ? actividad.categoria.nombre : 'Sin categoría'}, idiomaTexto=${actividad.idioma != null ? actividad.idioma.nombre : 'Sin idioma'})}"></th:block>
+                        <th:block
+                            th:replace="~{componentes/actividad-card :: actividadCard(actividad=${actividad}, favoritosIds=${favoritosIds}, mostrarFavorito=${true}, categoriaTexto=${actividad.categoria != null ? actividad.categoria.nombre : 'Sin categoría'}, idiomaTexto=${actividad.idioma != null ? actividad.idioma.nombre : 'Sin idioma'})}">
+                        </th:block>
                     </th:block>
                 </div>
             </div>
@@ -1046,7 +1057,9 @@
             <div id="scrollContainer" data-carousel-track
                 class="grid auto-cols-[100%] sm:auto-cols-[calc(50%-8px)] md:auto-cols-[calc(33.333%-16px)] lg:auto-cols-[calc(25%-12px)] grid-flow-col gap-4 overflow-x-auto hide-scrollbar scroll-container pb-2">
                 <th:block th:each="actividad : ${actividades}">
-                    <th:block th:replace="~{componentes/actividad-card :: actividadCard(actividad=${actividad}, favoritosIds=${favoritosIds}, mostrarFavorito=${true}, categoriaTexto=${actividad.nombreCategoria != null ? actividad.nombreCategoria : 'Sin categoría'}, idiomaTexto=${actividad.nombreIdioma != null ? actividad.nombreIdioma : 'Sin idioma'})}"></th:block>
+                    <th:block
+                        th:replace="~{componentes/actividad-card :: actividadCard(actividad=${actividad}, favoritosIds=${favoritosIds}, mostrarFavorito=${true}, categoriaTexto=${actividad.nombreCategoria != null ? actividad.nombreCategoria : 'Sin categoría'}, idiomaTexto=${actividad.nombreIdioma != null ? actividad.nombreIdioma : 'Sin idioma'})}">
+                    </th:block>
                 </th:block>
 
             </div>

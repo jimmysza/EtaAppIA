@@ -204,6 +204,7 @@
         }
 
         @media (max-width: 640px) {
+
             .receipt-ticket::before,
             .receipt-ticket::after {
                 display: none;
@@ -258,10 +259,10 @@
                 gap: 0.75rem !important;
             }
 
-            .receipt-mini-card .grid > div.col-span-2 {
+            .receipt-mini-card .grid>div.col-span-2 {
                 grid-column: span 2 !important;
             }
-            
+
             .receipt-mini-card .grid strong {
                 white-space: nowrap !important;
             }
@@ -270,12 +271,12 @@
             .px-6.py-10 {
                 padding: 1.5rem 0 !important;
             }
-            
+
             /* Específico para el primer contenedor (el header del recibo) */
             .px-6.py-10:first-of-type {
-                padding-top: 2rem !important; 
+                padding-top: 2rem !important;
             }
-            
+
             .receipt-divider {
                 margin: 0 !important;
             }
@@ -297,7 +298,7 @@
 
             <div class="px-6 py-10 md:px-12 md:py-12">
                 <div class="flex flex-col space-y-6">
-                    
+
                     <div class="flex justify-between items-start">
                         <div class="receipt-brand">
                             <img th:src="@{/images/logos/LogoNo.png}" alt="etaApp" loading="lazy" />
@@ -306,7 +307,8 @@
                                 <p class="text-sm text-slate-600">Recibo digital de reserva</p>
                             </div>
                         </div>
-                        <div class="inline-flex items-center rounded-full bg-emerald-50 px-4 py-2 text-sm font-bold text-emerald-700 border border-emerald-100">
+                        <div
+                            class="inline-flex items-center rounded-full bg-emerald-50 px-4 py-2 text-sm font-bold text-emerald-700 border border-emerald-100">
                             <span class="mr-2 h-2.5 w-2.5 rounded-full bg-emerald-500"></span>
                             <span th:text="${reserva.estado}">Hecho</span>
                         </div>
@@ -317,7 +319,8 @@
                             <span class="receipt-kicker-dot"></span>
                             Reserva confirmada
                         </span>
-                        <h1 class="text-4xl md:text-5xl font-black text-slate-950 leading-tight" th:text="${tituloRecibo}">Detalle de tu reserva</h1>
+                        <h1 class="text-4xl md:text-5xl font-black text-slate-950 leading-tight"
+                            th:text="${tituloRecibo}">Detalle de tu reserva</h1>
                         <p class="text-base md:text-lg text-slate-500" th:text="${subtituloRecibo}">
                             Tu reserva fue emitida correctamente y ya tienes tu recibo digital.
                         </p>
@@ -331,12 +334,15 @@
 
                         <div class="receipt-summary-card">
                             <span class="label">Fecha de emisión</span>
-                            <span class="value" th:text="${#temporals.format(reserva.fechaReserva, 'dd MMM yyyy')}">23 may 2026</span>
+                            <span class="value" th:text="${#temporals.format(reserva.fechaReserva, 'dd MMM yyyy')}">23
+                                may 2026</span>
                         </div>
 
                         <div class="receipt-amount-card">
                             <span class="label">Total pagado</span>
-                            <span class="value" th:text="${'$ ' + #numbers.formatDecimal(totalReserva, 1, 'COMMA', 0, 'POINT')}">$ 11,800</span>
+                            <span class="value"
+                                th:text="${'$ ' + #numbers.formatDecimal(totalReserva, 1, 'COMMA', 0, 'POINT')}">$
+                                11,800</span>
                         </div>
                     </div>
                 </div>
@@ -345,27 +351,34 @@
             <div class="receipt-divider"></div>
 
             <div class="px-6 py-10 md:px-12 md:py-12">
-                <a th:href="@{/actividad/{slug}-{id}(slug=${#strings.replace(#strings.toLowerCase(reserva.actividad.titulo), ' ', '-')}, id=${reserva.actividad.idActividad})}" class="block group">
-                    <div class="receipt-mini-card rounded-[32px] p-6 md:p-8 flex flex-col md:flex-row md:items-center gap-8 transition-all group-hover:-translate-y-1 group-hover:shadow-xl duration-300">
+                <a th:href="@{/actividad/{slug}-{id}(slug=${#strings.replace(#strings.toLowerCase(reserva.actividad.titulo), ' ', '-')}, id=${reserva.actividad.idActividad})}"
+                    class="block group">
+                    <div
+                        class="receipt-mini-card rounded-[32px] p-6 md:p-8 flex flex-col md:flex-row md:items-center gap-8 transition-all group-hover:-translate-y-1 group-hover:shadow-xl duration-300">
 
                         <img th:if="${reserva.actividad != null and reserva.actividad.imagen != null}"
-                             th:src="@{'/uploads/' + ${reserva.actividad.imagen}}" th:alt="${reserva.actividad.titulo}"
-                             class="receipt-cover">
+                            th:src="@{'/uploads/' + ${reserva.actividad.imagen}}" th:alt="${reserva.actividad.titulo}"
+                            class="receipt-cover">
 
                         <div th:if="${reserva.actividad == null or reserva.actividad.imagen == null}"
-                             class="receipt-cover flex items-center justify-center bg-gradient-to-br from-slate-900 via-sky-600 to-emerald-400 text-white text-4xl font-black">
-                             ETA
+                            class="receipt-cover flex items-center justify-center bg-gradient-to-br from-slate-900 via-sky-600 to-emerald-400 text-white text-4xl font-black">
+                            ETA
                         </div>
 
                         <div class="flex-1 w-full">
-                            <p class="text-sm uppercase tracking-[0.26em] text-slate-400 font-bold mb-2">Actividad reservada</p>
-                            <h2 class="text-2xl md:text-3xl font-black text-slate-950 mb-2" th:text="${reserva.actividad.titulo}">
+                            <p class="text-sm uppercase tracking-[0.26em] text-slate-400 font-bold mb-2">Actividad
+                                reservada</p>
+                            <h2 class="text-2xl md:text-3xl font-black text-slate-950 mb-2"
+                                th:text="${reserva.actividad.titulo}">
                                 Tour por el centro histórico
                             </h2>
                             <p class="text-slate-500 mb-6 font-medium flex items-center gap-2">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-slate-400" fill="none"
+                                    viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                                 </svg>
                                 <span th:text="${reserva.actividad.ubicacion}">Cartagena</span>
                             </p>
@@ -377,13 +390,16 @@
                                 </div>
                                 <div class="rounded-2xl bg-white px-5 py-4 shadow-sm border border-slate-100">
                                     <span class="block text-slate-400 font-semibold mb-1">P. Unitario</span>
-                                    <strong class="text-slate-950 text-lg md:text-xl whitespace-nowrap" th:text="${'$' + #numbers.formatDecimal(precioUnitario, 0, 'POINT', 0, 'COMMA')}">$ 11,800</strong>
+                                    <strong class="text-slate-950 text-lg md:text-xl whitespace-nowrap"
+                                        th:text="${'$' + #numbers.formatDecimal(precioUnitario, 0, 'POINT', 0, 'COMMA')}">$
+                                        11,800</strong>
                                 </div>
-                                <div class="rounded-2xl bg-white px-5 py-4 shadow-sm border border-slate-100 col-span-2 lg:col-span-2">
+                                <div
+                                    class="rounded-2xl bg-white px-5 py-4 shadow-sm border border-slate-100 col-span-2 lg:col-span-2">
                                     <span class="block text-slate-400 font-semibold mb-1">Salida programada</span>
                                     <strong class="text-slate-950 text-lg md:text-xl whitespace-nowrap"
-                                            th:text="${salidaProgramadaTexto}">
-                                            29 may 2026 • 09:00
+                                        th:text="${salidaProgramadaTexto}">
+                                        29 may 2026 • 09:00
                                     </strong>
                                 </div>
                             </div>
@@ -392,21 +408,23 @@
                 </a>
             </div>
 
-            <div class="px-6 pt-2 md:px-12 pb-10">
+            <div class="px-6 pt-2 md:px-12 ">
                 <div class="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_280px] gap-6 items-center">
                     <div class="receipt-meta-card">
                         <p class="text-xs font-bold uppercase tracking-[0.26em] text-slate-500 mb-2">Resumen</p>
                         <p class="text-sm text-slate-600 leading-6">
-                            Conserva este recibo para validar tu reserva. Desde aquí puedes descargar una copia o regresar a tu panel de control.
+                            Conserva este recibo para validar tu reserva. Desde aquí puedes descargar una copia o
+                            regresar a tu panel de control.
                         </p>
                     </div>
 
                     <div class="flex flex-col gap-3 sm:flex-row lg:flex-col w-full print:hidden">
-                        <button onclick="window.print()" class="inline-flex items-center justify-center rounded-2xl bg-slate-950 px-6 py-4 text-sm font-bold text-white transition hover:bg-slate-800 w-full shadow-md shadow-slate-900/20">
+                        <button onclick="window.print()"
+                            class="inline-flex items-center justify-center rounded-2xl bg-slate-950 px-6 py-4 text-sm font-bold text-white transition hover:bg-slate-800 w-full shadow-md shadow-slate-900/20">
                             Descargar PDF / Imprimir
                         </button>
                         <a th:href="@{/cliente/dashboard}"
-                           class="inline-flex items-center justify-center rounded-2xl border border-slate-200 bg-white px-6 py-4 text-sm font-bold text-slate-700 transition hover:border-slate-300 hover:text-slate-950 w-full shadow-sm">
+                            class="inline-flex items-center justify-center rounded-2xl border border-slate-200 bg-white px-6 py-4 text-sm font-bold text-slate-700 transition hover:border-slate-300 hover:text-slate-950 w-full shadow-sm">
                             Volver al dashboard
                         </a>
                     </div>

@@ -13,100 +13,396 @@
     <link rel="stylesheet" th:href="@{/css/tailwind.css}">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <link rel="icon" th:href="@{/images/logos/logo.webp}" type="image/x-icon" />
+
+    <style>
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+        }
+
+        /* Scrollbar fina */
+        .thin-scroll::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .thin-scroll::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .thin-scroll::-webkit-scrollbar-thumb {
+            background: #d1d5db;
+            border-radius: 4px;
+        }
+
+        /* Reserva activa */
+        .reserva-card.active {
+            background: #eff6ff;
+            border-color: #bfdbfe;
+        }
+
+        .reserva-card.active .reserva-title {
+            color: #1d4ed8;
+        }
+
+        .reserva-card.active .reserva-icon {
+            background: #dbeafe;
+        }
+
+        .reserva-card.active .reserva-icon svg {
+            stroke: #1d4ed8;
+        }
+
+        /* Hover reserva */
+        .reserva-card:hover:not(.active) {
+            background: #f9fafb;
+            border-color: #e5e7eb;
+        }
+
+        /* Burbujas */
+        .bubble-out {
+            background: #1e40af;
+            color: #fff;
+            border-radius: 18px 18px 4px 18px;
+        }
+
+        .bubble-in {
+            background: #ffffff;
+            color: #1f2937;
+            border-radius: 18px 18px 18px 4px;
+            border: 1px solid #e5e7eb;
+        }
+
+        /* Input focus */
+        #chatInput:focus {
+            outline: none;
+            border-color: #93c5fd;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, .12);
+        }
+
+        /* Animación mensaje */
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(5px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .msg-anim {
+            animation: fadeUp .18s ease both;
+        }
+
+        /* ── Layout responsivo del chat ──
+           En móvil: columna apilada, lista de reservas primero.
+           En desktop (lg+): 2 columnas, chat se estira al 100% de la fila.
+           En pantallas muy grandes: el grid tiene un max-width y se centra.
+        */
+        .chat-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1rem;
+            align-items: start;
+        }
+
+        @media (min-width: 1024px) {
+            .chat-grid {
+                grid-template-columns: 300px 1fr;
+            }
+        }
+
+        @media (min-width: 1280px) {
+            .chat-grid {
+                grid-template-columns: 320px 1fr;
+            }
+        }
+
+        @media (min-width: 1536px) {
+            .chat-grid {
+                grid-template-columns: 360px 1fr;
+            }
+        }
+
+        /* Panel de reservas: altura fija con scroll en desktop,
+           altura limitada en móvil para no colapsar la pantalla */
+        .reservas-panel {
+            /* móvil: máximo 260px para que el chat sea visible */
+            max-height: 260px;
+        }
+
+        @media (min-width: 1024px) {
+            .reservas-panel {
+                /* desktop: alto dinámico según el viewport */
+                max-height: calc(100vh - 220px);
+                min-height: 400px;
+            }
+        }
+
+        /* Panel del chat: en móvil ocupa todo lo disponible */
+        .chat-panel {
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Área de mensajes: crece para llenar el espacio disponible */
+        #messagesContainer {
+            flex: 1 1 auto;
+            min-height: 220px;
+            /* móvil */
+            max-height: 45vh;
+        }
+
+        @media (min-width: 1024px) {
+            #messagesContainer {
+                max-height: calc(100vh - 340px);
+                min-height: 320px;
+            }
+        }
+
+        @media (min-width: 1536px) {
+            #messagesContainer {
+                max-height: calc(100vh - 300px);
+                min-height: 480px;
+            }
+        }
+    </style>
 </head>
 
-<body>
+<body class="bg-gray-50">
     <section class="container-manager">
         <div th:replace="~{componentes/sideBarCliente :: sideBarCliente}"></div>
 
         <main class="main-content">
-            <div class="header_db">
-                <div class="flex gap-3">
-                    <svg id="hideBar" class="hidebar-dashboard" xmlns="http://www.w3.org/2000/svg" width="24"
-                        height="24" viewBox="0 0 24 24">
+
+            <!-- ── Top bar ── -->
+            <div class="flex flex-wrap items-center justify-between gap-3 mb-5">
+                <div class="flex items-center gap-3">
+                    <svg id="hideBar"
+                        class="hidebar-dashboard cursor-pointer text-gray-400 hover:text-gray-700 transition-colors"
+                        xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24">
                         <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
                             stroke-width="1.5"
                             d="M15 3.5v17M3 9.4c0-2.24 0-3.36.436-4.216a4 4 0 0 1 1.748-1.748C6.04 3 7.16 3 9.4 3h5.2c2.24 0 3.36 0 4.216.436a4 4 0 0 1 1.748 1.748C21 6.04 21 7.16 21 9.4v5.2c0 2.24 0 3.36-.436 4.216a4 4 0 0 1-1.748 1.748C17.96 21 16.84 21 14.6 21H9.4c-2.24 0-3.36 0-4.216-.436a4 4 0 0 1-1.748-1.748C3 17.96 3 16.84 3 14.6z" />
                     </svg>
                     <nav aria-label="Breadcrumb">
-                        <ol class="breadcrumbs">
-                            <li><a href="/">Inicio</a></li>
-                            <li><a href="/cliente/chats" class="text-blue-600 font-bold">Chats</a></li>
+                        <ol class="flex items-center gap-1.5 text-sm">
+                            <li><a href="/" class="text-gray-400 hover:text-gray-700 transition-colors">Inicio </a></li>
+                            <li class="text-gray-300 select-none"> / </li>
+                            <li><a href="/cliente/chats" class="font-semibold text-blue-600"> Chats</a></li>
                         </ol>
                     </nav>
                 </div>
-            </div>
 
-            <div class="flex justify-end px-1 mb-4">
                 <a th:href="@{/cliente/dashboard}"
-                    class="inline-flex items-center gap-2 rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-700 shadow-sm transition hover:border-slate-300 hover:text-slate-950 hover:shadow-md">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
-                        stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    class="inline-flex items-center gap-2 rounded-xl border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-600 shadow-sm hover:border-gray-300 hover:bg-gray-50 hover:text-gray-900 transition">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M15 18l-6-6 6-6" />
                     </svg>
                     Volver al dashboard
                 </a>
             </div>
 
-            <div class="filtro_db">
-                <div class="Identifier-Dashboard">
-                    <div class="svg-contain">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24">
-                            <path fill="#000" d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-                        </svg>
-                    </div>
-                    <div class="id-content">
-                        <h1>Chats con colaboradores</h1>
-                        <p>Selecciona una reserva para abrir la conversación</p>
-                    </div>
+            <!-- ── Page header ── -->
+            <div class="flex items-center gap-4 bg-white border border-gray-100 rounded-2xl px-5 py-4 mb-5 shadow-sm">
+                <div class="flex-shrink-0 w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="#2563eb" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                    </svg>
+                </div>
+                <div>
+                    <h1 class="text-sm font-semibold text-gray-900 sm:text-base">Chats con colaboradores</h1>
+                    <p class="text-xs text-gray-400 mt-0.5">Selecciona una reserva para abrir la conversación</p>
                 </div>
             </div>
 
-            <div class="grid grid-cols-1 gap-4 lg:grid-cols-3">
-                <div class="rounded-xl border bg-white p-4 lg:col-span-1">
-                    <h3 class="mb-3 text-lg font-semibold">Reservas</h3>
-                    <div class="max-h-[540px] overflow-y-auto">
+            <!-- ── Chat layout responsive ── -->
+            <div class="chat-grid">
+
+                <!-- ════ PANEL IZQUIERDO — Lista de reservas ════ -->
+                <div class="bg-white border border-gray-100 rounded-2xl shadow-sm overflow-hidden flex flex-col">
+
+                    <div class="px-4 py-3 border-b border-gray-100 flex-shrink-0">
+                        <h2 class="text-sm font-semibold text-gray-800">Mis reservas</h2>
+                        <p class="text-xs text-gray-400 mt-0.5">Selecciona una para chatear</p>
+                    </div>
+
+                    <div class="reservas-panel overflow-y-auto thin-scroll p-3">
+
                         <a th:each="reserva : ${reservas}"
                             th:href="@{/cliente/chats/{idReserva}(idReserva=${reserva.idReserva})}"
-                            class="mb-2 block rounded-lg border p-3 hover:bg-slate-50">
-                            <p class="text-sm font-semibold" th:text="${reserva.actividad.titulo}"></p>
-                            <p class="text-xs text-slate-500">Reserva #<span th:text="${reserva.idReserva}"></span></p>
-                            <p class="text-xs text-slate-500"
-                                th:text="${#temporals.format(reserva.fechaReserva, 'dd/MM/yyyy HH:mm')}"></p>
+                            th:classappend="${conversacionSeleccionada != null and reserva.idReserva == conversacionSeleccionada.reserva.idReserva} ? ' active' : ''"
+                            class="reserva-card flex items-center gap-3 rounded-xl border border-gray-100 p-3 mb-1.5 cursor-pointer transition-all no-underline">
+
+                            <div
+                                class="reserva-icon flex-shrink-0 w-9 h-9 rounded-lg bg-gray-100 flex items-center justify-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                    fill="none" stroke="#9ca3af" stroke-width="1.8" stroke-linecap="round"
+                                    stroke-linejoin="round">
+                                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                                    <line x1="16" y1="2" x2="16" y2="6" />
+                                    <line x1="8" y1="2" x2="8" y2="6" />
+                                    <line x1="3" y1="10" x2="21" y2="10" />
+                                </svg>
+                            </div>
+
+                            <div class="min-w-0 flex-1">
+                                <p class="reserva-title text-sm font-medium text-gray-800 truncate"
+                                    th:text="${reserva.actividad.titulo}"></p>
+                                <p class="text-xs text-gray-400 mt-0.5">
+                                    #<span th:text="${reserva.idReserva}"></span>
+                                    &nbsp;·&nbsp;
+                                    <span th:text="${#temporals.format(reserva.fechaReserva, 'dd/MM/yyyy')}"></span>
+                                </p>
+                            </div>
+
+                            <svg class="flex-shrink-0 text-gray-300" xmlns="http://www.w3.org/2000/svg" width="13"
+                                height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"
+                                stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M9 18l6-6-6-6" />
+                            </svg>
                         </a>
-                        <p th:if="${reservas == null or #lists.isEmpty(reservas)}" class="text-sm text-slate-500">Aun no
-                            tienes reservas.</p>
+
+                        <!-- Estado vacío -->
+                        <div th:if="${reservas == null or #lists.isEmpty(reservas)}"
+                            class="flex flex-col items-center justify-center py-10 text-center">
+                            <svg class="text-gray-200 mb-3" xmlns="http://www.w3.org/2000/svg" width="34" height="34"
+                                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"
+                                stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                            </svg>
+                            <p class="text-sm text-gray-400">Aún no tienes reservas.</p>
+                        </div>
                     </div>
                 </div>
 
-                <div class="rounded-xl border bg-white p-4 lg:col-span-2" id="chat-app"
+                <!-- ════ PANEL DERECHO — Conversación ════ -->
+                <div class="chat-panel bg-white border border-gray-100 rounded-2xl shadow-sm overflow-hidden "
+                    id="chat-app"
                     th:attr="data-conversation-id=${conversacionSeleccionada != null ? conversacionSeleccionada.idConversacion : ''},data-user-email=${emailUsuario}">
-                    <h3 class="mb-3 text-lg font-semibold">Conversación</h3>
 
-                    <div id="messagesContainer"
-                        class="mb-3 h-[420px] overflow-y-auto rounded-lg border bg-slate-50 p-3">
-                        <div th:if="${conversacionSeleccionada == null}" class="text-sm text-slate-500">Selecciona una
-                            reserva para iniciar o continuar chat.</div>
+                    <!-- Cabecera chat -->
+                    <div class="flex-shrink-0 p-4 border-b border-gray-100 flex items-center gap-3 bg-white ">
+                        <div
+                            class="flex-shrink-0 w-9 h-9 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 text-xs font-semibold select-none p-2">
+                            <span th:if="${conversacionSeleccionada != null}"
+                                th:text="${#strings.toUpperCase(#strings.substring(conversacionSeleccionada.reserva.actividad.titulo, 0, 2))}">
+                            </span>
+                            <svg th:if="${conversacionSeleccionada == null}" xmlns="http://www.w3.org/2000/svg"
+                                width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#2563eb"
+                                stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                            </svg>
+                        </div>
 
-                        <div th:each="mensaje : ${mensajes}" class="mb-2 flex"
-                            th:classappend="${mensaje.remitente.email == emailUsuario} ? ' justify-end' : ' justify-start'">
-                            <div class="max-w-[75%] rounded-xl px-3 py-2"
-                                th:classappend="${mensaje.remitente.email == emailUsuario} ? ' bg-blue-600 text-white' : ' bg-white border text-slate-800'">
-                                <p class="text-xs opacity-80" th:text="${mensaje.remitente.nombre}"></p>
-                                <p class="text-sm" th:text="${mensaje.contenido}"></p>
-                                <p class="mt-1 text-[10px] opacity-70"
-                                    th:text="${#temporals.format(mensaje.fechaEnvio, 'dd/MM HH:mm')}"></p>
+                        <div class="min-w-0 flex-1">
+                            <p class="text-sm font-semibold text-gray-900 truncate"
+                                th:text="${conversacionSeleccionada != null ? conversacionSeleccionada.reserva.actividad.titulo : 'Conversación'}">
+                            </p>
+                            <p class="text-xs text-gray-400"
+                                th:text="${conversacionSeleccionada != null ? 'Reserva #' + conversacionSeleccionada.reserva.idReserva : 'Selecciona una reserva para comenzar'}">
+                            </p>
+                        </div>
+
+                        <div th:if="${conversacionSeleccionada != null}"
+                            class="flex-shrink-0 flex items-center gap-1.5 text-xs text-gray-400 bg-gray-50 border border-gray-100 rounded-full px-3 py-1">
+                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+                            En línea
+                        </div>
+                    </div>
+
+                    <!-- Área de mensajes -->
+                    <div id="messagesContainer" class="thin-scroll overflow-y-auto p-4 bg-gray-50 flex flex-col gap-3">
+
+                        <!-- Sin conversación seleccionada -->
+                        <div th:if="${conversacionSeleccionada == null}"
+                            class="flex flex-col items-center justify-center h-full py-16 text-center">
+                            <div class="w-14 h-14 rounded-2xl bg-gray-100 flex items-center justify-center mb-4">
+                                <svg class="text-gray-300" xmlns="http://www.w3.org/2000/svg" width="26" height="26"
+                                    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"
+                                    stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                                </svg>
+                            </div>
+                            <p class="text-sm font-medium text-gray-500">Sin conversación activa</p>
+                            <p class="text-xs text-gray-400 mt-1 max-w-[200px]">Elige una reserva de la lista para
+                                iniciar o continuar el chat.</p>
+                        </div>
+
+                        <!-- Mensajes (Thymeleaf) -->
+                        <div th:each="mensaje : ${mensajes}"
+                            th:classappend="${mensaje.remitente.email == emailUsuario} ? ' items-end' : ' items-start'"
+                            class="flex flex-col gap-1 msg-anim">
+
+                            <span class="text-[11px] text-gray-400 px-1" th:text="${mensaje.remitente.nombre}"></span>
+
+                            <div th:classappend="${mensaje.remitente.email == emailUsuario} ? ' flex-row-reverse' : ''"
+                                class="flex items-end gap-2">
+
+                                <div th:classappend="${mensaje.remitente.email == emailUsuario} ? ' bg-blue-100 text-blue-700' : ' bg-gray-200 text-gray-600'"
+                                    class="flex-shrink-0 w-7 h-7 rounded-full flex items-center justify-center text-[10px] font-semibold select-none">
+                                    <th:block
+                                        th:text="${#strings.toUpperCase(#strings.substring(mensaje.remitente.nombre, 0, 2))}">
+                                    </th:block>
+                                </div>
+
+                                <div th:classappend="${mensaje.remitente.email == emailUsuario} ? ' bubble-out' : ' bubble-in'"
+                                    class="max-w-[75%] sm:max-w-[65%] px-3.5 py-2 text-sm leading-relaxed">
+                                    <p th:text="${mensaje.contenido}"></p>
+                                    <p th:classappend="${mensaje.remitente.email == emailUsuario} ? ' text-blue-200' : ' text-gray-400'"
+                                        class="text-[10px] mt-1.5 text-right"
+                                        th:text="${#temporals.format(mensaje.fechaEnvio, 'dd/MM HH:mm')}"></p>
+                                </div>
                             </div>
                         </div>
                     </div>
 
-                    <form id="chatForm" class="flex gap-2" th:if="${conversacionSeleccionada != null}">
-                        <input id="chatInput" type="text" class="w-full rounded-lg border px-3 py-2" maxlength="2000"
-                            placeholder="Escribe un mensaje..." />
-                        <button type="submit" class="rounded-lg bg-slate-900 px-4 py-2 text-white">Enviar</button>
+                    <!-- Input mensaje -->
+                    <form id="chatForm" th:if="${conversacionSeleccionada != null}"
+                        class="flex-shrink-0 flex items-center gap-2 px-4 py-3 border-t border-gray-100 bg-white">
+                        <input id="chatInput" type="text" maxlength="2000" placeholder="Escribe un mensaje…"
+                            autocomplete="off"
+                            class="flex-1 min-w-0 rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm text-gray-800 placeholder-gray-400 transition" />
+                        <button id="sendBtn" type="submit"
+                            class="flex-shrink-0 flex items-center gap-2 rounded-xl bg-blue-600 hover:bg-blue-700 active:scale-95 px-4 py-3 text-sm font-medium text-white transition">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <line x1="22" y1="2" x2="11" y2="13" />
+                                <polygon points="22 2 15 22 11 13 2 9 22 2" />
+                            </svg>
+                            <span class="hidden sm:inline">Enviar</span>
+                        </button>
                     </form>
+
+                    <!-- Input deshabilitado sin conversación -->
+                    <div th:if="${conversacionSeleccionada == null}"
+                        class="flex-shrink-0 flex items-center gap-2 px-4 py-3 border-t border-gray-100 bg-white">
+                        <div
+                            class="flex-1 rounded-xl border border-dashed border-gray-200 bg-gray-50 px-4 py-3 text-sm text-gray-300 select-none">
+                            Selecciona una reserva para escribir…
+                        </div>
+                        <button disabled
+                            class="flex-shrink-0 flex items-center gap-2 rounded-xl bg-gray-100 px-4 py-3 text-sm font-medium text-gray-300 cursor-not-allowed">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <line x1="22" y1="2" x2="11" y2="13" />
+                                <polygon points="22 2 15 22 11 13 2 9 22 2" />
+                            </svg>
+                            <span class="hidden sm:inline">Enviar</span>
+                        </button>
+                    </div>
                 </div>
+
             </div>
+            <!-- fin chat layout -->
+
         </main>
     </section>
 

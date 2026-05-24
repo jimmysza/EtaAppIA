@@ -43,15 +43,16 @@ public class PrediccionServiceImpl implements PrediccionService {
 
     /**
      * Carga el modelo entrenado al inicializar el servicio.
-     * El modelo debe estar en src/main/resources/modeloPredictivo.model
+     * El modelo debe estar en src/main/resources/ETA_modelo_predictivo.model
      */
     @PostConstruct
     public void cargarModelo() {
         try {
             // Cargar modelo desde resources usando ClassPathResource
-            ClassPathResource resource = new ClassPathResource("modeloPredictivo.model");
+            ClassPathResource resource = new ClassPathResource("ETA_modelo_predictivo.model");
             if (!resource.exists()) {
-                System.err.println("❌ El archivo del modelo predictivo no existe en src/main/resources/modeloPredictivo.model");
+                System.err.println(
+                        "❌ El archivo del modelo predictivo no existe en src/main/resources/ETA_modelo_predictivo.model");
                 return;
             }
             InputStream inputStream = resource.getInputStream();
@@ -68,13 +69,15 @@ public class PrediccionServiceImpl implements PrediccionService {
     public PrediccionOcupacionDTO predecirOcupacion(Long idDisponibilidad) {
         try {
             if (modelo == null) {
-                System.err.println("⚠️ Modelo no cargado. No se puede predecir ocupación para disponibilidad: " + idDisponibilidad);
+                System.err.println("⚠️ Modelo no cargado. No se puede predecir ocupación para disponibilidad: "
+                        + idDisponibilidad);
                 return null;
             }
 
             // Obtener la disponibilidad
             Disponibilidad disponibilidad = disponibilidadRepository.findById(idDisponibilidad)
-                .orElseThrow(() -> new RuntimeException("Disponibilidad no encontrada con ID: " + idDisponibilidad));
+                    .orElseThrow(
+                            () -> new RuntimeException("Disponibilidad no encontrada con ID: " + idDisponibilidad));
 
             Actividad actividad = disponibilidad.getActividad();
 
@@ -85,14 +88,15 @@ public class PrediccionServiceImpl implements PrediccionService {
             String tipoDia = transformarDia(disponibilidad.getFecha());
             String rangoCupos = transformarCupos(disponibilidad.getCuposTotales());
 
-            System.out.println("🔮 Prediciendo ocupación para disponibilidad " + idDisponibilidad + 
-                ":\n   Categoría: " + categoria + "\n   Precio: " + rangoPrecio + 
-                "\n   Hora: " + rangoHora + "\n   Día: " + tipoDia + "\n   Cupos: " + rangoCupos);
+            System.out.println("🔮 Prediciendo ocupación para disponibilidad " + idDisponibilidad +
+                    ":\n   Categoría: " + categoria + "\n   Precio: " + rangoPrecio +
+                    "\n   Hora: " + rangoHora + "\n   Día: " + tipoDia + "\n   Cupos: " + rangoCupos);
 
             // Realizar predicción
             return predecirOcupacionManual(categoria, rangoPrecio, rangoHora, tipoDia, rangoCupos);
         } catch (Exception e) {
-            System.err.println("❌ Error al predecir ocupación para disponibilidad " + idDisponibilidad + ": " + e.getMessage());
+            System.err.println(
+                    "❌ Error al predecir ocupación para disponibilidad " + idDisponibilidad + ": " + e.getMessage());
             e.printStackTrace();
             return null;
         }
@@ -100,15 +104,16 @@ public class PrediccionServiceImpl implements PrediccionService {
 
     @Override
     public PrediccionOcupacionDTO predecirOcupacionManual(
-            String categoria, 
-            String rangoPrecio, 
+            String categoria,
+            String rangoPrecio,
             String rangoHora,
-            String tipoDia, 
+            String tipoDia,
             String rangoCupos) {
-        
+
         try {
             if (modelo == null) {
-                throw new RuntimeException("Modelo predictivo no está cargado. Verifique que el archivo modeloPredictivo.model existe en resources");
+                throw new RuntimeException(
+                        "Modelo predictivo no está cargado. Verifique que el archivo ETA_modelo_predictivo.model existe en resources");
             }
 
             // Validar que los valores sean válidos
@@ -149,8 +154,8 @@ public class PrediccionServiceImpl implements PrediccionService {
             dto.setTipoDia(tipoDia);
             dto.setRangoCupos(rangoCupos);
 
-            System.out.println("✅ Predicción realizada: " + nivelPredicho + " (confianza: " + 
-                String.format("%.2f", confianza * 100) + "%)");
+            System.out.println("✅ Predicción realizada: " + nivelPredicho + " (confianza: " +
+                    String.format("%.2f", confianza * 100) + "%)");
 
             return dto;
 
@@ -165,33 +170,32 @@ public class PrediccionServiceImpl implements PrediccionService {
      * Crea una instancia de Weka con los atributos necesarios para el modelo.
      * Valida que los valores existan en las opciones disponibles.
      */
-    private Instance crearInstancia(String categoria, String rangoPrecio, String rangoHora, 
-                                     String tipoDia, String rangoCupos) {
-        
+    private Instance crearInstancia(String categoria, String rangoPrecio, String rangoHora,
+            String tipoDia, String rangoCupos) {
+
         ArrayList<Attribute> atributos = new ArrayList<>();
 
         // 1. Atributo: categoria
         ArrayList<String> categorias = new ArrayList<>();
-        categorias.add("aventura");
-        categorias.add("cultura");
+        categorias.add("playa");
         categorias.add("gastronomia");
-        categorias.add("deportes");
-        categorias.add("naturaleza");
-        categorias.add("bienestar");
+        categorias.add("historia");
         categorias.add("entretenimiento");
-        
+        categorias.add("cultura");
+        categorias.add("vida_nocturna");
+
         if (!categorias.contains(categoria)) {
             System.err.println("⚠️ Categoría '" + categoria + "' no válida. Opciones: " + categorias);
             categoria = "entretenimiento"; // Default
         }
-        atributos.add(new Attribute("categoria", categorias));
+        atributos.add(new Attribute("categoria_actividad", categorias));
 
         // 2. Atributo: rango_precio
         ArrayList<String> precios = new ArrayList<>();
         precios.add("bajo");
         precios.add("medio");
         precios.add("alto");
-        
+
         if (!precios.contains(rangoPrecio)) {
             System.err.println("⚠️ Rango precio '" + rangoPrecio + "' no válido. Opciones: " + precios);
             rangoPrecio = "medio"; // Default
@@ -200,21 +204,21 @@ public class PrediccionServiceImpl implements PrediccionService {
 
         // 3. Atributo: rango_hora
         ArrayList<String> horas = new ArrayList<>();
-        horas.add("mañana");
+        horas.add("manana");
         horas.add("tarde");
         horas.add("noche");
-        
+
         if (!horas.contains(rangoHora)) {
             System.err.println("⚠️ Rango hora '" + rangoHora + "' no válido. Opciones: " + horas);
             rangoHora = "tarde"; // Default
         }
-        atributos.add(new Attribute("rango_hora", horas));
+        atributos.add(new Attribute("rango_horario", horas));
 
         // 4. Atributo: tipo_dia
         ArrayList<String> dias = new ArrayList<>();
+        dias.add("fin_de_semana");
         dias.add("entre_semana");
-        dias.add("fin_semana");
-        
+
         if (!dias.contains(tipoDia)) {
             System.err.println("⚠️ Tipo día '" + tipoDia + "' no válido. Opciones: " + dias);
             tipoDia = "entre_semana"; // Default
@@ -223,26 +227,26 @@ public class PrediccionServiceImpl implements PrediccionService {
 
         // 5. Atributo: rango_cupos
         ArrayList<String> cupos = new ArrayList<>();
-        cupos.add("bajo");
-        cupos.add("medio");
-        cupos.add("alto");
-        
+        cupos.add("baja");
+        cupos.add("media");
+        cupos.add("alta");
+
         if (!cupos.contains(rangoCupos)) {
             System.err.println("⚠️ Rango cupos '" + rangoCupos + "' no válido. Opciones: " + cupos);
-            rangoCupos = "medio"; // Default
+            rangoCupos = "media"; // Default
         }
-        atributos.add(new Attribute("rango_cupos", cupos));
+        atributos.add(new Attribute("rango_cupos_totales", cupos));
 
         // 6. Atributo clase: nivel_ocupacion
         ArrayList<String> clases = new ArrayList<>();
-        clases.add("baja");
-        clases.add("media");
-        clases.add("alta");
-        clases.add("agotado");
+        clases.add("Baja");
+        clases.add("Media");
+        clases.add("Alta");
+        clases.add("Agotado");
         atributos.add(new Attribute("nivel_ocupacion", clases));
 
         // Crear dataset
-        Instances dataset = new Instances("Prediccion", atributos, 0);
+        Instances dataset = new Instances("nivel_ocupacion_actividades", atributos, 0);
         dataset.setClassIndex(dataset.numAttributes() - 1);
 
         // Crear instancia
@@ -256,8 +260,8 @@ public class PrediccionServiceImpl implements PrediccionService {
         instancia.setValue(atributos.get(3), tipoDia);
         instancia.setValue(atributos.get(4), rangoCupos);
 
-        System.out.println("   Instancia Weka creada: [" + categoria + ", " + rangoPrecio + ", " + 
-            rangoHora + ", " + tipoDia + ", " + rangoCupos + "]");
+        System.out.println("   Instancia Weka creada: [" + categoria + ", " + rangoPrecio + ", " +
+                rangoHora + ", " + tipoDia + ", " + rangoCupos + "]");
 
         return instancia;
     }
@@ -274,24 +278,25 @@ public class PrediccionServiceImpl implements PrediccionService {
         }
 
         String categoria = nombreCategoria.toLowerCase().trim();
-        
-        // Normalizar categorías conocidas
-        if (categoria.contains("gastronom") || categoria.contains("comida") || categoria.contains("food")) {
+
+        // Normalizar categorías conocidas para que coincidan con el modelo Weka
+        if (categoria.contains("playa") || categoria.contains("mar") || categoria.contains("isla")) {
+            return "playa";
+        } else if (categoria.contains("gastronom") || categoria.contains("comida") || categoria.contains("food")) {
             return "gastronomia";
-        } else if (categoria.contains("aventura") || categoria.contains("extremo") || categoria.contains("adventure")) {
-            return "aventura";
-        } else if (categoria.contains("cultura") || categoria.contains("historia") || categoria.contains("culture")) {
+        } else if (categoria.contains("historia") || categoria.contains("historico") || categoria.contains("museo")) {
+            return "historia";
+        } else if (categoria.contains("cultura") || categoria.contains("culture") || categoria.contains("arte")) {
             return "cultura";
-        } else if (categoria.contains("deporte") || categoria.contains("sport") || categoria.contains("fitness")) {
-            return "deportes";
-        } else if (categoria.contains("naturaleza") || categoria.contains("eco") || categoria.contains("nature")) {
-            return "naturaleza";
-        } else if (categoria.contains("bienestar") || categoria.contains("spa") || categoria.contains("wellness")) {
-            return "bienestar";
-        } else if (categoria.contains("entretenimiento") || categoria.contains("show") || categoria.contains("entertain")) {
+        } else if (categoria.contains("nocturna") || categoria.contains("fiesta") || categoria.contains("bar")
+                || categoria.contains("club")) {
+            return "vida_nocturna";
+        } else if (categoria.contains("entretenimiento") || categoria.contains("show") || categoria.contains("tour")
+                || categoria.contains("aventura") || categoria.contains("naturaleza") || categoria.contains("deporte")
+                || categoria.contains("bienestar")) {
             return "entretenimiento";
         }
-        
+
         // Si no coincide con ninguna, buscar la más cercana
         System.out.println("⚠️ Categoría '" + nombreCategoria + "' no mapea directamente, asignando 'entretenimiento'");
         return "entretenimiento";
@@ -318,9 +323,9 @@ public class PrediccionServiceImpl implements PrediccionService {
     }
 
     /**
-     * Transforma la hora de inicio a rango: mañana, tarde, noche
+     * Transforma la hora de inicio a rango: manana, tarde, noche
      * 
-     * - mañana: 06:00 - 11:59
+     * - manana: 06:00 - 11:59
      * - tarde: 12:00 - 17:59
      * - noche: 18:00 - 23:59
      */
@@ -328,7 +333,7 @@ public class PrediccionServiceImpl implements PrediccionService {
         int hora = horaInicio.getHour();
 
         if (hora >= 6 && hora < 12) {
-            return "mañana";
+            return "manana";
         } else if (hora >= 12 && hora < 18) {
             return "tarde";
         } else {
@@ -337,35 +342,35 @@ public class PrediccionServiceImpl implements PrediccionService {
     }
 
     /**
-     * Transforma la fecha a tipo de día: entre_semana, fin_semana
+     * Transforma la fecha a tipo de día: entre_semana, fin_de_semana
      * 
-     * - fin_semana: sábado, domingo
+     * - fin_de_semana: sábado, domingo
      * - entre_semana: lunes a viernes
      */
     private String transformarDia(LocalDate fecha) {
         DayOfWeek diaSemana = fecha.getDayOfWeek();
 
         if (diaSemana == DayOfWeek.SATURDAY || diaSemana == DayOfWeek.SUNDAY) {
-            return "fin_semana";
+            return "fin_de_semana";
         } else {
             return "entre_semana";
         }
     }
 
     /**
-     * Transforma los cupos totales a rango: bajo, medio, alto
+     * Transforma los cupos totales a rango: baja, media, alta
      * 
-     * - bajo: 1 - 10 personas
-     * - medio: 11 - 30 personas
-     * - alto: > 30 personas
+     * - baja: 1 - 10 personas
+     * - media: 11 - 30 personas
+     * - alta: > 30 personas
      */
     private String transformarCupos(int cuposTotales) {
         if (cuposTotales <= 10) {
-            return "bajo";
+            return "baja";
         } else if (cuposTotales <= 30) {
-            return "medio";
+            return "media";
         } else {
-            return "alto";
+            return "alta";
         }
     }
 }
