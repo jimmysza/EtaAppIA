@@ -31,7 +31,7 @@
                     <nav aria-label="Breadcrumb">
                         <ol class="breadcrumbs">
                             <li><a href="/">Inicio</a></li>
-                            <li><span class="text-blue-600 font-bold">Chats</span></li>
+                            <li><span class="text-[#23aae2] font-bold">Chats</span></li>
                         </ol>
                     </nav>
                 </div>
@@ -79,7 +79,7 @@
                         <div th:each="mensaje : ${mensajes}" class="mb-2 flex"
                             th:classappend="${mensaje.remitente.email == emailUsuario} ? ' justify-end' : ' justify-start'">
                             <div class="max-w-[75%] rounded-xl px-3 py-2"
-                                th:classappend="${mensaje.remitente.email == emailUsuario} ? ' bg-blue-600 text-white' : ' bg-white border text-slate-800'">
+                                th:classappend="${mensaje.remitente.email == emailUsuario} ? ' bg-[#23aae2] text-white' : ' bg-white border text-slate-800'">
                                 <p class="text-xs opacity-80" th:text="${mensaje.remitente.nombre}"></p>
                                 <p class="text-sm" th:text="${mensaje.contenido}"></p>
                                 <p class="mt-1 text-[10px] opacity-70"
@@ -91,7 +91,7 @@
                     <form id="chatForm" class="flex gap-2" th:if="${conversacionSeleccionada != null}">
                         <input id="chatInput" type="text" class="w-full rounded-lg border px-3 py-2" maxlength="2000"
                             placeholder="Escribe un mensaje..." />
-                        <button type="submit" class="rounded-lg bg-slate-900 px-4 py-2 text-white">Enviar</button>
+                        <button type="submit" class="rounded-lg bg-[#23aae2] px-4 py-2 text-white hover:bg-[#1c96c9]">Enviar</button>
                     </form>
                 </div>
             </div>

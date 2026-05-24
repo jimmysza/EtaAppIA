@@ -58,7 +58,7 @@
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         
         <div class="mb-8">
-            <a th:href="@{'/colaborador/detalle/' + ${actividad.idActividad}}" class="inline-flex items-center gap-2 text-sm font-semibold text-blue-600 bg-blue-50 hover:bg-blue-100 px-4 py-2 rounded-full transition-colors mb-4">
+            <a th:href="@{'/colaborador/detalle/' + ${actividad.idActividad}}" class="inline-flex items-center gap-2 text-sm font-semibold text-[#23aae2] bg-[#effbff] hover:bg-[#dff6ff] px-4 py-2 rounded-full transition-colors mb-4">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
                 Volver al detalle de la actividad
             </a>
@@ -96,11 +96,11 @@
                 <ul class="flex flex-nowrap min-w-max p-2 gap-2" role="tablist">
                     <li th:each="diaEntry, diaIter : ${disponibilidadesPorDia}" role="presentation">
                         <button class="tab-btn px-5 py-3 rounded-xl text-sm font-semibold transition-all duration-200 focus:outline-none flex items-center gap-2"
-                                th:classappend="${diaIter.index == 0} ? 'bg-white text-blue-700 shadow border border-slate-200' : 'text-slate-500 hover:text-slate-700 hover:bg-slate-100'"
+                                th:classappend="${diaIter.index == 0} ? 'bg-white text-[#23aae2] shadow border border-slate-200' : 'text-slate-500 hover:text-slate-700 hover:bg-slate-100'"
                                 th:data-target="'tab-dia-' + ${diaIter.index}"
                                 type="button" role="tab">
                             <span th:text="${etiquetasDia.get(diaEntry.key)}"></span>
-                            <span class="bg-blue-100 text-blue-700 py-0.5 px-2 rounded-full text-xs" th:text="${reservasPorDia.get(diaEntry.key)}"></span>
+                            <span class="bg-[#effbff] text-[#0b76a6] py-0.5 px-2 rounded-full text-xs" th:text="${reservasPorDia.get(diaEntry.key)}"></span>
                         </button>
                     </li>
                 </ul>
@@ -165,7 +165,7 @@
                                                           th:text="${r.estado}"></span>
                                                 </td>
                                                 <td class="px-6 py-4 text-right">
-                                                    <button class="open-edit-modal inline-flex items-center justify-center w-8 h-8 rounded-lg bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white transition-colors"
+                                                    <button class="open-edit-modal inline-flex items-center justify-center w-8 h-8 rounded-lg bg-[#effbff] text-[#23aae2] hover:bg-[#23aae2] hover:text-white transition-colors"
                                                             th:data-id="${r.idReserva}" th:data-estado="${r.estado}" title="Editar Estado">
                                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m7 17.013l4.413-.015l9.632-9.54c.378-.378.586-.88.586-1.414s-.208-1.036-.586-1.414l-1.586-1.586c-.756-.756-2.075-.752-2.825-.003L7 12.583zM18.045 4.458l1.589 1.583l-1.597 1.582l-1.586-1.585zM9 13.417l6.03-5.973l1.586 1.586l-6.029 5.97L9 15.006z"/><path d="M5 21h14c1.103 0 2-.897 2-2v-8.668l-2 2V19H8.158c-.026 0-.053.01-.079.01c-.033 0-.066-.009-.1-.01H5V5h6.847l2-2H5c-1.103 0-2 .897-2 2v14c0 1.103.897 2 2 2"/></svg>
                                                     </button>
@@ -199,8 +199,8 @@
         <div class="reservation-modal__card relative">
             <div class="flex items-start justify-between gap-4 border-b border-slate-200 px-5 py-4">
                 <div>
-                    <div class="inline-flex items-center gap-2 rounded-full bg-blue-50 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.18em] text-blue-700 mb-3">
-                        <span class="h-2 w-2 rounded-full bg-blue-600"></span>
+                    <div class="inline-flex items-center gap-2 rounded-full bg-[#effbff] px-3 py-1 text-[11px] font-bold uppercase tracking-[0.18em] text-[#0b76a6] mb-3">
+                        <span class="h-2 w-2 rounded-full bg-[#23aae2]"></span>
                         Acciones de reserva
                     </div>
                     <h2 class="text-lg font-extrabold text-slate-900 leading-tight">Actualizar Estado</h2>
@@ -228,7 +228,7 @@
                     <button type="button" class="close-edit inline-flex items-center justify-center rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-sm font-semibold text-slate-700 transition hover:border-slate-300 hover:bg-slate-50">
                         Cancelar
                     </button>
-                    <button type="submit" class="inline-flex items-center justify-center rounded-lg bg-blue-600 px-3 py-2.5 text-sm font-semibold text-white shadow-md shadow-blue-200 transition hover:bg-blue-700">
+                    <button type="submit" class="inline-flex items-center justify-center rounded-lg bg-[#23aae2] px-3 py-2.5 text-sm font-semibold text-white shadow-md shadow-sky-200 transition hover:bg-[#1c96c9]">
                         Guardar Cambios
                     </button>
                 </div>
@@ -245,14 +245,14 @@
             tab.addEventListener('click', () => {
                 // Limpiar estados activos
                 tabs.forEach(t => {
-                    t.classList.remove('bg-white', 'text-blue-700', 'shadow', 'border-slate-200');
+                    t.classList.remove('bg-white', 'text-[#23aae2]', 'shadow', 'border-slate-200');
                     t.classList.add('text-slate-500');
                 });
                 contents.forEach(c => c.classList.remove('active'));
 
                 // Activar seleccionado
                 tab.classList.remove('text-slate-500');
-                tab.classList.add('bg-white', 'text-blue-700', 'shadow', 'border-slate-200');
+                tab.classList.add('bg-white', 'text-[#23aae2]', 'shadow', 'border-slate-200');
                 document.getElementById(tab.getAttribute('data-target')).classList.add('active');
             });
         });

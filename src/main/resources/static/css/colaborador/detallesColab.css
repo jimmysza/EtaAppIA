@@ -137,7 +137,7 @@
 .detalle-editor .form-edit .button-default {
     align-self: flex-end;
     margin-top: 0.25rem;
-    background: linear-gradient(135deg, #111827 0%, #0f172a 100%);
+    background: linear-gradient(135deg, var(--color-main) 0%, #1c96c9 100%);
     color: white;
     padding: 0.9rem 1.25rem;
     border-radius: 0.95rem;
@@ -145,7 +145,7 @@
     cursor: pointer;
     border: none;
     transition: transform 150ms ease, box-shadow 150ms ease, filter 150ms ease;
-    box-shadow: 0 12px 24px rgba(15, 23, 42, 0.15);
+    box-shadow: 0 12px 24px rgba(35, 170, 226, 0.18);
 }
 
 .detalle-editor .form-edit .button-default:hover {
