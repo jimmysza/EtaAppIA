@@ -626,10 +626,10 @@
         lg:h-[98vh]  flex items-center justify-center sm:py-16 md:py-30 pt-20 lg:py-30 px-4 sm:px-6 lg:px-8 overflow-hidden min-h-[700px] md:h-[600px]">
 
         <!-- Foto izquierda arriba — rotada hacia la izquierda -->
-        <div class="absolute top-5 left-4 -rotate-6 z-10  md:block lg:block esconderCell">
+        <div class="absolute z-10 top-5 left-4 -rotate-6 md:block lg:block esconderCell">
             <div
                 class="w-[160px] h-[160px] rounded-2xl overflow-hidden shadow-2xl ring-[3px] ring-white hover:w-[180px] hover:h-[180px] transition-all duration-300 ease-in-out ">
-                <img th:src="@{/images/shares/share1.webp}" alt="actividad" class="w-full h-full object-cover">
+                <img th:src="@{/images/shares/share1.webp}" alt="actividad" class="object-cover w-full h-full">
             </div>
         </div>
 
@@ -639,7 +639,7 @@
                 class="w-[160px] h-[110px] rounded-2xl overflow- shadow-xl ring-[3px] ring-white hover:w-[180px] hover:h-[180px] transition-all duration-300 ease-in-out ">
 
                 <img th:src="@{/images/shares/share2.webp}" alt="experiencia"
-                    class="w-full h-full object-cover rounded-2xl">
+                    class="object-cover w-full h-full rounded-2xl">
             </div>
         </div>
 
@@ -648,7 +648,7 @@
             <div
                 class="w-[150px] h-[150px] rounded-2xl overflow- shadow-2xl ring-[3px] ring-white hover:w-[180px] hover:h-[180px] transition-all duration-300 ease-in-out ">
 
-                <img th:src="@{/images/shares/share3.webp}" alt="tour" class="w-full h-full object-cover rounded-2xl">
+                <img th:src="@{/images/shares/share3.webp}" alt="tour" class="object-cover w-full h-full rounded-2xl">
             </div>
         </div>
 
@@ -658,17 +658,17 @@
                 class="w-[140px] h-[140px] rounded-xl overflow- shadow-xl ring-[3px] ring-white hover:w-[180px] hover:h-[180px] transition-all duration-300 ease-in-out ">
 
                 <img th:src="@{/images/shares/share4.webp}" alt="gastronomia"
-                    class="w-full h-full object-cover rounded-2xl">
+                    class="object-cover w-full h-full rounded-2xl">
             </div>
         </div>
 
 
-        <div class=" max-w-6xl mx-auto  pb-12  ">
+        <div class="max-w-6xl pb-12 mx-auto ">
 
             <!-- Logo -->
             <div class="flex justify-center mb-2">
                 <img th:src="@{/images/logos/LogoNo.png}" alt="ETA Logo"
-                    class="w-56 h-56 md:w-60 md:h-60 object-contain opacity-85 drop-shadow-lg">
+                    class="object-contain w-56 h-56 md:w-60 md:h-60 opacity-85 drop-shadow-lg">
             </div>
 
             <div class="flex justify-center mb-6">
@@ -680,13 +680,13 @@
             </div>
 
 
-            <h1 class="text-5xl md:text-7xl font-black tracking-tight text-center text-slate-950 mb-5">
+            <h1 class="mb-5 text-5xl font-black tracking-tight text-center md:text-7xl text-slate-950">
                 Experiences, travels <span class="hero-pill">&</span> adventures
                 <br>
                 <span class="hero-pill"> cada plan, una nueva Aventura</span>
             </h1>
 
-            <p class="text-center text-slate-600 text-lg md:text-xl mb-12 max-w-3xl mx-auto leading-relaxed">
+            <p class="max-w-3xl mx-auto mb-12 text-lg leading-relaxed text-center text-slate-600 md:text-xl">
                 Busca actividades, compara categorias, filtra por idioma o presupuesto y descubre experiencias listas
                 para reservar sin perder tiempo entre opciones.
             </p>
@@ -801,7 +801,7 @@
             <!--decoracion-->
 
             <!--  <p
-                            class="text-shares text-xs/5 font-bold tracking-tight bg-white/20 backdrop-blur-md px-4 py-2 rounded-full border border-white/30">
+                            class="px-4 py-2 font-bold tracking-tight border rounded-full text-shares text-xs/5 bg-white/20 backdrop-blur-md border-white/30">
                             @jimmysza</p> -->
 
 
@@ -815,7 +815,7 @@
 
 
         <!-- Título de la sección -->
-        <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-8">
+        <h2 class="mb-8 text-3xl font-bold text-gray-900 md:text-4xl">
             Categorias
         </h2>
 
@@ -823,7 +823,7 @@
         <div class="relative ">
             <!-- Botón izquierdo -->
             <button id="scrollLeftCat"
-                class="nav-button absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 z-1 w-12 h-12 rounded-full flex items-center justify-center">
+                class="absolute left-0 flex items-center justify-center w-12 h-12 -translate-x-4 -translate-y-1/2 rounded-full nav-button top-1/2 z-1">
 
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                     stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
@@ -838,16 +838,16 @@
                 <!-- Categorías -->
                 <a th:each="categoria : ${categorias}"
                     th:href="@{/actividades/categoria/{nombreCategoria}(nombreCategoria=${categoria.nombre})}"
-                    class="category-card block group">
+                    class="block category-card group">
 
-                    <div class="relative rounded-2xl overflow-hidden mb-3">
+                    <div class="relative mb-3 overflow-hidden rounded-2xl">
                         <img th:src="@{ ${categoria.imagen}}" th:alt="${categoria.nombre}"
-                            class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300" />
+                            class="object-cover w-full h-48 transition-transform duration-300 group-hover:scale-105" />
                         <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
                     </div>
 
-                    <div class="px-2 flex justify-between items-center">
-                        <h3 class="text-lg font-bold text-gray-900 px-1" th:text="${categoria.nombre}"></h3>
+                    <div class="flex items-center justify-between px-2">
+                        <h3 class="px-1 text-lg font-bold text-gray-900" th:text="${categoria.nombre}"></h3>
                         <p class="text-xs count-cat">(<span th:text="${categoria.cantidad}"></span>)</p>
                     </div>
                 </a>
@@ -856,7 +856,7 @@
 
             <!-- Botón derecho -->
             <button id="scrollRightCat"
-                class="nav-button absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 z-1 w-12 h-12 rounded-full flex items-center justify-center">
+                class="absolute right-0 flex items-center justify-center w-12 h-12 translate-x-4 -translate-y-1/2 rounded-full nav-button top-1/2 z-1">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                     stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                     <polyline points="9 18 15 12 9 6"></polyline>
@@ -876,19 +876,19 @@
         <div th:if="${tendencias != null and !#lists.isEmpty(tendencias)}" class="max-w-[1350px] mx-auto px-6 py-8">
             <div class="flex items-center justify-between mb-6">
                 <a th:href="@{/actividades/tendencias}"
-                    class="text-3xl md:text-4xl font-bold text-gray-900 mb-2 hover:text-gray-600 transition-colors cursor-pointer">
+                    class="mb-2 text-3xl font-bold text-gray-900 transition-colors cursor-pointer md:text-4xl hover:text-gray-600">
                     Actividades <span class="ColorBlue">Populares</span> en Cartagena
                 </a>
                 <div class="flex gap-3">
                     <button
-                        class="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center hover:border-gray-900 hover:shadow-md transition-all disabled:opacity-30 disabled:cursor-not-allowed bg-white"
+                        class="flex items-center justify-center w-8 h-8 transition-all bg-white border border-gray-300 rounded-full hover:border-gray-900 hover:shadow-md disabled:opacity-30 disabled:cursor-not-allowed"
                         aria-label="Desplazar a la izquierda" data-carousel-prev>
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
                         </svg>
                     </button>
                     <button
-                        class="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center hover:border-gray-900 hover:shadow-md transition-all disabled:opacity-30 disabled:cursor-not-allowed bg-white"
+                        class="flex items-center justify-center w-8 h-8 transition-all bg-white border border-gray-300 rounded-full hover:border-gray-900 hover:shadow-md disabled:opacity-30 disabled:cursor-not-allowed"
                         aria-label="Desplazar a la derecha" data-carousel-next>
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
@@ -913,19 +913,19 @@
         <div th:if="${masVistas != null and !#lists.isEmpty(masVistas)}" class="max-w-[1350px] mx-auto px-6 py-8">
             <div class="flex items-center justify-between mb-6">
                 <a th:href="@{/actividades/mas-vistas}"
-                    class="text-3xl md:text-4xl font-bold text-gray-900 mb-2 hover:text-gray-600 transition-colors cursor-pointer">
+                    class="mb-2 text-3xl font-bold text-gray-900 transition-colors cursor-pointer md:text-4xl hover:text-gray-600">
                     Actividades Mas <span class="ColorBlue">Visitadas</span> en Cartagena
                 </a>
                 <div class="flex gap-3">
                     <button
-                        class="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center hover:border-gray-900 hover:shadow-md transition-all disabled:opacity-30 disabled:cursor-not-allowed bg-white"
+                        class="flex items-center justify-center w-8 h-8 transition-all bg-white border border-gray-300 rounded-full hover:border-gray-900 hover:shadow-md disabled:opacity-30 disabled:cursor-not-allowed"
                         aria-label="Desplazar a la izquierda" data-carousel-prev>
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
                         </svg>
                     </button>
                     <button
-                        class="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center hover:border-gray-900 hover:shadow-md transition-all disabled:opacity-30 disabled:cursor-not-allowed bg-white"
+                        class="flex items-center justify-center w-8 h-8 transition-all bg-white border border-gray-300 rounded-full hover:border-gray-900 hover:shadow-md disabled:opacity-30 disabled:cursor-not-allowed"
                         aria-label="Desplazar a la derecha" data-carousel-next>
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
@@ -951,19 +951,19 @@
             class="max-w-[1350px] mx-auto px-6 py-8">
             <div class="flex items-center justify-between mb-6">
                 <a th:href="@{/actividades/mas-reservadas}"
-                    class="text-3xl md:text-4xl font-bold text-gray-900 mb-2 hover:text-gray-600 transition-colors cursor-pointer">
+                    class="mb-2 text-3xl font-bold text-gray-900 transition-colors cursor-pointer md:text-4xl hover:text-gray-600">
                     Actividades Mas <span class="ColorBlue">Reservadas</span> en Cartagena
                 </a>
                 <div class="flex gap-3">
                     <button
-                        class="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center hover:border-gray-900 hover:shadow-md transition-all disabled:opacity-30 disabled:cursor-not-allowed bg-white"
+                        class="flex items-center justify-center w-8 h-8 transition-all bg-white border border-gray-300 rounded-full hover:border-gray-900 hover:shadow-md disabled:opacity-30 disabled:cursor-not-allowed"
                         aria-label="Desplazar a la izquierda" data-carousel-prev>
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
                         </svg>
                     </button>
                     <button
-                        class="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center hover:border-gray-900 hover:shadow-md transition-all disabled:opacity-30 disabled:cursor-not-allowed bg-white"
+                        class="flex items-center justify-center w-8 h-8 transition-all bg-white border border-gray-300 rounded-full hover:border-gray-900 hover:shadow-md disabled:opacity-30 disabled:cursor-not-allowed"
                         aria-label="Desplazar a la derecha" data-carousel-next>
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
@@ -988,20 +988,20 @@
         <div th:if="${paraTi != null and !#lists.isEmpty(paraTi)}" class="max-w-[1350px] mx-auto px-6 py-8">
             <div class="flex items-center justify-between mb-6">
                 <a th:href="@{/actividades/para-ti}"
-                    class="text-3xl md:text-4xl font-bold text-gray-900 mb-2 hover:text-gray-600 transition-colors cursor-pointer">
+                    class="mb-2 text-3xl font-bold text-gray-900 transition-colors cursor-pointer md:text-4xl hover:text-gray-600">
                     Actividades <span class="ColorBlue">Para Ti</span>
                 </a>
 
                 <div class="flex gap-3">
                     <button
-                        class="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center hover:border-gray-900 hover:shadow-md transition-all disabled:opacity-30 disabled:cursor-not-allowed bg-white"
+                        class="flex items-center justify-center w-8 h-8 transition-all bg-white border border-gray-300 rounded-full hover:border-gray-900 hover:shadow-md disabled:opacity-30 disabled:cursor-not-allowed"
                         aria-label="Desplazar a la izquierda" data-carousel-prev>
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
                         </svg>
                     </button>
                     <button
-                        class="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center hover:border-gray-900 hover:shadow-md transition-all disabled:opacity-30 disabled:cursor-not-allowed bg-white"
+                        class="flex items-center justify-center w-8 h-8 transition-all bg-white border border-gray-300 rounded-full hover:border-gray-900 hover:shadow-md disabled:opacity-30 disabled:cursor-not-allowed"
                         aria-label="Desplazar a la derecha" data-carousel-next>
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
@@ -1029,21 +1029,21 @@
 
         <!-- Header con título y navegación -->
         <div class="flex items-center justify-between mb-6">
-            <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-2">
+            <h2 class="mb-2 text-3xl font-bold text-gray-900 md:text-4xl">
                 <span class="ColorBlue">Todas</span>
             </h2>
 
             <!-- Botones de navegación -->
             <div class="flex gap-3">
                 <button id="scrollLeft"
-                    class="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center hover:border-gray-900 hover:shadow-md transition-all disabled:opacity-30 disabled:cursor-not-allowed bg-white"
+                    class="flex items-center justify-center w-8 h-8 transition-all bg-white border border-gray-300 rounded-full hover:border-gray-900 hover:shadow-md disabled:opacity-30 disabled:cursor-not-allowed"
                     aria-label="Desplazar a la izquierda" data-carousel-prev>
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
                     </svg>
                 </button>
                 <button id="scrollRight"
-                    class="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center hover:border-gray-900 hover:shadow-md transition-all disabled:opacity-30 disabled:cursor-not-allowed bg-white"
+                    class="flex items-center justify-center w-8 h-8 transition-all bg-white border border-gray-300 rounded-full hover:border-gray-900 hover:shadow-md disabled:opacity-30 disabled:cursor-not-allowed"
                     aria-label="Desplazar a la derecha" data-carousel-next>
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
@@ -1084,13 +1084,13 @@
         <!-- Header -->
         <div class="flex flex-col gap-1.5 mb-8">
             <div class="flex items-center gap-2">
-                <span class="w-2 h-2 rounded-full bg-blue-400 inline-block"></span>
-                <span class="text-xs font-semibold text-gray-500 uppercase tracking-widest">Anfitriones
+                <span class="inline-block w-2 h-2 bg-blue-400 rounded-full"></span>
+                <span class="text-xs font-semibold tracking-widest text-gray-500 uppercase">Anfitriones
                     destacados</span>
             </div>
-            <div class="flex items-end justify-between gap-4 flex-wrap">
+            <div class="flex flex-wrap items-end justify-between gap-4">
                 <div>
-                    <h2 class="text-3xl md:text-4xl font-bold text-gray-900">
+                    <h2 class="text-3xl font-bold text-gray-900 md:text-4xl">
                         Colaboradores que más convierten en Cartagena
                     </h2>
                     <p class="mt-1 text-base text-gray-500">
@@ -1123,23 +1123,23 @@
 
         <!-- Grid de cards -->
         <div th:if="${anfitrionesDestacados != null and !#lists.isEmpty(anfitrionesDestacados)}"
-            class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
 
             <a th:each="anfitrion, iter : ${anfitrionesDestacados}"
                 th:href="@{/colaboradores/{id}(id=${anfitrion.idColaborador})}"
-                class="group bg-white border border-gray-100 rounded-2xl overflow-hidden hover:-translate-y-1 hover:border-gray-300 transition-all duration-200 flex flex-col">
+                class="flex flex-col overflow-hidden transition-all duration-200 bg-white border border-gray-100 group rounded-2xl hover:-translate-y-1 hover:border-gray-300">
 
                 <!-- Media / avatar -->
-                <div class="relative h-36 bg-blue-50 flex items-center justify-center overflow-hidden">
+                <div class="relative flex items-center justify-center overflow-hidden h-36 bg-blue-50">
 
                     <!-- Foto si existe -->
                     <img th:if="${anfitrion.fotoPerfil != null and !#strings.isEmpty(anfitrion.fotoPerfil)}"
                         th:src="@{|/uploads/${anfitrion.fotoPerfil}|}" th:alt="${'Foto de ' + anfitrion.nombre}"
-                        class="absolute inset-0 w-full h-full object-cover">
+                        class="absolute inset-0 object-cover w-full h-full">
 
                     <!-- Iniciales si no hay foto -->
                     <span th:if="${anfitrion.fotoPerfil == null or #strings.isEmpty(anfitrion.fotoPerfil)}"
-                        th:text="${anfitrion.iniciales}" class="text-3xl font-bold text-blue-800 z-10">ET</span>
+                        th:text="${anfitrion.iniciales}" class="z-10 text-3xl font-bold text-blue-800">ET</span>
 
                     <!-- Rank badge -->
                     <span
@@ -1160,22 +1160,22 @@
                 <!-- Info -->
                 <div class="p-3.5 flex flex-col gap-3 flex-1">
                     <div>
-                        <p class="font-semibold text-gray-900 text-sm leading-tight" th:text="${anfitrion.nombre}">
+                        <p class="text-sm font-semibold leading-tight text-gray-900" th:text="${anfitrion.nombre}">
                             Nombre</p>
                         <p class="text-xs text-gray-400 mt-0.5">Anfitrión activo</p>
                     </div>
 
                     <!-- Stats -->
                     <div class="grid grid-cols-3 gap-1.5">
-                        <div class="bg-gray-50 rounded-xl p-2 text-center">
+                        <div class="p-2 text-center bg-gray-50 rounded-xl">
                             <p class="text-sm font-semibold text-gray-900" th:text="${anfitrion.totalReservas}">0</p>
                             <p class="text-[10px] text-gray-500 uppercase tracking-wide mt-0.5">Reservas</p>
                         </div>
-                        <div class="bg-gray-50 rounded-xl p-2 text-center">
+                        <div class="p-2 text-center bg-gray-50 rounded-xl">
                             <p class="text-sm font-semibold text-gray-900" th:text="${anfitrion.totalActividades}">0</p>
                             <p class="text-[10px] text-gray-500 uppercase tracking-wide mt-0.5">Actividades</p>
                         </div>
-                        <div class="bg-gray-50 rounded-xl p-2 text-center flex flex-col items-center justify-center">
+                        <div class="flex flex-col items-center justify-center p-2 text-center bg-gray-50 rounded-xl">
                             <p class="text-sm font-semibold text-gray-900 flex items-center gap-0.5">
                                 <span
                                     th:text="${#numbers.formatDecimal(anfitrion.promedioCalificacion, 1, 1)}">0.0</span>
@@ -1194,7 +1194,7 @@
             </a>
         </div>
 
-        <div class="mt-6 text-center text-gray-500 text-sm"
+        <div class="mt-6 text-sm text-center text-gray-500"
             th:if="${anfitrionesDestacados == null or #lists.isEmpty(anfitrionesDestacados)}">
             Aún no hay colaboradores con actividad suficiente para mostrar este ranking.
         </div>
@@ -1202,9 +1202,9 @@
 
     <section class="social" id="compartir">
         <div class="flex">
-            <div class="w-70 pb-6">
+            <div class="pb-6 w-70">
 
-                <h2 class="text-4xl font-bold mb-2 pl-2">Comparte, <span class="ColorBlue">Tu
+                <h2 class="pl-2 mb-2 text-4xl font-bold">Comparte, <span class="ColorBlue">Tu
                         Plan</span></h2>
                 <p class="h2_description">¡Muéstranos cómo vas de aventura etiquetándonos con <span
                         class="ColorBlue">#GetOutThere</span> en <span class="ColorBlue">@EtaApp</span>
@@ -1212,14 +1212,14 @@
             </div>
             <div class="shareRedes">
                 <a href=""
-                    class="p-2 bg-slate-50 rounded-2xl text-slate-900 hover:bg-blue-50 hover:text-gray-600 transition-all border border-slate-100 shadow-sm">
+                    class="p-2 transition-all border shadow-sm bg-slate-50 rounded-2xl text-slate-900 hover:bg-blue-50 hover:text-gray-600 border-slate-100">
                     <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" {...props}>
                         <path fill="#23aae2"
                             d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 0 1-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 0 1 7.8 2m-.2 2A3.6 3.6 0 0 0 4 7.6v8.8C4 18.39 5.61 20 7.6 20h8.8a3.6 3.6 0 0 0 3.6-3.6V7.6C20 5.61 18.39 4 16.4 4zm9.65 1.5a1.25 1.25 0 0 1 1.25 1.25A1.25 1.25 0 0 1 17.25 8A1.25 1.25 0 0 1 16 6.75a1.25 1.25 0 0 1 1.25-1.25M12 7a5 5 0 0 1 5 5a5 5 0 0 1-5 5a5 5 0 0 1-5-5a5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3a3 3 0 0 0 3 3a3 3 0 0 0 3-3a3 3 0 0 0-3-3" />
                     </svg>
                 </a>
                 <a href=""
-                    class="p-2 bg-slate-50 rounded-2xl text-slate-900 hover:bg-blue-50 hover:text-gray-600 transition-all border border-slate-100 shadow-sm">
+                    class="p-2 transition-all border shadow-sm bg-slate-50 rounded-2xl text-slate-900 hover:bg-blue-50 hover:text-gray-600 border-slate-100">
                     <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" {...props}>
                         <g fill="#23aae2">
                             <g clip-path="url(#akarIconsFacebookFill0)">
@@ -1243,7 +1243,7 @@
                     <div class="contain-img-shares">
                         <img th:src="@{/images/shares/share1.webp}" alt="shares">
                         <p
-                            class="text-shares text-xs/5 font-bold tracking-tight bg-white/20 backdrop-blur-md px-4 py-2 rounded-full border border-white/30">
+                            class="px-4 py-2 font-bold tracking-tight border rounded-full text-shares text-xs/5 bg-white/20 backdrop-blur-md border-white/30">
                             @lilaras</p>
                     </div>
                 </div>
@@ -1253,7 +1253,7 @@
                     <div class="contain-img-shares">
                         <img th:src="@{/images/shares/share2.webp}" alt="shares">
                         <p
-                            class="text-shares text-xs/5 font-bold tracking-tight bg-white/20 backdrop-blur-md px-4 py-2 rounded-full border border-white/30">
+                            class="px-4 py-2 font-bold tracking-tight border rounded-full text-shares text-xs/5 bg-white/20 backdrop-blur-md border-white/30">
                             @jimmysza</p>
                     </div>
                 </div>
@@ -1263,7 +1263,7 @@
                     <div class="contain-img-shares">
                         <img th:src="@{/images/shares/share3.webp}" alt="shares">
                         <p
-                            class="text-shares text-xs/5 font-bold tracking-tight bg-white/20 backdrop-blur-md px-4 py-2 rounded-full border border-white/30">
+                            class="px-4 py-2 font-bold tracking-tight border rounded-full text-shares text-xs/5 bg-white/20 backdrop-blur-md border-white/30">
                             @lunajr</p>
                     </div>
                 </div>
@@ -1273,7 +1273,7 @@
                     <div class="contain-img-shares">
                         <img th:src="@{/images/shares/share4.webp}" alt="shares">
                         <p
-                            class="text-shares text-xs/5 font-bold tracking-tight bg-white/20 backdrop-blur-md px-4 py-2 rounded-full border border-white/30">
+                            class="px-4 py-2 font-bold tracking-tight border rounded-full text-shares text-xs/5 bg-white/20 backdrop-blur-md border-white/30">
                             @kaicenat</p>
                     </div>
                 </div>

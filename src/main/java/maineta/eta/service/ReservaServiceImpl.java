@@ -241,6 +241,11 @@ public class ReservaServiceImpl implements ReservaService {
         return reservaRepository.findById(idReserva);
     }
 
+    @Override
+    public BigDecimal calcularTotalComisionesGanadas() {
+        return reservaRepository.calcularTotalComisionesGanadas();
+    }
+
     private void completarDatosEconomicosReserva(Reserva reserva, Actividad actividad, int cantidad) {
         BigDecimal precioColaborador = actividad.getPrecio() != null ? actividad.getPrecio() : BigDecimal.ZERO;
         BigDecimal precioConsumidor = usuarioHelper.CalcularPrecioConsumidor(precioColaborador);

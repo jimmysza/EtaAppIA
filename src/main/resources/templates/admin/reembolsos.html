@@ -69,8 +69,12 @@
                         <tr th:each="reserva : ${reembolsosPage.content}" class="border-b hover:bg-gray-50">
                             <td class="px-4 py-3" th:text="${reserva.idReserva}">1</td>
                             <td class="px-4 py-3">
-                                <div class="font-medium" th:text="${reserva.cliente.nombre}">Cliente</div>
-                                <div class="text-sm text-gray-500" th:text="${reserva.cliente.usuario.email}">email
+                                <div class="font-medium"
+                                    th:text="${reserva.cliente != null and reserva.cliente.usuario != null ? reserva.cliente.usuario.nombre : 'Cliente'}">
+                                    Cliente</div>
+                                <div class="text-sm text-gray-500"
+                                    th:text="${reserva.cliente != null and reserva.cliente.usuario != null ? reserva.cliente.usuario.email : 'email'}">
+                                    email
                                 </div>
                             </td>
                             <td class="px-4 py-3">
@@ -96,7 +100,7 @@
                                     th:action="@{/admin/reembolsos/marcar-enviado/{idReserva}(idReserva=${reserva.idReserva})}"
                                     method="post" class="inline">
                                     <button type="submit"
-                                        class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded text-sm font-medium"
+                                        class="table-action-btn table-action-btn--primary"
                                         onclick="return confirm('¿Confirmar que se realizó el reembolso al cliente?')">
                                         Marcar como Reembolsado
                                     </button>

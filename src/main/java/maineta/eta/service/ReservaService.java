@@ -1,5 +1,6 @@
 package maineta.eta.service;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -45,4 +46,5 @@ public interface ReservaService {
     Page<Reserva> obtenerTodasReservas(Pageable pageable);
     Page<Reserva> obtenerPorEstado(String estado, Pageable pageable);
     Optional<Reserva> obtenerPorId(Long idReserva);
+    BigDecimal calcularTotalComisionesGanadas();
 }

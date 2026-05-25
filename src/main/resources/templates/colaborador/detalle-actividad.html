@@ -33,23 +33,23 @@
                h-[calc(100vh-64px)] sticky top-16">
 
             <!-- Header del sidebar -->
-            <div class="px-6 py-6 border-b border-gray-100 flex flex-col items-center">
+            <div class="flex flex-col items-center px-6 py-6 border-b border-gray-100">
 
                 <!-- LOGO -->
-                <!--<a th:href="@{/colaborador/actividades}" class="group transition duration-200 hover:scale-105">
+                <!--<a th:href="@{/colaborador/actividades}" class="transition duration-200 group hover:scale-105">
 
                     <img th:src="@{/images/logos/logo.webp}" alt="ETA Logo"
-                        class="w-20 h-20 object-contain rounded-2xl bg-white p-2 shadow-sm">
+                        class="object-contain w-20 h-20 p-2 bg-white shadow-sm rounded-2xl">
                 </a>-->
 
                 <!-- TEXTO -->
-                <div class="text-center mt-4">
+                <div class="mt-4 text-center">
 
-                    <h2 class="text-sm font-bold text-gray-700 uppercase tracking-wider">
+                    <h2 class="text-sm font-bold tracking-wider text-gray-700 uppercase">
                         Configuración
                     </h2>
 
-                    <p class="text-xs text-gray-500 mt-1 leading-5">
+                    <p class="mt-1 text-xs leading-5 text-gray-500">
                         Edita las secciones de tu actividad
                     </p>
 
@@ -58,9 +58,9 @@
             </div>
 
             <!-- Navegación de secciones -->
-            <nav class="flex-1 overflow-y-auto px-3 py-4 space-y-1">
+            <nav class="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
                 <a id="btnTitulo"
-                    class="btnEdicion active group flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-xl transition-all duration-200 cursor-pointer bg-gray-50 text-gray-900 border-2 border-gray-900 shadow-sm">
+                    class="flex items-center gap-3 px-4 py-3 text-sm font-medium text-gray-900 transition-all duration-200 border-2 border-gray-900 shadow-sm cursor-pointer btnEdicion active group rounded-xl bg-gray-50">
                     <svg class="w-5 h-5 text-gray-500 group-hover:text-gray-700" fill="none" stroke="currentColor"
                         viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -70,7 +70,7 @@
                 </a>
 
                 <a id="btnDesc"
-                    class="btnEdicion group flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-xl transition-all duration-200 cursor-pointer text-gray-600 hover:bg-gray-50 hover:text-gray-900 border border-transparent hover:border-gray-200">
+                    class="flex items-center gap-3 px-4 py-3 text-sm font-medium text-gray-600 transition-all duration-200 border border-transparent cursor-pointer btnEdicion group rounded-xl hover:bg-gray-50 hover:text-gray-900 hover:border-gray-200">
                     <svg class="w-5 h-5 text-gray-400 group-hover:text-gray-500" fill="none" stroke="currentColor"
                         viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -80,7 +80,7 @@
                 </a>
 
                 <a id="btnImg"
-                    class="btnEdicion group flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-xl transition-all duration-200 cursor-pointer text-gray-600 hover:bg-gray-50 hover:text-gray-900 border border-transparent hover:border-gray-200">
+                    class="flex items-center gap-3 px-4 py-3 text-sm font-medium text-gray-600 transition-all duration-200 border border-transparent cursor-pointer btnEdicion group rounded-xl hover:bg-gray-50 hover:text-gray-900 hover:border-gray-200">
                     <svg class="w-5 h-5 text-gray-400 group-hover:text-gray-500" fill="none" stroke="currentColor"
                         viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -90,7 +90,7 @@
                 </a>
 
                 <a id="btnImagenes"
-                    class="btnEdicion group flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-xl transition-all duration-200 cursor-pointer text-gray-600 hover:bg-gray-50 hover:text-gray-900 border border-transparent hover:border-gray-200">
+                    class="flex items-center gap-3 px-4 py-3 text-sm font-medium text-gray-600 transition-all duration-200 border border-transparent cursor-pointer btnEdicion group rounded-xl hover:bg-gray-50 hover:text-gray-900 hover:border-gray-200">
                     <svg class="w-5 h-5 text-gray-400 group-hover:text-gray-500" fill="none" stroke="currentColor"
                         viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -100,7 +100,7 @@
                 </a>
 
                 <a id="btnPrecio"
-                    class="btnEdicion group flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-xl transition-all duration-200 cursor-pointer text-gray-600 hover:bg-gray-50 hover:text-gray-900 border border-transparent hover:border-gray-200">
+                    class="flex items-center gap-3 px-4 py-3 text-sm font-medium text-gray-600 transition-all duration-200 border border-transparent cursor-pointer btnEdicion group rounded-xl hover:bg-gray-50 hover:text-gray-900 hover:border-gray-200">
                     <svg class="w-5 h-5 text-gray-400 group-hover:text-gray-500" fill="none" stroke="currentColor"
                         viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -110,7 +110,7 @@
                 </a>
 
                 <a id="btnIdioma"
-                    class="btnEdicion group flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-xl transition-all duration-200 cursor-pointer text-gray-600 hover:bg-gray-50 hover:text-gray-900 border border-transparent hover:border-gray-200">
+                    class="flex items-center gap-3 px-4 py-3 text-sm font-medium text-gray-600 transition-all duration-200 border border-transparent cursor-pointer btnEdicion group rounded-xl hover:bg-gray-50 hover:text-gray-900 hover:border-gray-200">
                     <svg class="w-5 h-5 text-gray-400 group-hover:text-gray-500" fill="none" stroke="currentColor"
                         viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -120,7 +120,7 @@
                 </a>
 
                 <a id="btnCategoria"
-                    class="btnEdicion group flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-xl transition-all duration-200 cursor-pointer text-gray-600 hover:bg-gray-50 hover:text-gray-900 border border-transparent hover:border-gray-200">
+                    class="flex items-center gap-3 px-4 py-3 text-sm font-medium text-gray-600 transition-all duration-200 border border-transparent cursor-pointer btnEdicion group rounded-xl hover:bg-gray-50 hover:text-gray-900 hover:border-gray-200">
                     <svg class="w-5 h-5 text-gray-400 group-hover:text-gray-500" fill="none" stroke="currentColor"
                         viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -130,7 +130,7 @@
                 </a>
 
                 <a id="btnMasInformacion"
-                    class="btnEdicion group flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-xl transition-all duration-200 cursor-pointer text-gray-600 hover:bg-gray-50 hover:text-gray-900 border border-transparent hover:border-gray-200">
+                    class="flex items-center gap-3 px-4 py-3 text-sm font-medium text-gray-600 transition-all duration-200 border border-transparent cursor-pointer btnEdicion group rounded-xl hover:bg-gray-50 hover:text-gray-900 hover:border-gray-200">
                     <svg class="w-5 h-5 text-gray-400 group-hover:text-gray-500" fill="none" stroke="currentColor"
                         viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -140,7 +140,7 @@
                 </a>
 
                 <a id="btnCalificacion"
-                    class="btnEdicion group flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-xl transition-all duration-200 cursor-pointer text-gray-600 hover:bg-gray-50 hover:text-gray-900 border border-transparent hover:border-gray-200">
+                    class="flex items-center gap-3 px-4 py-3 text-sm font-medium text-gray-600 transition-all duration-200 border border-transparent cursor-pointer btnEdicion group rounded-xl hover:bg-gray-50 hover:text-gray-900 hover:border-gray-200">
                     <svg class="w-5 h-5 text-gray-400 group-hover:text-gray-500" fill="none" stroke="currentColor"
                         viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -150,7 +150,7 @@
                 </a>
 
                 <a id="btnPlata"
-                    class="btnEdicion group flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-xl transition-all duration-200 cursor-pointer text-gray-600 hover:bg-gray-50 hover:text-gray-900 border border-transparent hover:border-gray-200">
+                    class="flex items-center gap-3 px-4 py-3 text-sm font-medium text-gray-600 transition-all duration-200 border border-transparent cursor-pointer btnEdicion group rounded-xl hover:bg-gray-50 hover:text-gray-900 hover:border-gray-200">
                     <svg class="w-5 h-5 text-gray-400 group-hover:text-gray-500" fill="none" stroke="currentColor"
                         viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -160,7 +160,7 @@
                 </a>
 
                 <a id="btnUbicacion"
-                    class="btnEdicion group flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-xl transition-all duration-200 cursor-pointer text-gray-600 hover:bg-gray-50 hover:text-gray-900 border border-transparent hover:border-gray-200">
+                    class="flex items-center gap-3 px-4 py-3 text-sm font-medium text-gray-600 transition-all duration-200 border border-transparent cursor-pointer btnEdicion group rounded-xl hover:bg-gray-50 hover:text-gray-900 hover:border-gray-200">
                     <svg class="w-5 h-5 text-gray-400 group-hover:text-gray-500" fill="none" stroke="currentColor"
                         viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -175,8 +175,8 @@
             <!-- Footer del sidebar - Botón eliminar -->
             <div class="p-4 border-t border-gray-100">
                 <button id="open-delete-modal" th:attr="data-id=${actividad.idActividad}"
-                    class="w-full flex items-center justify-center gap-2 px-4 py-3 text-sm font-semibold text-red-600 bg-red-50 hover:bg-red-100 rounded-xl transition-all duration-200 border border-red-200 hover:border-red-300 group">
-                    <svg class="w-5 h-5 text-red-500 group-hover:text-red-600 transition-colors" fill="none"
+                    class="flex items-center justify-center w-full gap-2 px-4 py-3 text-sm font-semibold text-red-600 transition-all duration-200 border border-red-200 bg-red-50 hover:bg-red-100 rounded-xl hover:border-red-300 group">
+                    <svg class="w-5 h-5 text-red-500 transition-colors group-hover:text-red-600" fill="none"
                         stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
@@ -199,7 +199,7 @@
                         <input type="text" id="titulo" th:field="*{titulo}"
                             placeholder="Ingresa el título de la actividad" />
 
-                        <p class="text-sm text-gray-500 mt-2">
+                        <p class="mt-2 text-sm text-gray-500">
                             Este es el nombre principal de tu actividad
                         </p>
 
@@ -217,7 +217,7 @@
                         <textarea id="descripcion" th:field="*{descripcion}" rows="6"
                             style="width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 0.5rem;"></textarea>
 
-                        <p class="text-sm text-gray-500 mt-2">Proporciona información detallada</p>
+                        <p class="mt-2 text-sm text-gray-500">Proporciona información detallada</p>
                         <button type="submit" class="button-default">
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
                                 style="display: inline-block; vertical-align: middle; margin-right: 0.5rem;">
@@ -234,18 +234,18 @@
                         th:action="@{/colaborador/actividades/{id}/actualizar(id=${actividad.idActividad})}"
                         th:object="${actividadUpdateDto}">
 
-                        <p class="text-sm text-gray-500 mt-2">Proporciona información detallada</p>
+                        <p class="mt-2 text-sm text-gray-500">Proporciona información detallada</p>
                         <label for="incluye">Incluye</label>
                         <textarea id="incluye" th:field="*{incluye}" rows="6"
                             style="width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 0.5rem;"></textarea>
 
-                        <p class="text-sm text-gray-500 mt-2">Proporciona información detallada</p>
+                        <p class="mt-2 text-sm text-gray-500">Proporciona información detallada</p>
 
                         <label for="normas">Normas</label>
                         <textarea id="normas" th:field="*{normas}" rows="6"
                             style="width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 0.5rem;"></textarea>
 
-                        <p class="text-sm text-gray-500 mt-2">Proporciona información detallada</p>
+                        <p class="mt-2 text-sm text-gray-500">Proporciona información detallada</p>
 
 
                         <label for="condiciones">Condiciones</label>
@@ -320,8 +320,8 @@
                                 style="max-width: 400px; height: auto; display: block; margin-bottom: 1rem; border-radius: 0.5rem;" />
                         </div>
 
-                        <label for="imagenFile" id="dropZone"
-                            class="border-2 border-dashed border-gray-300 bg-gray-50 rounded-xl p-12 mb-6 text-center transition-colors cursor-pointer hover:border-gray-400 block">
+                        <label id="dropZone"
+                            class="block p-12 mb-6 text-center transition-colors border-2 border-gray-300 border-dashed cursor-pointer bg-gray-50 rounded-xl hover:border-gray-400">
                             <input type="file" id="imagenFile" name="imagenFile" class="hidden" accept="image/*">
                             <svg class="w-10 h-10 mx-auto mb-4 text-gray-400" fill="none" stroke="currentColor"
                                 viewBox="0 0 24 24">
@@ -329,15 +329,15 @@
                                     d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12">
                                 </path>
                             </svg>
-                            <p id="fileName" class="text-gray-700 text-base mb-1">
+                            <p id="fileName" class="mb-1 text-base text-gray-700">
                                 Cambiar imagen principal
                             </p>
-                            <p class="text-gray-400 text-sm">
+                            <p class="text-sm text-gray-400">
                                 JPG, PNG o WEBP, tamaño máximo 10MB
                             </p>
                         </label>
 
-                        <p class="text-sm text-gray-500 mt-2">Sube una nueva imagen para tu actividad</p>
+                        <p class="mt-2 text-sm text-gray-500">Sube una nueva imagen para tu actividad</p>
 
                         <button type="submit" class="button-default">
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
@@ -376,8 +376,8 @@
                             th:action="@{/colaborador/actividades/{id}/imagenes/agregar(id=${actividad.idActividad})}"
                             enctype="multipart/form-data">
 
-                            <label for="imagenesExtra" id="dropZoneExtra"
-                                class="border-2 border-dashed border-gray-300 bg-gray-50 rounded-xl p-8 mb-4 text-center transition-colors cursor-pointer hover:border-gray-400 block">
+                            <label id="dropZoneExtra"
+                                class="block p-8 mb-4 text-center transition-colors border-2 border-gray-300 border-dashed cursor-pointer bg-gray-50 rounded-xl hover:border-gray-400">
                                 <input type="file" id="imagenesExtra" name="imagenesExtra" class="hidden"
                                     accept="image/*" multiple>
                                 <svg class="w-8 h-8 mx-auto mb-3 text-gray-400" fill="none" stroke="currentColor"
@@ -386,10 +386,10 @@
                                         d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12">
                                     </path>
                                 </svg>
-                                <p id="fileNameExtra" class="text-gray-700 text-base mb-1">
+                                <p id="fileNameExtra" class="mb-1 text-base text-gray-700">
                                     Selecciona imágenes adicionales
                                 </p>
-                                <p class="text-gray-400 text-sm">
+                                <p class="text-sm text-gray-400">
                                     Puedes seleccionar varias imágenes a la vez
                                 </p>
                             </label>
@@ -443,11 +443,10 @@
 
 
 
-                        <p class="text-sm text-gray-500 mt-2">Información del idioma en el que se ofrece la actividad
+                        <p class="mt-2 text-sm text-gray-500">Información del idioma en el que se ofrece la actividad
                         </p>
 
-                        <select th:field="*{idIdioma}" class="w-full px-4 py-3 bg-gray-50 border-0 rounded-lg text-gray-900
-               placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 pr-12">
+                        <select th:field="*{idIdioma}" class="w-full px-4 py-3 pr-12 text-gray-900 placeholder-gray-400 border-0 rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500">
 
                             <option value="" disabled>Selecciona un idioma</option>
 
@@ -479,11 +478,10 @@
 
 
 
-                        <p class="text-sm text-gray-500 mt-2">Información del Categoria en el que se ofrece la actividad
+                        <p class="mt-2 text-sm text-gray-500">Información del Categoria en el que se ofrece la actividad
                         </p>
 
-                        <select th:field="*{idCategoria}" class="w-full px-4 py-3 bg-gray-50 border-0 rounded-lg text-gray-900
-               placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 pr-12">
+                        <select th:field="*{idCategoria}" class="w-full px-4 py-3 pr-12 text-gray-900 placeholder-gray-400 border-0 rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500">
 
                             <option value="" disabled>Selecciona un Categoria</option>
 
@@ -512,7 +510,7 @@
                                 <span style="font-size: 1.5rem; color: #fbbf24;">★</span>
                             </div>
                         </div>
-                        <p class="text-sm text-gray-500 mt-2">Calificación promedio de los usuarios</p>
+                        <p class="mt-2 text-sm text-gray-500">Calificación promedio de los usuarios</p>
                     </div>
 
                     <!-- Sección Plata Ganada -->
@@ -526,7 +524,7 @@
                                 <span style="font-size: 1.25rem; color: #6b7280;">COP</span>
                             </div>
                         </div>
-                        <p class="text-sm text-gray-500 mt-2">Total de ingresos generados por esta actividad</p>
+                        <p class="mt-2 text-sm text-gray-500">Total de ingresos generados por esta actividad</p>
                     </div>
 
                     <!-- Sección Ubicación -->
@@ -538,7 +536,7 @@
                             placeholder="Ej: Cartagena, Bolívar" />
 
                         <label class="mt-4">Ubicación en el Mapa</label>
-                        <p class="text-sm text-gray-500 mb-2">Haz clic en el mapa para actualizar la ubicación</p>
+                        <p class="mb-2 text-sm text-gray-500">Haz clic en el mapa para actualizar la ubicación</p>
                         <div id="map-wrapper-detail">
                             <div id="mapDetailColab"></div>
                         </div>
@@ -751,6 +749,8 @@
             // Click en la zona de drop
             dropZone.addEventListener('click', function (e) {
                 if (e.target.tagName !== 'INPUT') {
+                    e.preventDefault();
+                    e.stopPropagation();
                     fileInput.click();
                 }
             });
@@ -793,6 +793,8 @@
             if (dropZoneExtra && fileInputExtra) {
                 dropZoneExtra.addEventListener('click', function (e) {
                     if (e.target.tagName !== 'INPUT') {
+                        e.preventDefault();
+                        e.stopPropagation();
                         fileInputExtra.click();
                     }
                 });

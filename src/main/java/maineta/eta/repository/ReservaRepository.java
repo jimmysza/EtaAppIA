@@ -143,4 +143,11 @@ public interface ReservaRepository extends JpaRepository<Reserva, Long> {
     Page<Reserva> findByEstadoPagoColaborador(EstadoPagoColaborador estadoPagoColaborador, Pageable pageable);
     Page<Reserva> findByEstadoReembolso(EstadoReembolso estadoReembolso, Pageable pageable);
     Page<Reserva> findByEstado(String estado, Pageable pageable);
+
+    @Query("""
+        SELECT COALESCE(SUM(r.comisionEta), 0)
+        FROM Reserva r
+        WHERE UPPER(r.estado) IN ('CONFIRMADA', 'COMPLETADA')
+    """)
+    BigDecimal calcularTotalComisionesGanadas();
 }

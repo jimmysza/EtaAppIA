@@ -68,18 +68,24 @@
                         <tr th:each="reserva : ${pagosPage.content}" class="border-b hover:bg-gray-50">
                             <td class="px-4 py-3" th:text="${reserva.idReserva}">1</td>
                             <td class="px-4 py-3">
-                                <div class="font-medium" th:text="${reserva.cliente.nombre}">Cliente</div>
-                                <div class="text-sm text-gray-500" th:text="${reserva.cliente.usuario.email}">email
+                                <div class="font-medium"
+                                    th:text="${reserva.cliente != null and reserva.cliente.usuario != null ? reserva.cliente.usuario.nombre : 'Cliente'}">
+                                    Cliente</div>
+                                <div class="text-sm text-gray-500"
+                                    th:text="${reserva.cliente != null and reserva.cliente.usuario != null ? reserva.cliente.usuario.email : 'email'}">
+                                    email
                                 </div>
                             </td>
                             <td class="px-4 py-3">
-                                <div class="font-medium" th:text="${reserva.actividad.colaborador.nombre}">Colaborador
+                                <div class="font-medium"
+                                    th:text="${reserva.actividad != null and reserva.actividad.colaborador != null and reserva.actividad.colaborador.usuario != null ? reserva.actividad.colaborador.usuario.nombre : 'Colaborador'}">
+                                    Colaborador
                                 </div>
                                 <div class="text-sm text-gray-500">
                                     <span
-                                        th:text="'Banco: ' + ${reserva.actividad.colaborador.banco ?: 'No registrado'}"></span><br>
+                                        th:text="'Banco: ' + ${(reserva.actividad != null and reserva.actividad.colaborador != null and reserva.actividad.colaborador.banco != null) ? reserva.actividad.colaborador.banco : 'No registrado'}"></span><br>
                                     <span
-                                        th:text="'Cuenta: ' + ${reserva.actividad.colaborador.numeroCuenta ?: 'No registrada'}"></span>
+                                        th:text="'Cuenta: ' + ${(reserva.actividad != null and reserva.actividad.colaborador != null and reserva.actividad.colaborador.numeroCuenta != null) ? reserva.actividad.colaborador.numeroCuenta : 'No registrada'}"></span>
                                 </div>
                             </td>
                             <td class="px-4 py-3" th:text="${reserva.actividad.titulo}">Actividad</td>
@@ -97,7 +103,7 @@
                                     th:action="@{/admin/pagos/marcar-pagado/{idReserva}(idReserva=${reserva.idReserva})}"
                                     method="post" class="inline">
                                     <button type="submit"
-                                        class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded text-sm font-medium"
+                                        class="table-action-btn table-action-btn--success"
                                         onclick="return confirm('¿Confirmar que se realizó el pago al colaborador?')">
                                         Marcar como Pagado
                                     </button>

@@ -397,10 +397,7 @@ public class AdminController {
         }
 
         // Calcular estadísticas
-        BigDecimal totalComisionesGanadas = reservasPage.getContent().stream()
-            .filter(r -> "CONFIRMADA".equals(r.getEstado()) || "COMPLETADA".equals(r.getEstado()))
-            .map(r -> r.getComisionEta() != null ? r.getComisionEta() : BigDecimal.ZERO)
-            .reduce(BigDecimal.ZERO, BigDecimal::add);
+        BigDecimal totalComisionesGanadas = reservaService.calcularTotalComisionesGanadas();
 
         long totalReservas = reservasPage.getTotalElements();
         long reservasCompletadas = reservasPage.getContent().stream()
@@ -411,7 +408,7 @@ public class AdminController {
         model.addAttribute("reservas", reservasPage.getContent());
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", reservasPage.getTotalPages());
-        model.addAttribute("totalComisionesGanadas", totalComisionesGanadas);
+        model.addAttribute("totalComisionesGanadas", totalComisionesGanadas != null ? totalComisionesGanadas : BigDecimal.ZERO);
         model.addAttribute("totalReservas", totalReservas);
         model.addAttribute("reservasCompletadas", reservasCompletadas);
         model.addAttribute("reservasCanceladas", reservasCanceladas);
