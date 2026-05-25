@@ -39,62 +39,60 @@
             </div>
 
             <!-- Estadísticas Principales -->
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
-                <div class="bg-gradient-to-br from-green-500 to-green-600 text-white rounded-lg shadow p-6">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                <div class="bg-gradient-to-br from-green-500 to-green-600 text-white rounded-xl shadow-lg p-6 hover:shadow-xl transition transform hover:scale-105">
                     <div class="flex items-center justify-between">
-                        <div>
-                            <p class="text-green-100 text-sm mb-1">Comisiones Ganadas</p>
-                            <h3 class="text-3xl font-bold"
-                                th:text="'$' + ${#numbers.formatDecimal(totalComisionesGanadas, 0, 'POINT', 0, 'COMMA')}">
-                                $0</h3>
+                        <div class="flex-1">
+                            <p class="text-gray-500 text-sm font-medium mb-2">Comisiones Ganadas</p>
+                            <h3 class="text-4xl font-bold break-words text-gray-900" id="comisiones-valor" th:text="'$' + ${#numbers.formatInteger(totalComisionesGanadas, 3, 'POINT')}">$0</h3>
                         </div>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none"
+                        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none"
                             stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"
-                            class="opacity-80">
+                            class="opacity-90 flex-shrink-0">
                             <line x1="12" y1="1" x2="12" y2="23" />
                             <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
                         </svg>
                     </div>
                 </div>
 
-                <div class="bg-gradient-to-br from-blue-500 to-blue-600 text-white rounded-lg shadow p-6">
+                <div class="bg-gradient-to-br from-blue-500 to-blue-600 text-white rounded-xl shadow-lg p-6 hover:shadow-xl transition transform hover:scale-105">
                     <div class="flex items-center justify-between">
-                        <div>
-                            <p class="text-blue-100 text-sm mb-1">Total Reservas</p>
-                            <h3 class="text-3xl font-bold" th:text="${totalReservas}">0</h3>
+                        <div class="flex-1">
+                            <p class="text-gray-500 text-sm font-medium mb-2">Total Reservas</p>
+                            <h3 class="text-4xl font-bold text-gray-900" th:text="${totalReservas}">0</h3>
                         </div>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none"
+                        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none"
                             stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"
-                            class="opacity-80">
+                            class="opacity-90 flex-shrink-0">
                             <path
                                 d="M6 9h12M6 9a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2M6 9v10a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V9" />
                         </svg>
                     </div>
                 </div>
 
-                <div class="bg-gradient-to-br from-emerald-500 to-emerald-600 text-white rounded-lg shadow p-6">
+                <div class="bg-gradient-to-br from-emerald-500 to-emerald-600 text-white rounded-xl shadow-lg p-6 hover:shadow-xl transition transform hover:scale-105">
                     <div class="flex items-center justify-between">
-                        <div>
-                            <p class="text-emerald-100 text-sm mb-1">Completadas</p>
-                            <h3 class="text-3xl font-bold" th:text="${reservasCompletadas}">0</h3>
+                        <div class="flex-1">
+                            <p class="text-gray-500 text-sm font-medium mb-2">Completadas</p>
+                            <h3 class="text-4xl font-bold text-gray-900" th:text="${reservasCompletadas}">0</h3>
                         </div>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none"
+                        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none"
                             stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"
-                            class="opacity-80">
+                            class="opacity-90 flex-shrink-0">
                             <polyline points="20 6 9 17 4 12" />
                         </svg>
                     </div>
                 </div>
 
-                <div class="bg-gradient-to-br from-red-500 to-red-600 text-white rounded-lg shadow p-6">
+                <div class="bg-gradient-to-br from-red-500 to-red-600 text-white rounded-xl shadow-lg p-6 hover:shadow-xl transition transform hover:scale-105">
                     <div class="flex items-center justify-between">
-                        <div>
-                            <p class="text-red-100 text-sm mb-1">Canceladas</p>
-                            <h3 class="text-3xl font-bold" th:text="${reservasCanceladas}">0</h3>
+                        <div class="flex-1">
+                            <p class="text-gray-500 text-sm font-medium mb-2">Canceladas</p>
+                            <h3 class="text-4xl font-bold text-gray-900" th:text="${reservasCanceladas}">0</h3>
                         </div>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none"
+                        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none"
                             stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"
-                            class="opacity-80">
+                            class="opacity-90 flex-shrink-0">
                             <circle cx="12" cy="12" r="10" />
                             <line x1="15" y1="9" x2="9" y2="15" />
                             <line x1="9" y1="9" x2="15" y2="15" />
@@ -104,12 +102,13 @@
             </div>
 
             <!-- Filtro de Estado -->
-            <div class="bg-white rounded-lg shadow p-6 mb-6">
-                <form method="get" th:action="@{/admin/ingresos}" class="flex gap-4 items-end">
-                    <div class="flex-1">
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Filtrar por Estado</label>
+            <div class="bg-white rounded-lg shadow p-6 mb-8">
+                <h3 class="text-lg font-semibold text-gray-800 mb-4">Filtrar Reservas</h3>
+                <form method="get" th:action="@{/admin/ingresos}" class="flex flex-col md:flex-row gap-4 items-end">
+                    <div class="flex-1 md:w-96">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Estado</label>
                         <select name="estado"
-                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                             <option value="">Todos los estados</option>
                             <option value="PENDIENTE" th:selected="${estadoFiltro == 'PENDIENTE'}">Pendiente</option>
                             <option value="CONFIRMADA" th:selected="${estadoFiltro == 'CONFIRMADA'}">Confirmada</option>
@@ -118,101 +117,93 @@
                         </select>
                     </div>
                     <button type="submit"
-                        class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-lg font-medium">
+                        class="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white px-6 py-2.5 rounded-lg font-medium transition shadow-md hover:shadow-lg">
                         Filtrar
                     </button>
+                    <a href="/admin/ingresos"
+                        class="bg-gray-300 hover:bg-gray-400 text-gray-800 px-6 py-2.5 rounded-lg font-medium transition">
+                        Limpiar
+                    </a>
                 </form>
             </div>
 
             <!-- Tabla de Reservas -->
-            <div class="bg-white rounded-lg shadow p-6 mb-6">
-                <div class="flex items-center justify-between mb-4">
-                    <h2 class="text-xl font-bold">Detalle de Comisiones por Reserva</h2>
-                    <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-semibold"
-                        th:text="${#lists.size(reservas)} + ' reservas'">0 reservas</span>
+            <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+                <div class="px-6 py-4 border-b border-gray-200 bg-gradient-to-r from-gray-50 to-gray-100">
+                    <div class="flex items-center justify-between">
+                        <h2 class="text-xl font-bold text-gray-800">Detalle de Comisiones por Reserva</h2>
+                        <span class="bg-blue-100 text-blue-700 px-4 py-2 rounded-full text-sm font-semibold"
+                            th:text="${#lists.size(reservas)} + ' reservas'">0 reservas</span>
+                    </div>
                 </div>
 
                 <div class="overflow-x-auto">
                     <table class="w-full">
                         <thead>
-                            <tr class="bg-gray-50 border-b">
-                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">ID</th>
-                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Cliente</th>
-                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Colaborador
-                                </th>
-                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actividad
-                                </th>
-                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Precio Total
-                                </th>
-                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Precio
-                                    Colaborador</th>
-                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Comisión ETA
-                                </th>
-                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Estado</th>
-                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Fecha</th>
+                            <tr class="bg-gray-100 border-b-2 border-gray-300">
+                                <th class="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase">ID</th>
+                                <th class="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase">Cliente</th>
+                                <th class="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase">Colaborador</th>
+                                <th class="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase">Actividad</th>
+                                <th class="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase">Precio Total</th>
+                                <th class="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase">Precio Colaborador</th>
+                                <th class="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase">Comisión ETA</th>
+                                <th class="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase">Estado</th>
+                                <th class="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase">Fecha</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <tr th:if="${#lists.isEmpty(reservas)}">
-                                <td colspan="9" class="text-center py-8 text-gray-500">No hay reservas para mostrar</td>
+                        <tbody class="divide-y divide-gray-200">
+                            <tr th:if="${#lists.isEmpty(reservas)}" class="hover:bg-gray-50">
+                                <td colspan="9" class="text-center py-12 text-gray-500 font-medium">No hay reservas para mostrar</td>
                             </tr>
-                            <tr th:each="reserva : ${reservas}" class="border-b hover:bg-gray-50">
-                                <td class="px-4 py-3 font-semibold text-gray-700" th:text="${reserva.idReserva}">1</td>
-                                <td class="px-4 py-3">
-                                    <div class="font-medium" th:text="${reserva.cliente.nombre}">Cliente</div>
-                                    <div class="text-sm text-gray-500" th:text="${reserva.cliente.usuario.email}">email
-                                    </div>
+                            <tr th:each="reserva : ${reservas}" class="hover:bg-blue-50 transition border-b border-gray-100">
+                                <td class="px-6 py-4 font-semibold text-gray-800" th:text="${reserva.idReserva}">1</td>
+                                <td class="px-6 py-4">
+                                    <div class="font-medium text-gray-800" th:text="${reserva.cliente.usuario.nombre}">Cliente</div>
+                                    <div class="text-sm text-gray-500" th:text="${reserva.cliente.usuario.email}">email</div>
                                 </td>
-                                <td class="px-4 py-3">
-                                    <div class="font-medium" th:text="${reserva.actividad.colaborador.nombre}">
-                                        Colaborador</div>
+                                <td class="px-6 py-4">
+                                    <div class="font-medium text-gray-800" th:text="${reserva.actividad.colaborador.usuario.nombre}">Colaborador</div>
                                 </td>
-                                <td class="px-4 py-3">
-                                    <div class="font-medium" th:text="${reserva.actividad.titulo}">Actividad</div>
-                                    <div class="text-sm text-gray-500"
-                                        th:text="${#temporals.format(reserva.disponibilidad.fecha, 'dd/MM/yyyy')}">
-                                        01/01/2025</div>
+                                <td class="px-6 py-4">
+                                    <div class="font-medium text-gray-800" th:text="${reserva.actividad.titulo}">Actividad</div>
+                                    <div class="text-sm text-gray-500" th:text="${#temporals.format(reserva.disponibilidad.fecha, 'dd/MM/yyyy')}">01/01/2025</div>
                                 </td>
-                                <td class="px-4 py-3 font-semibold text-blue-600">
-                                    <span
-                                        th:text="'$' + ${#numbers.formatDecimal(reserva.precioTotalSafe, 0, 'POINT', 0, 'COMMA')}">$0</span>
+                                <td class="px-6 py-4 font-semibold text-blue-600">
+                                    <span th:text="'$' + ${#numbers.formatInteger(reserva.precioTotalSafe, 3, 'POINT')}">$0</span>
                                 </td>
-                                <td class="px-4 py-3 font-semibold text-green-600">
-                                    <span
-                                        th:text="'$' + ${#numbers.formatDecimal(reserva.precioColaboradorSafe, 0, 'POINT', 0, 'COMMA')}">$0</span>
+                                <td class="px-6 py-4 font-semibold text-green-600">
+                                    <span th:text="'$' + ${#numbers.formatInteger(reserva.precioColaboradorSafe, 3, 'POINT')}">$0</span>
                                 </td>
-                                <td class="px-4 py-3 font-semibold text-purple-600">
-                                    <span
-                                        th:text="'$' + ${#numbers.formatDecimal(reserva.comisionEtaSafe, 0, 'POINT', 0, 'COMMA')}">$0</span>
+                                <td class="px-6 py-4 font-semibold text-purple-600">
+                                    <span th:text="'$' + ${#numbers.formatInteger(reserva.comisionEtaSafe, 3, 'POINT')}">$0</span>
                                 </td>
-                                <td class="px-4 py-3">
-                                    <span class="px-3 py-1 rounded-full text-xs font-semibold"
+                                <td class="px-6 py-4">
+                                    <span class="px-3 py-1 rounded-full text-xs font-semibold inline-block"
                                         th:classappend="${reserva.estado == 'COMPLETADA' ? 'bg-green-100 text-green-800' : (reserva.estado == 'CONFIRMADA' ? 'bg-blue-100 text-blue-800' : (reserva.estado == 'PENDIENTE' ? 'bg-yellow-100 text-yellow-800' : 'bg-red-100 text-red-800'))}"
                                         th:text="${reserva.estado}">ESTADO</span>
                                 </td>
-                                <td class="px-4 py-3 text-sm"
-                                    th:text="${#temporals.format(reserva.fechaReserva, 'dd/MM/yyyy HH:mm')}">01/01/2025
-                                    14:00</td>
+                                <td class="px-6 py-4 text-sm text-gray-600" th:text="${#temporals.format(reserva.fechaReserva, 'dd/MM/yyyy HH:mm')}">01/01/2025 14:00</td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
 
                 <!-- Paginación -->
-                <div class="flex items-center justify-between mt-6" th:if="${totalPages > 1}">
-                    <div class="text-sm text-gray-500">
-                        Página <span th:text="${currentPage + 1}">1</span> de <span th:text="${totalPages}">1</span>
+                <div class="flex items-center justify-between px-6 py-4 border-t border-gray-200 bg-gray-50" th:if="${totalPages > 1}">
+                    <div class="text-sm text-gray-600">
+                        Página <span class="font-semibold" th:text="${currentPage + 1}">1</span> de <span class="font-semibold" th:text="${totalPages}">1</span>
                     </div>
                     <div class="flex gap-2">
                         <a th:if="${currentPage > 0}"
                             th:href="@{/admin/ingresos(page=${currentPage - 1},estado=${estadoFiltro})}"
-                            class="px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium hover:bg-gray-50">
-                            Anterior
+                            class="px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium hover:bg-gray-100 transition">
+                            ← Anterior
                         </a>
                         <a th:if="${currentPage < totalPages - 1}"
                             th:href="@{/admin/ingresos(page=${currentPage + 1},estado=${estadoFiltro})}"
-                            class="px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium hover:bg-gray-50">
-                            Siguiente
+                            class="px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium hover:bg-gray-100 transition">
+                            Siguiente →
                         </a>
                     </div>
                 </div>

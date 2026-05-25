@@ -381,9 +381,10 @@
 
         .checkout-total-summary {
             display: flex;
-            align-items: flex-end;
+            align-items: baseline;
             justify-content: space-between;
             gap: 16px;
+            flex-wrap: wrap;
             margin-top: 8px;
         }
 
@@ -392,10 +393,23 @@
         }
 
         .checkout-total-hint {
-            max-width: 180px;
+            max-width: 220px;
             text-align: right;
             font-size: .88rem;
             color: rgba(255, 255, 255, 0.82);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            min-width: 0;
+        }
+
+        /* ensure total doesn't wrap the hint on desktop */
+        .checkout-total-summary strong {
+            flex: 0 0 auto;
+            margin-right: 12px;
+        }
+        .checkout-total-hint {
+            flex: 1 1 auto;
         }
 
         .checkout-total-breakdown {
@@ -511,6 +525,8 @@
             .checkout-total-hint {
                 max-width: none;
                 text-align: left;
+                white-space: normal;
+                overflow: visible;
             }
         }
     </style>
@@ -686,7 +702,7 @@
 
                 <button type="submit" class=" bg-blue-600 bgBlueMainL" id="btnPagar"
                     th:disabled="${#lists.isEmpty(disponibilidadesDelDia)}">
-                    Pagar<i class="fa-brands fa-cc-visa"></i>
+                    Reservar<i class="fa-brands fa-cc-visa" style="margin-left:8px"></i>
                 </button>
             </aside>
         </form>

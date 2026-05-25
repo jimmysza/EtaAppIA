@@ -165,9 +165,9 @@
                         </label>
                         <div class="relative">
                             <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 font-medium">COP</span>
-                            <input type="number" id="precio" th:field="*{precio}" placeholder="120000" min="4000"
-                                max="99999999"
-                                class="w-full pl-16 pr-4 py-3 bg-gray-50 border-0 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <input type="hidden" id="precio" th:field="*{precio}">
+                            <input type="text" id="precioDisplay" inputmode="numeric" autocomplete="off"
+                                placeholder="120.000" class="w-full pl-16 pr-4 py-3 bg-gray-50 border-0 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#23aae2]">
                         </div>
                     </div>
                     <div>
@@ -343,10 +343,105 @@
         const fileName = document.getElementById('fileName');
         let selectedFile = null;
 
+        // Price formatting + validation
+        const MIN_PRICE = 4000; // valor mínimo permitido
+        const precioHidden = document.getElementById('precio');
+        const precioDisplay = null; // will be assigned after DOM elements exist
+
         fileInput.addEventListener('change', (e) => {
             if (e.target.files[0]) {
                 selectedFile = e.target.files[0];
                 fileName.textContent = selectedFile.name;
+            }
+        });
+
+        // assign precioDisplay after the file input listener exists (DOM loaded)
+        document.addEventListener('DOMContentLoaded', () => {
+            const pd = document.getElementById('precioDisplay');
+            if (!pd) return;
+            // local reference
+            window._precioDisplay = pd;
+
+            const formatPrice = (value) => {
+                if (!value) return '';
+                const digits = String(value).replace(/\D/g, '');
+                if (!digits) return '';
+                return new Intl.NumberFormat('es-CO').format(Number(digits));
+            };
+
+            const cleanPrice = (value) => {
+                // Convertir a número primero para eliminar decimales extras, luego a string
+                const numeric = Number(value) || 0;
+                return String(numeric);
+            };
+
+            const syncHiddenValue = () => {
+                // Sincronizar el campo oculto desde el display
+                const displayDigits = pd.value.replace(/\D/g, '');
+                if (precioHidden) precioHidden.value = displayDigits;
+                return displayDigits;
+            };
+
+            // initialize display from hidden value (editing case)
+            // IMPORTANTE: Convertir a número para eliminar decimales extras
+            if (precioHidden && precioHidden.value) {
+                const cleanedValue = cleanPrice(precioHidden.value);
+                precioHidden.value = cleanedValue;
+                pd.value = formatPrice(cleanedValue);
+            }
+
+            const setCaretByDigits = (inputEl, digitsBefore) => {
+                const formatted = inputEl.value;
+                let count = 0;
+                let pos = 0;
+                for (let i = 0; i < formatted.length; i++) {
+                    if (/[0-9]/.test(formatted[i])) count++;
+                    if (count === digitsBefore) { pos = i + 1; break; }
+                }
+                if (digitsBefore === 0) pos = 0;
+                try { inputEl.setSelectionRange(pos, pos); } catch (e) { /* ignore */ }
+            };
+
+            pd.addEventListener('input', (e) => {
+                const inputEl = e.target;
+                const sel = inputEl.selectionStart || 0;
+                const before = inputEl.value.slice(0, sel);
+                const digitsBefore = (before.match(/\d/g) || []).length;
+
+                // Solo formatear el display, sin tocar el hidden aún
+                const digits = inputEl.value.replace(/\D/g, '');
+                inputEl.value = formatPrice(digits);
+                setCaretByDigits(inputEl, digitsBefore);
+            });
+
+            pd.addEventListener('blur', (e) => {
+                // Al perder el foco, sincronizar y validar
+                const displayDigits = syncHiddenValue();
+                let numeric = Number(displayDigits) || 0;
+                
+                if (numeric > 0 && numeric < MIN_PRICE) {
+                    numeric = MIN_PRICE;
+                    if (precioHidden) precioHidden.value = String(numeric);
+                }
+                
+                // Re-formatear el display con el valor validado
+                pd.value = formatPrice(precioHidden ? precioHidden.value : '');
+            });
+
+            // Sincronizar antes de enviar el formulario
+            const formElement = document.querySelector('form');
+            if (formElement) {
+                formElement.addEventListener('submit', (e) => {
+                    // Sincronizar antes de enviar: CRÍTICO
+                    const displayDigits = syncHiddenValue();
+                    const numeric = Number(displayDigits) || 0;
+                    
+                    if (numeric < MIN_PRICE) {
+                        e.preventDefault();
+                        alert('El precio mínimo es ' + new Intl.NumberFormat('es-CO').format(MIN_PRICE) + ' COP');
+                        return false;
+                    }
+                });
             }
         });
 
@@ -397,14 +492,22 @@
         document.getElementById('activityForm').addEventListener('submit', (e) => {
             const titulo = document.getElementById('titulo').value.trim();
             const descripcion = document.getElementById('descripcion').value.trim();
-            const precio = document.getElementById('precio').value;
+            const precioVal = document.getElementById('precio').value;
+            const precioNum = Number(String(precioVal).replace(/\D/g, '')) || 0;
             const ubicacion = document.getElementById('ubicacion').value.trim();
             const categoria = document.getElementById('categoria').value;
             const idioma = document.getElementById('idioma').value;
 
-            if (!titulo || !descripcion || !precio || !ubicacion || !categoria || !idioma) {
+            if (!titulo || !descripcion || !precioVal || !ubicacion || !categoria || !idioma) {
                 e.preventDefault();
                 showAlert(alertDanger, 'Por favor completa todos los campos obligatorios (*)');
+                return false;
+            }
+
+            if (precioNum < MIN_PRICE) {
+                e.preventDefault();
+                const formatted = new Intl.NumberFormat('es-CO').format(MIN_PRICE);
+                showAlert(alertDanger, `El precio mínimo es ${formatted} COP`);
                 return false;
             }
 

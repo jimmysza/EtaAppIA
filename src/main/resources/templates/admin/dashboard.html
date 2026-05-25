@@ -97,8 +97,8 @@
                     </div>
                     <div class="min-w-0">
                         <p class="text-sm font-medium text-slate-500">Ingresos</p>
-                        <span class="block text-2xl font-semibold tracking-tight text-slate-900"><span
-                                th:text="${#numbers.formatDecimal(plataGanada, 0, 0)}"></span>$</span>
+                        <span class="block text-2xl font-semibold tracking-tight text-slate-900">$<span
+                                th:text="${#numbers.formatInteger(plataGanada, 3, 'POINT')}"></span></span>
                     </div>
                 </div>
 
@@ -332,7 +332,9 @@
                                 <td th:text="${reserva.cliente.usuario.nombre}"></td>
                                 <td th:text="${reserva.actividad.titulo}"></td>
                                 <td th:text="${#temporals.format(reserva.fechaReserva, 'dd/MM/yyyy')}"></td>
-                                <td>$<span th:text="${#numbers.formatDecimal(reserva.precioTotalSafe, 0, 0)}"></span></td>
+                                <td>
+                                    <span th:text="'$' + ${#numbers.formatInteger(reserva.precioTotalSafe, 3, 'POINT')}"></span>
+                                </td>
                                 <td>
                                     <span class="status-badge confirmed">Confirmada</span>
                                 </td>
@@ -364,7 +366,7 @@
                             <div class="collaborator-name" th:text="${colaborador.usuario.nombre}"></div>
                             <div class="collaborator-stat">
                                 <span>Ingresos Totales:</span>
-                                <strong>$<span th:text="${#numbers.formatDecimal(ingresos, 0, 0)}"></span></strong>
+                                <strong><span th:text="'$' + ${#numbers.formatInteger(ingresos, 3, 'POINT')}"></span></strong>
                             </div>
                             <div class="collaborator-stat">
                                 <span>Email:</span>
@@ -410,8 +412,8 @@
                                 <td th:text="${actividad.titulo}"></td>
                                 <td th:text="${actividad.colaborador.usuario.nombre}"></td>
                                 <td th:text="${#temporals.format(actividad.createdAt, 'dd/MM/yyyy')}"></td>
-                                <td>$<span
-                                        th:text="${#numbers.formatDecimal(actividad.precio, 0, 'POINT', 0, 'COMMA')}"></span>
+                                <td>
+                                    <span th:text="'$' + ${#numbers.formatInteger(actividad.precio, 3, 'POINT')}"></span>
                                 </td>
                                 <td th:text="${actividad.categoria.nombre}"></td>
                             </tr>

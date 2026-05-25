@@ -413,7 +413,9 @@
                         <label for="precio">Precio</label>
                         <div style="display: flex; align-items: center; gap: 0.5rem;">
                             <span>$</span>
-                            <input type="number" id="precio" th:field="*{precio}" step="0.01" />
+                            <input type="hidden" id="precio" th:field="*{precio}" />
+                            <input type="text" id="precioDisplay" placeholder="120.000"
+                                style="padding: 0.4rem 0.6rem; border: 1px solid #d1d5db; border-radius: 0.375rem; width: 220px;" />
                             <span>COP</span>
                         </div>
 
@@ -822,6 +824,91 @@
                     }
                 });
             }
+
+            // Precio: formateo en tiempo real y validación mínima
+            (function () {
+                const MIN_PRICE = 4000;
+                const precioHidden = document.getElementById('precio');
+                const precioDisplay = document.getElementById('precioDisplay');
+                const formPrecio = document.getElementById('seccionPrecio');
+                if (!precioDisplay || !precioHidden) return;
+
+                const formatDigits = (digits) => {
+                    if (!digits) return '';
+                    const cleaned = String(digits).replace(/\D/g, '');
+                    if (!cleaned) return '';
+                    return new Intl.NumberFormat('es-CO').format(Number(cleaned));
+                };
+
+                const cleanPrice = (value) => {
+                    // Convertir a número primero para eliminar decimales, luego a string
+                    const numeric = Number(value) || 0;
+                    return String(numeric);
+                };
+
+                const syncHiddenValue = () => {
+                    // Sincronizar el campo oculto desde el display
+                    const displayDigits = precioDisplay.value.replace(/\D/g, '');
+                    precioHidden.value = displayDigits;
+                    return displayDigits;
+                };
+
+                const setCaretByDigits = (inputEl, digitsBefore) => {
+                    const formatted = inputEl.value;
+                    let count = 0;
+                    let pos = 0;
+                    for (let i = 0; i < formatted.length; i++) {
+                        if (/[0-9]/.test(formatted[i])) count++;
+                        if (count === digitsBefore) { pos = i + 1; break; }
+                    }
+                    if (digitsBefore === 0) pos = 0;
+                    try { inputEl.setSelectionRange(pos, pos); } catch (e) { /* ignore */ }
+                };
+
+                // inicializar desde valor oculto (edición)
+                // IMPORTANTE: Convertir a número para eliminar decimales extras
+                if (precioHidden.value) {
+                    const cleanedValue = cleanPrice(precioHidden.value);
+                    precioHidden.value = cleanedValue;
+                    precioDisplay.value = formatDigits(cleanedValue);
+                }
+
+                precioDisplay.addEventListener('input', function (e) {
+                    const inputEl = e.target;
+                    const sel = inputEl.selectionStart || 0;
+                    const before = inputEl.value.slice(0, sel);
+                    const digitsBefore = (before.match(/\d/g) || []).length;
+
+                    const digits = inputEl.value.replace(/\D/g, '');
+                    inputEl.value = formatDigits(digits);
+                    setCaretByDigits(inputEl, digitsBefore);
+                });
+
+                precioDisplay.addEventListener('blur', function (e) {
+                    const displayDigits = syncHiddenValue();
+                    let numeric = Number(displayDigits) || 0;
+                    
+                    if (numeric > 0 && numeric < MIN_PRICE) {
+                        numeric = MIN_PRICE;
+                        precioHidden.value = String(numeric);
+                    }
+                    
+                    precioDisplay.value = formatDigits(precioHidden.value);
+                });
+
+                if (formPrecio) {
+                    formPrecio.addEventListener('submit', function (ev) {
+                        const displayDigits = syncHiddenValue();
+                        const numeric = Number(displayDigits) || 0;
+                        
+                        if (numeric < MIN_PRICE) {
+                            ev.preventDefault();
+                            alert('El precio mínimo es ' + new Intl.NumberFormat('es-CO').format(MIN_PRICE) + ' COP');
+                            return false;
+                        }
+                    });
+                }
+            })();
         });
     </script>
 
