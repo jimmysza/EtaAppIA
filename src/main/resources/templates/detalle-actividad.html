@@ -592,7 +592,8 @@
                         </svg>
 
                         <span
-                            th:text="${promedioCalificacion != null ? #numbers.formatDecimal(promedioCalificacion, 1, 1) : '0.0'}">4.5</span><span>/ 5.0</span>
+                            th:text="${promedioCalificacion != null ? #numbers.formatDecimal(promedioCalificacion, 1, 1) : '0.0'}">4.5</span><span>/
+                            5.0</span>
                         <span>valoración</span>
                     </span>
                 </div>
@@ -881,7 +882,7 @@
                         <span th:text="${actividad.idioma.codigo}"></span>
                     </div>
 
-                    <a href="../sign_up/signup.html">
+                    <a>
                         <div class="badge">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24">
                                 <g fill="none">

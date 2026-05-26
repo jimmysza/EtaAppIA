@@ -7,13 +7,11 @@
     <title>Actividades Cercanas - ETA</title>
     <link rel="icon" th:href="@{/images/logos/isotipo.webp}" type="image/x-icon" />
     <link rel="stylesheet" th:href="@{/css/global.css}">
-    <link rel="icon" th:href="@{/images/logos/isotipo.webp}" type="image/x-icon" />
     <link rel="stylesheet" th:href="@{/css/componentes/navbar.css}">
     <link rel="stylesheet" th:href="@{/css/componentes/footer.css}">
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
         integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
-
     <style>
         #mapaLeaflet {
             height: 520px;
@@ -42,9 +40,7 @@
 
 <body class="bg-gray-50">
     <div th:replace="~{componentes/navbar :: navbar}"></div>
-
     <main class="max-w-[1350px] mx-auto px-4 sm:px-6 py-10">
-
         <!-- Hero -->
         <div class="mb-8">
             <div
@@ -63,49 +59,82 @@
                 Experiencias turísticas a pocos kilómetros de tu ubicación actual.
             </p>
         </div>
-
         <!-- Controles -->
-        <div class="flex flex-wrap items-center gap-3 mb-6">
-            <button id="btnUbicacion"
-                class="inline-flex items-center gap-2 bg-gray-950 hover:bg-gray-800 text-white font-semibold text-sm px-5 py-3 rounded-full transition-colors">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                </svg>
-                <span id="btnTexto">Usar mi ubicación</span>
-            </button>
+        <div class="flex flex-col gap-4 mb-6">
+            <!-- Buscador de zona -->
+            <div class="relative w-full max-w-xl">
+                <input type="text" id="inputBuscarZona"
+                    placeholder="Escribe una zona o barrio (Ej. Centro Histórico, Cartagena)"
+                    class="w-full pl-5 pr-12 py-3 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent text-sm shadow-sm transition-shadow">
+                <button id="btnBuscarZona"
+                    class="absolute right-2 top-1/2 transform -translate-y-1/2 p-2 bg-gray-950 text-white rounded-full hover:bg-gray-800 transition-colors">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                </button>
+            </div>
+            <!-- Botones de geolocalización, centrar y radio -->
+            <div class="flex flex-wrap items-center gap-3">
+                <button id="btnUbicacion"
+                    class="inline-flex items-center gap-2 bg-gray-950 hover:bg-gray-800 text-white font-semibold text-sm px-5 py-3 rounded-full transition-colors">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+                    <span id="btnTexto">Usar mi ubicación</span>
+                </button>
 
-            <div
-                class="flex items-center gap-3 flex-1 min-w-[220px] max-w-sm bg-white border border-gray-200 rounded-full px-4 py-2.5">
-                <span class="text-sm text-gray-500 whitespace-nowrap">Radio</span>
-                <input type="range" id="sliderRadio" min="1" max="40" value="3" step="1" class="flex-1" disabled>
-                <span id="labelRadio" class="text-sm font-semibold text-gray-900 min-w-[40px] text-right">3 km</span>
+                <!-- Botón centrar mapa — visible solo cuando hay ubicación -->
+                <button id="btnCentrarMapa"
+                    class="hidden items-center gap-2 bg-white border border-gray-300 hover:border-gray-900 hover:bg-gray-50 text-gray-700 font-semibold text-sm px-5 py-3 rounded-full transition-colors"
+                    title="Centrar mapa en tu ubicación">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 2v4M12 18v4M2 12h4M18 12h4M12 12m0 0a4 4 0 100-8 4 4 0 000 8z" />
+                    </svg>
+                    <span>Centrar</span>
+                </button>
+
+                <!-- Botón buscar con nuevo radio -->
+                <button id="btnBuscarCerca"
+                    class="hidden items-center gap-2 bg-orange-400 hover:bg-orange-600 text-white font-semibold text-sm px-5 py-3 rounded-full transition-colors">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                    <span>Buscar en este radio</span>
+                </button>
+
+                <div
+                    class="flex items-center gap-3 flex-1 min-w-[220px] max-w-sm bg-white border border-gray-200 rounded-full px-4 py-2.5">
+                    <span class="text-sm text-gray-500 whitespace-nowrap">Radio</span>
+                    <input type="range" id="sliderRadio" min="100" max="3000" value="3000" step="100" class="flex-1"
+                        disabled>
+                    <span id="labelRadio" class="text-sm font-semibold text-gray-900 min-w-[50px] text-right">3
+                        km</span>
+                </div>
             </div>
         </div>
-
         <!-- Grid principal -->
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-5 items-start">
-
             <!-- Mapa -->
             <div class="lg:col-span-2">
                 <div class="bg-white border border-gray-200 rounded-2xl overflow-hidden">
                     <div id="mapaLeaflet"></div>
                 </div>
             </div>
-
             <!-- Panel resultados -->
             <div class="lg:col-span-1">
                 <div class="bg-white border border-gray-200 rounded-2xl p-5">
-
                     <div class="flex items-baseline justify-between mb-4">
                         <h2 class="text-lg font-bold text-gray-900">Resultados</h2>
                         <p id="contadorResultados" class="text-sm text-gray-400">
                             Activa tu ubicación
                         </p>
                     </div>
-
                     <!-- Estado inicial -->
                     <div id="estadoInicial" class="py-14 flex flex-col items-center gap-3 text-center">
                         <div class="w-12 h-12 rounded-2xl bg-gray-100 flex items-center justify-center">
@@ -120,11 +149,9 @@
                             Activa tu ubicación para<br>descubrir actividades cerca
                         </p>
                     </div>
-
                     <!-- Lista tarjetas -->
                     <div id="listaTarjetas" class="space-y-2.5 hidden max-h-[460px] overflow-y-auto hide-scrollbar">
                     </div>
-
                     <!-- Estado vacío -->
                     <div id="estadoVacio" class="py-14 flex flex-col items-center gap-3 text-center hidden">
                         <div class="w-12 h-12 rounded-2xl bg-gray-100 flex items-center justify-center">
@@ -137,7 +164,6 @@
                             Sin actividades en este radio.<br>Intenta ampliar la búsqueda.
                         </p>
                     </div>
-
                     <!-- Cargando -->
                     <div id="estadoCargando" class="py-14 flex flex-col items-center gap-3 text-center hidden">
                         <div class="w-8 h-8 border-2 border-gray-900 border-t-transparent rounded-full animate-spin">
@@ -148,24 +174,24 @@
             </div>
         </div>
     </main>
-
     <div class="pt-12"></div>
-
     <div th:replace="~{componentes/footer :: footer}"></div>
-
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
         integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
     <script th:src="@{/js/alert.js}"></script>
     <script th:src="@{/js/componentes/navbar.js}"></script>
     <script th:src="@{/js/mapa-cercanas.js}"></script>
     <script th:src="@{/js/componentes/Activitycards.js}"></script>
-
     <script>
-        const slider = document.getElementById('sliderRadio');
-        const label = document.getElementById('labelRadio');
-        if (slider && label) {
-            slider.addEventListener('input', () => label.textContent = slider.value + ' km');
-        }
+        // Mostrar btnCentrarMapa cuando se active la ubicación
+        // Se inyecta desde mapa-cercanas.js via evento personalizado
+        document.addEventListener('ubicacionActiva', () => {
+            const btn = document.getElementById('btnCentrarMapa');
+            if (btn) {
+                btn.classList.remove('hidden');
+                btn.classList.add('inline-flex');
+            }
+        });
     </script>
 </body>
 

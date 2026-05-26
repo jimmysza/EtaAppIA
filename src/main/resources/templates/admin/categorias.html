@@ -14,6 +14,7 @@
     <link rel="stylesheet" th:href="@{/css/tailwind.css}">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <title>ETA | Actividades</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 
     <style>
         .content-actividad {
@@ -198,9 +199,9 @@
                 <div th:if="${mensaje}" class="alert alert-success" th:text="${mensaje}"></div>
                 <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
 
-                <div
-                    style="width: 100%; max-width: 1500px; margin: 20px auto; background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.08);">
-                    <table style="width: 100%; border-collapse: collapse;">
+                <div class="overflow-x-auto"
+                    style="width: 100%; max-width: 1500px; margin: 20px auto;overflow-x: auto; background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.08);">
+                    <table style="width: 100%; border-collapse: collapse; overflow-x: auto;">
                         <thead>
                             <tr style="background-color: #f3f4f6; border-bottom: 2px solid #e5e7eb;">
                                 <th
@@ -220,7 +221,7 @@
                                     Acciones</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody class="overflow-x-auto">
                             <tr th:if="${categorias == null or #lists.isEmpty(categorias)}"
                                 style="border-bottom: 1px solid #e5e7eb;">
                                 <td colspan="5" style="text-align: center; color: #999; padding: 30px;">

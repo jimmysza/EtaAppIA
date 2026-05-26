@@ -13,16 +13,16 @@ document.addEventListener('DOMContentLoaded', () => {
         const getScrollAmount = () => {
             const firstCard = track.querySelector('.card');
             if (!firstCard) {
-                return track.clientWidth * 0.8;
+                return track.clientWidth * 0.7;
             }
 
             const cardStyles = window.getComputedStyle(firstCard);
             const trackStyles = window.getComputedStyle(track);
-            const gap = parseFloat(trackStyles.columnGap || trackStyles.gap || '16');
+            const gap = parseFloat(trackStyles.columnGap || trackStyles.gap || '8');
             const cardWidth = firstCard.getBoundingClientRect().width;
             const cardMarginRight = parseFloat(cardStyles.marginRight || '0');
 
-            return (cardWidth + gap + cardMarginRight) * 2;
+            return (cardWidth + gap + cardMarginRight) * 1;
         };
 
         const updateButtons = () => {
