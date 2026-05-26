@@ -59,8 +59,26 @@
 
             <!-- Navegación de secciones -->
             <nav class="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
+                <a th:href="@{/colaborador/disponibilidades/{idActividad}(idActividad=${actividad.idActividad})}"
+                    class="md:hidden flex mt-2 items-center gap-3 px-4 py-3 text-sm font-medium text-gray-900 transition-all duration-200 border-2 border-gray-900 shadow-sm cursor-pointer btnEdicion active group rounded-xl bg-gray-50">
+                    <svg class="w-5 h-5 text-gray-500 group-hover:text-gray-700" fill="none" stroke="currentColor"
+                        viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                    </svg>
+                    <span>Disponibilidades</span>
+                </a>
+                <a th:href="@{/colaborador/reservas/{idActividad}(idActividad=${actividad.idActividad})}"
+                    class="md:hidden flex mt-2 items-center gap-3 px-4 py-3 text-sm font-medium text-gray-900 transition-all duration-200 border-2 border-gray-900 shadow-sm cursor-pointer btnEdicion active group rounded-xl bg-gray-50">
+                    <svg class="w-5 h-5 text-gray-500 group-hover:text-gray-700" fill="none" stroke="currentColor"
+                        viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                    </svg>
+                    <span>Reservas</span>
+                </a>
                 <a id="btnTitulo"
-                    class="flex items-center gap-3 px-4 py-3 text-sm font-medium text-gray-900 transition-all duration-200 border-2 border-gray-900 shadow-sm cursor-pointer btnEdicion active group rounded-xl bg-gray-50">
+                    class="flex items-center mt-2 gap-3 px-4 py-3 text-sm font-medium text-gray-900 transition-all duration-200 border-2 border-gray-900 shadow-sm cursor-pointer btnEdicion active group rounded-xl bg-gray-50">
                     <svg class="w-5 h-5 text-gray-500 group-hover:text-gray-700" fill="none" stroke="currentColor"
                         viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -446,7 +464,8 @@
                         <p class="mt-2 text-sm text-gray-500">Información del idioma en el que se ofrece la actividad
                         </p>
 
-                        <select th:field="*{idIdioma}" class="w-full px-4 py-3 pr-12 text-gray-900 placeholder-gray-400 border-0 rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <select th:field="*{idIdioma}"
+                            class="w-full px-4 py-3 pr-12 text-gray-900 placeholder-gray-400 border-0 rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500">
 
                             <option value="" disabled>Selecciona un idioma</option>
 
@@ -481,7 +500,8 @@
                         <p class="mt-2 text-sm text-gray-500">Información del Categoria en el que se ofrece la actividad
                         </p>
 
-                        <select th:field="*{idCategoria}" class="w-full px-4 py-3 pr-12 text-gray-900 placeholder-gray-400 border-0 rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <select th:field="*{idCategoria}"
+                            class="w-full px-4 py-3 pr-12 text-gray-900 placeholder-gray-400 border-0 rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500">
 
                             <option value="" disabled>Selecciona un Categoria</option>
 
@@ -889,12 +909,12 @@
                 precioDisplay.addEventListener('blur', function (e) {
                     const displayDigits = syncHiddenValue();
                     let numeric = Number(displayDigits) || 0;
-                    
+
                     if (numeric > 0 && numeric < MIN_PRICE) {
                         numeric = MIN_PRICE;
                         precioHidden.value = String(numeric);
                     }
-                    
+
                     precioDisplay.value = formatDigits(precioHidden.value);
                 });
 
@@ -902,7 +922,7 @@
                     formPrecio.addEventListener('submit', function (ev) {
                         const displayDigits = syncHiddenValue();
                         const numeric = Number(displayDigits) || 0;
-                        
+
                         if (numeric < MIN_PRICE) {
                             ev.preventDefault();
                             alert('El precio mínimo es ' + new Intl.NumberFormat('es-CO').format(MIN_PRICE) + ' COP');
