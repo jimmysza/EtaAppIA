@@ -76,7 +76,7 @@ public class Actividad {
     private BigDecimal precio;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 50)
+    @Column(name = "politica_aplicada", nullable = false, length = 50)
     private PoliticaCancelacion politicaCancelacion = PoliticaCancelacion.REEMBOLSO_TOTAL_SI_A_TIEMPO;
 
     private LocalDateTime updatedAt = LocalDateTime.now();
@@ -85,8 +85,12 @@ public class Actividad {
 
 
     @OneToMany(mappedBy = "actividad", cascade = CascadeType.ALL, orphanRemoval = true)
-    @ToString.Exclude
-    private List<Comentario> comentarios = new ArrayList<>();
+@ToString.Exclude
+private List<Comentario> comentarios = new ArrayList<>();
+
+@OneToMany(mappedBy = "actividad", cascade = CascadeType.ALL, orphanRemoval = true)
+@ToString.Exclude
+private List<Favorito> favoritos = new ArrayList<>();
 
     @ManyToOne
     @JoinColumn(name = "id_colaborador", nullable = false)

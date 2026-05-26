@@ -2,8 +2,8 @@
 ## Plataforma ETA — Marketplace de Actividades Turísticas y Recreativas
 
 **Versión:** 2.0  
-**Fecha:** 24 de abril de 2026  
-**Estado:** En desarrollo  
+**Fecha:** 26 de mayo de 2026  
+**Estado:** En desarrollo con integraciones de IA, pagos y predicción  
 
 ---
 
@@ -996,6 +996,31 @@ epayco.response-url=http://localhost:8080/cliente/reserva-exitosa
 
 ---
 
+#### Commit 4: Correcciones JPA + Optimización de Queries (26 de mayo de 2026)
+**Hash:** `pending` (en progreso)
+
+**Cambios Técnicos:**
+- ✅ **Corrección de queries JPA**: Reparación de `GROUP BY` en 4 métodos de `ActividadRepository`
+  - `findTop10ByOrderByFavoritosDesc()`: `GROUP BY a.idActividad` (era `GROUP BY a`)
+  - `findTop10MejorRendimiento()`: Ídem
+  - `findTop10MasReservadas()`: Ídem
+  - `findActividadAleatoria()`: `FUNCTION('RAND')` (era `ORDER BY RAND()`)
+- ✅ **Actualización de documentación**: Sincronización de `db.md` y `PRD.md` a estado 26 de mayo
+- ✅ **Nueva entidad documentada**: `PreguntaFrecuenteActividad` en `db.md`
+- ✅ **Configuración de pagos documentada**: `ConfiguracionPagos` entidad con credenciales ePayco
+- ✅ **Índices de base de datos**: Documentados 9 índices recomendados para optimización
+- ✅ **Validaciones de negocio**: Documentadas 9 validaciones de integridad críticas
+
+**Archivos Actualizados:**
+- `src/main/java/maineta/eta/repository/ActividadRepository.java` (4 métodos JPA reparados)
+- `mds/db.md` (Versión 2.0 - 26 de mayo, +800 líneas con optimizaciones)
+- `mds/PRD.md` (Versión 2.0 - 26 de mayo, actualizado con Commit 4)
+
+**Contexto:**
+Después de agregar múltiples integraciones avanzadas (IA, pagos, predicción) en abril, se identificaron errores de compilación en el layer de persistencia relacionados con MySQL strict mode. Esta actualización documenta las correcciones y optimizaciones aplicadas.
+
+---
+
 ### Resumen de Cambios v1.0 → v2.0
 
 | Categoría | Cambios |
@@ -1028,4 +1053,4 @@ epayco.response-url=http://localhost:8080/cliente/reserva-exitosa
 
 ---
 
-*Última actualización: 24 de abril de 2026*
+*Última actualización: 26 de mayo de 2026*

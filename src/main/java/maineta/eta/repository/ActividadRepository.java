@@ -24,9 +24,9 @@ public interface ActividadRepository extends JpaRepository<Actividad, Long>, Jpa
     // SELECT * FROM actividad WHERE id_colaborador = ?;
     Page<Actividad> findByColaborador_IdColaborador(Long idColaborador, Pageable pageable);
 
-        List<Actividad> findByColaborador_IdColaboradorOrderByCreatedAtDesc(Long idColaborador);
+    List<Actividad> findByColaborador_IdColaboradorOrderByCreatedAtDesc(Long idColaborador);
 
-        Optional<Actividad> findFirstByColaborador_IdColaboradorOrderByCreatedAtDesc(Long idColaborador);
+    Optional<Actividad> findFirstByColaborador_IdColaboradorOrderByCreatedAtDesc(Long idColaborador);
 
     // combinacion de las dos anteriores
     Page<Actividad> findByColaborador_IdColaboradorAndTituloContainingIgnoreCase(Long idColaborador, String titulo,
@@ -55,9 +55,10 @@ public interface ActividadRepository extends JpaRepository<Actividad, Long>, Jpa
     // Queries para personalización del home
 
     /**
-     * Obtiene las actividades con más tendencia (vistas recientes)
+     * Obtiene las actividades más populares (por número de favoritos)
      */
-    List<Actividad> findTop10ByOrderByTotalTendenciaDesc();
+    @Query("SELECT a FROM Actividad a LEFT JOIN a.favoritos f GROUP BY a ORDER BY COUNT(f) DESC")
+    List<Actividad> findTop10ByOrderByFavoritosDesc();
 
     /**
      * Obtiene las actividades con más vistas totales
@@ -65,9 +66,21 @@ public interface ActividadRepository extends JpaRepository<Actividad, Long>, Jpa
     List<Actividad> findTop10ByOrderByTotalVistasDesc();
 
     /**
+     * Obtiene las actividades mejor calificadas
+     */
+    List<Actividad> findTop10ByOrderByCalificacionDesc();
+
+    /**
+     * Obtiene las actividades con mejor rendimiento (basado en número de reservas)
+     */
+    @Query("SELECT a FROM Actividad a LEFT JOIN a.reservas r GROUP BY a ORDER BY COUNT(r) DESC")
+    List<Actividad> findTop10MejorRendimiento(Pageable pageable);
+
+    /**
      * Obtiene actividades similares por categoría e idioma excluyendo la actual
      */
-    List<Actividad> findTop3ByCategoria_IdCategoriaAndIdioma_IdIdiomaAndIdActividadNotOrderByCalificacionDesc(Long idCategoria, Long idIdioma, Long idActividad);
+    List<Actividad> findTop3ByCategoria_IdCategoriaAndIdioma_IdIdiomaAndIdActividadNotOrderByCalificacionDesc(
+            Long idCategoria, Long idIdioma, Long idActividad);
 
     /**
      * Obtiene las actividades más reservadas
@@ -76,13 +89,13 @@ public interface ActividadRepository extends JpaRepository<Actividad, Long>, Jpa
     List<Actividad> findTop10MasReservadas(Pageable pageable);
 
     /**
-     * Obtiene actividades personalizadas para el cliente basadas en sus categorías preferidas
+     * Obtiene actividades personalizadas para el cliente basadas en sus categorías
+     * preferidas
      */
     @Query("SELECT a FROM Actividad a WHERE a.categoria IN :categorias ORDER BY a.calificacion DESC, a.createdAt DESC")
     List<Actividad> findByCategoriaInOrderByCalificacionDesc(
-        @Param("categorias") Set<Categoria> categorias, 
-        Pageable pageable
-    );
+            @Param("categorias") Set<Categoria> categorias,
+            Pageable pageable);
 
     // Queries paginadas para vistas completas de colecciones
 
@@ -90,6 +103,9 @@ public interface ActividadRepository extends JpaRepository<Actividad, Long>, Jpa
      * Obtiene todas las actividades ordenadas por tendencia (versión paginada)
      */
     Page<Actividad> findAllByOrderByTotalTendenciaDesc(Pageable pageable);
+
+    // Top 10 actividades por tendencia
+    List<Actividad> findTop10ByOrderByTotalTendenciaDesc();
 
     /**
      * Obtiene todas las actividades ordenadas por vistas totales (versión paginada)
@@ -103,13 +119,13 @@ public interface ActividadRepository extends JpaRepository<Actividad, Long>, Jpa
     Page<Actividad> findAllMasReservadas(Pageable pageable);
 
     /**
-     * Obtiene actividades personalizadas para el cliente basadas en sus categorías preferidas (versión paginada)
+     * Obtiene actividades personalizadas para el cliente basadas en sus categorías
+     * preferidas (versión paginada)
      */
     @Query("SELECT a FROM Actividad a WHERE a.categoria IN :categorias ORDER BY a.calificacion DESC, a.createdAt DESC")
     Page<Actividad> findByCategoriaInOrderByCalificacionDescPaged(
-        @Param("categorias") Set<Categoria> categorias, 
-        Pageable pageable
-    );
+            @Param("categorias") Set<Categoria> categorias,
+            Pageable pageable);
 
     // Queries para KPIs
 
@@ -117,35 +133,33 @@ public interface ActividadRepository extends JpaRepository<Actividad, Long>, Jpa
     Long contarActividadesPorColaborador(@Param("idColaborador") Long idColaborador);
 
     @Query("""
-        SELECT a.idActividad, a.titulo,
-               (SELECT COUNT(r) FROM Reserva r WHERE r.actividad.idActividad = a.idActividad 
-                AND r.fechaReserva >= :inicioReserva AND r.fechaReserva <= :finReserva) as reservas,
-               (SELECT COALESCE(AVG(c.calificacion), 0) FROM Comentario c WHERE c.actividad.idActividad = a.idActividad) as calificacion,
-               (SELECT COALESCE(AVG((d.cuposTotales - d.cuposDisponibles) * 100.0 / d.cuposTotales), 0) 
-                FROM Disponibilidad d WHERE d.actividad.idActividad = a.idActividad 
-                AND d.fecha >= :inicioDisp AND d.fecha <= :finDisp AND d.estado != 'CANCELADO') as ocupacion,
-               (SELECT COUNT(f) FROM Favorito f WHERE f.actividad.idActividad = a.idActividad) as favoritos,
-               a.totalVistas
-        FROM Actividad a
-        WHERE a.colaborador.idColaborador = :idColaborador
-        ORDER BY reservas DESC
-    """)
+                SELECT a.idActividad, a.titulo,
+                       (SELECT COUNT(r) FROM Reserva r WHERE r.actividad.idActividad = a.idActividad
+                        AND r.fechaReserva >= :inicioReserva AND r.fechaReserva <= :finReserva) as reservas,
+                       (SELECT COALESCE(AVG(c.calificacion), 0) FROM Comentario c WHERE c.actividad.idActividad = a.idActividad) as calificacion,
+                       (SELECT COALESCE(AVG((d.cuposTotales - d.cuposDisponibles) * 100.0 / d.cuposTotales), 0)
+                        FROM Disponibilidad d WHERE d.actividad.idActividad = a.idActividad
+                        AND d.fecha >= :inicioDisp AND d.fecha <= :finDisp AND d.estado != 'CANCELADO') as ocupacion,
+                       (SELECT COUNT(f) FROM Favorito f WHERE f.actividad.idActividad = a.idActividad) as favoritos,
+                       a.totalVistas
+                FROM Actividad a
+                WHERE a.colaborador.idColaborador = :idColaborador
+                ORDER BY reservas DESC
+            """)
     List<Object[]> obtenerActividadesConKpis(
-        @Param("idColaborador") Long idColaborador,
-        @Param("inicioReserva") LocalDateTime inicioReserva,
-        @Param("finReserva") LocalDateTime finReserva,
-        @Param("inicioDisp") LocalDate inicioDisp,
-        @Param("finDisp") LocalDate finDisp
-    );
+            @Param("idColaborador") Long idColaborador,
+            @Param("inicioReserva") LocalDateTime inicioReserva,
+            @Param("finReserva") LocalDateTime finReserva,
+            @Param("inicioDisp") LocalDate inicioDisp,
+            @Param("finDisp") LocalDate finDisp);
 
     /**
      * Busca actividades dentro de un bounding box geográfico.
      * Excluye automáticamente actividades con latitud o longitud null.
      */
     List<Actividad> findByLatitudBetweenAndLongitudBetween(
-        Double latMin, 
-        Double latMax,
-        Double lonMin, 
-        Double lonMax
-    );
+            Double latMin,
+            Double latMax,
+            Double lonMin,
+            Double lonMax);
 }

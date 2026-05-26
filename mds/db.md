@@ -1,9 +1,13 @@
-# PRD - Base de Datos ETA App
+# Base de Datos — ETA App — Marketplace de Actividades Turísticas
+
+**Versión:** 2.0  
+**Fecha de Actualización:** 26 de mayo de 2026  
+**Estado:** En desarrollo con integraciones de IA, pagos y predicción  
 
 ## 1. Introducción
 
 ### 1.1 Propósito del Documento
-Este documento especifica la arquitectura, estructura y almacenamiento de datos de la plataforma **ETA App**, una aplicación que conecta turistas (clientes) con proveedores de experiencias locales (colaboradores). Define todas las entidades, relaciones, tipos de datos y estrategias de persistencia que soportan las funcionalidades core del negocio.
+Este documento especifica la arquitectura, estructura y almacenamiento de datos de la plataforma **ETA App**, una aplicación que conecta turistas (clientes) con proveedores de experiencias locales (colaboradores). Define todas las entidades, relaciones, tipos de datos y estrategias de persistencia que soportan las funcionalidades core del negocio, incluyendo pagos, IA, planes turísticos y predicción de ocupación.
 
 ### 1.2 Alcance
 El documento cubre:
@@ -283,6 +287,7 @@ El documento cubre:
 | `fechaInicio` | LocalDate | NOT NULL | Fecha desde la que aplica el patrón |
 | `fechaFin` | LocalDate | NOT NULL | Fecha hasta la que aplica el patrón |
 | `estado` | String(20) | DEFAULT 'ACTIVO' | Estado del patrón (ACTIVO, INACTIVO) |
+| `createdAt` | LocalDateTime | DEFAULT NOW | Fecha de creación del patrón |
 
 **Relaciones**:
 - `ManyToOne` → `Actividad`: Actividad con disponibilidad recurrente
@@ -324,9 +329,12 @@ El documento cubre:
 | `id_disponibilidad` | Long | FK → Disponibilidad, NOT NULL | Disponibilidad reservada |
 | `id_cliente` | Long | FK → Cliente, NOT NULL | Cliente que realizó la reserva |
 | `id_actividad` | Long | FK → Actividad, NOT NULL | Actividad reservada |
-| `estado` | String | DEFAULT 'Pendiente' | Estado de la reserva |
+| `estado` | String | DEFAULT 'Pendiente' | Estado de la reserva (Pendiente/Confirmada/Cancelada/Hecho) |
 | `cantidad` | Integer | NOT NULL | Número de cupos reservados |
 | `fechaReserva` | LocalDateTime | NOT NULL | Fecha en que se realizó la reserva |
+| `precioTotal` | Decimal(10,2) | NOT NULL | Precio total de la reserva con comisión incluida |
+| `ref_payco` | String(100) | NULL | Referencia de transacción de ePayco (si pagó) |
+| `estadoPago` | String(50) | DEFAULT 'PENDIENTE' | Estado del pago (PENDIENTE/CONFIRMADO/FALLIDO/REEMBOLSADO) |
 
 **Relaciones**:
 - `ManyToOne` → `Cliente`: Cliente que reservó
@@ -461,9 +469,27 @@ El documento cubre:
 
 ---
 
-### 4.8 Entidades de Documentos
+### 4.8 Entidades de Preguntas Frecuentes
 
-#### 4.8.1 **Documento** (Tabla: `documento`)
+#### 4.8.1 **PreguntaFrecuenteActividad** (Tabla: `pregunta_frecuente_actividad`)
+**Propósito**: Preguntas frecuentes específicas de cada actividad para resolver dudas comunes de clientes.
+
+| Campo | Tipo | Restricciones | Descripción |
+|-------|------|---------------|-------------|
+| `id` | Long | PK, AUTO_INCREMENT | Identificador único |
+| `id_actividad` | Long | FK → Actividad, NOT NULL | Actividad a la que pertenece la FAQ |
+| `pregunta` | String(500) | NOT NULL | Pregunta frecuente |
+| `respuesta` | TEXT | NOT NULL | Respuesta a la pregunta |
+| `createdAt` | LocalDateTime | DEFAULT NOW | Fecha de creación |
+
+**Relaciones**:
+- `ManyToOne` → `Actividad`: Actividad propietaria de las FAQs
+
+---
+
+### 4.9 Entidades de Documentos
+
+#### 4.9.1 **Documento** (Tabla: `documento`)
 **Propósito**: Almacenamiento de archivos adjuntos asociados a usuarios.
 
 | Campo | Tipo | Restricciones | Descripción |
@@ -476,6 +502,26 @@ El documento cubre:
 
 **Relaciones**:
 - `ManyToOne` → `Usuario`: Usuario dueño del documento
+
+---
+
+### 4.10 Entidades de Configuración de Pagos
+
+#### 4.10.1 **ConfiguracionPagos** (Tabla: `configuracion_pagos`)
+**Propósito**: Almacena configuración global de la pasarela de pagos ePayco para el sistema.
+
+| Campo | Tipo | Restricciones | Descripción |
+|-------|------|---------------|-------------|
+| `id` | Long | PK, AUTO_INCREMENT | Identificador único |
+| `publicKey` | String(255) | NOT NULL | Clave pública de ePayco |
+| `privateKey` | String(255) | NOT NULL | Clave privada de ePayco |
+| `pCustId` | String(255) | NOT NULL | ID del cliente en ePayco |
+| `pKey` | String(255) | NOT NULL | Clave P de ePayco |
+| `testMode` | Boolean | DEFAULT TRUE | Si está en modo sandbox (true) o producción (false) |
+| `callbackUrl` | String(500) | NOT NULL | URL de callback para confirmación de pago |
+| `responseUrl` | String(500) | NOT NULL | URL de respuesta exitosa |
+| `confirmationUrl` | String(500) | NOT NULL | URL de confirmación de webhook |
+| `updatedAt` | LocalDateTime | DEFAULT NOW | Última actualización de credenciales |
 
 ---
 
@@ -517,9 +563,16 @@ Colaborador (1) ─── (N) Plan
 Plan (1) ─── (N) PlanActividad ─── (1) Actividad
 ```
 
----
+### 5.6 Relaciones de Preguntas Frecuentes
+```
+Actividad (1) ─── (N) PreguntaFrecuenteActividad
+```
 
-## 6. Casos de Uso de Almacenamiento
+### 5.7 Relaciones de Pagos
+```
+Reserva (1) ─── (0..1) Transaccion de Pago
+Reserva.ref_payco ─── Transacción en ePayco
+```
 
 ### 6.1 Registro y Autenticación
 **Datos Almacenados**:
@@ -598,6 +651,172 @@ Plan (1) ─── (N) PlanActividad ─── (1) Actividad
   - Disponibilidad semanal
   - Categorías preferidas
 - Historial de actividades vistas
+
+### 6.8 Sistema de Pagos ePayco
+**Datos Almacenados**:
+- Referencias de transacción (ref_payco) en cada reserva
+- Estado del pago (Pendiente, Confirmado, Fallido, Reembolsado)
+- Precio total de la reserva (con comisión incluida)
+- Configuración global de credenciales de ePayco
+
+**Entidades Involucradas**: `Reserva`, `ConfiguracionPagos`
+
+**Flujo**:
+1. Cliente selecciona disponibilidad
+2. Se crea Reserva en estado `PENDIENTE` con `estadoPago = PENDIENTE`
+3. ePayco procesa transacción
+4. Webhook confirma pago y actualiza `ref_payco` y `estadoPago`
+5. Reserva se marca como `CONFIRMADA`
+
+### 6.9 Preguntas Frecuentes por Actividad
+**Datos Almacenados**:
+- Pregunta y respuesta específicas de cada actividad
+- Fecha de creación
+- Relación con actividad
+
+**Entidades Involucradas**: `PreguntaFrecuenteActividad`, `Actividad`
+
+**Beneficios**:
+- Reduce dudas comunes en clientes antes de reservar
+- Mejora la experiencia del usuario
+- Reduce carga de mensajes al colaborador
+
+---
+
+## 7. Consideraciones de Integridad y Validaciones
+
+### 7.1 Validaciones de Negocio
+
+| Validación | Entidad | Regla |
+|------------|---------|-------|
+| Email único | Usuario | No puede haber dos usuarios con el mismo email |
+| Cédula única | Cliente | Cada cliente tiene cédula única |
+| Favoritos únicos | Favorito | UNIQUE(id_cliente, id_actividad) - no duplicados |
+| Cupos válidos | Disponibilidad | cuposDisponibles ≤ cuposTotales |
+| Precio positivo | Actividad, Disponibilidad | precio > 0 |
+| Calificación rango | Comentario | 1 ≤ calificacion ≤ 5 |
+| Solo un creador | Plan | (id_cliente_creador NULL OR id_colaborador_creador NULL) |
+| Orden secuencial | PlanActividad | orden ≥ 1 |
+| Comisión rango | Admin | 0 < porcentajeComision ≤ 100 |
+
+---
+
+## 8. Optimizaciones de Consultas
+
+### 8.1 Índices Recomendados
+
+```sql
+-- Búsqueda rápida por email
+CREATE INDEX idx_usuario_email ON usuarios(email);
+
+-- Búsqueda de actividades por categoría
+CREATE INDEX idx_actividad_categoria ON actividad(id_categoria);
+
+-- Búsqueda de actividades por colaborador
+CREATE INDEX idx_actividad_colaborador ON actividad(id_colaborador);
+
+-- Búsqueda de disponibilidades por fecha
+CREATE INDEX idx_disponibilidad_fecha ON disponibilidad(fecha);
+
+-- Búsqueda de reservas por cliente
+CREATE INDEX idx_reserva_cliente ON reserva(id_cliente);
+
+-- Búsqueda de comentarios por actividad
+CREATE INDEX idx_comentario_actividad ON comentario(id_actividad);
+
+-- Búsqueda de reservas por disponibilidad
+CREATE INDEX idx_reserva_disponibilidad ON reserva(id_disponibilidad);
+
+-- Búsqueda de planes públicos
+CREATE INDEX idx_plan_publico ON planes(publico, fechaCreacion);
+
+-- Búsqueda de mensajes por conversación
+CREATE INDEX idx_mensaje_conversacion ON mensaje_chat(id_conversacion, fechaEnvio);
+```
+
+### 8.2 Estrategias de N+1
+
+**Problema**: Obtener actividades con sus comentarios genera N+1 consultas.
+
+**Solución**: Usar `LEFT JOIN FETCH` o `@Query` personalizado:
+```java
+@Query("""
+    SELECT DISTINCT a FROM Actividad a 
+    LEFT JOIN FETCH a.comentarios
+    WHERE a.id_categoria = :categoriaId
+""")
+List<Actividad> findWithComments(@Param("categoriaId") Long categoriaId);
+```
+
+---
+
+## 9. Seguridad de Datos
+
+### 9.1 Campos Sensibles
+
+| Campo | Entidad | Protección |
+|-------|---------|------------|
+| `password` | Usuario | Encriptado con BCrypt |
+| `tokenVerificacion` | Usuario | Token único generado aleatoriamente |
+| `privateKey` | ConfiguracionPagos | Nunca expuesto, solo en servidor |
+| `ref_payco` | Reserva | Verificado contra firma digital de ePayco |
+
+### 9.2 Auditoría
+
+**Campos de auditoría recomendados**:
+- `createdAt`: Fecha de creación (presente en la mayoría de entidades)
+- `updatedAt`: Última modificación (presente en algunas)
+- `createdBy`: Usuario que creó (futuro)
+- `modifiedBy`: Usuario que modificó (futuro)
+
+---
+
+## 10. Historial de Cambios - v2.0
+
+### Cambios Principales (v1.0 → v2.0)
+
+| Fecha | Entidad/Campo | Cambio |
+|-------|---|--------|
+| 24 de abril | Plan | ✅ Agregar tabla `planes` y `plan_actividades` |
+| 24 de abril | Reserva | ✅ Agregar campos `precioTotal`, `ref_payco`, `estadoPago` |
+| 22 de abril | PreguntaFrecuenteActividad | ✅ Agregar tabla para FAQs |
+| 22 de abril | ConfiguracionPagos | ✅ Agregar tabla para configuración ePayco |
+| 26 de mayo | Múltiples | ✅ Actualizar índices y optimizaciones |
+
+---
+
+## 11. Notas Técnicas
+
+### 11.1 Estrategia DDL
+
+- **Modo**: `update` (Hibernate genera `ALTER TABLE` automáticamente)
+- **Riesgo**: Datos pueden perderse si se ejecuta con `drop-and-create`
+- **Recomendación**: Usar en desarrollo; en producción usar Flyway o Liquibase
+
+### 11.2 Conexión a Base de Datos
+
+```properties
+# application.properties
+spring.datasource.url=jdbc:mysql://localhost:3306/eta_db
+spring.datasource.username=root
+spring.datasource.password=
+spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.show-sql=true
+spring.jpa.properties.hibernate.format_sql=true
+spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.MySQL8Dialect
+```
+
+### 11.3 Configuración de TimeZone
+
+```properties
+# Para que LocalDateTime y LocalDate funcionen correctamente
+spring.datasource.url=jdbc:mysql://localhost:3306/eta_db?serverTimezone=America/Bogota
+```
+
+---
+
+*Documento actualizado: 26 de mayo de 2026 — Alineado con PRD v2.0*
 - Actividades favoritas
 - Historial de reservas
 

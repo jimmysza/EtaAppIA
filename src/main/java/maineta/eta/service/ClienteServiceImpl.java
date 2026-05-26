@@ -21,7 +21,6 @@ import maineta.eta.repository.ClienteRepository;
 import maineta.eta.repository.ColaboradorRepository;
 import maineta.eta.repository.RolRepository;
 import maineta.eta.repository.UsuarioRepository;
-
 /**
  * 🔹 Implementación de la interfaz ClienteService
  *

@@ -2,104 +2,247 @@
 <html xmlns:th="http://www.thymeleaf.org">
 
 <body>
-    <footer class="text-white pt-20 pb-12" style="background-color: #23aae2;">
-        <div class="container mx-auto px-6 max-w-7xl">
-            <!-- Grid Principal -->
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
+    <footer class="text-white relative overflow-hidden" style="background-color: #23aae2;">
+        <!-- Elementos decorativos de fondo tipo stickers -->
 
-                <!-- Sección de Marca -->
-                <div class="space-y-4 lg:col-span-1">
-                    <div class="mb-6">
-                        <span class="text-3xl font-black tracking-tight text-white">
-                            ETA<span class="text-xs align-top">®</span>
+        <div class="container mx-auto px-6 max-w-7xl relative z-10 pt-20 pb-12">
+
+            <!-- Header del Footer con Tag estilo imagen referencia -->
+            <div class="flex flex-wrap gap-3 mb-16">
+                <span
+                    class="inline-flex items-center px-4 py-2 rounded-full bg-white/20 backdrop-blur-sm text-sm font-semibold tracking-wide border border-white/30">
+                    🇨🇴 Hecho en Cartagena
+                </span>
+                <span
+                    class="inline-flex items-center px-4 py-2 rounded-full bg-white/20 backdrop-blur-sm text-sm font-semibold tracking-wide border border-white/30">
+                    🌴 Experiencias Únicas
+                </span>
+                <span
+                    class="inline-flex items-center px-4 py-2 rounded-full bg-white/20 backdrop-blur-sm text-sm font-semibold tracking-wide border border-white/30">
+                    ⭐ Plataforma Líder
+                </span>
+            </div>
+
+            <!-- Grid Principal - 3 columnas estilo imagen referencia -->
+            <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 gap-12 lg:gap-16 mb-16">
+
+                <!-- COLUMNA 1: Marca + Descripción (más grande) -->
+                <div class="md:col-span-1 space-y-6">
+                    <div class="flex items-baseline gap-1">
+                        <span class="text-5xl font-black tracking-tighter text-white"
+                            style="font-family: 'Inter', system-ui, sans-serif;">
+                            ETA
                         </span>
+                        <span class="text-lg font-bold text-white/80">®</span>
                     </div>
-                    <p class="text-white font-medium leading-relaxed text-sm">
+
+                    <p class="text-white/90 font-medium leading-relaxed text-base max-w-xs">
                         La plataforma líder para descubrir y gestionar experiencias únicas en el Caribe Colombiano.
-                    </p>    
-                    
-                    <!-- Redes Sociales -->
-                    <div class="flex gap-3 pt-2">
-                        <a href="https://www.instagram.com/eta_app/" target="_blank"
-                            class="w-11 h-11 bg-slate-800 hover:bg-blue-500 rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110 shadow-lg">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                                <path d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 0 1-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 0 1 7.8 2m-.2 2A3.6 3.6 0 0 0 4 7.6v8.8C4 18.39 5.61 20 7.6 20h8.8a3.6 3.6 0 0 0 3.6-3.6V7.6C20 5.61 18.39 4 16.4 4zm9.65 1.5a1.25 1.25 0 0 1 1.25 1.25A1.25 1.25 0 0 1 17.25 8A1.25 1.25 0 0 1 16 6.75a1.25 1.25 0 0 1 1.25-1.25M12 7a5 5 0 0 1 5 5a5 5 0 0 1-5 5a5 5 0 0 1-5-5a5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3a3 3 0 0 0 3 3a3 3 0 0 0 3-3a3 3 0 0 0-3-3"/>
+                    </p>
+
+                    <!-- Redes Sociales - Estilo moderno -->
+                    <div class="flex gap-3 pt-4">
+                        <a href="https://www.instagram.com/eta_app/" target="_blank" rel="noopener noreferrer"
+                            class="group w-12 h-12 bg-white/15 hover:bg-gray-600 rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110 hover:shadow-xl backdrop-blur-sm border border-white/20">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24"
+                                fill="currentColor" class="text-white group-hover:text-[#23aae2] transition-colors">
+                                <path
+                                    d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 0 1-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 0 1 7.8 2m-.2 2A3.6 3.6 0 0 0 4 7.6v8.8C4 18.39 5.61 20 7.6 20h8.8a3.6 3.6 0 0 0 3.6-3.6V7.6C20 5.61 18.39 4 16.4 4zm9.65 1.5a1.25 1.25 0 0 1 1.25 1.25A1.25 1.25 0 0 1 17.25 8A1.25 1.25 0 0 1 16 6.75a1.25 1.25 0 0 1 1.25-1.25M12 7a5 5 0 0 1 5 5a5 5 0 0 1-5 5a5 5 0 0 1-5-5a5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3a3 3 0 0 0 3 3a3 3 0 0 0 3-3a3 3 0 0 0-3-3" />
                             </svg>
                         </a>
-                        <a href="#" target="_blank"
-                            class="w-11 h-11 bg-slate-800 hover:bg-blue-500 rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110 shadow-lg">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                                <path d="M22 12c0-5.52-4.48-10-10-10S2 6.48 2 12c0 4.84 3.44 8.87 8 9.8V15H8v-3h2V9.5C10 7.57 11.57 6 13.5 6H16v3h-2c-.55 0-1 .45-1 1v2h3v3h-3v6.95c5.05-.5 9-4.76 9-9.95"/>
+                        <a href="#" target="_blank" rel="noopener noreferrer"
+                            class="group w-12 h-12 bg-white/15 hover:bg-gray-600 rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110 hover:shadow-xl backdrop-blur-sm border border-white/20">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24"
+                                fill="currentColor" class="text-white group-hover:text-[#23aae2] transition-colors">
+                                <path
+                                    d="M22 12c0-5.52-4.48-10-10-10S2 6.48 2 12c0 4.84 3.44 8.87 8 9.8V15H8v-3h2V9.5C10 7.57 11.57 6 13.5 6H16v3h-2c-.55 0-1 .45-1 1v2h3v3h-3v6.95c5.05-.5 9-4.76 9-9.95" />
                             </svg>
                         </a>
-                        <a href="https://www.tiktok.com/@eta_app" target="_blank"
-                            class="w-11 h-11 bg-slate-800 hover:bg-blue-500 rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110 shadow-lg">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                                <path d="M16.6 5.82s.51.5 0 0A4.28 4.28 0 0 1 15.54 3h-3.09v12.4a2.59 2.59 0 0 1-2.59 2.5c-1.42 0-2.6-1.16-2.6-2.6c0-1.72 1.66-3.01 3.37-2.48V9.66c-3.45-.46-6.47 2.22-6.47 5.64c0 3.33 2.76 5.7 5.69 5.7c3.14 0 5.69-2.55 5.69-5.7V9.01a7.35 7.35 0 0 0 4.3 1.38V7.3s-1.88.09-3.24-1.48"/>
+                        <a href="https://www.tiktok.com/@eta_app" target="_blank" rel="noopener noreferrer"
+                            class="group w-12 h-12 bg-white/15 hover:bg-gray-600 hover:text-white rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110 hover:shadow-xl backdrop-blur-sm border border-white/20">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24"
+                                fill="currentColor"
+                                class="text-white group-hover:text-[#23aae2] hover:text-blue-400 transition-colors">
+                                <path
+                                    d="M16.6 5.82s.51.5 0 0A4.28 4.28 0 0 1 15.54 3h-3.09v12.4a2.59 2.59 0 0 1-2.59 2.5c-1.42 0-2.6-1.16-2.6-2.6c0-1.72 1.66-3.01 3.37-2.48V9.66c-3.45-.46-6.47 2.22-6.47 5.64c0 3.33 2.76 5.7 5.69 5.7c3.14 0 5.69-2.55 5.69-5.7V9.01a7.35 7.35 0 0 0 4.3 1.38V7.3s-1.88.09-3.24-1.48" />
                             </svg>
                         </a>
-                        <a href="https://x.com/Eta_App" target="_blank"
-                            class="w-11 h-11 bg-slate-800 hover:bg-blue-500 rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110 shadow-lg">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                                <path d="M10.488 14.651L15.25 21h7l-7.858-10.478L20.93 3h-2.65l-5.117 5.886L8.75 3h-7l7.51 10.015L2.32 21h2.65zM16.25 19L5.75 5h2l10.5 14z" />
+                        <a href="https://x.com/Eta_App" target="_blank" rel="noopener noreferrer"
+                            class="group w-12 h-12 bg-white/15 hover:bg-gray-600 rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110 hover:shadow-xl backdrop-blur-sm border border-white/20">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24"
+                                fill="currentColor" class="text-white group-hover:text-[#23aae2] transition-colors">
+                                <path
+                                    d="M10.488 14.651L15.25 21h7l-7.858-10.478L20.93 3h-2.65l-5.117 5.886L8.75 3h-7l7.51 10.015L2.32 21h2.65zM16.25 19L5.75 5h2l10.5 14z" />
                             </svg>
                         </a>
                     </div>
                 </div>
 
-                <!-- Explorar -->
-                <div class="space-y-4">
-                    <h4 class="text-lg font-bold tracking-tight uppercase text-white">Explorar</h4>
-                    <ul class="space-y-2 text-white font-medium">
-                        <li><a href="/actividades/tendencias" class="hover:opacity-80 transition-opacity duration-200 text-sm">Tendencias</a></li>
-                        <li><a href="/actividades/mas-vistas" class="hover:opacity-80 transition-opacity duration-200 text-sm">Actividades Populares</a></li>
-                        <li><a href="/" class="hover:opacity-80 transition-opacity duration-200 text-sm">Todas las Categorías</a></li>
-                        <li><a href="/top-colaboradores" class="hover:opacity-80 transition-opacity duration-200 text-sm">Top Anfitriones</a></li>
-                    </ul>
-                </div>
-
-                <!-- Colaboradores -->
-                <div class="space-y-4">
-                    <h4 class="text-lg font-bold tracking-tight uppercase text-white">Colaboradores</h4>
-                    <ul class="space-y-2 text-white font-medium">
-                        <li><a href="/registro/colaborador" class="hover:opacity-80 transition-opacity duration-200 text-sm">Registrate como Guía</a></li>
-                        <li><a href="/login" class="hover:opacity-80 transition-opacity duration-200 text-sm">Inicia Sesión</a></li>
-                        <li><a href="#" class="hover:opacity-80 transition-opacity duration-200 text-sm">Centro de Ayuda</a></li>
-                        <li><a href="#" class="hover:opacity-80 transition-opacity duration-200 text-sm">Guía para Partners</a></li>
-                    </ul>
-                </div>
-
-                <!-- Legal -->
-                <div class="space-y-4">
-                    <h4 class="text-lg font-bold tracking-tight uppercase text-white">Legal</h4>
-                    <ul class="space-y-2 text-white font-medium">
-                        <li><a th:href="@{/terminos-condiciones}" class="hover:opacity-80 transition-opacity duration-200 text-sm">Términos de Servicio</a></li>
-                        <li><a th:href="@{/terminos-condiciones}" class="hover:opacity-80 transition-opacity duration-200 text-sm">Política de Privacidad</a></li>
-                        <li><a th:href="@{/terminos-condiciones}" class="hover:opacity-80 transition-opacity duration-200 text-sm">Política de Cookies</a></li>
-                        <li><a href="#" class="hover:opacity-80 transition-opacity duration-200 text-sm">Contacto</a></li>
-                    </ul>
-                </div>
-            </div>
-
-            <!-- Separador -->
-            <div class="border-t border-white pt-8 pb-6 border-opacity-20">
-                <!-- Copyright y Links -->
-                <div class="flex flex-col md:flex-row justify-between items-center gap-8">
-                    <div class="text-white text-xs leading-relaxed text-center md:text-left max-w-md">
-                        <p class="font-semibold">©2025-2026 ETA, LLC. Todos los derechos reservados.</p>
-                        <p class="mt-2 text-white">Descubre tu ruta Cartagena™ es una marca registrada de ETA, S.A.S.</p>
+                <!-- COLUMNA 2: Links agrupados -->
+                <div class="space-y-8">
+                    <!-- Explorar -->
+                    <div class="space-y-4">
+                        <div
+                            class="inline-flex items-center px-3 py-1 rounded-full bg-white/10 text-xs font-bold uppercase tracking-widest text-white/80 mb-2">
+                            Explorar
+                        </div>
+                        <ul class="space-y-3">
+                            <li>
+                                <a href="/actividades/tendencias"
+                                    class="group flex items-center gap-2 text-white/80 hover:text-white font-semibold transition-all duration-200 text-sm">
+                                    <span
+                                        class="w-1.5 h-1.5 rounded-full bg-white/40 group-hover:bg-gray-600 group-hover:scale-125 transition-all"></span>
+                                    Populares
+                                </a>
+                            </li>
+                            <li>
+                                <a href="/actividades/mas-vistas"
+                                    class="group flex items-center gap-2 text-white/80 hover:text-white font-semibold transition-all duration-200 text-sm">
+                                    <span
+                                        class="w-1.5 h-1.5 rounded-full bg-white/40 group-hover:bg-white group-hover:scale-125 transition-all"></span>
+                                    Actividades mas visitadas
+                                </a>
+                            </li>
+                            <li>
+                                <a href="/"
+                                    class="group flex items-center gap-2 text-white/80 hover:text-white font-semibold transition-all duration-200 text-sm">
+                                    <span
+                                        class="w-1.5 h-1.5 rounded-full bg-white/40 group-hover:bg-white group-hover:scale-125 transition-all"></span>
+                                    Todas las Categorías
+                                </a>
+                            </li>
+                            <li>
+                                <a href="/top-colaboradores"
+                                    class="group flex items-center gap-2 text-white/80 hover:text-white font-semibold transition-all duration-200 text-sm">
+                                    <span
+                                        class="w-1.5 h-1.5 rounded-full bg-white/40 group-hover:bg-white group-hover:scale-125 transition-all"></span>
+                                    Top Anfitriones
+                                </a>
+                            </li>
+                        </ul>
                     </div>
 
+                    <!-- Colaboradores -->
+                    <div class="space-y-4">
+                        <div
+                            class="inline-flex items-center px-3 py-1 rounded-full bg-white/10 text-xs font-bold uppercase tracking-widest text-white/80 mb-2">
+                            Colaboradores
+                        </div>
+                        <ul class="space-y-3">
+                            <li>
+                                <a href="/registro/colaborador"
+                                    class="group flex items-center gap-2 text-white/80 hover:text-white font-semibold transition-all duration-200 text-sm">
+                                    <span
+                                        class="w-1.5 h-1.5 rounded-full bg-white/40 group-hover:bg-white group-hover:scale-125 transition-all"></span>
+                                    Regístrate como Guía
+                                </a>
+                            </li>
+                            <li>
+                                <a href="/login"
+                                    class="group flex items-center gap-2 text-white/80 hover:text-white font-semibold transition-all duration-200 text-sm">
+                                    <span
+                                        class="w-1.5 h-1.5 rounded-full bg-white/40 group-hover:bg-white group-hover:scale-125 transition-all"></span>
+                                    Inicia Sesión
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#"
+                                    class="group flex items-center gap-2 text-white/80 hover:text-white font-semibold transition-all duration-200 text-sm">
+                                    <span
+                                        class="w-1.5 h-1.5 rounded-full bg-white/40 group-hover:bg-white group-hover:scale-125 transition-all"></span>
+                                    Centro de Ayuda
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#"
+                                    class="group flex items-center gap-2 text-white/80 hover:text-white font-semibold transition-all duration-200 text-sm">
+                                    <span
+                                        class="w-1.5 h-1.5 rounded-full bg-white/40 group-hover:bg-white group-hover:scale-125 transition-all"></span>
+                                    Guía para Partners
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
 
+                <!-- COLUMNA 3: Legal + Contacto -->
+                <div class="space-y-8">
+                    <!-- Legal -->
+                    <div class="space-y-4">
+                        <div
+                            class="inline-flex items-center px-3 py-1 rounded-full bg-white/10 text-xs font-bold uppercase tracking-widest text-white/80 mb-2">
+                            Legal
+                        </div>
+                        <ul class="space-y-3">
+                            <li>
+                                <a th:href="@{/terminos-condiciones}"
+                                    class="group flex items-center gap-2 text-white/80 hover:text-white font-semibold transition-all duration-200 text-sm">
+                                    <span
+                                        class="w-1.5 h-1.5 rounded-full bg-white/40 group-hover:bg-white group-hover:scale-125 transition-all"></span>
+                                    Términos de Servicio
+                                </a>
+                            </li>
+                            <li>
+                                <a th:href="@{/terminos-condiciones}"
+                                    class="group flex items-center gap-2 text-white/80 hover:text-white font-semibold transition-all duration-200 text-sm">
+                                    <span
+                                        class="w-1.5 h-1.5 rounded-full bg-white/40 group-hover:bg-white group-hover:scale-125 transition-all"></span>
+                                    Política de Privacidad
+                                </a>
+                            </li>
+                            <li>
+                                <a th:href="@{/terminos-condiciones}"
+                                    class="group flex items-center gap-2 text-white/80 hover:text-white font-semibold transition-all duration-200 text-sm">
+                                    <span
+                                        class="w-1.5 h-1.5 rounded-full bg-white/40 group-hover:bg-white group-hover:scale-125 transition-all"></span>
+                                    Política de Cookies
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Contacto directo (nuevo, no daña lógica) -->
+                    <div class="space-y-4">
+                        <div
+                            class="inline-flex items-center px-3 py-1 rounded-full bg-white/10 text-xs font-bold uppercase tracking-widest text-white/80 mb-2">
+                            Contacto
+                        </div>
+                        <a href="#"
+                            class="group flex items-center gap-2 text-white/80 hover:text-white font-semibold transition-all duration-200 text-sm">
+                            <span
+                                class="w-1.5 h-1.5 rounded-full bg-white/40 group-hover:bg-white group-hover:scale-125 transition-all"></span>
+                            Escríbenos
+                        </a>
+                    </div>
                 </div>
             </div>
 
-            <!-- Nota final -->
-            <div class="text-center border-t border-white pt-4 border-opacity-20">
-                <p class="text-white text-xs">
-                    Hecho en Cartagena de Indias, Colombia
+            <!-- Separador elegante -->
+            <div class="border-t border-white/20 pt-8 pb-6">
+                <div class="flex flex-col lg:flex-row justify-between items-center gap-6">
+
+                    <!-- Copyright -->
+                    <div class="text-white/70 text-xs leading-relaxed text-center lg:text-left">
+                        <p class="font-bold text-white/90">© 2025-2026 ETA, LLC. Todos los derechos reservados.</p>
+                        <p class="mt-1">Descubre tu ruta Cartagena™ es una marca registrada de ETA, S.A.S.</p>
+                    </div>
+
+                    <!-- Badge de ubicación estilo imagen referencia -->
+                    <div class="flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 border border-white/20">
+                        <span class="text-lg">🏝️</span>
+                        <span class="text-white/80 text-xs font-semibold">Cartagena de Indias, Colombia</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Nota final con estilo -->
+            <div class="text-center border-t border-white/10 pt-6">
+                <p class="text-white/50 text-xs font-medium tracking-wide">
+                    Diseñado con ❤️ en el Caribe Colombiano
                 </p>
             </div>
         </div>
     </footer>
 </body>
+
+</html>

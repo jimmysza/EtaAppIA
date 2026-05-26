@@ -1,201 +1,167 @@
-
-
+/* Aplicar fuente Inter a todo el footer */
 footer {
-    width: 100%;
-    background-color: var(--color-main);
-/*     border-radius: 3rem 3rem 0 0;
-    padding: 3.4rem 3.5rem 2rem 3.5rem;
-    color: var(--color-white); */
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
 }
 
-
-
-/* 
-.links-footer a:hover {
-    color: #6bd0ff;
+/* Animación suave de entrada para el footer */
+footer {
+    animation: footerFadeIn 0.8s ease-out;
 }
 
-.social_medias_links a:hover {
-    color: #6bd0ff;
-}
-
-
-.info-footer {
-    width: 100%;
-    max-width: 1351px;
-    margin: 0 auto;
-    display: flex;
-    flex-direction: column;
-    flex-wrap: wrap;
-    overflow-x: hidden;
-}
-
-
-
-.links-container-footer {
-    display: grid;
-    grid-template-columns: 1.2fr repeat(4, 1fr);
-    padding: 10px 0px 30px 0px;
-}
-
-.links-footer {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    justify-content: flex-start;
-    gap: 12px;
-    text-align: start;
-}
-
-.icon_social {
-    display: flex;
-    justify-content: center;
-    gap: 17px;
-    margin-top: 4px;
-}
-
-.icon_social svg {
-    width: 28px;
-    height: 28px;
-}
-
-.mt-4px {
-    margin-top: 4px;
-}
-
-
-
-footer .logo-footer {
-    font-size: 70px;
-}
-
-.con-logo-footer {
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    align-items: flex-start;
-    padding-left: 50px;
-}
-
-.logo-footer span {
-    font-family: var(--font-logo);
-    font-weight: 700;
-    letter-spacing: 1.4px;
-}
-
-.font-bold {
-    font-weight: 700;
-    font-size: 18.5px;
-}
-
-.social_medias_links {
-    
-    display: flex;
-    flex-direction: column;
-    justify-content: start;
-    align-items: start;
-    margin-top: 20px;
-}
-
-
-.copyright {
-    border-top: 1px solid white;
-    width: 100%;
-    margin: 0 auto;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px 0px;
-    font-size: 13px;
-    padding-top: 20px;
-    padding-right: 20px;
-}
-
-.copyright p:first-child {
-    font-size: 14px;
-    font-weight: 800;
-    color: var(--color-white);
-}
-
-
-.term{
-    font-weight: bold;
-}
-
-
-@media (max-width: 1000px) {
-
-
-    .logo-footer{
-    margin: auto;
-    }   
-
-    .social_medias_links{
-    margin: auto;
-    padding: 10px 20px 20px 0px;
-    }   
-
-    .footer {
-        padding: 1.4rem 2rem 3rem 2rem;
+@keyframes footerFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
     }
 
-    
-    .links-container-footer {
-        grid-template-columns: 1fr 1fr;
-        gap: 20px;
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.hover-blue:hover {
+    color: white;
+}
+
+.hover-blue:hover {
+    color: blue;
+}
+
+/* Efecto glassmorphism mejorado para los tags superiores */
+footer .rounded-full.bg-white\/20 {
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+}
+
+footer .rounded-full.bg-white\/20:hover {
+    background-color: rgba(255, 255, 255, 0.35);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Animación flotante para los stickers de fondo */
+footer .absolute svg {
+    animation: float 6s ease-in-out infinite;
+}
+
+footer .absolute svg:nth-child(2) {
+    animation-delay: -2s;
+    animation-duration: 8s;
+}
+
+footer .absolute svg:nth-child(3) {
+    animation-delay: -4s;
+    animation-duration: 7s;
+}
+
+@keyframes float {
+
+    0%,
+    100% {
+        transform: translateY(0px) rotate(0deg);
     }
 
-    .con-logo-footer {
-        grid-column: 1 / -1;
-        /* Ocupará desde la primera hasta la última columna */
+    50% {
+        transform: translateY(-20px) rotate(5deg);
+    }
+}
+
+/* Efecto hover mejorado para links con puntos */
+footer ul li a {
+    position: relative;
+    padding-left: 0;
+    transition: all 0.25s ease;
+}
+
+footer ul li a:hover {
+    padding-left: 4px;
+}
+
+/* Efecto pulse para los puntos indicadores */
+footer ul li a .rounded-full {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Efecto shine en los iconos de redes sociales */
+footer .group {
+    position: relative;
+    overflow: hidden;
+}
+
+footer .group::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg,
+            transparent,
+            rgba(255, 255, 255, 0.2),
+            transparent);
+    transition: left 0.5s ease;
+}
+
+footer .group:hover::before {
+    left: 100%;
+}
+
+/* Badge de ubicación con animación sutil */
+footer .bg-white\/10.border {
+    transition: all 0.3s ease;
+}
+
+footer .bg-white\/10.border:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    transform: scale(1.02);
+}
+
+/* Separador con gradiente sutil */
+footer .border-t {
+    border-image: linear-gradient(90deg,
+            transparent,
+            rgba(255, 255, 255, 0.3),
+            transparent) 1;
+}
+
+/* Responsive: en móvil, las columnas se apilan mejor */
+@media (max-width: 768px) {
+    footer .grid {
+        gap: 2.5rem;
+    }
+
+    footer .text-5xl {
+        font-size: 2.5rem;
+    }
+
+    footer .flex-wrap.gap-3 {
         justify-content: center;
-        text-align: center;
-        padding-left: 0;
-        /* Quita pswadding lateral que empuja el logo */
-    }
-
-    .links-footer {
-        padding-left: 20px;
-    }
-
-}
-
-@media (max-width: 600px) {
-    .links-container-footer {
-        grid-template-columns: 1fr;
-        gap: 20px;
-    }
-
-    .links-footer {
-        padding-left: 0px;
-    }
-     .social_medias_links p {
-        width: 100%;
-        text-align: center;
-    }
-
-    .social_medias_links {
-        padding: 20px 0px 0px 0px;
-        width: 100%;
-        max-width: 100%;
-        display: flex;
-        flex-direction: column;
-        justify-content: start;
-        margin: auto;
-        align-items: start;
-    }
-
-    .copyright {
-        flex-wrap: wrap;
-        
-    }
-
-    .icon_social {
-        width: 100%;
-        display: flex;
-        justify-content: center;
-        gap: 17px;
-        margin-top: 4px;
     }
 }
- */
+
+/* Efecto de onda sutil en la parte superior del footer */
+footer::before {
+    content: '';
+    position: absolute;
+    top: -1px;
+    left: 0;
+    right: 0;
+    height: 60px;
+    background: linear-gradient(to bottom,
+            rgba(255, 255, 255, 0.03),
+            transparent);
+    pointer-events: none;
+}
+
+/* Mejorar legibilidad del texto en móvil */
+@media (max-width: 640px) {
+    footer p {
+        font-size: 0.875rem;
+    }
+
+    footer ul li a {
+        font-size: 0.875rem;
+    }
+}
