@@ -8,6 +8,7 @@ import maineta.eta.service.AdminService;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Component;
 import org.springframework.ui.Model;
 
@@ -52,15 +53,29 @@ public class UsuarioHelper {
     public void agregarInfoUsuarioModel(Model model, Authentication auth) {
         if (auth != null && auth.isAuthenticated() && !auth.getPrincipal().equals("anonymousUser")) {
 
-            // Obtenemos el email del usuario logueado
-            String email = auth.getName();
-            Usuario usuario = usuarioService.obtenerPorEmail(email);
-
-            // Si existe en la BD, mostramos su nombre; si no, el email
-            if (usuario != null) {
-                model.addAttribute("nombreUsuario", usuario.getNombre());
+            // Extraer email correctamente dependiendo del tipo de autenticación
+            String email = null;
+            
+            // Si es OAuth2 (Google login), extraer email de los atributos
+            if (auth.getPrincipal() instanceof OAuth2User) {
+                OAuth2User oauth2User = (OAuth2User) auth.getPrincipal();
+                email = (String) oauth2User.getAttributes().get("email");
             } else {
-                model.addAttribute("nombreUsuario", email);
+                // Si es login tradicional (username/password), usar auth.getName()
+                email = auth.getName();
+            }
+            
+            try {
+                if (email != null) {
+                    Usuario usuario = usuarioService.obtenerPorEmail(email);
+                    // Si existe en la BD, mostramos su nombre
+                    model.addAttribute("nombreUsuario", usuario.getNombre());
+                } else {
+                    model.addAttribute("nombreUsuario", "Usuario");
+                }
+            } catch (RuntimeException e) {
+                // Si no existe, mostramos el email/identificador
+                model.addAttribute("nombreUsuario", email != null ? email : "Usuario");
             }
 
             // Obtener el rol del usuario autenticado
