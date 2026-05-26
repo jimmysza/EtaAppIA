@@ -32,9 +32,49 @@ public interface ActividadService {
 
     Page<Actividad> buscarMisActividades(Long colaboradorId, String titulo, int page, int size);
 
-        List<Actividad> listarPorColaborador(Long idColaborador);
+    List<Actividad> listarPorColaborador(Long idColaborador);
 
-        Optional<Actividad> obtenerActividadDestacadaDeColaborador(Long idColaborador);
+    Optional<Actividad> obtenerActividadDestacadaDeColaborador(Long idColaborador);
+
+    /**
+     * Actividades más guardadas en favoritos por los clientes.
+     * Útil para la sección "Lo que más les gusta a los viajeros".
+     *
+     * @param limite máximo de resultados (recomendado: 10)
+     */
+    List<Actividad> getMasGuardadasEnFavoritos(int limite);
+
+    /**
+     * Actividades mejor calificadas por promedio de estrellas.
+     * Útil para la sección "Las mejor valoradas".
+     *
+     * @param limite máximo de resultados (recomendado: 10)
+     */
+    List<Actividad> getMejorCalificadas(int limite);
+
+    /**
+     * Actividades con más reservas confirmadas/completadas.
+     * Diferencia con "de la semana": este es histórico total.
+     * Útil para la sección "Las más reservadas de siempre".
+     *
+     * @param limite máximo de resultados (recomendado: 10)
+     */
+    List<Actividad> getMejorRendimiento(int limite);
+
+    /**
+     * Actividades más reservadas en los últimos 7 días.
+     * Se actualiza dinámicamente — ideal para "Tendencia esta semana".
+     *
+     * @param limite máximo de resultados (recomendado: 10)
+     */
+    List<Actividad> getActividadesDeLaSemana(int limite);
+
+    /**
+     * Devuelve UNA actividad aleatoria para el widget
+     * "¿No sabes qué hacer hoy? Sorpréndete".
+     * Si no hay actividades, devuelve null.
+     */
+    Actividad getActividadAleatoria();
 
     /**
      * Obtiene una lista de actividades paginadas desde la base de datos,
@@ -207,7 +247,9 @@ public interface ActividadService {
     List<Actividad> obtenerActividadesSimilares(Long idCategoria, Long idIdioma, Long idActividad);
 
     /**
+     * es
      * Obtiene todas las actividades con más tendencia (paginado)
+     * 
      * @param page número de página
      * @param size tamaño de página
      * @return página de actividades
@@ -216,6 +258,7 @@ public interface ActividadService {
 
     /**
      * Obtiene todas las actividades con más vistas (paginado)
+     * 
      * @param page número de página
      * @param size tamaño de página
      * @return página de actividades
@@ -224,6 +267,7 @@ public interface ActividadService {
 
     /**
      * Obtiene todas las actividades más reservadas (paginado)
+     * 
      * @param page número de página
      * @param size tamaño de página
      * @return página de actividades
@@ -232,9 +276,10 @@ public interface ActividadService {
 
     /**
      * Obtiene todas las actividades personalizadas para el cliente (paginado)
+     * 
      * @param idCliente identificador del cliente
-     * @param page número de página
-     * @param size tamaño de página
+     * @param page      número de página
+     * @param size      tamaño de página
      * @return página de actividades
      */
     Page<Actividad> obtenerTodasParaTi(Long idCliente, int page, int size);
@@ -245,14 +290,13 @@ public interface ActividadService {
      * @param latUser latitud del usuario
      * @param lonUser longitud del usuario
      * @param radioKm radio de búsqueda en kilómetros (1-5)
-     * @param limite máximo de resultados a retornar
+     * @param limite  máximo de resultados a retornar
      * @return lista de ActividadCercanaDTO ordenadas por distancia
      */
     List<maineta.eta.dto.ActividadCercanaDTO> buscarCercanas(
-        double latUser,
-        double lonUser,
-        int radioKm,
-        int limite
-    );
+            double latUser,
+            double lonUser,
+            int radioKm,
+            int limite);
 
 }

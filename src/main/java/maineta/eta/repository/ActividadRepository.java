@@ -52,29 +52,87 @@ public interface ActividadRepository extends JpaRepository<Actividad, Long>, Jpa
     List<Object[]> contarActividadesPorCategorias(
             @Param("categoriaIds") List<Long> categoriaIds);
 
-    // Queries para personalización del home
+    // =========================================================================
+    // QUERIES PARA HOME / SECCIONES DESTACADAS
+    // =========================================================================
 
     /**
-     * Obtiene las actividades más populares (por número de favoritos)
+     * [LÍNEA 60] Actividades más populares por cantidad de favoritos.
+     * Diferente a "más vistas": aquí el criterio es intención de guardar, no solo
+     * curiosidad.
+     * Ordenadas por número de clientes que las marcaron como favoritas (DESC).
      */
-    @Query("SELECT a FROM Actividad a LEFT JOIN a.favoritos f GROUP BY a ORDER BY COUNT(f) DESC")
-    List<Actividad> findTop10ByOrderByFavoritosDesc();
+    @Query("""
+                SELECT a FROM Actividad a
+                LEFT JOIN a.favoritos f
+                GROUP BY a.idActividad
+                ORDER BY COUNT(f) DESC
+            """)
+    List<Actividad> findTop10MasGuardadasEnFavoritos(Pageable pageable);
 
     /**
-     * Obtiene las actividades con más vistas totales
+     * [LÍNEA 65] Actividades con más vistas totales (campo desnormalizado
+     * totalVistas).
+     * Sin cambios — ya es distinto del resto.
      */
     List<Actividad> findTop10ByOrderByTotalVistasDesc();
 
     /**
-     * Obtiene las actividades mejor calificadas
+     * Actividades mejor calificadas por promedio de estrellas (campo calificacion).
      */
     List<Actividad> findTop10ByOrderByCalificacionDesc();
 
     /**
-     * Obtiene las actividades con mejor rendimiento (basado en número de reservas)
+     * Actividades con mejor rendimiento: más reservas CONFIRMADAS o COMPLETADAS.
+     * A diferencia de findTop10MasReservadas (todas las reservas), esta filtra
+     * solo reservas exitosas para medir rendimiento real del colaborador.
      */
-    @Query("SELECT a FROM Actividad a LEFT JOIN a.reservas r GROUP BY a ORDER BY COUNT(r) DESC")
+    @Query("""
+                SELECT a FROM Actividad a
+                LEFT JOIN a.reservas r
+                WHERE r.estado IN ('Confirmada', 'Hecho')
+                GROUP BY a.idActividad
+                ORDER BY COUNT(r) DESC
+            """)
     List<Actividad> findTop10MejorRendimiento(Pageable pageable);
+
+    /**
+     * Actividades de la semana: las más reservadas en los últimos 7 días.
+     * Ideal para mostrar una sección "Tendencia esta semana" que se actualiza sola.
+     *
+     * @param inicioSemana LocalDateTime de inicio del rango (hace 7 días)
+     * @param finSemana    LocalDateTime de fin del rango (ahora)
+     */
+    @Query("""
+                SELECT a FROM Actividad a
+                LEFT JOIN a.reservas r
+                WHERE r.fechaReserva >= :inicioSemana
+                  AND r.fechaReserva <= :finSemana
+                GROUP BY a.idActividad
+                ORDER BY COUNT(r) DESC
+            """)
+    List<Actividad> findActividadesDeLaSemana(
+            @Param("inicioSemana") LocalDateTime inicioSemana,
+            @Param("finSemana") LocalDateTime finSemana,
+            Pageable pageable);
+
+    /**
+     * Actividad aleatoria para el widget "¿No sabes qué hacer?".
+     * Usa FUNCTION('RAND') compatible con MySQL en modo strict (GROUP BY
+     * correctness).
+     */
+    @Query("SELECT a FROM Actividad a ORDER BY FUNCTION('RAND')")
+    List<Actividad> findActividadAleatoria(Pageable pageable);
+
+    /**
+     * Todas las reservas (cualquier estado), paginado — para listados globales.
+     */
+    @Query("SELECT a FROM Actividad a LEFT JOIN a.reservas r GROUP BY a.idActividad ORDER BY COUNT(r) DESC")
+    List<Actividad> findTop10MasReservadas(Pageable pageable);
+
+    // =========================================================================
+    // QUERIES DE PERSONALIZACIÓN
+    // =========================================================================
 
     /**
      * Obtiene actividades similares por categoría e idioma excluyendo la actual
@@ -83,51 +141,34 @@ public interface ActividadRepository extends JpaRepository<Actividad, Long>, Jpa
             Long idCategoria, Long idIdioma, Long idActividad);
 
     /**
-     * Obtiene las actividades más reservadas
-     */
-    @Query("SELECT a FROM Actividad a LEFT JOIN a.reservas r GROUP BY a ORDER BY COUNT(r) DESC")
-    List<Actividad> findTop10MasReservadas(Pageable pageable);
-
-    /**
-     * Obtiene actividades personalizadas para el cliente basadas en sus categorías
-     * preferidas
+     * Actividades para el cliente basadas en sus categorías preferidas
      */
     @Query("SELECT a FROM Actividad a WHERE a.categoria IN :categorias ORDER BY a.calificacion DESC, a.createdAt DESC")
     List<Actividad> findByCategoriaInOrderByCalificacionDesc(
             @Param("categorias") Set<Categoria> categorias,
             Pageable pageable);
 
-    // Queries paginadas para vistas completas de colecciones
+    // =========================================================================
+    // QUERIES PAGINADAS PARA VISTAS COMPLETAS
+    // =========================================================================
 
-    /**
-     * Obtiene todas las actividades ordenadas por tendencia (versión paginada)
-     */
     Page<Actividad> findAllByOrderByTotalTendenciaDesc(Pageable pageable);
 
-    // Top 10 actividades por tendencia
     List<Actividad> findTop10ByOrderByTotalTendenciaDesc();
 
-    /**
-     * Obtiene todas las actividades ordenadas por vistas totales (versión paginada)
-     */
     Page<Actividad> findAllByOrderByTotalVistasDesc(Pageable pageable);
 
-    /**
-     * Obtiene todas las actividades más reservadas (versión paginada)
-     */
-    @Query("SELECT a FROM Actividad a LEFT JOIN a.reservas r GROUP BY a ORDER BY COUNT(r) DESC")
+    @Query("SELECT a FROM Actividad a LEFT JOIN a.reservas r GROUP BY a.idActividad ORDER BY COUNT(r) DESC")
     Page<Actividad> findAllMasReservadas(Pageable pageable);
 
-    /**
-     * Obtiene actividades personalizadas para el cliente basadas en sus categorías
-     * preferidas (versión paginada)
-     */
     @Query("SELECT a FROM Actividad a WHERE a.categoria IN :categorias ORDER BY a.calificacion DESC, a.createdAt DESC")
     Page<Actividad> findByCategoriaInOrderByCalificacionDescPaged(
             @Param("categorias") Set<Categoria> categorias,
             Pageable pageable);
 
-    // Queries para KPIs
+    // =========================================================================
+    // QUERIES PARA KPIs DEL COLABORADOR
+    // =========================================================================
 
     @Query("SELECT COUNT(a) FROM Actividad a WHERE a.colaborador.idColaborador = :idColaborador")
     Long contarActividadesPorColaborador(@Param("idColaborador") Long idColaborador);
@@ -155,7 +196,6 @@ public interface ActividadRepository extends JpaRepository<Actividad, Long>, Jpa
 
     /**
      * Busca actividades dentro de un bounding box geográfico.
-     * Excluye automáticamente actividades con latitud o longitud null.
      */
     List<Actividad> findByLatitudBetweenAndLongitudBetween(
             Double latMin,
