@@ -2,6 +2,7 @@ package maineta.eta.service;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -35,6 +36,8 @@ import maineta.eta.repository.ComentarioRepository;
 import maineta.eta.repository.DisponibilidadRepository;
 import maineta.eta.repository.IdiomaRepository;
 import maineta.eta.repository.ImagenActividadRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 🔹 Implementación de la interfaz ActividadService.
@@ -436,12 +439,13 @@ public class ActividadServiceImpl implements ActividadService {
 
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
 
-        org.springframework.data.jpa.domain.Specification<Actividad> spec = maineta.eta.specification.ActividadSpecification.filtrar(
-                titulo,
-                idiomaId,
-                categoriaId,
-                precioMin,
-                precioMax);
+        org.springframework.data.jpa.domain.Specification<Actividad> spec = maineta.eta.specification.ActividadSpecification
+                .filtrar(
+                        titulo,
+                        idiomaId,
+                        categoriaId,
+                        precioMin,
+                        precioMax);
 
         return actividadRepository.findAll(spec, pageable);
     }
@@ -480,11 +484,11 @@ public class ActividadServiceImpl implements ActividadService {
     @Transactional
     public void incrementarContadores(Long idActividad) {
         Actividad actividad = actividadRepository.findById(idActividad)
-            .orElseThrow(() -> new RuntimeException("Actividad no encontrada: " + idActividad));
-        
+                .orElseThrow(() -> new RuntimeException("Actividad no encontrada: " + idActividad));
+
         actividad.setTotalVistas(actividad.getTotalVistas() + 1);
         actividad.setTotalTendencia(actividad.getTotalTendencia() + 1);
-        
+
         actividadRepository.save(actividad);
     }
 
@@ -501,8 +505,7 @@ public class ActividadServiceImpl implements ActividadService {
     @Override
     public List<Actividad> obtenerMasReservadas() {
         return actividadRepository.findTop10MasReservadas(
-            org.springframework.data.domain.PageRequest.of(0, 10)
-        );
+                org.springframework.data.domain.PageRequest.of(0, 10));
     }
 
     @Override
@@ -510,20 +513,21 @@ public class ActividadServiceImpl implements ActividadService {
         if (cliente.getCategoriasPreferidas() == null || cliente.getCategoriasPreferidas().isEmpty()) {
             // Si no tiene categorías preferidas, devolver las mejor calificadas
             return actividadRepository.findAll(
-                org.springframework.data.domain.PageRequest.of(0, 10, 
-                    org.springframework.data.domain.Sort.by("calificacion").descending())
-            ).getContent();
+                    org.springframework.data.domain.PageRequest.of(0, 10,
+                            org.springframework.data.domain.Sort.by("calificacion").descending()))
+                    .getContent();
         }
-        
+
         return actividadRepository.findByCategoriaInOrderByCalificacionDesc(
-            cliente.getCategoriasPreferidas(),
-            org.springframework.data.domain.PageRequest.of(0, 10)
-        );
+                cliente.getCategoriasPreferidas(),
+                org.springframework.data.domain.PageRequest.of(0, 10));
     }
 
     @Override
     public List<Actividad> obtenerActividadesSimilares(Long idCategoria, Long idIdioma, Long idActividad) {
-        return actividadRepository.findTop3ByCategoria_IdCategoriaAndIdioma_IdIdiomaAndIdActividadNotOrderByCalificacionDesc(idCategoria, idIdioma, idActividad);
+        return actividadRepository
+                .findTop3ByCategoria_IdCategoriaAndIdioma_IdIdiomaAndIdActividadNotOrderByCalificacionDesc(idCategoria,
+                        idIdioma, idActividad);
     }
 
     @Override
@@ -547,26 +551,25 @@ public class ActividadServiceImpl implements ActividadService {
     @Override
     public Page<Actividad> obtenerTodasParaTi(Long idCliente, int page, int size) {
         Optional<Cliente> clienteOpt = clienteRepository.findById(idCliente);
-        
+
         if (clienteOpt.isEmpty()) {
             // Si no existe el cliente, devolver las mejor calificadas
             Pageable pageable = PageRequest.of(page, size, Sort.by("calificacion").descending());
             return actividadRepository.findAll(pageable);
         }
-        
+
         Cliente cliente = clienteOpt.get();
-        
+
         if (cliente.getCategoriasPreferidas() == null || cliente.getCategoriasPreferidas().isEmpty()) {
             // Si no tiene categorías preferidas, devolver las mejor calificadas
             Pageable pageable = PageRequest.of(page, size, Sort.by("calificacion").descending());
             return actividadRepository.findAll(pageable);
         }
-        
+
         Pageable pageable = PageRequest.of(page, size);
         return actividadRepository.findByCategoriaInOrderByCalificacionDescPaged(
-            cliente.getCategoriasPreferidas(),
-            pageable
-        );
+                cliente.getCategoriasPreferidas(),
+                pageable);
     }
 
     @Override
@@ -580,19 +583,18 @@ public class ActividadServiceImpl implements ActividadService {
 
         // 2. Obtener candidatas desde el bounding box (excluye null automáticamente)
         List<Actividad> candidatas = actividadRepository.findByLatitudBetweenAndLongitudBetween(
-            latMin, latMax, lonMin, lonMax
-        );
+                latMin, latMax, lonMin, lonMax);
 
         // 3. Calcular distancia real con Haversine y filtrar por radio
         List<ActividadConDistancia> actividadesConDistancia = candidatas.stream()
-            .map(actividad -> {
-                double distanciaKm = haversine(latUser, lonUser, actividad.getLatitud(), actividad.getLongitud());
-                return new ActividadConDistancia(actividad, distanciaKm);
-            })
-            .filter(acd -> acd.distanciaKm <= radioKm)
-            .sorted((a, b) -> Double.compare(a.distanciaKm, b.distanciaKm))
-            .limit(limite)
-            .collect(Collectors.toList());
+                .map(actividad -> {
+                    double distanciaKm = haversine(latUser, lonUser, actividad.getLatitud(), actividad.getLongitud());
+                    return new ActividadConDistancia(actividad, distanciaKm);
+                })
+                .filter(acd -> acd.distanciaKm <= radioKm)
+                .sorted((a, b) -> Double.compare(a.distanciaKm, b.distanciaKm))
+                .limit(limite)
+                .collect(Collectors.toList());
 
         if (actividadesConDistancia.isEmpty()) {
             return new ArrayList<>();
@@ -600,51 +602,52 @@ public class ActividadServiceImpl implements ActividadService {
 
         // 4. Extraer IDs y obtener conteo de comentarios batch
         List<Long> ids = actividadesConDistancia.stream()
-            .map(acd -> acd.actividad.getIdActividad())
-            .collect(Collectors.toList());
-        
+                .map(acd -> acd.actividad.getIdActividad())
+                .collect(Collectors.toList());
+
         Map<Long, Integer> comentariosPorActividad = comentarioService.contarComentariosPorActividades(ids);
 
         // 5. Mapear a ActividadCercanaDTO
         return actividadesConDistancia.stream()
-            .map(acd -> {
-                Actividad a = acd.actividad;
-                ActividadCercanaDTO dto = new ActividadCercanaDTO();
-                
-                dto.setIdActividad(a.getIdActividad());
-                dto.setTitulo(a.getTitulo());
-                
-                // Generar slug a partir del título (mismo patrón que Thymeleaf)
-                String slug = a.getTitulo().toLowerCase()
-                    .replaceAll("[^a-z0-9\\s-]", "")
-                    .replaceAll("\\s+", "-")
-                    .replaceAll("-+", "-");
-                dto.setSlug(slug);
-                
-                dto.setImagen(a.getImagen());
-                
-                // Calcular precio consumidor con UsuarioHelper
-                BigDecimal precioConsumidor = usuarioHelper.CalcularPrecioConsumidor(a.getPrecio());
-                dto.setPrecioConsumidor(precioConsumidor);
-                
-                dto.setCalificacion(a.getCalificacion());
-                dto.setCategoriaNombre(a.getCategoria() != null ? a.getCategoria().getNombre() : null);
-                dto.setIdiomaNombre(a.getIdioma() != null ? a.getIdioma().getNombre() : null);
-                dto.setLatitud(a.getLatitud());
-                dto.setLongitud(a.getLongitud());
-                
-                // Redondear distancia a 2 decimales
-                dto.setDistanciaKm(Math.round(acd.distanciaKm * 100.0) / 100.0);
-                
-                dto.setTotalComentarios(comentariosPorActividad.getOrDefault(a.getIdActividad(), 0));
-                
-                return dto;
-            })
-            .collect(Collectors.toList());
+                .map(acd -> {
+                    Actividad a = acd.actividad;
+                    ActividadCercanaDTO dto = new ActividadCercanaDTO();
+
+                    dto.setIdActividad(a.getIdActividad());
+                    dto.setTitulo(a.getTitulo());
+
+                    // Generar slug a partir del título (mismo patrón que Thymeleaf)
+                    String slug = a.getTitulo().toLowerCase()
+                            .replaceAll("[^a-z0-9\\s-]", "")
+                            .replaceAll("\\s+", "-")
+                            .replaceAll("-+", "-");
+                    dto.setSlug(slug);
+
+                    dto.setImagen(a.getImagen());
+
+                    // Calcular precio consumidor con UsuarioHelper
+                    BigDecimal precioConsumidor = usuarioHelper.CalcularPrecioConsumidor(a.getPrecio());
+                    dto.setPrecioConsumidor(precioConsumidor);
+
+                    dto.setCalificacion(a.getCalificacion());
+                    dto.setCategoriaNombre(a.getCategoria() != null ? a.getCategoria().getNombre() : null);
+                    dto.setIdiomaNombre(a.getIdioma() != null ? a.getIdioma().getNombre() : null);
+                    dto.setLatitud(a.getLatitud());
+                    dto.setLongitud(a.getLongitud());
+
+                    // Redondear distancia a 2 decimales
+                    dto.setDistanciaKm(Math.round(acd.distanciaKm * 100.0) / 100.0);
+
+                    dto.setTotalComentarios(comentariosPorActividad.getOrDefault(a.getIdActividad(), 0));
+
+                    return dto;
+                })
+                .collect(Collectors.toList());
     }
 
     /**
-     * Calcula la distancia entre dos puntos geográficos usando la fórmula de Haversine.
+     * Calcula la distancia entre dos puntos geográficos usando la fórmula de
+     * Haversine.
      * 
      * @param lat1 latitud del punto 1
      * @param lon1 longitud del punto 1
@@ -657,8 +660,8 @@ public class ActividadServiceImpl implements ActividadService {
         double dLat = Math.toRadians(lat2 - lat1);
         double dLon = Math.toRadians(lon2 - lon1);
         double a = Math.sin(dLat / 2) * Math.sin(dLat / 2)
-                 + Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2))
-                 * Math.sin(dLon / 2) * Math.sin(dLon / 2);
+                + Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2))
+                        * Math.sin(dLon / 2) * Math.sin(dLon / 2);
         return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     }
 
@@ -673,6 +676,73 @@ public class ActividadServiceImpl implements ActividadService {
             this.actividad = actividad;
             this.distanciaKm = distanciaKm;
         }
+    }
+
+    @Override
+    public List<Actividad> getMasGuardadasEnFavoritos(int limite) {
+        /*
+         * log.debug("Obteniendo top {} actividades más guardadas en favoritos",
+         * limite);
+         */
+        return actividadRepository.findTop10MasGuardadasEnFavoritos(
+                PageRequest.of(0, limite));
+    }
+
+    @Override
+    public List<Actividad> getMejorCalificadas(int limite) {
+        /* log.debug("Obteniendo top {} actividades mejor calificadas", limite); */
+        // Spring Data method — devuelve exactamente N (hardcodeado como Top10)
+        // Para respetar el límite dinámico usamos la versión con paginación.
+        return actividadRepository.findAllByOrderByTotalTendenciaDesc(
+                PageRequest.of(0, limite)).getContent();
+        // NOTA: si quieres estrictamente calificacion (campo Double), reemplaza por:
+        // return actividadRepository.findTop10ByOrderByCalificacionDesc()
+        // .stream().limit(limite).toList();
+    }
+
+    @Override
+    public List<Actividad> getMejorRendimiento(int limite) {
+        /*
+         * log.
+         * debug("Obteniendo top {} actividades con mejor rendimiento (reservas exitosas)"
+         * , limite);
+         */
+        return actividadRepository.findTop10MejorRendimiento(
+                PageRequest.of(0, limite));
+    }
+
+    // -------------------------------------------------------------------------
+    // Actividades de la semana (últimos 7 días)
+    // -------------------------------------------------------------------------
+
+    @Override
+    public List<Actividad> getActividadesDeLaSemana(int limite) {
+        LocalDateTime ahora = LocalDateTime.now();
+        LocalDateTime hace7Dias = ahora.minusDays(7);
+        /*
+         * log.debug("Obteniendo top {} actividades de la semana ({} → {})", limite,
+         * hace7Dias, ahora);
+         */
+        return actividadRepository.findActividadesDeLaSemana(
+                hace7Dias,
+                ahora,
+                PageRequest.of(0, limite));
+    }
+
+    // -------------------------------------------------------------------------
+    // Actividad aleatoria
+    // -------------------------------------------------------------------------
+
+    @Override
+    public Actividad getActividadAleatoria() {
+        /* log.debug("Obteniendo una actividad aleatoria"); */
+        List<Actividad> resultado = actividadRepository.findActividadAleatoria(
+                PageRequest.of(0, 1));
+        if (resultado.isEmpty()) {
+            System.out.print("No se encontraron actividades para el widget aleatorio");
+            return null;
+        }
+        return resultado.get(0);
     }
 
 }

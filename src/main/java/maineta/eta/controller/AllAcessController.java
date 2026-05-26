@@ -92,6 +92,9 @@ public class AllAcessController {
                 this.reservaService = reservaService;
         }
 
+        private static final int LIMITE_HOME = 10;
+        private static final int LIMITE_SEMANA = 6; // sección más pequeña en la UI
+
         // 🔹 Endpoint para mostrar la página de login
         @GetMapping("/login")
         public String iniciarSesion(@RequestParam(value = "role", required = false) String role, Model model) {
@@ -434,9 +437,17 @@ public class AllAcessController {
                                 // No es cliente, ignorar
                         }
                 }
+
                 model.addAttribute("favoritosIds", favoritosIds);
-                model.addAttribute("tendencias", actividadService.obtenerTendencias());
+                model.addAttribute("tendencias", actividadService.getMejorCalificadas(LIMITE_HOME));
                 model.addAttribute("masVistas", actividadService.obtenerMasVistas());
+                model.addAttribute("actividadesDeLaSemana",
+                                actividadService.getActividadesDeLaSemana(LIMITE_SEMANA));
+                model.addAttribute("actividadAleatoria",
+                                mapToDTO(actividadService.getActividadAleatoria()));
+                model.addAttribute("actividadesMasGuardadas",
+                                actividadService.getMasGuardadasEnFavoritos(LIMITE_HOME));
+
                 model.addAttribute("masReservadas", actividadService.obtenerMasReservadas());
                 // Si el usuario es cliente autenticado y completó onboarding, agregar listas
                 // personalizadas
@@ -531,6 +542,46 @@ public class AllAcessController {
                 model.addAttribute("pagina", "terminos");
                 usuarioHelper.agregarInfoUsuarioModel(model, auth);
                 return "componentes/terminos-condiciones";
+        }
+
+        private maineta.eta.dto.ActividadDTO mapToDTO(Actividad actividad) {
+                if (actividad == null) {
+                        return null;
+                }
+                maineta.eta.dto.ActividadDTO dto = new maineta.eta.dto.ActividadDTO();
+                dto.setIdActividad(actividad.getIdActividad());
+                dto.setTitulo(actividad.getTitulo());
+                dto.setDescripcion(actividad.getDescripcion());
+                dto.setCalificacion(actividad.getCalificacion());
+                dto.setUbicacion(actividad.getUbicacion());
+                dto.setImagen(actividad.getImagen());
+                dto.setPrecio(actividad.getPrecio());
+                dto.setPrecioConsumidor(usuarioHelper.CalcularPrecioConsumidor(actividad.getPrecio()));
+                if (actividad.getCategoria() != null) {
+                        dto.setIdCategoria(actividad.getCategoria().getIdCategoria());
+                        dto.setNombreCategoria(actividad.getCategoria().getNombre());
+                } else {
+                        dto.setNombreCategoria("Sin categoría");
+                }
+                if (actividad.getIdioma() != null) {
+                        dto.setIdIdioma(actividad.getIdioma().getIdIdioma());
+                        dto.setNombreIdioma(actividad.getIdioma().getNombre());
+                        dto.setCodigoIdioma(actividad.getIdioma().getCodigo());
+                } else {
+                        dto.setNombreIdioma("Español");
+                }
+                if (actividad.getColaborador() != null) {
+                        dto.setIdColaborador(actividad.getColaborador().getIdColaborador());
+                }
+                dto.setUrl("/actividad/" + usuarioHelper.generarTituloUrl(actividad.getTitulo()) + "-" + actividad.getIdActividad());
+                return dto;
+        }
+
+        // New endpoint to fetch a random activity as JSON for the "Sorpréndete" widget
+        @GetMapping("/actividades/aleatoria")
+        @ResponseBody
+        public maineta.eta.dto.ActividadDTO getActividadAleatoriaJson() {
+                return mapToDTO(actividadService.getActividadAleatoria());
         }
 
         @PostMapping("/actividades/buscar")

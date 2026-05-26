@@ -38,7 +38,8 @@ public class SecurityConfig {
         @Autowired
         private maineta.eta.config.CustomAuthenticationFailureHandler customAuthenticationFailureHandler;
 
-        // Servicio que implementa UserDetailsService para cargar usuarios desde base de datos
+        // Servicio que implementa UserDetailsService para cargar usuarios desde base de
+        // datos
         @Autowired
         private UsuarioService usuarioService;
 
@@ -72,7 +73,8 @@ public class SecurityConfig {
         }
 
         /**
-         * Bean que proporciona el AuthenticationManager, necesario para realizar autenticaciones manuales.
+         * Bean que proporciona el AuthenticationManager, necesario para realizar
+         * autenticaciones manuales.
          */
         @Bean
         public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
@@ -81,7 +83,8 @@ public class SecurityConfig {
 
         /**
          * Bean que mapea las autoridades de usuario.
-         * En este caso, asegura que todo usuario autenticado tenga también el rol "ROLE_USER".
+         * En este caso, asegura que todo usuario autenticado tenga también el rol
+         * "ROLE_USER".
          */
         @Bean
         public GrantedAuthoritiesMapper userAuthoritiesMapper() {
@@ -93,107 +96,130 @@ public class SecurityConfig {
         }
 
         /**
-         * Configura toda la seguridad de la aplicación: rutas públicas, roles requeridos, login, logout, sesiones, etc.
+         * Configura toda la seguridad de la aplicación: rutas públicas, roles
+         * requeridos, login, logout, sesiones, etc.
          */
         @Bean
         public SecurityFilterChain filterChain(HttpSecurity http, AuthenticationProvider auth,
                         SessionRegistry sessionRegistry) throws Exception {
                 http
-                        // Deshabilita CSRF (útil en apps REST o si se maneja manualmente)
-                        .csrf(csrf -> csrf.disable())
+                                // Deshabilita CSRF (útil en apps REST o si se maneja manualmente)
+                                .csrf(csrf -> csrf.disable())
 
-                        // Configura qué URLs están permitidas sin autenticación y qué roles se requieren
-                        .authorizeHttpRequests(requests -> requests
-                                .requestMatchers(
-                                        "/registro/**",
-                                        "/actividad/**",
-                                        "/login",
-                                        "/css/**",
-                                        "/404",
-                                        "/terminos-condiciones",
-                                        "/403",
-                                        "/actividades/**",
-                                        "/api/**",
-                                        "/top-colaboradores",
-                                        "/js/**",
-                                        "/registro/**",
-                                        "/assets/**",
-                                        "/fonts/**",
-                                        "/colaboradores/**",
-                                        "/images/**",
-                                        "/uploads/**",
-                                        "/chat/**",
-                                        "/cliente/pago/confirmacion") // ✅ Webhook de ePayco (público, server-to-server)
-                                .permitAll() // Rutas públicas (login, recursos estáticos, páginas de error, etc.)
-                                .requestMatchers("/").permitAll() // La raíz es pública, pero puede controlarse desde el controller
+                                // Configura qué URLs están permitidas sin autenticación y qué roles se
+                                // requieren
+                                .authorizeHttpRequests(requests -> requests
+                                                .requestMatchers(
+                                                                "/registro/**",
+                                                                "/actividad/**",
+                                                                "/login",
+                                                                "/css/**",
+                                                                "/404",
+                                                                "/terminos-condiciones",
+                                                                "/403",
+                                                                "/actividades/**",
+                                                                "/api/**",
+                                                                "/top-colaboradores",
+                                                                "/actividades/aleatoria",
+                                                                "/js/**",
+                                                                "/registro/**",
+                                                                "/assets/**",
+                                                                "/fonts/**",
+                                                                "/colaboradores/**",
+                                                                "/images/**",
+                                                                "/uploads/**",
+                                                                "/chat/**",
+                                                                "/cliente/pago/confirmacion") // ✅ Webhook de ePayco
+                                                                                              // (público,
+                                                                                              // server-to-server)
+                                                .permitAll() // Rutas públicas (login, recursos estáticos, páginas de
+                                                             // error, etc.)
+                                                .requestMatchers("/").permitAll() // La raíz es pública, pero puede
+                                                                                  // controlarse desde el controller
 
-                                // Rutas con permisos por rol
-                                .requestMatchers("/actividades")
-                                .hasAnyAuthority("ROLE_CLIENTE", "ROLE_COLABORADOR")
+                                                // Rutas con permisos por rol
+                                                .requestMatchers("/actividades")
+                                                .hasAnyAuthority("ROLE_CLIENTE", "ROLE_COLABORADOR")
 
-                                // Solo colaboradores pueden crear (POST) actividades
-                                .requestMatchers(HttpMethod.POST, "/actividades")
-                                .hasAuthority("ROLE_COLABORADOR")
+                                                // Solo colaboradores pueden crear (POST) actividades
+                                                .requestMatchers(HttpMethod.POST, "/actividades")
+                                                .hasAuthority("ROLE_COLABORADOR")
 
-                                // Rutas de Planes del Día
-                                .requestMatchers("/cliente/planes/**").hasAuthority("ROLE_CLIENTE")
-                                .requestMatchers("/colaborador/planes/**").hasAuthority("ROLE_COLABORADOR")
-                                .requestMatchers("/planes/**").permitAll()
+                                                // Rutas de Planes del Día
+                                                .requestMatchers("/cliente/planes/**").hasAuthority("ROLE_CLIENTE")
+                                                .requestMatchers("/colaborador/planes/**")
+                                                .hasAuthority("ROLE_COLABORADOR")
+                                                .requestMatchers("/planes/**").permitAll()
 
-                                // Secciones exclusivas para clientes
-                                .requestMatchers("/cliente/chats/**").hasAuthority("ROLE_CLIENTE")
-                                .requestMatchers("/cliente/**","/comentarios/**").hasAuthority("ROLE_CLIENTE")
-                                .requestMatchers("/admin/**").hasAuthority("ROLE_ADMIN")
+                                                // Secciones exclusivas para clientes
+                                                .requestMatchers("/cliente/chats/**").hasAuthority("ROLE_CLIENTE")
+                                                .requestMatchers("/cliente/**", "/comentarios/**")
+                                                .hasAuthority("ROLE_CLIENTE")
+                                                .requestMatchers("/admin/**").hasAuthority("ROLE_ADMIN")
 
-                                // Secciones exclusivas para colaboradores
-                                .requestMatchers("/colaborador/chats/**").hasAuthority("ROLE_COLABORADOR")
-                                .requestMatchers("/colaborador/**", "/colaborador/dashboard", "/actividades/**")
-                                .hasAuthority("ROLE_COLABORADOR")
+                                                // Secciones exclusivas para colaboradores
+                                                .requestMatchers("/colaborador/chats/**")
+                                                .hasAuthority("ROLE_COLABORADOR")
+                                                .requestMatchers("/colaborador/**", "/colaborador/dashboard",
+                                                                "/actividades/**")
+                                                .hasAuthority("ROLE_COLABORADOR")
 
-                                // Toda otra solicitud requiere autenticación
-                                .anyRequest().authenticated())
+                                                // Toda otra solicitud requiere autenticación
+                                                .anyRequest().authenticated())
 
-                        // Configura el formulario de login
-                        .formLogin(form -> form
-                                .loginPage("/login") // Página de login personalizada
-                                .successHandler(customAuthenticationSuccessHandler) // Manejador de éxito personalizado
-                                .failureHandler(customAuthenticationFailureHandler)
-                                .permitAll())
+                                // Configura el formulario de login
+                                .formLogin(form -> form
+                                                .loginPage("/login") // Página de login personalizada
+                                                .successHandler(customAuthenticationSuccessHandler) // Manejador de
+                                                                                                    // éxito
+                                                                                                    // personalizado
+                                                .failureHandler(customAuthenticationFailureHandler)
+                                                .permitAll())
 
-                        // Configura el logout
-                        .logout(logout -> logout
-                                .logoutUrl("/logout") // URL para cerrar sesión
-                                .logoutSuccessUrl("/?logout")
-                                .invalidateHttpSession(true) // Invalida la sesión
-                                .clearAuthentication(true) // Limpia la autenticación
-                                .permitAll())
+                                // Configura el logout
+                                .logout(logout -> logout
+                                                .logoutUrl("/logout") // URL para cerrar sesión
+                                                .logoutSuccessUrl("/?logout")
+                                                .invalidateHttpSession(true) // Invalida la sesión
+                                                .clearAuthentication(true) // Limpia la autenticación
+                                                .permitAll())
 
-                        // Configura login con OAuth2 (por ejemplo, Google)
-                        .oauth2Login(oauth -> oauth
-                                .loginPage("/login") // Página de login compartida
-                                .userInfoEndpoint(ui -> ui.userAuthoritiesMapper(userAuthoritiesMapper())) // Mapeo de roles
-                                .defaultSuccessUrl("/", true)) // Redirección tras login exitoso
-                        .exceptionHandling(ex -> ex
-                                .accessDeniedPage("/403") // Para errores de autorización (403)
-                                // Se configura DENTRO del bloque 'exceptionHandling'
-                                .authenticationEntryPoint((request, response, authException) -> {
-                                    // Redirigir al usuario que NO está autenticado e intenta acceder a una ruta protegida
-                                    String redirectUrl = "/login?registrarse";
-                                    response.sendRedirect(redirectUrl);
-                                })
-                        )
-                        // Gestión de sesiones
-                        .sessionManagement(sess -> sess
-                                .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED) // Crea sesión solo si es necesaria
-                                .sessionFixation(SessionManagementConfigurer.SessionFixationConfigurer::migrateSession) // ✅ Opción más limpia y moderna
-                                .maximumSessions(1) // Solo se permite una sesión activa por usuario
-                                .maxSessionsPreventsLogin(false) // Si hay una sesión activa, expira la anterior en lugar de bloquear
-                                .expiredUrl("/login?expired") // Redirección si la sesión expiró
-                                .sessionRegistry(sessionRegistry)
-                        );
+                                // Configura login con OAuth2 (por ejemplo, Google)
+                                .oauth2Login(oauth -> oauth
+                                                .loginPage("/login") // Página de login compartida
+                                                .userInfoEndpoint(
+                                                                ui -> ui.userAuthoritiesMapper(userAuthoritiesMapper())) // Mapeo
+                                                                                                                         // de
+                                                                                                                         // roles
+                                                .defaultSuccessUrl("/", true)) // Redirección tras login exitoso
+                                .exceptionHandling(ex -> ex
+                                                .accessDeniedPage("/403") // Para errores de autorización (403)
+                                                // Se configura DENTRO del bloque 'exceptionHandling'
+                                                .authenticationEntryPoint((request, response, authException) -> {
+                                                        // Redirigir al usuario que NO está autenticado e intenta
+                                                        // acceder a una ruta protegida
+                                                        String redirectUrl = "/login?registrarse";
+                                                        response.sendRedirect(redirectUrl);
+                                                }))
+                                // Gestión de sesiones
+                                .sessionManagement(sess -> sess
+                                                .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED) // Crea sesión
+                                                                                                          // solo si es
+                                                                                                          // necesaria
+                                                .sessionFixation(
+                                                                SessionManagementConfigurer.SessionFixationConfigurer::migrateSession) // ✅
+                                                                                                                                       // Opción
+                                                                                                                                       // más
+                                                                                                                                       // limpia
+                                                                                                                                       // y
+                                                                                                                                       // moderna
+                                                .maximumSessions(1) // Solo se permite una sesión activa por usuario
+                                                .maxSessionsPreventsLogin(false) // Si hay una sesión activa, expira la
+                                                                                 // anterior en lugar de bloquear
+                                                .expiredUrl("/login?expired") // Redirección si la sesión expiró
+                                                .sessionRegistry(sessionRegistry));
 
                 return http.build(); // Devuelve el filtro de seguridad construido
         }
 
 }
-

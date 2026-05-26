@@ -26,6 +26,7 @@ public class ActividadDTO {
     private String codigoIdioma;
     private LocalDateTime createdAt;
     private long cantidadComentario;
+    private String url;
          // ID del dueño
 
     public BigDecimal getPrecioConsumidorSafe() {
