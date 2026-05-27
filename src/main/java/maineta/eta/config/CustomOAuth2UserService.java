@@ -77,7 +77,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         clienteRepository.findByUsuario(usuario).orElseGet(() -> {
             Cliente nuevoCliente = new Cliente();
             nuevoCliente.setUsuario(usuario);
-            nuevoCliente.setCedula(0L); // Valor temporal, deberá completarse después
+            nuevoCliente.setCedula(null); // Sin cédula para usuarios OAuth hasta que la completen
             nuevoCliente.setPaisOrigen(paisFinal);
             nuevoCliente.setOnboardingCompletado(false);
             return clienteRepository.save(nuevoCliente);
