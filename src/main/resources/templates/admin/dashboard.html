@@ -328,14 +328,14 @@
                                 </td>
                             </tr>
                             <tr th:each="reserva : ${reservacionesRecientes}">
-                                <td th:text="${reserva.idReserva}"></td>
-                                <td th:text="${reserva.cliente.usuario.nombre}"></td>
-                                <td th:text="${reserva.actividad.titulo}"></td>
-                                <td th:text="${#temporals.format(reserva.fechaReserva, 'dd/MM/yyyy')}"></td>
-                                <td>
+                                <td data-label="ID Reserva" th:text="${reserva.idReserva}"></td>
+                                <td data-label="Cliente" th:text="${reserva.cliente.usuario.nombre}"></td>
+                                <td data-label="Actividad" th:text="${reserva.actividad.titulo}"></td>
+                                <td data-label="Fecha" th:text="${#temporals.format(reserva.fechaReserva, 'dd/MM/yyyy')}"></td>
+                                <td data-label="Monto">
                                     <span th:text="'$' + ${#numbers.formatInteger(reserva.precioTotalSafe, 3, 'POINT')}"></span>
                                 </td>
-                                <td>
+                                <td data-label="Estado">
                                     <span class="status-badge confirmed">Confirmada</span>
                                 </td>
                             </tr>
@@ -409,13 +409,13 @@
                                 </td>
                             </tr>
                             <tr th:each="actividad : ${actividadesRecientes}">
-                                <td th:text="${actividad.titulo}"></td>
-                                <td th:text="${actividad.colaborador.usuario.nombre}"></td>
-                                <td th:text="${#temporals.format(actividad.createdAt, 'dd/MM/yyyy')}"></td>
-                                <td>
+                                <td data-label="Actividad" th:text="${actividad.titulo}"></td>
+                                <td data-label="Colaborador" th:text="${actividad.colaborador.usuario.nombre}"></td>
+                                <td data-label="Fecha Creación" th:text="${#temporals.format(actividad.createdAt, 'dd/MM/yyyy')}"></td>
+                                <td data-label="Precio">
                                     <span th:text="'$' + ${#numbers.formatInteger(actividad.precio, 3, 'POINT')}"></span>
                                 </td>
-                                <td th:text="${actividad.categoria.nombre}"></td>
+                                <td data-label="Categoría" th:text="${actividad.categoria.nombre}"></td>
                             </tr>
                         </tbody>
                     </table>

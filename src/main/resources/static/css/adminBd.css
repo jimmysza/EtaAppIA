@@ -13,9 +13,10 @@
     width: 100%;
     max-width: 100%;
     background: #F2F2F4;
-    height: 100vh;
+    min-height: 100vh;
     padding: 0;
     display: flex;
+    flex-direction: row;
     padding-top: 8px;
     margin: 0;
 }
@@ -28,10 +29,12 @@
     /*
     position: fixed;
     top: 0px;*/
-    height: 100%;
+    min-height: 100%;
     align-items: flex-start;
     padding: 0;
     padding-top: 20px;
+    overflow-y: auto;
+    flex-shrink: 0;
 }
 
 
@@ -263,6 +266,15 @@
     border: 1px solid #E6E6E4;
 }
 
+/* Ensure main content is not covered by fixed bottom nav on small screens */
+@media screen and (max-width: 767px) {
+    .main-content {
+        /* add extra bottom padding equal to sidebar height + spacing */
+        padding-bottom: calc(70px + 32px);
+        /* account for iPhone safe area */
+        padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 70px + 16px);
+    }
+}
 .header_db {
     width: 100%;
     margin: 0 auto;
@@ -2044,11 +2056,19 @@ Tablet
    ===================== */
 @media screen and (max-width: 767px) {
 
+    html {
+        font-size: 14px;
+    }
+
+    body {
+        overflow-x: hidden;
+    }
+
     .container-manager {
         width: 100%;
         max-width: 100%;
         background: #F2F2F4;
-        height: 100vh;
+        min-height: 100vh;
         padding: 0;
         padding-bottom: 70px;
         display: flex;
@@ -2058,12 +2078,123 @@ Tablet
     }
 
     .main-content {
-        padding: 15px;
+        padding: 12px;
         border-radius: 0;
         border-top: none;
-        height: 100%;
+        flex: 1;
+        min-height: calc(100vh - 70px);
         overflow-y: auto;
         overflow-x: hidden;
+        box-sizing: border-box;
+    }
+
+    .header_db {
+        height: auto;
+        flex-wrap: wrap;
+        gap: 8px;
+        padding: 8px 0;
+    }
+
+    .breadcrumbs {
+        font-size: 12px !important;
+    }
+
+    .filtro_db {
+        flex-direction: column;
+        gap: 12px;
+        padding: 12px 0;
+        margin: 15px 0;
+    }
+
+    .Identifier-Dashboard {
+        width: 100%;
+        gap: 10px;
+    }
+
+    .svg-contain {
+        padding: 8px;
+        min-width: 48px;
+        min-height: 48px;
+    }
+
+    .id-content h1 {
+        font-size: 18px;
+    }
+
+    .filtro-function {
+        width: 100%;
+        padding: 8px 12px;
+        font-size: 11px;
+    }
+
+    /* Tablas responsive */
+    .table_db {
+        max-width: 100%;
+        margin: 0 auto;
+        padding: 0;
+    }
+
+    .table_db table {
+        font-size: 11px;
+        border-radius: 6px;
+    }
+
+    .table_db table thead {
+        display: none;
+    }
+
+    .table_db table tbody tr {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        margin-bottom: 12px;
+        border: 1px solid #e5e2e2;
+        border-radius: 6px;
+        padding: 12px;
+        background: white;
+    }
+
+    .table_db table tbody td {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 4px 0;
+        max-width: 100%;
+        border: none;
+    }
+
+    .table_db table tbody td::before {
+        content: attr(data-label);
+        font-weight: 600;
+        color: #7da0ca;
+        margin-right: 10px;
+    }
+
+    .cell-content {
+        max-width: 100%;
+        overflow: visible;
+        white-space: normal;
+        word-break: break-word;
+    }
+
+    /* Grillas responsive */
+    .collaborators-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .powerbi-wrapper {
+        padding-bottom: 100%;
+    }
+
+    /* Filtros responsive */
+    .date-filter-container {
+        flex-direction: column;
+    }
+
+    .date-filter-container input,
+    .date-filter-container select,
+    .date-filter-container button {
+        width: 100%;
     }
 
     /* Reglas para el nuevo sistema de sidebar (.sb-root) */
@@ -2143,6 +2274,7 @@ Tablet
         border-top: 1px solid #e5e2e2;
         align-items: center;
         justify-content: center;
+        min-height: 70px;
     }
 
     .logo-manager {
@@ -2174,6 +2306,7 @@ Tablet
         width: 100%;
         justify-content: space-around;
         align-items: center;
+        gap: 0;
     }
 
     .menu ul li {
@@ -2182,6 +2315,8 @@ Tablet
         align-items: center;
         justify-content: center;
         height: 100%;
+        width: auto;
+        flex: 1;
     }
 
     .menu-link {
@@ -2248,4 +2383,168 @@ Tablet
         -webkit-overflow-scrolling: touch;
         margin-bottom: 1rem;
     }
+
+    /* Botones responsive */
+    .table-action-btn {
+        padding: 0.4rem 0.8rem;
+        font-size: 0.75rem;
+        gap: 0.2rem;
+    }
+
+    /* Cards responsive */
+    .dashboard-section {
+        margin: 15px auto;
+        padding: 12px;
+        border-radius: 8px;
+    }
+
+    .section-title {
+        font-size: 16px;
+        margin-bottom: 12px;
+    }
+
+    /* Paginación responsive */
+    .paginacion {
+        font-size: 11px;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .btns-paginacion {
+        gap: 8px;
+    }
+
+    .btns-paginacion a {
+        padding: 2px 6px;
+        font-size: 11px;
+    }
+
+    .input-paginacion {
+        width: 24px;
+        height: 24px;
+        font-size: 11px;
+    }
+
+}
+
+/* =====================
+   Celular Pequeño (≤480px)
+   ===================== */
+@media screen and (max-width: 480px) {
+
+    html {
+        font-size: 13px;
+    }
+
+    .main-content {
+        padding: 8px;
+    }
+
+    .header_db {
+        gap: 4px;
+    }
+
+    .breadcrumbs {
+        font-size: 11px !important;
+    }
+
+    .Identifier-Dashboard {
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .svg-contain {
+        padding: 6px;
+        min-width: 40px;
+        min-height: 40px;
+    }
+
+    .id-content h1 {
+        font-size: 16px;
+    }
+
+    /* Tablas aún más pequeñas */
+    .table_db table {
+        font-size: 10px;
+    }
+
+    .table_db table tbody td {
+        font-size: 10px;
+        gap: 4px;
+    }
+
+    .table_db table tbody td::before {
+        font-size: 9px;
+        margin-right: 5px;
+    }
+
+    .table-action-btn {
+        padding: 0.3rem 0.6rem;
+        font-size: 10px;
+        gap: 0.15rem;
+    }
+
+    .filtro_db {
+        gap: 8px;
+    }
+
+    .filtro-function {
+        width: 100%;
+        padding: 6px 10px;
+        font-size: 10px;
+    }
+
+    .dashboard-section {
+        margin: 10px auto;
+        padding: 10px;
+    }
+
+    .section-title {
+        font-size: 14px;
+        gap: 6px;
+    }
+
+    .section-title svg {
+        width: 18px;
+        height: 18px;
+    }
+
+    .paginacion {
+        font-size: 10px;
+        flex-direction: column;
+    }
+
+    .copyright_db {
+        flex-direction: column;
+        gap: 8px;
+        font-size: 10px;
+    }
+
+    .copyright_db div {
+        flex-direction: column;
+        gap: 6px;
+    }
+
+    /* Reducir espacios en grillas */
+    .collaborators-grid {
+        gap: 10px;
+    }
+
+    .collaborator-card {
+        padding: 12px;
+    }
+
+    .collaborator-name {
+        font-size: 13px;
+    }
+
+    .collaborator-stat {
+        font-size: 11px;
+    }
+
+    /* Ajustes para componentes grandes */
+    .powerbi-wrapper {
+        padding-bottom: 120%;
+    }
+
 }

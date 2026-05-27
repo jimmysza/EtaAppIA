@@ -80,22 +80,11 @@
    PC / Laptop
    ===================== */
 @media screen and (min-width: 1024px) {
+
+
     .search-container {
         width: 100%;
         max-width: 80%;
-    }
-
-    .search-container form {
-        gap: 20px;
-    }
-
-    .search-container input {
-        max-width: 400px;
-    }
-
-    .search-container svg {
-        width: 25px;
-        height: 25px;
     }
 }
 
@@ -104,27 +93,7 @@
 /* =====================
 Tablet
 ===================== */
-@media screen and (min-width: 768px) and (max-width: 1023px) {
-    .search-container {
-        width: 90%;
-        max-width: 700px;
-        padding: 12px 20px;
-    }
-
-    .search-container form {
-        gap: 15px;
-    }
-
-    .search-container input {
-        max-width: 100%;
-        font-size: 15px;
-    }
-
-    .search-container svg {
-        width: 22px;
-        height: 22px;
-    }
-}
+@media screen and (min-width: 768px) and (max-width: 1023px) {}
 
 
 /* =====================
@@ -132,33 +101,8 @@ Tablet
    ===================== */
 @media screen and (max-width: 767px) {
     .search-container {
-        width: 95%;
-        max-width: 100%;
-        padding: 11px 18px;
-        margin: 10px auto;
-    }
-
-    .search-container form {
-        width: 100%;
-        gap: 12px;
-        flex-wrap: wrap;
-    }
-
-    .search-container form input {
         width: 100%;
         max-width: 100%;
-        font-size: 14px;
-    }
-
-    .search-container input {
-        max-width: 100%;
-        font-size: 15px;
-    }
-
-    .search-container svg {
-        width: 20px;
-        height: 20px;
-        flex-shrink: 0;
     }
 
     .search {
@@ -169,11 +113,11 @@ Tablet
         align-items: center;
         gap: 10px;
         display: flex;
-        padding: 15px 10px;
+        padding: 20px;
 
         flex-direction: row;
         margin: 0px auto;
-        margin-top: 70px;
+        margin-top: 80px;
     }
 
     .filtros-container {
@@ -183,45 +127,10 @@ Tablet
         align-items: center;
 
     }
-}
 
-/* =====================
-   Pequeños Teléfonos
-   ===================== */
-@media screen and (max-width: 480px) {
-    .search-container {
-        width: 98%;
-        max-width: 100%;
-        padding: 10px 15px;
-        margin: 8px auto;
-        font-size: 13px;
-    }
 
-    .search-container form {
-        gap: 10px;
-    }
 
-    .search-container form input {
-        font-size: 13px;
-    }
 
-    .search-container input {
-        max-width: 100%;
-        font-size: 13px;
-    }
 
-    .search-container svg {
-        width: 18px;
-        height: 18px;
-    }
 
-    .search {
-        padding: 12px 8px;
-        margin-top: 60px;
-        gap: 8px;
-    }
-
-    .filtros-container {
-        width: 28px;
-    }
 }

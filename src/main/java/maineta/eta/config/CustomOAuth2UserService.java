@@ -1,12 +1,20 @@
 package maineta.eta.config;
 
 
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.Locale;
+import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
+import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +27,8 @@ import maineta.eta.repository.UsuarioRepository;
 
 @Service
 public class CustomOAuth2UserService extends DefaultOAuth2UserService {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(CustomOAuth2UserService.class);
 
     @Autowired
     private UsuarioRepository usuarioRepository;
@@ -49,12 +59,12 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
                 String[] partes = locale.split("-");
                 if (partes.length > 1) {
                     // Crear Locale desde el idioma y país
-                    Locale loc = new Locale(partes[0], partes[1]);
-                    paisOrigen = loc.getDisplayCountry(new Locale("es"));
+                    Locale loc = Locale.forLanguageTag(partes[0] + "-" + partes[1]);
+                    paisOrigen = loc.getDisplayCountry(Locale.forLanguageTag("es"));
                 }
             } catch (Exception e) {
                 // Si hay algún error, simplemente no se guarda el país
-                e.printStackTrace();
+                LOGGER.warn("No se pudo resolver el país desde el locale de Google", e);
             }
         }
 
@@ -83,6 +93,16 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             return clienteRepository.save(nuevoCliente);
         });
 
-        return oauth2User;
+        Collection<GrantedAuthority> authorities = new HashSet<>(oauth2User.getAuthorities());
+        authorities.add(new SimpleGrantedAuthority("ROLE_CLIENTE"));
+
+        Map<String, Object> attributes = oauth2User.getAttributes();
+        String userNameAttribute = userRequest.getClientRegistration().getProviderDetails()
+                .getUserInfoEndpoint().getUserNameAttributeName();
+        if (userNameAttribute == null || userNameAttribute.isBlank()) {
+            userNameAttribute = "email";
+        }
+
+        return new DefaultOAuth2User(authorities, attributes, userNameAttribute);
     }
 }

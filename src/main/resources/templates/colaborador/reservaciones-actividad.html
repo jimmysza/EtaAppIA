@@ -253,10 +253,10 @@
                                         </thead>
                                         <tbody class="divide-y divide-slate-100">
                                             <tr th:each="r : ${reservasPorDisponibilidad.get(disp.idDisponibilidad)}" class="transition-colors hover:bg-slate-50">
-                                                <td class="px-6 py-4 font-medium text-slate-900" th:text="${r.cliente.usuario.nombre}"></td>
-                                                <td class="px-6 py-4 text-slate-600" th:text="${r.cantidad} + ' persona' + (${r.cantidad} > 1 ? 's' : '')"></td>
-                                                <td class="px-6 py-4 text-slate-500" th:text="${#temporals.format(r.fechaReserva, 'dd/MM/yyyy HH:mm')}"></td>
-                                                <td class="px-6 py-4">
+                                                <td data-label="Cliente" class="px-6 py-4 font-medium text-slate-900" th:text="${r.cliente.usuario.nombre}"></td>
+                                                <td data-label="Cantidad" class="px-6 py-4 text-slate-600" th:text="${r.cantidad} + ' persona' + (${r.cantidad} > 1 ? 's' : '')"></td>
+                                                <td data-label="Fecha Reserva" class="px-6 py-4 text-slate-500" th:text="${#temporals.format(r.fechaReserva, 'dd/MM/yyyy HH:mm')}"></td>
+                                                <td data-label="Estado" class="px-6 py-4">
                                                     <span class="px-3 py-1 text-xs font-bold tracking-wider uppercase rounded-full"
                                                           th:classappend="${
                                                               r.estado == 'Hecho' ? 'bg-green-100 text-green-700' :
@@ -265,7 +265,7 @@
                                                           }"
                                                           th:text="${r.estado}"></span>
                                                 </td>
-                                                <td class="px-6 py-4 text-right">
+                                                <td data-label="Acciones" class="px-6 py-4 text-right">
                                                     <button class="open-edit-modal inline-flex items-center justify-center w-8 h-8 rounded-lg bg-[#effbff] text-[#23aae2] hover:bg-[#23aae2] hover:text-white transition-colors"
                                                             th:data-id="${r.idReserva}" th:data-estado="${r.estado}" title="Editar Estado">
                                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m7 17.013l4.413-.015l9.632-9.54c.378-.378.586-.88.586-1.414s-.208-1.036-.586-1.414l-1.586-1.586c-.756-.756-2.075-.752-2.825-.003L7 12.583zM18.045 4.458l1.589 1.583l-1.597 1.582l-1.586-1.585zM9 13.417l6.03-5.973l1.586 1.586l-6.029 5.97L9 15.006z"/><path d="M5 21h14c1.103 0 2-.897 2-2v-8.668l-2 2V19H8.158c-.026 0-.053.01-.079.01c-.033 0-.066-.009-.1-.01H5V5h6.847l2-2H5c-1.103 0-2 .897-2 2v14c0 1.103.897 2 2 2"/></svg>

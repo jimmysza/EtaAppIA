@@ -3,14 +3,40 @@ body{
     overflow: hidden;
 }
 
+@media screen and (max-width: 767px) {
+    body {
+        max-height: none;
+        overflow: auto;
+    }
+}
+
 .menu-cliente{
     height: 95%;    
+}
+
+@media screen and (max-width: 767px) {
+    .menu-cliente {
+        height: auto;
+        width: 100%;
+    }
 }
 
 .dashboard-container {
     flex-grow: 1; 
     padding: 40px;
     box-sizing: border-box;
+}
+
+@media screen and (max-width: 768px) {
+    .dashboard-container {
+        padding: 20px;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .dashboard-container {
+        padding: 12px;
+    }
 }
 
 .dashboard-container h1 {
@@ -20,6 +46,20 @@ body{
     margin-bottom: 30px;
     border-bottom: 2px solid var(--color-border);
     padding-bottom: 10px;
+}
+
+@media screen and (max-width: 768px) {
+    .dashboard-container h1 {
+        font-size: 1.75rem;
+        margin-bottom: 20px;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .dashboard-container h1 {
+        font-size: 1.25rem;
+        margin-bottom: 16px;
+    }
 }
 
 table {
@@ -82,6 +122,35 @@ tr td{
 }
 
 /* ════════════════════════════════════════
+   RESPONSIVE — TABLET (768px - 1023px)
+   ════════════════════════════════════════ */
+@media screen and (min-width: 768px) and (max-width: 1023px) {
+    .dashboard-container {
+        padding: 24px;
+    }
+
+    .dashboard-container h1 {
+        font-size: 1.875rem;
+        margin-bottom: 24px;
+    }
+
+    table {
+        font-size: 14px;
+    }
+
+    .actualizar-root {
+        min-width: auto;
+        max-width: 100%;
+        padding: 32px 24px;
+    }
+
+    .actualizar-root form {
+        width: 100%;
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* ════════════════════════════════════════
    RESPONSIVE — MÓVIL (≤767px)
    ════════════════════════════════════════ */
 
@@ -98,6 +167,7 @@ tr td{
         padding: 16px;
         width: 100%;
         box-sizing: border-box;
+        margin-bottom: 20px;
     }
 
     .dashboard-container h1 {
@@ -115,6 +185,7 @@ tr td{
         margin-top: 12px;
         border-radius: 8px;
         box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+        border-spacing: 0;
     }
 
     thead {
@@ -143,6 +214,7 @@ tr td{
         border: none;
         position: relative;
         font-size: 13px;
+        margin: 0;
     }
 
     td::before {
@@ -160,15 +232,10 @@ tr td{
         max-width: 80px;
         max-height: 80px;
         margin: 0 auto;
+        border-radius: 6px;
     }
 
-    /* ── Menú Cliente ── */
-    .menu-cliente {
-        height: auto;
-        width: 100%;
-    }
-
-    /* ── Actualizar Root ── */
+    /* ── Formularios ── */
     .actualizar-root {
         min-width: auto;
         max-width: 100%;
@@ -176,12 +243,15 @@ tr td{
         border-radius: 0;
         height: auto;
         gap: 16px;
+        margin: 0;
     }
 
     .actualizar-root form {
         width: 100%;
         display: flex;
         flex-direction: column;
+        grid-template-columns: unset;
+        grid-template-rows: unset;
         gap: 12px;
     }
 
@@ -191,11 +261,45 @@ tr td{
     .actualizar-root form button {
         width: 100%;
         box-sizing: border-box;
+        padding: 10px;
+        border-radius: 8px;
+        border: 1px solid var(--color-border);
+    }
+
+    .actualizar-root form button {
+        background-color: var(--color-main);
+        color: white;
+        font-weight: 600;
+        border: none;
+        padding: 12px;
+        cursor: pointer;
+    }
+
+    /* ── Cards y contenedores ── */
+    .reserva-card {
+        min-width: unset !important;
+        max-width: 100% !important;
+        margin-bottom: 16px;
+    }
+
+    /* ── Elementos en fila ── */
+    .flex {
+        flex-direction: column;
+    }
+
+    .flex-row {
+        flex-direction: column;
     }
 }
 
-/* ── Móvil pequeño (≤480px) ── */
+/* ════════════════════════════════════════
+   RESPONSIVE — MÓVIL PEQUEÑO (≤480px)
+   ════════════════════════════════════════ */
 @media screen and (max-width: 480px) {
+
+    html {
+        font-size: 13px;
+    }
 
     .dashboard-container {
         padding: 12px;
@@ -204,11 +308,20 @@ tr td{
     .dashboard-container h1 {
         font-size: 1.25rem;
         margin-bottom: 16px;
+        border-bottom: 1px solid var(--color-border);
+        padding-bottom: 8px;
+    }
+
+    /* ── Tabla aún más pequeña ── */
+    table {
+        font-size: 12px;
+        margin-top: 8px;
     }
 
     tr {
         padding: 10px;
         margin-bottom: 10px;
+        border-radius: 6px;
     }
 
     td {
@@ -216,12 +329,33 @@ tr td{
         padding: 4px 0;
     }
 
+    td::before {
+        font-size: 10px;
+        margin-bottom: 1px;
+    }
+
     td img {
         max-width: 60px;
         max-height: 60px;
     }
 
+    /* ── Formularios compactos ── */
     .actualizar-root {
         padding: 16px 12px 32px 12px;
+        gap: 12px;
+    }
+
+    .actualizar-root form input,
+    .actualizar-root form select,
+    .actualizar-root form textarea,
+    .actualizar-root form button {
+        padding: 8px;
+        font-size: 12px;
+    }
+
+    /* ── Espacios reducidos ── */
+    table {
+        border-collapse: separate;
+        border-spacing: 0;
     }
 }

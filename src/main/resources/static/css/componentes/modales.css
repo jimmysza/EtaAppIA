@@ -293,3 +293,209 @@
     gap: 0.5rem;
     align-items: start;
 }
+
+/* ════════════════════════════════════════
+   RESPONSIVE — TABLET (768px - 1023px)
+   ════════════════════════════════════════ */
+@media screen and (max-width: 1023px) {
+    .modal form,
+    .modal-edits form {
+        max-width: 600px;
+        width: 90%;
+        margin: 20px auto;
+    }
+
+    .inputs-form {
+        padding: 1.25rem 1.5rem;
+    }
+
+    .modal form label,
+    .modal-edits form label {
+        font-size: 0.95rem;
+    }
+
+    .inputs-form input,
+    .inputs-form textarea,
+    .inputs-form select {
+        padding: 9px 12px;
+        font-size: 0.85rem;
+    }
+}
+
+/* ════════════════════════════════════════
+   RESPONSIVE — MÓVIL (≤767px)
+   ════════════════════════════════════════ */
+@media screen and (max-width: 767px) {
+    .modal {
+        padding: 0;
+        padding-top: 40px;
+        height: 100%;
+        overflow-y: auto;
+    }
+
+    .modal form,
+    .modal-edits form {
+        position: relative;
+        top: auto;
+        left: auto;
+        transform: none;
+        max-width: 100%;
+        width: 100%;
+        height: auto;
+        margin: 0;
+        border-radius: 16px 16px 0 0;
+        max-height: calc(100vh - 40px);
+        overflow-y: auto;
+    }
+
+    .close-modal,
+    .modal-edits .close-edit,
+    .modal .close-edit {
+        top: 10px;
+        right: 10px;
+        width: 32px;
+        height: 32px;
+        font-size: 20px;
+    }
+
+    .form-heading {
+        padding: 16px 20px;
+        font-size: 16px;
+    }
+
+    .form-heading p {
+        font-size: 11px;
+    }
+
+    .inputs-form {
+        padding: 1.25rem 1.25rem;
+        gap: 0.75rem;
+    }
+
+    .modal form label,
+    .modal-edits form label {
+        font-size: 0.9rem;
+        font-weight: 600;
+    }
+
+    .inputs-form input,
+    .inputs-form textarea,
+    .inputs-form select {
+        width: 100%;
+        padding: 10px 12px;
+        font-size: 0.85rem;
+        border-radius: 6px;
+        box-sizing: border-box;
+    }
+
+    .inputs-form textarea {
+        min-height: 100px;
+        resize: vertical;
+    }
+
+    .modal-delete form {
+        flex-direction: column;
+        width: 100%;
+        height: auto;
+        padding: 30px 20px;
+        max-width: 100%;
+        gap: 20px;
+    }
+
+    .modal-delete form h2 {
+        font-size: 22px;
+        margin: 0;
+    }
+
+    .btnSubmit {
+        flex-direction: column-reverse;
+        gap: 10px;
+    }
+
+    .btnSubmit button {
+        width: 100%;
+    }
+
+    .desactivate,
+    .actions .cancel {
+        width: 100%;
+        padding: 12px 1rem;
+        font-size: 0.9rem;
+    }
+
+    .actions .cancel {
+        margin-top: 10px;
+    }
+}
+
+/* ════════════════════════════════════════
+   RESPONSIVE — MÓVIL PEQUEÑO (≤480px)
+   ════════════════════════════════════════ */
+@media screen and (max-width: 480px) {
+    .modal {
+        padding-top: 30px;
+    }
+
+    .form-heading {
+        padding: 12px 16px;
+        font-size: 14px;
+    }
+
+    .form-heading p {
+        font-size: 10px;
+    }
+
+    .inputs-form {
+        padding: 1rem 1rem;
+        gap: 0.6rem;
+    }
+
+    .modal form label,
+    .modal-edits form label {
+        font-size: 0.85rem;
+    }
+
+    .inputs-form input,
+    .inputs-form textarea,
+    .inputs-form select {
+        padding: 8px 10px;
+        font-size: 0.8rem;
+    }
+
+    .inputs-form label {
+        font-size: 0.85rem;
+    }
+
+    .modal-delete form {
+        padding: 20px 16px;
+        gap: 15px;
+    }
+
+    .modal-delete form h2 {
+        font-size: 18px;
+    }
+
+    .image {
+        width: 2.5rem;
+        height: 2.5rem;
+    }
+
+    .image svg {
+        width: 1.25rem;
+        height: 1.25rem;
+    }
+
+    .title {
+        font-size: 0.9rem;
+    }
+
+    .message {
+        font-size: 0.8rem;
+    }
+
+    .desactivate,
+    .actions .cancel {
+        padding: 10px 0.75rem;
+        font-size: 0.85rem;
+    }
+}

@@ -304,19 +304,32 @@ Tablet
    Celular
    ===================== */
 @media screen and (max-width: 767px) {
-
-
-    .container_share {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        grid-template-rows: 1fr 1fr;
-        justify-items: center;
-        align-items: center;
-        gap: 10px;
-    }
-
     .Categorias {
         margin-top: 100px;
+        padding: 1rem 1rem 0rem 1rem;
+    }
+
+    .container-Categorias {
+        gap: 16px;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .circle-cat {
+        max-width: 140px;
+        min-width: 140px;
+        max-height: 140px;
+        min-height: 140px;
+        padding: 5px 15px;
+    }
+
+    .circle-cat img {
+        width: 50px;
+        height: 50px;
+    }
+
+    .circle-cat p {
+        font-size: 12px;
     }
 
     .Actividad-card {
@@ -342,6 +355,10 @@ Tablet
         margin-top: 180px;
     }
 
+    .content p {
+        font-size: 16px;
+    }
+
     .btns-hero {
         display: flex;
         gap: 15px;
@@ -358,8 +375,139 @@ Tablet
     }
 
     .social {
-        padding: 3rem 1rem 7rem 1rem;
+        padding: 2rem 1rem 5rem 1rem;
     }
 
+    .contain-img-shares img {
+        width: 200px;
+        height: 200px;
+    }
 
+    .container_share {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        grid-template-rows: auto;
+        justify-items: center;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .w-70 {
+        width: 90%;
+    }
+
+    .btn-filter {
+        padding: 8px 15px;
+        font-size: 13px;
+    }
+
+    .h2_description {
+        font-size: 1rem;
+        padding: 0px 5px;
+    }
+}
+
+/* =====================
+   Pequeños Teléfonos
+   ===================== */
+@media screen and (max-width: 480px) {
+    .Categorias {
+        margin-top: 80px;
+        padding: 0.75rem 0.5rem 0rem 0.5rem;
+    }
+
+    .container-Categorias {
+        gap: 12px;
+    }
+
+    .circle-cat {
+        max-width: 110px;
+        min-width: 110px;
+        max-height: 110px;
+        min-height: 110px;
+        padding: 4px 10px;
+        gap: 6px;
+    }
+
+    .circle-cat img {
+        width: 40px;
+        height: 40px;
+    }
+
+    .circle-cat p {
+        font-size: 11px;
+        font-weight: 500;
+    }
+
+    h1 {
+        font-size: 28px;
+        width: 100%;
+    }
+
+    main.hero {
+        max-height: 500px;
+        height: 90vh;
+    }
+
+    main .content {
+        margin-top: 120px;
+    }
+
+    .content p {
+        font-size: 14px;
+    }
+
+    .content div:first-child {
+        padding: 8px 4px;
+        margin-bottom: 4px;
+    }
+
+    .btns-hero {
+        gap: 10px;
+    }
+
+    .btns-hero a,
+    .btns-hero form {
+        width: 85%;
+        font-size: 13px;
+        padding: 8px 12px;
+    }
+
+    .social {
+        padding: 1.5rem 0.75rem 4rem 0.75rem;
+    }
+
+    .contain-img-shares img {
+        width: 150px;
+        height: 150px;
+    }
+
+    .container_share {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 6px;
+    }
+
+    .w-70 {
+        width: 95%;
+    }
+
+    .shareRedes {
+        gap: 15px;
+    }
+
+    .btn-filter {
+        padding: 6px 12px;
+        font-size: 12px;
+    }
+
+    .h2_description {
+        font-size: 0.95rem;
+        padding: 0px 3px;
+    }
+
+    .text-shares {
+        font-size: 12px;
+        bottom: 8px;
+        left: 10px;
+    }
 }

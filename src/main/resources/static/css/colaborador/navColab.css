@@ -121,11 +121,94 @@
 }
 
 @media screen and (max-width: 767px) {
+    .nav-colab-container {
+        padding: 0 0.75rem;
+    }
+
     .nav-colab-bar {
-        gap: 0.75rem;
+        gap: 0.5rem;
+        min-height: 3.5rem;
+    }
+
+    .nav-colab-logo-wrap {
+        width: 2.4rem;
+        height: 2.4rem;
+    }
+
+    .nav-colab-logo {
+        width: 1.75rem;
+        height: 1.75rem;
+    }
+
+    .nav-colab-copy strong {
+        font-size: 0.85rem;
+    }
+
+    .nav-colab-copy small {
+        font-size: 0.65rem;
+    }
+
+    .nav-colab-links {
+        gap: 0.25rem;
+        padding: 0.25rem;
+    }
+
+    .nav-colab-link {
+        padding: 0.5rem 0.75rem;
+        font-size: 0.8rem;
     }
 
     .nav-colab-exit {
         padding: 0.6rem 0.9rem;
+        font-size: 0.8rem;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .nav-colab-container {
+        padding: 0 0.5rem;
+    }
+
+    .nav-colab-bar {
+        gap: 0.4rem;
+        min-height: 3.2rem;
+    }
+
+    .nav-colab-brand {
+        gap: 0.5rem;
+    }
+
+    .nav-colab-logo-wrap {
+        width: 2.1rem;
+        height: 2.1rem;
+    }
+
+    .nav-colab-logo {
+        width: 1.5rem;
+        height: 1.5rem;
+    }
+
+    .nav-colab-copy strong {
+        font-size: 0.75rem;
+    }
+
+    .nav-colab-copy small {
+        display: none;
+    }
+
+    .nav-colab-links {
+        gap: 0.15rem;
+        padding: 0.2rem;
+    }
+
+    .nav-colab-link {
+        padding: 0.4rem 0.6rem;
+        font-size: 0.75rem;
+    }
+
+    .nav-colab-exit {
+        padding: 0.5rem 0.75rem;
+        font-size: 0.75rem;
+        gap: 0.3rem;
     }
 }

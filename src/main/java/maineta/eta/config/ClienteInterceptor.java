@@ -1,9 +1,12 @@
 package maineta.eta.config;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
@@ -20,6 +23,8 @@ import maineta.eta.service.UsuarioService;
  */
 @Component
 public class ClienteInterceptor implements HandlerInterceptor {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(ClienteInterceptor.class);
 
     @Autowired
     private ClienteService clienteService;
@@ -42,14 +47,22 @@ public class ClienteInterceptor implements HandlerInterceptor {
 
         // Obtener el usuario autenticado
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if (auth != null && auth.isAuthenticated() && 
-            auth.getPrincipal() instanceof UserDetails) {
-            
-            UserDetails userDetails = (UserDetails) auth.getPrincipal();
+        if (auth != null && auth.isAuthenticated()) {
+            String email = null;
+
+            if (auth.getPrincipal() instanceof UserDetails userDetails) {
+                email = userDetails.getUsername();
+            } else if (auth.getPrincipal() instanceof OAuth2User oauth2User) {
+                email = (String) oauth2User.getAttributes().get("email");
+            }
+
+            if (email == null || email.isBlank()) {
+                return true;
+            }
             
             try {
                 // Buscar el usuario en la base de datos
-                Usuario usuario = usuarioService.obtenerPorEmail(userDetails.getUsername());
+                Usuario usuario = usuarioService.obtenerPorEmail(email);
                 
                 if (usuario != null) {
                     // Buscar el cliente asociado
@@ -62,9 +75,9 @@ public class ClienteInterceptor implements HandlerInterceptor {
                         return false;
                     }
                 }
-            } catch (Exception e) {
+            } catch (RuntimeException e) {
                 // Log el error pero permitir continuar para evitar bloqueos
-                e.printStackTrace();
+                LOGGER.warn("No se pudo validar onboarding del cliente", e);
             }
         }
         
