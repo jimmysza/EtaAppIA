@@ -44,7 +44,7 @@ public class Cliente {
     @JoinColumn(name = "id_usuario", nullable = false, unique = true)
     private Usuario usuario;
 
-    @Column(unique = true)
+    @Column(nullable = true, unique = true)
     private Long cedula;
 
     private String direccion;
