@@ -60,8 +60,25 @@
         <!-- ── User card ── -->
         <div class="sb-user-card">
             <div class="sb-user-card__avatar">
-                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none"
-                    stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <!-- Prefer fotoPerfilUsuario (set by UsuarioHelper) -->
+                <img th:if="${fotoPerfilUsuario != null and !#strings.isEmpty(fotoPerfilUsuario)}"
+                     th:src="@{/uploads/{file}(file=${fotoPerfilUsuario})}"
+                     alt="avatar" style="width:44px;height:44px;object-fit:cover;border-radius:8px;" />
+
+                <!-- Fallback: cliente.fotoPerfil if controller provided 'cliente' in model -->
+                <img th:if="${fotoPerfilUsuario == null and cliente != null and cliente.fotoPerfil != null and !#strings.isEmpty(cliente.fotoPerfil)}"
+                     th:src="@{/uploads/{file}(file=${cliente.fotoPerfil})}"
+                     alt="avatar" style="width:44px;height:44px;object-fit:cover;border-radius:8px;" />
+
+                <!-- Fallback: fotoPerfilColaborador (older controllers) -->
+                <img th:if="${fotoPerfilUsuario == null and (cliente == null or cliente.fotoPerfil == null) and fotoPerfilColaborador != null}"
+                     th:src="@{/uploads/{file}(file=${fotoPerfilColaborador})}"
+                     alt="avatar" style="width:44px;height:44px;object-fit:cover;border-radius:8px;" />
+
+                <!-- Ultimate fallback: SVG placeholder -->
+                <svg th:if="${fotoPerfilUsuario == null and (cliente == null or cliente.fotoPerfil == null) and fotoPerfilColaborador == null}"
+                     xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none"
+                     stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
                     <circle cx="12" cy="7" r="4" />
                 </svg>
@@ -69,6 +86,12 @@
             <div class="sb-user-card__info">
                 <h1 class="sb-user-card__role">Cliente</h1>
                 <p class="sb-user-card__name" th:text="${nombreUsuario}">usuario</p>
+            </div>
+            <!-- Debug: hidden values for avatar diagnosis (visible in Elements/Source) -->
+            <div style="display:none">
+                <span id="dbg_fotoPerfilUsuario" th:text="${fotoPerfilUsuario}"></span>
+                <span id="dbg_clienteFotoPerfil" th:text="${cliente != null ? cliente.fotoPerfil : ''}"></span>
+                <span id="dbg_fotoPerfilColaborador" th:text="${fotoPerfilColaborador}"></span>
             </div>
         </div>
 

@@ -14,16 +14,23 @@ import org.springframework.ui.Model;
 
 import maineta.eta.entity.Usuario;
 import maineta.eta.service.UsuarioService;
+import maineta.eta.service.ClienteService;
+import maineta.eta.service.ColaboradorService;
 
 @Component
 public class UsuarioHelper {
 
     private final UsuarioService usuarioService;
     private final AdminService adminService;
+    private final ClienteService clienteService;
+    private final ColaboradorService colaboradorService;
 
-    public UsuarioHelper(UsuarioService usuarioService, AdminService adminService) {
+    public UsuarioHelper(UsuarioService usuarioService, AdminService adminService,
+            ClienteService clienteService, ColaboradorService colaboradorService) {
         this.usuarioService = usuarioService;
         this.adminService = adminService;
+        this.clienteService = clienteService;
+        this.colaboradorService = colaboradorService;
     }
 
     public BigDecimal CalcularPrecioConsumidor(BigDecimal precio) {
@@ -70,6 +77,19 @@ public class UsuarioHelper {
                     Usuario usuario = usuarioService.obtenerPorEmail(email);
                     // Si existe en la BD, mostramos su nombre
                     model.addAttribute("nombreUsuario", usuario.getNombre());
+
+                    // Intentar obtener foto de perfil (cliente o colaborador)
+                    try {
+                        var clienteOpt = clienteService.obtenerPorUsuario(usuario);
+                        if (clienteOpt.isPresent() && clienteOpt.get().getFotoPerfil() != null) {
+                            model.addAttribute("fotoPerfilUsuario", clienteOpt.get().getFotoPerfil());
+                        } else {
+                            var colOpt = colaboradorService.obtenerPorUsuario(usuario);
+                            colOpt.ifPresent(c -> model.addAttribute("fotoPerfilUsuario", c.getFotoPerfil()));
+                        }
+                    } catch (Exception ignored) {
+                        // No romper si alguno de los servicios falla
+                    }
                 } else {
                     model.addAttribute("nombreUsuario", "Usuario");
                 }

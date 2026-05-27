@@ -141,13 +141,15 @@ public interface ReservaRepository extends JpaRepository<Reserva, Long> {
     
     // Métodos de paginación para administración
     Page<Reserva> findByEstadoPagoColaborador(EstadoPagoColaborador estadoPagoColaborador, Pageable pageable);
+    Page<Reserva> findByEstadoIgnoreCaseAndEstadoPagoColaborador(String estado, EstadoPagoColaborador estadoPagoColaborador, Pageable pageable);
     Page<Reserva> findByEstadoReembolso(EstadoReembolso estadoReembolso, Pageable pageable);
     Page<Reserva> findByEstado(String estado, Pageable pageable);
+    Page<Reserva> findByEstadoIn(List<String> estados, Pageable pageable);
 
     @Query("""
         SELECT COALESCE(SUM(r.comisionEta), 0)
         FROM Reserva r
-        WHERE UPPER(r.estado) IN ('CONFIRMADA', 'COMPLETADA')
+        WHERE UPPER(r.estado) IN ('HECHO', 'CONFIRMADA', 'COMPLETADA', 'COMPLETADO')
     """)
     BigDecimal calcularTotalComisionesGanadas();
 }

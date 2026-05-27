@@ -16,6 +16,11 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <!-- Leaflet JS -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <!-- CSRF tokens for AJAX (only rendered if available) -->
+    <th:block th:if="${_csrf} != null">
+        <meta name="_csrf" th:content="${_csrf.token}" />
+        <meta name="_csrf_header" th:content="${_csrf.headerName}" />
+    </th:block>
 </head>
 
 <body class="mx-0 my-0">
@@ -35,13 +40,6 @@
             <!-- Header del sidebar -->
             <div class="flex flex-col items-center px-6 py-6 border-b border-gray-100">
 
-                <!-- LOGO -->
-                <!--<a th:href="@{/colaborador/actividades}" class="transition duration-200 group hover:scale-105">
-
-                    <img th:src="@{/images/logos/logo.webp}" alt="ETA Logo"
-                        class="object-contain w-20 h-20 p-2 bg-white shadow-sm rounded-2xl">
-                </a>-->
-
                 <!-- TEXTO -->
                 <div class="mt-4 text-center">
 
@@ -59,24 +57,6 @@
 
             <!-- Navegación de secciones -->
             <nav class="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
-                <a th:href="@{/colaborador/disponibilidades/{idActividad}(idActividad=${actividad.idActividad})}"
-                    class="md:hidden flex mt-2 items-center gap-3 px-4 py-3 text-sm font-medium text-gray-900 transition-all duration-200 border-2 border-gray-900 shadow-sm cursor-pointer btnEdicion active group rounded-xl bg-gray-50">
-                    <svg class="w-5 h-5 text-gray-500 group-hover:text-gray-700" fill="none" stroke="currentColor"
-                        viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                    </svg>
-                    <span>Disponibilidades</span>
-                </a>
-                <a th:href="@{/colaborador/reservas/{idActividad}(idActividad=${actividad.idActividad})}"
-                    class="md:hidden flex mt-2 items-center gap-3 px-4 py-3 text-sm font-medium text-gray-900 transition-all duration-200 border-2 border-gray-900 shadow-sm cursor-pointer btnEdicion active group rounded-xl bg-gray-50">
-                    <svg class="w-5 h-5 text-gray-500 group-hover:text-gray-700" fill="none" stroke="currentColor"
-                        viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                    </svg>
-                    <span>Reservas</span>
-                </a>
                 <a id="btnTitulo"
                     class="flex items-center mt-2 gap-3 px-4 py-3 text-sm font-medium text-gray-900 transition-all duration-200 border-2 border-gray-900 shadow-sm cursor-pointer btnEdicion active group rounded-xl bg-gray-50">
                     <svg class="w-5 h-5 text-gray-500 group-hover:text-gray-700" fill="none" stroke="currentColor"
@@ -193,7 +173,7 @@
             <!-- Footer del sidebar - Botón eliminar -->
             <div class="p-4 border-t border-gray-100">
                 <button id="open-delete-modal" th:attr="data-id=${actividad.idActividad}"
-                    class="flex items-center justify-center w-full gap-2 px-4 py-3 text-sm font-semibold text-red-600 transition-all duration-200 border border-red-200 bg-red-50 hover:bg-red-100 rounded-xl hover:border-red-300 group">
+                    class="text-open-delete flex items-center justify-center w-full gap-2 px-4 py-3 text-sm font-semibold text-red-600 transition-all duration-200 border border-red-200 bg-red-50 hover:bg-red-100 rounded-xl hover:border-red-300 group">
                     <svg class="w-5 h-5 text-red-500 transition-colors group-hover:text-red-600" fill="none"
                         stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -247,7 +227,7 @@
                     </form>
 
 
-                    <!--MAs informacion-->
+                    <!--Mas informacion-->
                     <form class="form-edit" id="seccionMasInformacion" method="post"
                         th:action="@{/colaborador/actividades/{id}/actualizar(id=${actividad.idActividad})}"
                         th:object="${actividadUpdateDto}">
@@ -264,7 +244,6 @@
                             style="width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 0.5rem;"></textarea>
 
                         <p class="mt-2 text-sm text-gray-500">Proporciona información detallada</p>
-
 
                         <label for="condiciones">Condiciones</label>
                         <textarea id="condiciones" th:field="*{condiciones}" rows="6"
@@ -314,7 +293,6 @@
                                 </div>
                             </div>
                         </div>
-
 
                         <button type="submit" class="button-default">
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
@@ -381,9 +359,10 @@
                                 <img th:src="@{|/uploads/${img.nombre}|}" alt="Imagen adicional"
                                     style="width: 200px; height: 150px; object-fit: cover; border-radius: 0.5rem; border: 1px solid #d1d5db;" />
                                 <a th:href="@{/colaborador/imagenes/eliminar/{idImagen}/{idActividad}(idImagen=${img.idImagen}, idActividad=${actividad.idActividad})}"
+                                    class="text-open-image-delete"
+                                    th:attr="data-id=${img.idImagen}, data-name=${img.nombre}"
                                     style="position: absolute; top: 0.25rem; right: 0.25rem; background: #ef4444; color: white; border-radius: 50%; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; text-decoration: none; font-weight: bold; font-size: 14px;"
-                                    title="Eliminar imagen"
-                                    onclick="return confirm('¿Estás seguro de eliminar esta imagen?')">
+                                    title="Eliminar imagen">
                                     ✕
                                 </a>
                             </div>
@@ -408,9 +387,15 @@
                                     Selecciona imágenes adicionales
                                 </p>
                                 <p class="text-sm text-gray-400">
-                                    Puedes seleccionar varias imágenes a la vez
+                                    Puedes seleccionar varias imágenes a la vez. Máximo 6 imágenes adicionales en total.
+                                </p>
+                                <p class="text-xs text-gray-500 mt-1">
+                                    Actualmente tienes <span th:text="${#lists.size(imagenes)}">0</span> imagen(es) adicional(es) guardadas.
                                 </p>
                             </label>
+
+                            <!-- Preview thumbnails for selected extra images (outside label to avoid reopening picker) -->
+                            <div id="previewExtra" class="flex gap-2 flex-wrap mt-3 mb-3"></div>
 
                             <button type="submit" class="button-default"
                                 style="width: 100%; max-width: 100%; padding: 0.9rem 1.25rem; margin-top: 1rem;">
@@ -459,20 +444,15 @@
                             <p><strong>Código:</strong> <span th:text="${actividad.idioma.codigo}">ES</span></p>
                         </div>
 
-
-
                         <p class="mt-2 text-sm text-gray-500">Información del idioma en el que se ofrece la actividad
                         </p>
 
                         <select th:field="*{idIdioma}"
                             class="w-full px-4 py-3 pr-12 text-gray-900 placeholder-gray-400 border-0 rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500">
-
                             <option value="" disabled>Selecciona un idioma</option>
-
                             <option th:each="idio : ${idiomas}" th:value="${idio.idIdioma}" th:text="${idio.nombre}">
                             </option>
                         </select>
-
 
                         <button type="submit" class="button-default">
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
@@ -483,6 +463,7 @@
                             Guardar Cambios
                         </button>
                     </form>
+
                     <!-- Sección Categoria -->
                     <form class="form-edit" id="seccionCategoria" method="post"
                         th:action="@{/colaborador/actividades/{id}/actualizar(id=${actividad.idActividad})}"
@@ -495,20 +476,15 @@
                             </p>
                         </div>
 
-
-
                         <p class="mt-2 text-sm text-gray-500">Información del Categoria en el que se ofrece la actividad
                         </p>
 
                         <select th:field="*{idCategoria}"
                             class="w-full px-4 py-3 pr-12 text-gray-900 placeholder-gray-400 border-0 rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500">
-
                             <option value="" disabled>Selecciona un Categoria</option>
-
                             <option th:each="cat : ${categorias}" th:value="${cat.idCategoria}" th:text="${cat.nombre}">
                             </option>
                         </select>
-
 
                         <button type="submit" class="button-default">
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
@@ -586,10 +562,7 @@
                         </button>
                     </form>
 
-
                 </div>
-
-
             </div>
         </main>
     </div>
@@ -620,28 +593,47 @@
         </form>
     </div>
 
+    <!-- Modal para Eliminar Imagen -->
+    <div class="modal modal-delete modal-delete-image">
+        <form class="card" method="post">
+            <div class="header-modal">
+                <div class="image">
+                    <svg aria-hidden="true" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" fill="none">
+                        <path
+                            d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"
+                            stroke-linejoin="round" stroke-linecap="round"></path>
+                    </svg>
+                </div>
+                <div class="content">
+                    <span class="title">Eliminando Imagen</span>
+                    <p class="message" id="delete-image-message">
+                        ¿Estás seguro que quieres eliminar esta imagen adicional? Esta acción no se puede deshacer.
+                    </p>
+                </div>
+                <div class="actions">
+                    <a id="delete-image-confirm-btn" class="delete-btn desactivate">Eliminar</a>
+                    <button type="button" class="cancel close-btn-modal-image">Cancelar</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
     <script th:src="@{/js/eliminar/actividad.js}"></script>
     <script th:src="@{/js/dashboard.js}"></script>
     <script th:src="@{/js/alert.js}"></script>
     <script>
-        // Función para mostrar secciones según el botón clickeado
-        // Función para mostrar secciones según el botón clickeado
         function mostrarSeccion(seccionId, evento) {
-            // Ocultar todas las secciones
             document.querySelectorAll('.form-edit').forEach(seccion => {
                 seccion.classList.remove('active');
             });
 
-            // Mostrar la sección seleccionada
             const seccionSeleccionada = document.getElementById(seccionId);
             if (seccionSeleccionada) {
                 seccionSeleccionada.classList.add('active');
             }
 
-            // Remover clase active de todos los botones
             document.querySelectorAll('.btnEdicion').forEach(btn => {
                 btn.classList.remove('active');
-                // Resetear estilos Tailwind al estado inactivo
                 btn.className = btn.className
                     .replace('bg-gray-50 text-gray-900 border-2 border-gray-900 shadow-sm', '')
                     .replace('text-gray-600 hover:bg-gray-50 hover:text-gray-900 border border-transparent hover:border-gray-200', '')
@@ -649,13 +641,11 @@
                 btn.classList.add('btnEdicion', 'group', 'flex', 'items-center', 'gap-3', 'px-4', 'py-3', 'text-sm', 'font-medium', 'rounded-xl', 'transition-all', 'duration-200', 'cursor-pointer', 'text-gray-600', 'hover:bg-gray-50', 'hover:text-gray-900', 'border', 'border-transparent', 'hover:border-gray-200');
             });
 
-            // Agregar clase active al botón clickeado usando currentTarget
             const botonClickeado = evento.currentTarget;
             botonClickeado.classList.remove('text-gray-600', 'hover:bg-gray-50', 'hover:text-gray-900', 'border-transparent', 'hover:border-gray-200');
             botonClickeado.classList.add('active', 'bg-gray-50', 'text-gray-900', 'border-2', 'border-gray-900', 'shadow-sm');
         }
 
-        // Agregar event listeners a todos los botones
         document.getElementById('btnTitulo').addEventListener('click', (e) => mostrarSeccion('seccionTitulo', e));
         document.getElementById('btnDesc').addEventListener('click', (e) => mostrarSeccion('seccionDesc', e));
         document.getElementById('btnImg').addEventListener('click', (e) => mostrarSeccion('seccionImg', e));
@@ -667,6 +657,40 @@
         document.getElementById('btnCategoria').addEventListener('click', (e) => mostrarSeccion('seccionCategoria', e));
         document.getElementById('btnMasInformacion').addEventListener('click', (e) => mostrarSeccion('seccionMasInformacion', e));
         document.getElementById('btnImagenes').addEventListener('click', (e) => mostrarSeccion('seccionImagenes', e));
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const imageModal = document.querySelector('.modal-delete-image');
+            const imageCloseBtn = imageModal ? imageModal.querySelector('.close-btn-modal-image') : null;
+            const imageConfirmBtn = document.getElementById('delete-image-confirm-btn');
+            const imageMessage = document.getElementById('delete-image-message');
+
+            if (imageModal && imageCloseBtn && imageConfirmBtn) {
+                document.querySelectorAll('.text-open-image-delete').forEach(function (link) {
+                    link.addEventListener('click', function (event) {
+                        event.preventDefault();
+                        const href = link.getAttribute('href');
+                        const imageName = link.getAttribute('data-name') || 'esta imagen';
+                        if (imageMessage) {
+                            imageMessage.textContent = '¿Estás seguro que quieres eliminar ' + imageName + '? Esta acción no se puede deshacer.';
+                        }
+                        imageConfirmBtn.setAttribute('href', href || '#');
+                        imageModal.classList.add('show');
+                    });
+                });
+
+                imageCloseBtn.addEventListener('click', function () {
+                    imageModal.classList.remove('show');
+                });
+
+                imageModal.addEventListener('click', function (event) {
+                    if (event.target === imageModal) {
+                        imageModal.classList.remove('show');
+                    }
+                });
+            }
+
+        });
+
         document.addEventListener('DOMContentLoaded', function () {
             const dropZone = document.getElementById('dropZone');
             const fileInput = document.getElementById('imagenFile');
@@ -698,64 +722,39 @@
             }
 
             function reindexFaqRows() {
-                if (!faqRows) {
-                    return;
-                }
-
+                if (!faqRows) return;
                 faqRows.querySelectorAll('.faq-editor-row').forEach(function (row, index) {
                     const title = row.querySelector('strong');
                     const preguntaInput = row.querySelector('input');
                     const respuestaInput = row.querySelector('textarea');
                     const labels = row.querySelectorAll('label');
-
-                    if (title) {
-                        title.textContent = 'FAQ ' + (index + 1);
-                    }
-
+                    if (title) title.textContent = 'FAQ ' + (index + 1);
                     if (preguntaInput) {
                         preguntaInput.name = 'preguntasFrecuentesPreguntas[' + index + ']';
                         preguntaInput.id = 'faqPregunta' + index;
                     }
-
                     if (respuestaInput) {
                         respuestaInput.name = 'preguntasFrecuentesRespuestas[' + index + ']';
                         respuestaInput.id = 'faqRespuesta' + index;
                     }
-
-                    if (labels.length > 0) {
-                        labels[0].setAttribute('for', 'faqPregunta' + index);
-                    }
-
-                    if (labels.length > 1) {
-                        labels[1].setAttribute('for', 'faqRespuesta' + index);
-                    }
+                    if (labels.length > 0) labels[0].setAttribute('for', 'faqPregunta' + index);
+                    if (labels.length > 1) labels[1].setAttribute('for', 'faqRespuesta' + index);
                 });
             }
 
             if (faqRows) {
                 faqRows.addEventListener('click', function (event) {
-                    if (!event.target.classList.contains('remove-faq-btn')) {
-                        return;
-                    }
-
+                    if (!event.target.classList.contains('remove-faq-btn')) return;
                     const rows = faqRows.querySelectorAll('.faq-editor-row');
                     if (rows.length === 1) {
                         const preguntaInput = rows[0].querySelector('input');
                         const respuestaInput = rows[0].querySelector('textarea');
-                        if (preguntaInput) {
-                            preguntaInput.value = '';
-                        }
-                        if (respuestaInput) {
-                            respuestaInput.value = '';
-                        }
+                        if (preguntaInput) preguntaInput.value = '';
+                        if (respuestaInput) respuestaInput.value = '';
                         return;
                     }
-
                     const row = event.target.closest('.faq-editor-row');
-                    if (row) {
-                        row.remove();
-                        reindexFaqRows();
-                    }
+                    if (row) { row.remove(); reindexFaqRows(); }
                 });
             }
 
@@ -766,7 +765,7 @@
                 });
             }
 
-            // Click en la zona de drop
+            // ── Imagen principal ─────────────────────────────────────────────────
             dropZone.addEventListener('click', function (e) {
                 if (e.target.tagName !== 'INPUT') {
                     e.preventDefault();
@@ -775,7 +774,6 @@
                 }
             });
 
-            // Cambio de archivo
             fileInput.addEventListener('change', function (e) {
                 if (this.files && this.files[0]) {
                     fileName.textContent = this.files[0].name;
@@ -783,7 +781,6 @@
                 }
             });
 
-            // Drag and drop
             dropZone.addEventListener('dragover', function (e) {
                 e.preventDefault();
                 this.classList.add('border-[#23aae2]', 'bg-[#effbff]');
@@ -797,7 +794,6 @@
             dropZone.addEventListener('drop', function (e) {
                 e.preventDefault();
                 this.classList.remove('border-[#23aae2]', 'bg-[#effbff]');
-
                 const files = e.dataTransfer.files;
                 if (files.length > 0) {
                     fileInput.files = files;
@@ -805,13 +801,113 @@
                 }
             });
 
-            // Drop zone for extra images
-            const dropZoneExtra = document.getElementById('dropZoneExtra');
+            // ── Imágenes adicionales ─────────────────────────────────────────────
+            const dropZoneExtra  = document.getElementById('dropZoneExtra');
             const fileInputExtra = document.getElementById('imagenesExtra');
-            const fileNameExtra = document.getElementById('fileNameExtra');
+            const fileNameExtra  = document.getElementById('fileNameExtra');
+            const previewExtra   = document.getElementById('previewExtra');
+            const MAX_ADDITIONAL_IMAGES = 6;
+
+            // Array propio: fuente de verdad, NO depende de fileInputExtra.files
+            let accumulatedFiles = [];
+
+            function getExtraFileKey(file) {
+                return file.name + '::' + file.size + '::' + file.lastModified;
+            }
+
+            /* Escribe accumulatedFiles en el input para que el form los envíe */
+            function syncInputFromAccumulated() {
+                const dt = new DataTransfer();
+                accumulatedFiles.forEach(f => dt.items.add(f));
+                fileInputExtra.files = dt.files;
+            }
+
+            function updateExtraSummary() {
+                if (!fileNameExtra) return;
+                if (accumulatedFiles.length === 0) {
+                    fileNameExtra.textContent = 'Selecciona imágenes adicionales';
+                    return;
+                }
+                const suffix = accumulatedFiles.length === 1 ? 'archivo seleccionado' : 'archivos seleccionados';
+                fileNameExtra.textContent = accumulatedFiles.length + ' ' + suffix;
+            }
+
+            /* Agrega nuevos archivos al acumulado respetando el límite */
+            function appendExtraFiles(filesToAdd) {
+                const currentKeys  = new Set(accumulatedFiles.map(getExtraFileKey));
+                const remainSlots  = MAX_ADDITIONAL_IMAGES - accumulatedFiles.length;
+
+                if (remainSlots <= 0) {
+                    updateExtraSummary();
+                    alert('Ya alcanzaste el máximo de ' + MAX_ADDITIONAL_IMAGES + ' imágenes adicionales.');
+                    return;
+                }
+
+                const newFiles = Array.from(filesToAdd)
+                    .filter(f => f.type.startsWith('image/'))
+                    .filter(f => !currentKeys.has(getExtraFileKey(f)))
+                    .slice(0, remainSlots);
+
+                accumulatedFiles = accumulatedFiles.concat(newFiles);
+                syncInputFromAccumulated();
+                updateExtraSummary();
+                renderPreviewExtra();
+            }
+
+            /* Elimina un archivo del acumulado por índice */
+            function removeExtraFile(idx) {
+                accumulatedFiles.splice(idx, 1);
+                syncInputFromAccumulated();
+                updateExtraSummary();
+                renderPreviewExtra();
+                if (accumulatedFiles.length === 0) {
+                    dropZoneExtra.classList.remove('border-[#23aae2]', 'bg-[#effbff]');
+                }
+            }
+
+            /* Renderiza miniaturas con botón ✕ — usa accumulatedFiles, sin parámetro */
+            function renderPreviewExtra() {
+                if (!previewExtra) return;
+                previewExtra.innerHTML = '';
+
+                accumulatedFiles.forEach((file, idx) => {
+                    const reader  = new FileReader();
+                    const wrapper = document.createElement('div');
+                    Object.assign(wrapper.style, {
+                        width: '100px', height: '80px', borderRadius: '8px',
+                        overflow: 'hidden', border: '1px solid #e5e7eb',
+                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        position: 'relative', flexShrink: '0'
+                    });
+
+                    const btn = document.createElement('button');
+                    btn.type        = 'button';
+                    btn.textContent = '✕';
+                    btn.title       = 'Quitar antes de subir';
+                    Object.assign(btn.style, {
+                        position: 'absolute', top: '4px', right: '4px',
+                        width: '20px', height: '20px', border: 'none',
+                        borderRadius: '50%', background: 'rgba(0,0,0,0.65)',
+                        color: 'white', cursor: 'pointer', zIndex: '10',
+                        fontSize: '11px', lineHeight: '20px', textAlign: 'center'
+                    });
+                    btn.addEventListener('click', () => removeExtraFile(idx));
+
+                    reader.onload = e => {
+                        const img = document.createElement('img');
+                        img.src = e.target.result;
+                        Object.assign(img.style, { width: '100%', height: '100%', objectFit: 'cover' });
+                        wrapper.appendChild(img);
+                        wrapper.appendChild(btn);
+                        previewExtra.appendChild(wrapper);
+                    };
+                    reader.readAsDataURL(file);
+                });
+            }
 
             if (dropZoneExtra && fileInputExtra) {
-                dropZoneExtra.addEventListener('click', function (e) {
+                /* Click en la zona → abre el selector */
+                dropZoneExtra.addEventListener('click', e => {
                     if (e.target.tagName !== 'INPUT') {
                         e.preventDefault();
                         e.stopPropagation();
@@ -819,40 +915,116 @@
                     }
                 });
 
+                /* Change: captura los archivos ANTES de que syncInputFromAccumulated los sobreescriba */
                 fileInputExtra.addEventListener('change', function () {
-                    if (this.files && this.files.length > 0) {
-                        fileNameExtra.textContent = this.files.length + ' archivo(s) seleccionado(s)';
+                    const selected = Array.from(this.files);
+                    appendExtraFiles(selected);
+                    if (accumulatedFiles.length > 0) {
                         dropZoneExtra.classList.add('border-[#23aae2]', 'bg-[#effbff]');
                     }
                 });
 
-                dropZoneExtra.addEventListener('dragover', function (e) {
+                /* Drag & drop */
+                dropZoneExtra.addEventListener('dragover', e => {
                     e.preventDefault();
-                    this.classList.add('border-[#23aae2]', 'bg-[#effbff]');
+                    dropZoneExtra.classList.add('border-[#23aae2]', 'bg-[#effbff]');
                 });
-
-                dropZoneExtra.addEventListener('dragleave', function (e) {
+                dropZoneExtra.addEventListener('dragleave', e => {
                     e.preventDefault();
-                    this.classList.remove('border-[#23aae2]', 'bg-[#effbff]');
+                    dropZoneExtra.classList.remove('border-[#23aae2]', 'bg-[#effbff]');
                 });
-
-                dropZoneExtra.addEventListener('drop', function (e) {
+                dropZoneExtra.addEventListener('drop', e => {
                     e.preventDefault();
-                    this.classList.remove('border-[#23aae2]', 'bg-[#effbff]');
-                    const files = e.dataTransfer.files;
-                    if (files.length > 0) {
-                        fileInputExtra.files = files;
-                        fileNameExtra.textContent = files.length + ' archivo(s) seleccionado(s)';
+                    dropZoneExtra.classList.remove('border-[#23aae2]', 'bg-[#effbff]');
+                    appendExtraFiles(e.dataTransfer.files);
+                    if (accumulatedFiles.length > 0) {
+                        dropZoneExtra.classList.add('border-[#23aae2]', 'bg-[#effbff]');
                     }
+                });
+
+                // ── Eliminación AJAX de imágenes ya guardadas ────────────────────
+                const markedImageIds = new Set();
+
+                document.querySelectorAll('.mark-delete-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const id = btn.getAttribute('data-id');
+                        const thumb = btn.closest('.imagen-thumb');
+                        const overlay = thumb.querySelector('.delete-overlay');
+                        if (markedImageIds.has(id)) {
+                            markedImageIds.delete(id);
+                            overlay.style.display = 'none';
+                            thumb.classList.remove('marked-for-delete');
+                            btn.style.background = '#ef4444';
+                        } else {
+                            markedImageIds.add(id);
+                            overlay.style.display = 'flex';
+                            thumb.classList.add('marked-for-delete');
+                            btn.style.background = '#9b1111';
+                        }
+                    });
+                });
+
+                function getCsrfHeaderAndToken() {
+                    const tokenMeta  = document.querySelector('meta[name="_csrf"]');
+                    const headerMeta = document.querySelector('meta[name="_csrf_header"]');
+                    return {
+                        header: headerMeta ? headerMeta.getAttribute('content') : 'X-CSRF-TOKEN',
+                        token:  tokenMeta  ? tokenMeta.getAttribute('content')  : null
+                    };
+                }
+
+                const activityIdEl = document.getElementById('open-delete-modal');
+                const actividadId  = activityIdEl ? activityIdEl.getAttribute('data-id') : null;
+
+                Array.from(document.querySelectorAll('form')).forEach(form => {
+                    try {
+                        const action = form.getAttribute('action') || form.action || '';
+                        if (action.includes('/actividades/') && action.includes('actualizar')) {
+                            form.addEventListener('submit', async function (e) {
+                                if (markedImageIds.size === 0) return;
+                                e.preventDefault();
+                                if (!actividadId) {
+                                    alert('ID de actividad no encontrado para eliminar imágenes');
+                                    return;
+                                }
+                                const ids  = Array.from(markedImageIds).map(x => Number(x));
+                                const csrf = getCsrfHeaderAndToken();
+                                try {
+                                    const res = await fetch(`/colaborador/actividades/${actividadId}/imagenes/eliminar-multiple`, {
+                                        method: 'POST',
+                                        headers: Object.assign(
+                                            { 'Content-Type': 'application/json' },
+                                            csrf.token ? { [csrf.header]: csrf.token } : {}
+                                        ),
+                                        credentials: 'same-origin',
+                                        body: JSON.stringify(ids)
+                                    });
+                                    const json = await res.json();
+                                    if (json && json.success) {
+                                        ids.forEach(id => {
+                                            const el = document.querySelector('.imagen-thumb[data-id="' + id + '"]');
+                                            if (el) el.remove();
+                                        });
+                                        markedImageIds.clear();
+                                        form.submit();
+                                    } else {
+                                        alert('Error al eliminar imágenes: ' + (json && json.error ? json.error : 'Error desconocido'));
+                                    }
+                                } catch (err) {
+                                    alert('Error de red al eliminar imágenes: ' + err);
+                                }
+                            });
+                        }
+                    } catch (err) { /* ignore */ }
                 });
             }
 
-            // Precio: formateo en tiempo real y validación mínima
+            // ── Precio: formateo en tiempo real y validación mínima ──────────────
             (function () {
-                const MIN_PRICE = 4000;
-                const precioHidden = document.getElementById('precio');
+                const MIN_PRICE    = 4000;
+                const precioHidden  = document.getElementById('precio');
                 const precioDisplay = document.getElementById('precioDisplay');
-                const formPrecio = document.getElementById('seccionPrecio');
+                const formPrecio    = document.getElementById('seccionPrecio');
                 if (!precioDisplay || !precioHidden) return;
 
                 const formatDigits = (digits) => {
@@ -863,13 +1035,11 @@
                 };
 
                 const cleanPrice = (value) => {
-                    // Convertir a número primero para eliminar decimales, luego a string
                     const numeric = Number(value) || 0;
                     return String(numeric);
                 };
 
                 const syncHiddenValue = () => {
-                    // Sincronizar el campo oculto desde el display
                     const displayDigits = precioDisplay.value.replace(/\D/g, '');
                     precioHidden.value = displayDigits;
                     return displayDigits;
@@ -877,8 +1047,7 @@
 
                 const setCaretByDigits = (inputEl, digitsBefore) => {
                     const formatted = inputEl.value;
-                    let count = 0;
-                    let pos = 0;
+                    let count = 0, pos = 0;
                     for (let i = 0; i < formatted.length; i++) {
                         if (/[0-9]/.test(formatted[i])) count++;
                         if (count === digitsBefore) { pos = i + 1; break; }
@@ -887,8 +1056,6 @@
                     try { inputEl.setSelectionRange(pos, pos); } catch (e) { /* ignore */ }
                 };
 
-                // inicializar desde valor oculto (edición)
-                // IMPORTANTE: Convertir a número para eliminar decimales extras
                 if (precioHidden.value) {
                     const cleanedValue = cleanPrice(precioHidden.value);
                     precioHidden.value = cleanedValue;
@@ -900,21 +1067,18 @@
                     const sel = inputEl.selectionStart || 0;
                     const before = inputEl.value.slice(0, sel);
                     const digitsBefore = (before.match(/\d/g) || []).length;
-
                     const digits = inputEl.value.replace(/\D/g, '');
                     inputEl.value = formatDigits(digits);
                     setCaretByDigits(inputEl, digitsBefore);
                 });
 
-                precioDisplay.addEventListener('blur', function (e) {
+                precioDisplay.addEventListener('blur', function () {
                     const displayDigits = syncHiddenValue();
                     let numeric = Number(displayDigits) || 0;
-
                     if (numeric > 0 && numeric < MIN_PRICE) {
                         numeric = MIN_PRICE;
                         precioHidden.value = String(numeric);
                     }
-
                     precioDisplay.value = formatDigits(precioHidden.value);
                 });
 
@@ -922,7 +1086,6 @@
                     formPrecio.addEventListener('submit', function (ev) {
                         const displayDigits = syncHiddenValue();
                         const numeric = Number(displayDigits) || 0;
-
                         if (numeric < MIN_PRICE) {
                             ev.preventDefault();
                             alert('El precio mínimo es ' + new Intl.NumberFormat('es-CO').format(MIN_PRICE) + ' COP');
@@ -992,7 +1155,6 @@
             document.getElementById('longitudDisplayColab').value = lng.toFixed(6);
         }
 
-        // Inicializar mapa cuando se muestre la sección ubicación
         const btnUbicacion = document.getElementById('btnUbicacion');
         if (btnUbicacion) {
             btnUbicacion.addEventListener('click', function () {

@@ -234,13 +234,17 @@
                     </div>
 
                     <form th:action="@{/cliente/actualizar/{id}(id=${cliente.id})}" th:object="${cliente}" method="post"
-                        class="client-grid">
+                        enctype="multipart/form-data" class="client-grid">
 
                         <aside class="client-card client-summary rounded-3xl bg-white p-6">
                             <p class="panel-heading">Resumen</p>
                             <div class="flex flex-col items-center text-center">
-                                <div class="client-badge mb-4" aria-hidden="true">
-                                    <span th:text="${#strings.substring(cliente.usuario.nombre != null ? cliente.usuario.nombre : 'ET', 0, 1)}">E</span>
+                                <div>
+                                    <img id="previewFoto" th:if="${cliente.fotoPerfil != null}" th:src="@{/uploads/{file}(file=${cliente.fotoPerfil})}" alt="avatar" class="client-badge mb-4" style="width:4.75rem;height:4.75rem;border-radius:1.5rem;object-fit:cover;" />
+
+                                    <div id="placeholderFoto" class="client-badge mb-4" th:if="${cliente.fotoPerfil == null}" aria-hidden="true">
+                                        <span th:text="${#strings.substring(cliente.usuario.nombre != null ? cliente.usuario.nombre : 'ET', 0, 1)}">E</span>
+                                    </div>
                                 </div>
 
                                 <h2 class="text-xl font-black text-slate-950" th:text="${cliente.usuario.nombre}">Cliente</h2>
@@ -269,6 +273,10 @@
                                             Usa un correo activo para recibir confirmaciones y avisos de tus reservas.
                                         </p>
                                     </div>
+                                </div>
+                                <div class="w-full mt-4">
+                                    <label id="labelFotoPerfil" class="field-label w-full px-4 py-4 text-sm font-medium transition border border-dashed cursor-pointer rounded-2xl border-slate-300 bg-slate-50 text-slate-600 hover:border-sky-400 hover:bg-sky-50 hover:text-sky-700">Seleccionar nueva foto</label>
+                                    <input type="file" id="fotoPerfil" name="fotoPerfilFile" accept="image/*" class="hidden">
                                 </div>
                             </div>
                         </aside>
@@ -333,6 +341,47 @@
     <script th:src="@{/js/alert.js}"></script>
     <script th:src="@{/js/contraseñaMostrar.js}"></script>
     <script th:src="@{/js/dashboard.js}"></script>
+    <script>
+        const fotoInput = document.getElementById('fotoPerfil');
+        const labelFotoPerfil = document.getElementById('labelFotoPerfil');
+        let previewFoto = document.getElementById('previewFoto');
+        let placeholderFoto = document.getElementById('placeholderFoto');
+
+        if (labelFotoPerfil) {
+            labelFotoPerfil.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                fotoInput.click();
+            });
+        }
+
+        if (fotoInput) {
+            fotoInput.addEventListener('change', function (event) {
+                const archivo = event.target.files && event.target.files[0];
+                if (!archivo) {
+                    return;
+                }
+
+                const url = URL.createObjectURL(archivo);
+
+                if (previewFoto) {
+                    previewFoto.src = url;
+                } else {
+                    const nuevaImagen = document.createElement('img');
+                    nuevaImagen.id = 'previewFoto';
+                    nuevaImagen.className = 'client-badge mb-4';
+                    nuevaImagen.alt = 'Vista previa de la foto seleccionada';
+                    nuevaImagen.src = url;
+                    if (placeholderFoto && placeholderFoto.parentNode) {
+                        placeholderFoto.parentNode.insertBefore(nuevaImagen, placeholderFoto);
+                        placeholderFoto.remove();
+                    }
+                    previewFoto = nuevaImagen;
+                    placeholderFoto = null;
+                }
+            });
+        }
+    </script>
 </body>
 
 </html>

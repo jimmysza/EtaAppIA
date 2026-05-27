@@ -39,12 +39,20 @@
 
                         <div class="account-cluster" th:if="${nombreUsuario != null}">
                             <div class="dropdown desktopView">
-                                <button type="button" class="account-trigger" aria-label="Abrir menu de perfil">
+                                  <button type="button" class="account-trigger" aria-label="Abrir menu de perfil">
                                     <span class="account-meta">
                                         <small>Cuenta</small>
                                         <strong th:text="${nombreUsuario}">Usuario</strong>
                                     </span>
-                                    <img th:src="@{/images/perfiles/perfil.webp}" alt="Perfil del cliente" />
+                                     <!-- Avatar priority: fotoPerfilUsuario -> cliente.fotoPerfil -> fotoPerfilColaborador -> default -->
+                                     <img th:if="${fotoPerfilUsuario != null and !#strings.isEmpty(fotoPerfilUsuario)}"
+                                         th:src="@{/uploads/{file}(file=${fotoPerfilUsuario})}" alt="Perfil" />
+                                     <img th:if="${fotoPerfilUsuario == null and cliente != null and cliente.fotoPerfil != null and !#strings.isEmpty(cliente.fotoPerfil)}"
+                                         th:src="@{/uploads/{file}(file=${cliente.fotoPerfil})}" alt="Perfil" />
+                                     <img th:if="${fotoPerfilUsuario == null and (cliente == null or cliente.fotoPerfil == null) and fotoPerfilColaborador != null}"
+                                         th:src="@{/uploads/{file}(file=${fotoPerfilColaborador})}" alt="Perfil" />
+                                     <img th:if="${fotoPerfilUsuario == null and (cliente == null or cliente.fotoPerfil == null) and fotoPerfilColaborador == null}"
+                                         th:src="@{/images/perfiles/perfil.webp}" alt="Perfil" />
                                 </button>
                                 <div class="dropdown-contain">
                                     <div th:if="${userRole == 'ROLE_CLIENTE'}">

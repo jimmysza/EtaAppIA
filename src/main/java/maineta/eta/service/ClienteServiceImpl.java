@@ -166,6 +166,15 @@ public class ClienteServiceImpl implements ClienteService {
 
     @Override
     @Transactional
+    public Cliente actualizarFotoPerfil(Long id, String filename) {
+        return clienteRepository.findById(id).map(cliente -> {
+            cliente.setFotoPerfil(filename);
+            return clienteRepository.save(cliente);
+        }).orElseThrow(() -> new RuntimeException("Cliente no encontrado"));
+    }
+
+    @Override
+    @Transactional
     public Cliente guardarPreferencias(Cliente cliente, OnboardingForm form) {
         // Guardar las preferencias ENUMs
         cliente.setGrupoViaje(form.getGrupoViaje());

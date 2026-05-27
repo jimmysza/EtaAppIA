@@ -75,6 +75,7 @@ public class RegistroController {
     @PostMapping("/cliente")
     public String registrarCliente(
             @ModelAttribute("cliente") Cliente cliente,
+            @RequestParam(value = "passwordConfirm", required = false) String passwordConfirm,
             @RequestParam(value = "categoriasIds", required = false) List<Long> categoriasIds,
             @RequestParam(value = "grupoViaje", required = false) String grupoViaje,
             @RequestParam(value = "rangoPrecio", required = false) String rangoPrecio,
@@ -97,6 +98,16 @@ public class RegistroController {
                 form.setDisponibilidadSemana(DisponibilidadSemana.valueOf(disponibilidadSemana));
             }
             System.out.println("OnboardingForm: " + form.toString());
+
+            // Validar que las contraseñas coincidan (backend)
+            if (cliente.getUsuario() == null || cliente.getUsuario().getPassword() == null
+                    || passwordConfirm == null || !cliente.getUsuario().getPassword().equals(passwordConfirm)) {
+                String msg = "Las contraseñas no coinciden";
+                redirectAttributes.addFlashAttribute("error", msg);
+                model.addAttribute("categorias", categoriaService.listarCategorias());
+                model.addAttribute("error", msg);
+                return "auth/registroCliente";
+            }
 
             // Registrar cliente con preferencias y enviar email
             clienteService.registrarClienteConPreferencias(cliente, form);
@@ -128,8 +139,16 @@ public class RegistroController {
     @PostMapping("/colaborador")
     public String registrarColaborador(
             @ModelAttribute("colaborador") Colaborador colaborador,
+            @RequestParam(value = "passwordConfirm", required = false) String passwordConfirm,
             RedirectAttributes redirectAttributes) {
         try {
+            // Validación backend de contraseñas
+            if (colaborador.getUsuario() == null || colaborador.getUsuario().getPassword() == null
+                    || passwordConfirm == null || !colaborador.getUsuario().getPassword().equals(passwordConfirm)) {
+                String msg = "Las contraseñas no coinciden";
+                redirectAttributes.addFlashAttribute("error", msg);
+                return "redirect:/registro/colaborador";
+            }
             colaboradorService.registrarColaborador(colaborador);
             System.out.println("Colaborador registrado exitosamente");
             return "redirect:/login?role=colaborador&pendingVerification";

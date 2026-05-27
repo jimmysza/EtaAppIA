@@ -227,6 +227,14 @@ public class ReservaServiceImpl implements ReservaService {
     }
     
     @Override
+    public Page<Reserva> obtenerReservasPendientesDePago(Pageable pageable) {
+        return reservaRepository.findByEstadoIgnoreCaseAndEstadoPagoColaborador(
+                "Pendiente",
+                EstadoPagoColaborador.PENDIENTE_PAGO,
+                pageable);
+    }
+    
+    @Override
     public Page<Reserva> obtenerTodasReservas(Pageable pageable) {
         return reservaRepository.findAll(pageable);
     }
@@ -234,6 +242,11 @@ public class ReservaServiceImpl implements ReservaService {
     @Override
     public Page<Reserva> obtenerPorEstado(String estado, Pageable pageable) {
         return reservaRepository.findByEstado(estado, pageable);
+    }
+
+    @Override
+    public Page<Reserva> obtenerPorEstados(List<String> estados, Pageable pageable) {
+        return reservaRepository.findByEstadoIn(estados, pageable);
     }
     
     @Override

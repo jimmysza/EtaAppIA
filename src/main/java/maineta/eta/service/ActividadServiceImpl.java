@@ -36,8 +36,6 @@ import maineta.eta.repository.ComentarioRepository;
 import maineta.eta.repository.DisponibilidadRepository;
 import maineta.eta.repository.IdiomaRepository;
 import maineta.eta.repository.ImagenActividadRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * 🔹 Implementación de la interfaz ActividadService.
@@ -49,6 +47,8 @@ import org.slf4j.LoggerFactory;
  */
 @Service
 public class ActividadServiceImpl implements ActividadService {
+
+    private static final int MAX_IMAGENES_ADICIONALES = 6;
 
     // Inyección de dependencias: repositorio que conecta con la BD
     private final ActividadRepository actividadRepository;
@@ -87,6 +87,7 @@ public class ActividadServiceImpl implements ActividadService {
         this.comentarioService = comentarioService;
     }
 
+    @Override
     public Map<Long, Long> contarActividadesPorCategorias(List<Long> categoriaIds) {
 
         List<Object[]> resultados = actividadRepository.contarActividadesPorCategorias(categoriaIds);
@@ -456,6 +457,26 @@ public class ActividadServiceImpl implements ActividadService {
         Actividad actividad = actividadRepository.findById(idActividad)
                 .orElseThrow(() -> new EntityNotFoundException("Actividad no encontrada"));
 
+        long imagenesActuales = actividad.getImagenes() != null ? actividad.getImagenes().size() : 0;
+        long archivosValidos = archivos == null ? 0 : archivos.stream()
+                .filter(archivo -> archivo != null && !archivo.isEmpty())
+                .count();
+
+        if (imagenesActuales >= MAX_IMAGENES_ADICIONALES) {
+            throw new IllegalStateException("La actividad ya alcanzó el máximo de "
+                    + MAX_IMAGENES_ADICIONALES + " imágenes adicionales");
+        }
+
+        long espacioDisponible = MAX_IMAGENES_ADICIONALES - imagenesActuales;
+        if (archivosValidos > espacioDisponible) {
+            throw new IllegalStateException("Solo puedes agregar " + espacioDisponible
+                    + " imagen(es) adicional(es) más");
+        }
+
+        if (archivos == null || archivos.isEmpty()) {
+            return;
+        }
+
         for (MultipartFile archivo : archivos) {
             if (archivo != null && !archivo.isEmpty()) {
                 String nombreImagen = uploadFileService.copy(archivo);
@@ -463,6 +484,8 @@ public class ActividadServiceImpl implements ActividadService {
                 actividad.getImagenes().add(imagen);
             }
         }
+
+        actividadRepository.save(actividad);
     }
 
     @Override
