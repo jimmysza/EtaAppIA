@@ -38,7 +38,7 @@ public class VerificacionCorreoService {
     @Value("${app.base-url:http://localhost:8080}")
     private String appBaseUrl;
 
-    @Value("${spring.mail.username:no-reply@eta.local}")
+    @Value("${app.mail.from:onboarding@resend.dev}")
     private String mailFrom;
 
     @Value("${spring.mail.username:}")
@@ -47,7 +47,8 @@ public class VerificacionCorreoService {
     @Value("${spring.mail.password:}")
     private String smtpPassword;
 
-    public VerificacionCorreoService(UsuarioRepository usuarioRepository, JavaMailSender mailSender, TemplateEngine templateEngine) {
+    public VerificacionCorreoService(UsuarioRepository usuarioRepository, JavaMailSender mailSender,
+            TemplateEngine templateEngine) {
         this.usuarioRepository = usuarioRepository;
         this.mailSender = mailSender;
         this.templateEngine = templateEngine;
@@ -62,8 +63,7 @@ public class VerificacionCorreoService {
     public void enviarCorreoVerificacion(Usuario usuario) {
         if (smtpUsername == null || smtpUsername.isBlank() || smtpPassword == null || smtpPassword.isBlank()) {
             throw new IllegalStateException(
-                    "SMTP no configurado: define spring.mail.username y spring.mail.password (o SMTP_USERNAME y SMTP_PASSWORD)."
-            );
+                    "SMTP no configurado: define spring.mail.username y spring.mail.password (o SMTP_USERNAME y SMTP_PASSWORD).");
         }
 
         if (usuario.getTokenVerificacion() == null || usuario.getTokenVerificacion().isBlank()) {
@@ -95,8 +95,7 @@ public class VerificacionCorreoService {
             throw new RuntimeException(
                     "No se pudo enviar el correo de verificacion. Revisa SMTP (host/puerto/usuario/clave). Detalle: "
                             + detalle,
-                    e
-            );
+                    e);
         }
     }
 
