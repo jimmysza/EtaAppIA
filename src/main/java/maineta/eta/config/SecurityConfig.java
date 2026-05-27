@@ -38,6 +38,9 @@ public class SecurityConfig {
         @Autowired
         private maineta.eta.config.CustomAuthenticationFailureHandler customAuthenticationFailureHandler;
 
+        @Autowired
+        private maineta.eta.config.CustomOAuth2UserService customOAuth2UserService;
+
         // Servicio que implementa UserDetailsService para cargar usuarios desde base de
         // datos
         @Autowired
@@ -66,8 +69,7 @@ public class SecurityConfig {
          */
         @Bean
         public DaoAuthenticationProvider authenticationProvider() {
-                DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-                authProvider.setUserDetailsService(usuarioService); // Servicio que carga el usuario
+                DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider(usuarioService);
                 authProvider.setPasswordEncoder(passwordEncoder()); // Codificador de contraseña
                 return authProvider;
         }
@@ -188,10 +190,11 @@ public class SecurityConfig {
                                 .oauth2Login(oauth -> oauth
                                                 .loginPage("/login") // Página de login compartida
                                                 .userInfoEndpoint(
-                                                                ui -> ui.userAuthoritiesMapper(userAuthoritiesMapper())) // Mapeo
-                                                                                                                         // de
-                                                                                                                         // roles
-                                                .defaultSuccessUrl("/", true)) // Redirección tras login exitoso
+                                                                ui -> ui.userService(customOAuth2UserService)
+                                                                                .userAuthoritiesMapper(userAuthoritiesMapper())) // Mapeo
+                                                                                                                                // de
+                                                                                                                                // roles
+                                                .successHandler(customAuthenticationSuccessHandler)) // Redirección tras login exitoso
                                 .exceptionHandling(ex -> ex
                                                 .accessDeniedPage("/403") // Para errores de autorización (403)
                                                 // Se configura DENTRO del bloque 'exceptionHandling'

@@ -8,6 +8,19 @@
     margin: 0;
 }
 
+@media screen and (max-width: 767px) {
+    .h2_trendi {
+        font-size: 1.8rem;
+        margin: 10px 0;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .h2_trendi {
+        font-size: 1.5rem;
+        margin: 8px 0;
+    }
+}
 
 
 
@@ -27,6 +40,24 @@
     border-radius: 20px;
     font-weight: bold;
     font-size: 0.9rem;
+}
+
+@media screen and (max-width: 767px) {
+    .card-calificacion {
+        font-size: 0.8rem;
+        padding: 3px 8px;
+        bottom: 10px;
+        left: 10px;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .card-calificacion {
+        font-size: 0.75rem;
+        padding: 2px 6px;
+        bottom: 8px;
+        left: 8px;
+    }
 }
 
 
@@ -50,18 +81,30 @@
 
 }
 
-@media screen and (min-width: 768px) and (max-width: 1023px) {
-   
+@media screen and (max-width: 767px) {
+    .anterior-paginacion,
+    .despues-paginacion {
+        top: 45%;
+        display: none;
+    }
 
+    .pagina-contador {
+        margin: 0px auto;
+        padding: 15px 10px;
+        font-size: 13px;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .pagina-contador {
+        padding: 12px 8px;
+        font-size: 12px;
+    }
+}
+
+@media screen and (min-width: 768px) and (max-width: 1023px) {
     .pagina-contador {
         margin: 0px auto;
         padding-left: 20px;
     }
-
-}
-
-@media screen and (max-width: 768px) {
-
-
-   
 }

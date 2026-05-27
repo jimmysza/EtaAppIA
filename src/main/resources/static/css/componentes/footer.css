@@ -127,7 +127,7 @@ footer .border-t {
 }
 
 /* Responsive: en móvil, las columnas se apilan mejor */
-@media (max-width: 768px) {
+@media (max-width: 1023px) {
     footer .grid {
         gap: 2.5rem;
     }
@@ -141,27 +141,76 @@ footer .border-t {
     }
 }
 
-/* Efecto de onda sutil en la parte superior del footer */
-footer::before {
-    content: '';
-    position: absolute;
-    top: -1px;
-    left: 0;
-    right: 0;
-    height: 60px;
-    background: linear-gradient(to bottom,
-            rgba(255, 255, 255, 0.03),
-            transparent);
-    pointer-events: none;
+@media (max-width: 768px) {
+    footer .grid {
+        gap: 2rem;
+    }
+
+    footer .text-5xl {
+        font-size: 2rem;
+    }
+
+    footer .flex-wrap.gap-3 {
+        justify-content: center;
+        gap: 0.75rem;
+    }
+
+    footer p {
+        font-size: 0.9rem;
+    }
+
+    footer ul li a {
+        font-size: 0.9rem;
+    }
 }
 
 /* Mejorar legibilidad del texto en móvil */
 @media (max-width: 640px) {
     footer p {
-        font-size: 0.875rem;
+        font-size: 0.8rem;
     }
 
     footer ul li a {
-        font-size: 0.875rem;
+        font-size: 0.8rem;
+    }
+
+    footer .grid {
+        gap: 1.5rem;
+    }
+
+    footer .text-5xl {
+        font-size: 1.75rem;
+    }
+
+    footer .absolute svg {
+        width: 60px;
+        height: 60px;
+    }
+}
+
+@media (max-width: 480px) {
+    footer .grid {
+        gap: 1.25rem;
+    }
+
+    footer .text-5xl {
+        font-size: 1.5rem;
+    }
+
+    footer p {
+        font-size: 0.75rem;
+    }
+
+    footer ul li a {
+        font-size: 0.75rem;
+    }
+
+    footer .flex-wrap.gap-3 {
+        gap: 0.5rem;
+    }
+
+    footer .absolute svg {
+        width: 50px;
+        height: 50px;
     }
 }

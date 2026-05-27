@@ -231,7 +231,7 @@
                     </thead>
                     <tbody>
                         <tr th:each="actividad : ${actividades}">
-                            <td>
+                            <td data-label="Imagen">
                                 <img th:if="${actividad.imagen != null}" th:src="@{'/uploads/' + ${actividad.imagen}}"
                                     alt="Imagen" class="w-16 h-16 object-cover rounded-lg">
                                 <div th:if="${actividad.imagen == null}"
@@ -239,22 +239,22 @@
                                     Sin imagen
                                 </div>
                             </td>
-                            <td>
+                            <td data-label="Título">
                                 <div class="font-semibold text-xs text-gray-900" th:text="${actividad.titulo}">Título
                                 </div>
                             </td>
-                            <td>
+                            <td data-label="Categoria">
                                 <span
                                     class="inline-block px-2 py-1 bg-[#effbff] text-[#0b76a6] text-xs font-medium rounded"
                                     th:text="${actividad.categoria != null ? actividad.categoria.nombre : 'Sin categoría'}">Categoría</span>
                             </td>
-                            <td class="text-gray-600 text-sm" th:text="${actividad.ubicacion}">Ubicación</td>
-                            <td class="font-semibold text-[#23aae2]"
+                            <td data-label="Ubicación" class="text-gray-600 text-sm" th:text="${actividad.ubicacion}">Ubicación</td>
+                            <td data-label="Precio" class="font-semibold text-[#23aae2]"
                                 th:text="${'$' + #numbers.formatDecimal(actividad.precio, 0, 'POINT', 0, 'COMMA')}">$0
                             </td>
-                            <td class="text-gray-700 font-medium" th:text="${actividad.totalVistas}">0</td>
-                            <td class="text-gray-700 font-medium" th:text="${actividad.totalTendencia}">0</td>
-                            <td>
+                            <td data-label="Vistas" class="text-gray-700 font-medium" th:text="${actividad.totalVistas}">0</td>
+                            <td data-label="Tendencia" class="text-gray-700 font-medium" th:text="${actividad.totalTendencia}">0</td>
+                            <td data-label="Acciones">
                                 <a th:href="@{/colaborador/detalle/{id}(id=${actividad.idActividad})}"
                                     class="inline-flex items-center gap-1 px-3 py-1.5 bg-[#23aae2] text-white text-xs font-medium rounded-lg hover:bg-[#1c96c9] transition-colors">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"

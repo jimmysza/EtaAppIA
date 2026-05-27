@@ -402,3 +402,177 @@ body {
         box-shadow: 0 22px 55px rgba(15, 23, 42, 0.14);
     }
 }
+
+/* Tablet Media Query */
+@media screen and (min-width: 768px) and (max-width: 909px) {
+    .navbar {
+        min-height: 72px;
+        gap: 16px;
+    }
+
+    .burger {
+        width: 40px;
+        height: 40px;
+    }
+
+    .brand-pill {
+        padding: 6px 10px;
+        gap: 8px;
+    }
+
+    .brand-name {
+        font-size: 0.9rem;
+    }
+
+    .brand-mark {
+        width: 28px;
+        height: 28px;
+    }
+
+    .menu-shell {
+        padding: 18px;
+        gap: 16px;
+        border-radius: 24px;
+    }
+
+    .menu-link {
+        padding: 10px 12px;
+        font-size: 0.9rem;
+    }
+
+    .btn-auth {
+        padding: 10px 14px;
+        font-size: 0.88rem;
+    }
+}
+
+/* Small Phone Media Query (≤480px) */
+@media screen and (max-width: 480px) {
+    .navbar {
+        min-height: 70px;
+        gap: 12px;
+    }
+
+    .container-100 {
+        padding: 0 12px;
+    }
+
+    .burger {
+        width: 38px;
+        height: 38px;
+    }
+
+    .burger-line {
+        width: 16px;
+        height: 1.5px;
+    }
+
+    .burger-line:nth-child(1) {
+        top: 14px;
+    }
+
+    .burger-line:nth-child(2) {
+        top: 20px;
+    }
+
+    .burger-line:nth-child(3) {
+        top: 26px;
+    }
+
+    .burger.is-active .burger-line:nth-child(1) {
+        top: 20px;
+    }
+
+    .burger.is-active .burger-line:nth-child(3) {
+        top: 20px;
+    }
+
+    .brand-pill {
+        padding: 5px 8px;
+        gap: 6px;
+    }
+
+    .brand-mark {
+        width: 24px;
+        height: 24px;
+    }
+
+    .brand-name {
+        font-size: 0.8rem;
+    }
+
+    .brand-tag {
+        font-size: 0.6rem;
+    }
+
+    /* Hide brand text to save horizontal space on small phones */
+    .brand-copy {
+        display: none;
+    }
+
+    .menu {
+        inset: 72px 12px auto 12px;
+    }
+
+    .menu-shell {
+        padding: 14px;
+        gap: 12px;
+        border-radius: 20px;
+    }
+
+    .menu-inner {
+        padding: 4px 0;
+    }
+
+    .menu-links {
+        gap: 6px;
+    }
+
+    .menu-link {
+        padding: 10px 12px;
+        font-size: 0.85rem;
+        border-radius: 12px;
+    }
+
+    .menu-actions {
+        gap: 8px;
+    }
+
+    .btn-auth {
+        padding: 8px 12px;
+        font-size: 0.8rem;
+        border-radius: 999px;
+    }
+
+    .account-trigger {
+        padding: 8px 10px;
+        border-radius: 16px;
+    }
+
+    .account-trigger img {
+        width: 36px;
+        height: 36px;
+    }
+
+    .account-meta strong {
+        font-size: 0.85rem;
+    }
+
+    .account-meta small {
+        font-size: 0.65rem;
+    }
+
+    .dropdown-contain a,
+    .btn-cerraSesion {
+        padding: 10px 12px;
+        font-size: 0.8rem;
+    }
+
+    .mobile-account__label {
+        font-size: 0.7rem;
+    }
+
+    .mobile-account__name {
+        font-size: 0.85rem;
+    }
+}
