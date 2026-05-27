@@ -43,6 +43,7 @@ public interface ClienteService {
     List<Cliente> findAll();
     Page<Cliente> findAll(@NonNull Pageable pageable);
     Cliente actualizarCliente(Long id, Cliente cliente);
+    Cliente actualizarFotoPerfil(Long id, String filename);
     Optional<Cliente> obtenerPorUsuario(Usuario usuario);
     
     /**

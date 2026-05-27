@@ -336,7 +336,9 @@
                                     <span th:text="'$' + ${#numbers.formatInteger(reserva.precioTotalSafe, 3, 'POINT')}"></span>
                                 </td>
                                 <td data-label="Estado">
-                                    <span class="status-badge confirmed">Confirmada</span>
+                                    <span class="status-badge"
+                                        th:classappend="${reserva.estado != null and (#strings.equalsIgnoreCase(reserva.estado, 'Hecho') or #strings.equalsIgnoreCase(reserva.estado, 'COMPLETADA') or #strings.equalsIgnoreCase(reserva.estado, 'COMPLETADO')) ? ' confirmed' : (#strings.equalsIgnoreCase(reserva.estado, 'CONFIRMADA') ? ' confirmed' : (#strings.equalsIgnoreCase(reserva.estado, 'PENDIENTE') ? ' pending' : ' cancelled'))}"
+                                        th:text="${reserva.estado}">Estado</span>
                                 </td>
                             </tr>
                         </tbody>
@@ -354,7 +356,7 @@
                         <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
                         <path d="M16 3.13a4 4 0 0 1 0 7.75" />
                     </svg>
-                    Top Colaboradores por Ingresos
+                    Top Colaboradores por Comisión ETA
                 </div>
                 <div class="collaborators-grid">
                     <div th:if="${topColaboradores == null or #lists.isEmpty(topColaboradores)}"
@@ -365,7 +367,7 @@
                         <div th:with="colaborador=${item[0]}, ingresos=${item[1]}" style="width: 100%;">
                             <div class="collaborator-name" th:text="${colaborador.usuario.nombre}"></div>
                             <div class="collaborator-stat">
-                                <span>Ingresos Totales:</span>
+                                <span>Comisión ETA Total:</span>
                                 <strong><span th:text="'$' + ${#numbers.formatInteger(ingresos, 3, 'POINT')}"></span></strong>
                             </div>
                             <div class="collaborator-stat">

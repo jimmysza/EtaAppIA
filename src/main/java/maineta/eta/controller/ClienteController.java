@@ -1,5 +1,6 @@
 package maineta.eta.controller;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.security.Principal;
 import java.time.LocalDate;
@@ -26,6 +27,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -67,6 +69,7 @@ public class ClienteController {
     private final ChatService chatService;
     private final EmailReservaService emailReservaService;
     private final CancelacionService cancelacionService;
+    private final maineta.eta.service.IUploadFileService uploadFileService;
 
     public ClienteController(
             ActividadService actividadService,
@@ -79,7 +82,8 @@ public class ClienteController {
             ComentarioService comentarioService,
             ChatService chatService,
             EmailReservaService emailReservaService,
-            CancelacionService cancelacionService) {
+            CancelacionService cancelacionService,
+            maineta.eta.service.IUploadFileService uploadFileService) {
 
         this.actividadService = actividadService;
         this.reservaService = reservaService;
@@ -92,6 +96,7 @@ public class ClienteController {
         this.chatService = chatService;
         this.emailReservaService = emailReservaService;
         this.cancelacionService = cancelacionService;
+        this.uploadFileService = uploadFileService;
     }
 
     @GetMapping("/dashboard")
@@ -212,16 +217,35 @@ public class ClienteController {
     }
 
     @PostMapping("/actualizar/{id}")
-    public String actualizarActividad(@PathVariable Long id,
+        public String actualizarActividad(@PathVariable Long id,
             @ModelAttribute("cliente") Cliente cliente,
+            @RequestParam(value = "fotoPerfilFile", required = false) MultipartFile fotoPerfil,
             Authentication authentication,
             RedirectAttributes redirectAttributes) {
+
+        String nuevaFoto = null;
+        String fotoAnterior = null;
         try {
-            // 1️⃣ Obtener el usuario autenticado actual
-            // 2️⃣ Actualizar el cliente (y el usuario dentro de él)
+            // Obtener foto anterior para borrado si se reemplaza
+            Cliente existente = clienteService.obtenerPorId(id);
+            fotoAnterior = existente.getFotoPerfil();
+
+            if (fotoPerfil != null && !fotoPerfil.isEmpty()) {
+                nuevaFoto = uploadFileService.copy(fotoPerfil);
+            }
+
+            // Actualizar datos básicos
             Cliente clienteActualizado = clienteService.actualizarCliente(id, cliente);
 
-            // 3️⃣ Actualizar el Authentication con los nuevos datos
+            // Si subió nueva foto, guardarla en el cliente
+            if (nuevaFoto != null) {
+                clienteService.actualizarFotoPerfil(id, nuevaFoto);
+                if (fotoAnterior != null && !fotoAnterior.isBlank()) {
+                    uploadFileService.delete(fotoAnterior);
+                }
+            }
+
+            // Actualizar autenticación con posibles cambios de email
             Authentication newAuth = new UsernamePasswordAuthenticationToken(
                     clienteActualizado.getUsuario().getEmail(),
                     authentication.getCredentials(),
@@ -229,7 +253,15 @@ public class ClienteController {
             SecurityContextHolder.getContext().setAuthentication(newAuth);
 
             redirectAttributes.addFlashAttribute("exito", "Se ha actualizado de manera exitosa");
+        } catch (IOException e) {
+            if (nuevaFoto != null) {
+                uploadFileService.delete(nuevaFoto);
+            }
+            redirectAttributes.addFlashAttribute("error", "No se pudo guardar la foto seleccionada.");
         } catch (RuntimeException e) {
+            if (nuevaFoto != null) {
+                uploadFileService.delete(nuevaFoto);
+            }
             redirectAttributes.addFlashAttribute("error", e.getMessage());
         }
 

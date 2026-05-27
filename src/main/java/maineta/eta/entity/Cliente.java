@@ -87,4 +87,7 @@ public class Cliente {
     )
     @ToString.Exclude
     private Set<Categoria> categoriasPreferidas = new HashSet<>();
+
+    @Column(name = "foto_perfil", length = 255)
+    private String fotoPerfil;
 }

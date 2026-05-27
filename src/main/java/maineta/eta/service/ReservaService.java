@@ -42,9 +42,11 @@ public interface ReservaService {
     
     // Métodos para administración de pagos y reembolsos
     Page<Reserva> obtenerReservasConPagoPendiente(Pageable pageable);
+    Page<Reserva> obtenerReservasPendientesDePago(Pageable pageable);
     Page<Reserva> obtenerReservasConReembolsoPendiente(Pageable pageable);
     Page<Reserva> obtenerTodasReservas(Pageable pageable);
     Page<Reserva> obtenerPorEstado(String estado, Pageable pageable);
+    Page<Reserva> obtenerPorEstados(List<String> estados, Pageable pageable);
     Optional<Reserva> obtenerPorId(Long idReserva);
     BigDecimal calcularTotalComisionesGanadas();
 }

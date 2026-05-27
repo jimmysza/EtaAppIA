@@ -116,6 +116,7 @@
                             <option value="">Todos los estados</option>
                             <option value="PENDIENTE" th:selected="${estadoFiltro == 'PENDIENTE'}">Pendiente</option>
                             <option value="CONFIRMADA" th:selected="${estadoFiltro == 'CONFIRMADA'}">Confirmada</option>
+                            <option value="Hecho" th:selected="${estadoFiltro == 'Hecho'}">Hecho</option>
                             <option value="COMPLETADA" th:selected="${estadoFiltro == 'COMPLETADA'}">Completada</option>
                             <option value="CANCELADA" th:selected="${estadoFiltro == 'CANCELADA'}">Cancelada</option>
                         </select>
@@ -125,7 +126,7 @@
                         Filtrar
                     </button>
                     <a href="/admin/ingresos"
-                        class="bg-gray-300 hover:bg-gray-400 text-gray-800 px-6 py-2.5 rounded-lg font-medium transition">
+                        class="inline-flex items-center justify-center rounded-lg bg-[#23aae2] px-6 py-2.5 font-medium text-white shadow-md transition hover:bg-[#1c96c9] hover:shadow-lg">
                         Limpiar
                     </a>
                 </form>
@@ -187,7 +188,7 @@
                                 </td>
                                 <td class="px-6 py-4">
                                     <span class="inline-block px-3 py-1 text-xs font-semibold rounded-full"
-                                        th:classappend="${reserva.estado == 'COMPLETADA' ? 'bg-green-100 text-green-800' : (reserva.estado == 'CONFIRMADA' ? 'bg-blue-100 text-blue-800' : (reserva.estado == 'PENDIENTE' ? 'bg-yellow-100 text-yellow-800' : 'bg-red-100 text-red-800'))}"
+                                        th:classappend="${reserva.estado != null and (#strings.equalsIgnoreCase(reserva.estado, 'Hecho') or #strings.equalsIgnoreCase(reserva.estado, 'COMPLETADA') or #strings.equalsIgnoreCase(reserva.estado, 'COMPLETADO')) ? 'bg-green-100 text-green-800' : (reserva.estado != null and #strings.equalsIgnoreCase(reserva.estado, 'CONFIRMADA') ? 'bg-blue-100 text-blue-800' : (reserva.estado != null and #strings.equalsIgnoreCase(reserva.estado, 'PENDIENTE') ? 'bg-yellow-100 text-yellow-800' : 'bg-red-100 text-red-800'))}"
                                         th:text="${reserva.estado}">ESTADO</span>
                                 </td>
                                 <td class="px-6 py-4 text-sm text-gray-600" th:text="${#temporals.format(reserva.fechaReserva, 'dd/MM/yyyy HH:mm')}">01/01/2025 14:00</td>

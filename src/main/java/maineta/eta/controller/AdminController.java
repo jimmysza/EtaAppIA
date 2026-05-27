@@ -20,10 +20,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import maineta.eta.dto.ColaboradorEstadisticasAdminDTO;
 import maineta.eta.entity.Actividad;
 import maineta.eta.entity.Admin;
 import maineta.eta.entity.Categoria;
 import maineta.eta.entity.Cliente;
+import maineta.eta.entity.Colaborador;
 import maineta.eta.entity.EstadoPagoColaborador;
 import maineta.eta.entity.EstadoReembolso;
 import maineta.eta.entity.Idioma;
@@ -37,11 +39,9 @@ import maineta.eta.service.ColaboradorService;
 import maineta.eta.service.DisponibilidadService;
 import maineta.eta.service.IUploadFileService;
 import maineta.eta.service.IdiomaService;
+import maineta.eta.service.KpiColaboradorService;
 import maineta.eta.service.ReservaService;
 import maineta.eta.service.UsuarioService;
-import maineta.eta.service.KpiColaboradorService;
-import maineta.eta.dto.ColaboradorEstadisticasAdminDTO;
-import maineta.eta.entity.Colaborador;
 
 @Controller
 @RequestMapping("/admin")
@@ -94,27 +94,15 @@ public class AdminController {
         }
         
         BigDecimal porcentajeComision = admin.getPorcentajeComision() != null ? admin.getPorcentajeComision() : new BigDecimal("18");
-        BigDecimal porcentajeDecimal = porcentajeComision.divide(new BigDecimal("100"));
 
         List<Actividad> actividades = actividadService.listarActividades();
 
         BigDecimal plataGanada = BigDecimal.ZERO;
 
         for (Actividad act : actividades) {
-            BigDecimal precioBase = act.getPrecio();
-
             for (Reserva reserva : act.getReservas()) {
-                if ("Hecho".equals(reserva.getEstado())) {
-
-                    BigDecimal cantidad = BigDecimal.valueOf(reserva.getCantidad());
-
-                    // precioBase * cantidad → total de esa reserva
-                    BigDecimal totalReserva = precioBase.multiply(cantidad);
-
-                    BigDecimal comision = totalReserva.multiply(porcentajeDecimal);
-
-                    // acumular la comisión
-                    plataGanada = plataGanada.add(comision);
+                if (esReservaFinalizada(reserva)) {
+                    plataGanada = plataGanada.add(reserva.getComisionEtaSafe());
                 }
             }
         }
@@ -135,20 +123,17 @@ public class AdminController {
             .collect(Collectors.toList());
         model.addAttribute("actividadesRecientes", actividadesRecientes);
 
-        // 3. Top colaboradores
-        Map<maineta.eta.entity.Colaborador, BigDecimal> ingresosPorColaborador = new HashMap<>();
+        // 3. Top colaboradores por comisión ETA
+        Map<maineta.eta.entity.Colaborador, BigDecimal> comisionesPorColaborador = new HashMap<>();
         for (Actividad act : actividades) {
             maineta.eta.entity.Colaborador colab = act.getColaborador();
-            BigDecimal precioBase = act.getPrecio();
-            if (precioBase == null) precioBase = BigDecimal.ZERO;
             for (Reserva r : act.getReservas()) {
-                if ("Hecho".equals(r.getEstado()) || "COMPLETADA".equals(r.getEstado()) || "CONFIRMADA".equals(r.getEstado())) {
-                    BigDecimal totalReserva = precioBase.multiply(new BigDecimal(Math.max(1, r.getCantidad())));
-                    ingresosPorColaborador.merge(colab, totalReserva, BigDecimal::add);
+                if (esReservaFinalizada(r)) {
+                    comisionesPorColaborador.merge(colab, r.getComisionEtaSafe(), BigDecimal::add);
                 }
             }
         }
-        List<Object[]> topColaboradores = ingresosPorColaborador.entrySet().stream()
+        List<Object[]> topColaboradores = comisionesPorColaborador.entrySet().stream()
             .sorted((e1, e2) -> e2.getValue().compareTo(e1.getValue()))
             .limit(4)
             .map(e -> new Object[]{e.getKey(), e.getValue()})
@@ -158,7 +143,8 @@ public class AdminController {
         model.addAttribute("CantidadReservacion", reservaService.ContadorReservas());
         model.addAttribute("CantidadActividad", actividadService.ContadorActividades());
         model.addAttribute("CantidadDisponibilidades", disponibilidadService.ContadorDisponibilidades());
-        model.addAttribute("horasCancelacion", admin.getHorasCancelacion() != null ? admin.getHorasCancelacion() : 24);
+        Integer horasCancelacion = admin.getHorasCancelacion();
+        model.addAttribute("horasCancelacion", horasCancelacion != null ? horasCancelacion : 24);
 
         return "admin/dashboard";
     }
@@ -308,8 +294,8 @@ public class AdminController {
      */
     @GetMapping("/pagos")
     public String listarPagosPendientes(@RequestParam(defaultValue = "0") int page, Model model) {
-        // Obtener reservas con estado CONFIRMADA o COMPLETADA y estadoPagoColaborador = PENDIENTE_PAGO
-        Page<Reserva> reservasPage = reservaService.obtenerReservasConPagoPendiente(PageRequest.of(page, 20));
+        // Obtener solo reservas en estado Pendiente con pago colaborador pendiente
+        Page<Reserva> reservasPage = reservaService.obtenerReservasPendientesDePago(PageRequest.of(page, 20));
 
         // Calcular totales
         BigDecimal totalPendiente = reservasPage.getContent().stream()
@@ -436,7 +422,13 @@ public class AdminController {
 
         // Filtrar por estado si se especifica
         if (estado != null && !estado.isEmpty()) {
-            reservasPage = reservaService.obtenerPorEstado(estado, PageRequest.of(page, 50));
+            if ("Hecho".equalsIgnoreCase(estado)) {
+                reservasPage = reservaService.obtenerPorEstado("Hecho", PageRequest.of(page, 50));
+            } else if (esEstadoFinalizado(estado)) {
+                reservasPage = reservaService.obtenerPorEstados(ESTADOS_FINALIZADOS, PageRequest.of(page, 50));
+            } else {
+                reservasPage = reservaService.obtenerPorEstado(estado, PageRequest.of(page, 50));
+            }
         }
 
         // Calcular estadísticas
@@ -444,7 +436,7 @@ public class AdminController {
 
         long totalReservas = reservasPage.getTotalElements();
         long reservasCompletadas = reservasPage.getContent().stream()
-            .filter(r -> "COMPLETADA".equals(r.getEstado())).count();
+            .filter(this::esReservaFinalizada).count();
         long reservasCanceladas = reservasPage.getContent().stream()
             .filter(r -> r.getEstado().startsWith("CANCELADA")).count();
 
@@ -459,6 +451,19 @@ public class AdminController {
         model.addAttribute("pagina", "ingresos");
 
         return "admin/ingresos";
+    }
+
+    private static final List<String> ESTADOS_FINALIZADOS = List.of("Hecho", "COMPLETADA", "COMPLETADO", "CONFIRMADA");
+
+    private boolean esReservaFinalizada(Reserva reserva) {
+        return reserva != null && esEstadoFinalizado(reserva.getEstado());
+    }
+
+    private boolean esEstadoFinalizado(String estado) {
+        if (estado == null) {
+            return false;
+        }
+        return ESTADOS_FINALIZADOS.stream().anyMatch(e -> e.equalsIgnoreCase(estado));
     }
 
     // ===== GESTIÓN Y ESTADÍSTICAS DE COLABORADORES =====

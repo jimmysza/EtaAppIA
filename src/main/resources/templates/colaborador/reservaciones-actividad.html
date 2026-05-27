@@ -158,10 +158,12 @@
     <main class="px-4 py-8 mx-auto max-w-7xl sm:px-6 lg:px-8">
         
         <div class="mb-8">
-            <a th:href="@{'/colaborador/detalle/' + ${actividad.idActividad}}" class="inline-flex items-center gap-2 text-sm font-semibold text-[#23aae2] bg-[#effbff] hover:bg-[#dff6ff] px-4 py-2 rounded-full transition-colors mb-4">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
-                Volver al detalle de la actividad
-            </a>
+            <div class="flex items-center gap-3 mb-4">
+                <a th:href="@{'/colaborador/detalle/' + ${actividad.idActividad}}" class="inline-flex items-center gap-2 text-sm font-semibold text-[#23aae2] bg-[#effbff] hover:bg-[#dff6ff] px-4 py-2 rounded-full transition-colors">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                    Volver al detalle de la actividad
+                </a>
+            </div>
             <h2 class="text-3xl font-extrabold text-slate-900" th:text="'Gestión de Reservas: ' + ${actividad.titulo}"></h2>
         </div>
 

@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
@@ -26,8 +27,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -826,6 +829,26 @@ public class ColaboradorController {
             redirectAttributes.addFlashAttribute("type", "danger");
         }
         return "redirect:/colaborador/detalle/" + id;
+    }
+
+    // Eliminar múltiples imágenes en una sola petición (AJAX)
+    @PostMapping("/actividades/{id}/imagenes/eliminar-multiple")
+    @ResponseBody
+    public Map<String, Object> eliminarImagenesMultiple(@PathVariable("id") Long id,
+            @RequestBody List<Long> ids,
+            RedirectAttributes redirectAttributes) {
+        Map<String, Object> resp = new HashMap<>();
+        try {
+            for (Long imgId : ids) {
+                actividadService.eliminarImagen(imgId);
+            }
+            resp.put("success", true);
+            resp.put("deleted", ids.size());
+        } catch (Exception e) {
+            resp.put("success", false);
+            resp.put("error", e.getMessage());
+        }
+        return resp;
     }
 
     // Eliminar una imagen adicional
