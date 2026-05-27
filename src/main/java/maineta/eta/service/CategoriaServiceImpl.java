@@ -45,10 +45,20 @@ public class CategoriaServiceImpl implements CategoriaService {
      */
     @Override
     public Categoria guardarCategoria(Categoria categoria) {
+        // Si es nueva (sin id) -> validar que no exista por nombre
+        if (categoria.getIdCategoria() == null) {
+            if (categoriaRepository.existsByNombre(categoria.getNombre())) {
+                throw new RuntimeException("Ya existe una categoría con ese nombre: " + categoria.getNombre());
+            }
+            return categoriaRepository.save(categoria);
+        }
 
-        if (categoriaRepository.existsByNombre(categoria.getNombre())) {
+        // Si es actualización -> permitir mantener el mismo nombre o cambiarlo si no existe en otra categoría
+        java.util.Optional<Categoria> existente = categoriaRepository.findByNombre(categoria.getNombre());
+        if (existente.isPresent() && !existente.get().getIdCategoria().equals(categoria.getIdCategoria())) {
             throw new RuntimeException("Ya existe una categoría con ese nombre: " + categoria.getNombre());
         }
+
         return categoriaRepository.save(categoria);
     }
 

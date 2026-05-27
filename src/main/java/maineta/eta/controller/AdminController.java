@@ -204,6 +204,49 @@ public class AdminController {
         return "redirect:/admin/categorias"; // Redirige a la lista de categorías después de guardar
     }
 
+    @GetMapping("/categorias/editar/{id}")
+    public String editarCategoriaForm(@PathVariable Long id, Model model, RedirectAttributes redirectAttrs) {
+        Categoria categoria = categoriaService.getCategoriaPorId(id);
+        if (categoria == null) {
+            redirectAttrs.addFlashAttribute("error", "Categoría no encontrada");
+            return "redirect:/admin/categorias";
+        }
+        model.addAttribute("categoria", categoria);
+        return "admin/categoria-edit";
+    }
+
+    @PostMapping("/categorias/editar")
+    public String editarCategoria(Categoria categoria,
+            @RequestParam(value = "imagenFile", required = false) MultipartFile imagenFile,
+            RedirectAttributes redirectAttrs) {
+        try {
+            Categoria existente = categoriaService.getCategoriaPorId(categoria.getIdCategoria());
+            if (existente == null) {
+                redirectAttrs.addFlashAttribute("error", "Categoría no encontrada");
+                return "redirect:/admin/categorias";
+            }
+
+            existente.setNombre(categoria.getNombre());
+
+            if (imagenFile != null && !imagenFile.isEmpty()) {
+                // borrar imagen anterior si pertenece a /uploads/
+                if (existente.getImagen() != null && existente.getImagen().startsWith("/uploads/")) {
+                    try {
+                        uploadFileService.delete(existente.getImagen().replace("/uploads/", ""));
+                    } catch (Exception ignored) {
+                    }
+                }
+                existente.setImagen("/uploads/" + uploadFileService.copy(imagenFile));
+            }
+
+            categoriaService.guardarCategoria(existente);
+            redirectAttrs.addFlashAttribute("mensaje", "Categoría actualizada correctamente.");
+        } catch (Exception e) {
+            redirectAttrs.addFlashAttribute("error", e.getMessage());
+        }
+        return "redirect:/admin/categorias";
+    }
+
     @PostMapping("/categorias/eliminar")
     public String eliminarCategoria(Long id) {
         categoriaService.eliminarCategoria(id);

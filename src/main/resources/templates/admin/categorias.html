@@ -255,6 +255,11 @@
                                     </span>
                                 </td>
                                 <td style="padding: 15px; text-align: center;">
+                                    <button type="button" 
+                                        class="btn-edit edit-btn" 
+                                        th:attr="data-id=${categoria.idCategoria},data-nombre=${categoria.nombre},data-imagen=${categoria.imagen}">
+                                        Editar
+                                    </button>
                                     <button th:attr="data-id=${categoria.idCategoria}" id="open-delete-modal"
                                         class="table-action-btn table-action-btn--danger">
                                         Eliminar
@@ -324,6 +329,31 @@
             </div>
         </form>
     </div>
+    
+    <div class="modal modal-edit">
+        <form class="modal-edits card" method="post" th:action="@{/admin/categorias/editar}" enctype="multipart/form-data">
+            <div class="form-heading">
+                <h2>Editar Categoría</h2>
+                <p>Actualiza nombre o imagen</p>
+                <button type="button" class="close-edit" aria-label="Cerrar">&times;</button>
+            </div>
+            <div class="inputs-form">
+                <input type="hidden" name="idCategoria" id="edit-id" />
+                <label for="edit-nombre">Nombre</label>
+                <input id="edit-nombre" type="text" name="nombre" required />
+
+                <label>Imagen actual</label>
+                <div id="edit-current-image" style="margin-bottom:8px;"></div>
+
+                <label for="edit-imagenFile">Subir nueva imagen (opcional)</label>
+                <input id="edit-imagenFile" type="file" name="imagenFile" accept="image/*" />
+
+                <div class="btnSubmit">
+                    <button type="submit" class="btn-submit">Actualizar</button>
+                </div>
+            </div>
+        </form>
+    </div>
     <!--   <div class="categorias">
                 <h3>Categorias</h3>
                 <div class="card-categorias-contain">
@@ -368,6 +398,6 @@
 
     <script th:src="@{/js/eliminar/categoria.js}"></script>
     <script th:src="@{/js/dashboard.js}"></script>
-</body>
+    <script th:src="@{/js/modales.js}"></script>
 
 </html>

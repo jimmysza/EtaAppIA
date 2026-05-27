@@ -147,6 +147,31 @@
 
 }
 
+/* Close button for edit modal */
+.modal-edits .close-edit,
+.modal .close-edit {
+    position: absolute;
+    top: 12px;
+    right: 14px;
+    width: 36px;
+    height: 36px;
+    border-radius: 6px;
+    color: #111827;
+    font-size: 22px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    background: transparent;
+    border: none;
+}
+
+.modal-edits .close-edit:hover,
+.modal .close-edit:hover {
+    background: rgba(0,0,0,0.05);
+}
+
 .modal.show {
     display: flex;
 }
