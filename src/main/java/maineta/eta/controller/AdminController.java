@@ -226,17 +226,23 @@ public class AdminController {
                 return "redirect:/admin/categorias";
             }
 
-            existente.setNombre(categoria.getNombre());
+            // ✅ El nombre es OPCIONAL: solo actualizar si viene no vacío
+            if (categoria.getNombre() != null && !categoria.getNombre().trim().isEmpty()) {
+                existente.setNombre(categoria.getNombre());
+            }
 
+            // ✅ Actualizar imagen si se carga una nueva
             if (imagenFile != null && !imagenFile.isEmpty()) {
-                // borrar imagen anterior si pertenece a /uploads/
+                // Borrar imagen anterior si pertenece a /uploads/
                 if (existente.getImagen() != null && existente.getImagen().startsWith("/uploads/")) {
                     try {
                         uploadFileService.delete(existente.getImagen().replace("/uploads/", ""));
                     } catch (Exception ignored) {
                     }
                 }
-                existente.setImagen("/uploads/" + uploadFileService.copy(imagenFile));
+                // Guardar nueva imagen
+                String nombreArchivoGuardado = uploadFileService.copy(imagenFile);
+                existente.setImagen("/uploads/" + nombreArchivoGuardado);
             }
 
             categoriaService.guardarCategoria(existente);

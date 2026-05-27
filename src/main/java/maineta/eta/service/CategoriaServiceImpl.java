@@ -53,10 +53,18 @@ public class CategoriaServiceImpl implements CategoriaService {
             return categoriaRepository.save(categoria);
         }
 
-        // Si es actualización -> permitir mantener el mismo nombre o cambiarlo si no existe en otra categoría
-        java.util.Optional<Categoria> existente = categoriaRepository.findByNombre(categoria.getNombre());
-        if (existente.isPresent() && !existente.get().getIdCategoria().equals(categoria.getIdCategoria())) {
-            throw new RuntimeException("Ya existe una categoría con ese nombre: " + categoria.getNombre());
+        // Si es actualización -> validar SOLO si el nombre cambió
+        java.util.Optional<Categoria> existente = categoriaRepository.findById(categoria.getIdCategoria());
+        if (existente.isPresent()) {
+            String nombreAnterior = existente.get().getNombre();
+            String nombreNuevo = categoria.getNombre();
+            
+            // ✅ Si el nombre cambió (y no es nulo/vacío), validar unicidad
+            if (nombreNuevo != null && !nombreNuevo.trim().isEmpty() && !nombreNuevo.equals(nombreAnterior)) {
+                if (categoriaRepository.existsByNombre(nombreNuevo)) {
+                    throw new RuntimeException("Ya existe una categoría con ese nombre: " + nombreNuevo);
+                }
+            }
         }
 
         return categoriaRepository.save(categoria);

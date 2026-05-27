@@ -1,0 +1,2 @@
+ALTER TABLE cliente MODIFY cedula BIGINT NULL;
+ALTER TABLE usuarios MODIFY telefono VARCHAR(15) NULL;
